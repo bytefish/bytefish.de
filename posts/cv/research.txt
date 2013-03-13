@@ -1,0 +1,16 @@
+====== facerec ======
+ 
+These wiki pages serve as a place to put interesting links, ideas, algorithms or implementations.
+
+===== Research =====
+
+==== Eye Tracking, Image Alignment and Head Pose Estimation ====
+
+    * [[http://www.janelia.org/people/scientist/gary-huang|Gary B. Huang]], [[http://vis-www.cs.umass.edu/~vidit/|Vidit Jain]], and [[http://www.cs.umass.edu/~elm/|Erik Learned-Miller]]. **Unsupervised joint alignment of complex images.** International Conference on Computer Vision (ICCV), 2007. ([[http://vis-www.cs.umass.edu/congeal_complex.html|Project page]], [[http://vis-www.cs.umass.edu/congeal_complex.html|PDF Online available]], [[https://bitbucket.org/gbhuang/congealreal|C++ Code]])
+    * [[http://www.ics.uci.edu/~xzhu|X. Zhu]], [[http://www.ics.uci.edu/~dramanan|D. Ramanan]]. **Face Detection, Pose Estimation and Landmark Localization in the Wild** Computer Vision and Pattern Recognition (CVPR) Providence, Rhode Island, June 2012. ([[http://www.ics.uci.edu/~xzhu/face/|Project page]], [[http://www.ics.uci.edu/~xzhu/face/|PDF Online available]], [[https://github.com/wg-perception/PartsBasedDetector|C++ Code]])
+    * F. Timm and E. Barth. **Accurate eye centre localisation by means of gradients.** In Proceedings of the Int. Conference on Computer Theory and Applications (VISAPP), volume 1, pages 125-130, Algarve, Portugal, 2011. INSTICC. ([[http://www.inb.uni-luebeck.de/publikationen/pdfs/TiBa11b.pdf|PDF Online available]], [[https://github.com/trishume/eyeLike/|C++ Code]])
+
+==== Feature Extraction ====
+
+    * Lior Wolf, Tal Hassner and Yaniv Taigman, **Descriptor Based Methods in the Wild**, Faces in Real-Life Images workshop at the European Conference on Computer Vision (ECCV), Oct 2008. ([[http://face.com/research/index.php?page=publications.html|PDF Online available]], [[http://www.openu.ac.il/home/hassner/projects/Patchlbp/TPLBP.m|Matlab Code]])
+    * Ojansivu V & Heikkilä J (2008) **Blur insensitive texture classification using local phase quantization.** Proc. Image and Signal Processing (ICISP 2008), 5099:236-243. ([[http://www.ee.oulu.fi/research/mvmp/mvg/files/pdf/ICISP08.pdf|PDF Online available]], [[http://www.cse.oulu.fi/CMV/Downloads/LPQMatlab|Matlab Code]])

@@ -1,0 +1,5 @@
+====== user:philipp_wagner ======
+
+  * [[this>doku.php?id=tag:cpp&do=showtag&tag=tag:cpp|C++]],  [[this>doku.php?id=tag:python&do=showtag&tag=tag:python|Python]],[[this>doku.php?id=tag:erlang&do=showtag&tag=tag:erlang|Erlang]]
+  * [[http://numpy.scipy.org/|NumPy]], [[http://opencv.willowgarage.com/wiki/|OpenCV]], [[http://www.boost.org/|Boost]]
+  * [[http://www.sweetadeline.net|Elliott Smith]], [[http://en.wikipedia.org/wiki/Jimi_Hendrix|Jimi Hendrix]], [[http://en.wikipedia.org/wiki/Michael_Jackson|Michael Jackson]], [[http://www.explosionsinthesky.com|Explosions In The Sky]]

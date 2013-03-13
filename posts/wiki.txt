@@ -1,0 +1,27 @@
+//... is chaos I will order later.//
+
+===== Computer Vision =====
+    * [[cv:research|Research]] 
+
+===== Cryptography =====
+    * [[crypt:openssl|OpenSSL]]
+
+===== Dealing with data =====
+    * [[wiki:pca_lda_with_gnu_octave|Principal Component Analysis and Linear Discriminant Analysis with GNU Octave]]
+    * [[wiki:kpca|Kernel Principal Component Analysis]]
+    * [[wiki:machine_learning_opencv|Machine Learning with OpenCV]]
+
+===== Misc =====
+     * [[wiki:geo|Map Projections]]
+
+===== General =====
+    * [[wiki:latex|LaTeX]] 
+
+===== Programming languages =====
+    * [[wiki:erlang|Erlang]]
+    * [[wiki:python|Python]]
+    * [[wiki:cpp|C++]]
+
+===== Pages I copy and paste to =====
+    * [[wiki:android|Android]]
+    * [[wiki:opencv|OpenCV]]

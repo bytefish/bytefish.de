@@ -1,0 +1,485 @@
+====== Principal Component Analysis and Linear Discriminant Analysis with GNU Octave  ======
+
+This page will show you how to do a Principal Component and Linear Discriminant Analysis with [[http://www.gnu.org/software/octave/|GNU Octave]], a high-level language and environment for numerical computing.
+
+===== Experiment 1: Introduction =====
+
+Start GNU Octave from command line with:
+
+<code>
+$ octave
+</code>
+
+and create some data in //X// with corresponding classes in //c//:
+
+<code>
+X = [2 3;3 4;4 5;5 6;5 7;2 1;3 2;4 2;4 3;6 4;7 6];
+c = [  1;  1;  1;  1;  1;  2;  2;  2;  2;  2;  2]; 
+</code>
+
+Find the indices of each class {1,2}:
+
+<code>
+c1 = X(find(c==1),:)
+c2 = X(find(c==2),:)
+</code>
+
+And then plot the data:
+<code>
+figure;
+
+p1 = plot(c1(:,1), c1(:,2), "ro", "markersize",10, "linewidth", 3); hold on;
+p2 = plot(c2(:,1), c2(:,2), "go", "markersize",10, "linewidth", 3)
+
+xlim([0 8])
+ylim([0 8])
+</code>
+
+We can see that both classes can clearly be separated in one dimension:
+
+{{ :wiki:data.png?400 |}}
+
+So how does a Principal Component Analysis perform on this dataset?
+
+==== Principal Component Analysis ====
+
+The Principal Component Analysis (PCA) was independently proposed by [[http://en.wikipedia.org/wiki/Karl_Pearson|Karl Pearson]] (1901) and [[http://en.wikipedia.org/wiki/Harold_Hotelling|Harold Hotelling]] (1933) to turn a set of possibly correlated variables into a smaller set of uncorrelated variables. The idea is that a high-dimensional dataset is often described by correlated variables and therefore only a few meaningful dimensions account for most of the information. The PCA method finds those directions in the original dataset that accounts for the greatest variance in data, also called the principal components.
+
+A good start is to read [[http://www.cs.otago.ac.nz/cosc453/student_tutorials/principal_components.pdf|A tutorial on Principal Components Analysis]] or [[http://en.wikipedia.org/wiki/Principal_component_analysis|Wikipedia on PCA]].
+
+=== finding the principal components ===
+
+The math in the recommended documents can be reduced to these four lines of code:
+
+<code>
+mu = mean(X)
+Xm = bsxfun(@minus, X, mu)
+C = cov(Xm)
+[V,D] = eig(C)
+</code>
+
+That's it! Note that the Eigenvectors in GNU Octave are sorted ascending, so the last column is the first principal component. Strange to work with? So better sort the eigenvectors in a descending order:
+
+<code>
+% sort eigenvectors desc
+[D, i] = sort(diag(D), 'descend');
+V = V(:,i);
+</code>
+
+Because all variables in this example are measured on the same scale we don't need to apply any standardization. Plotting both eigenvectors:
+
+<code>
+scale = 5
+pc1 = line([mu(1) - scale * V(1,1) mu(1) + scale * V(1,1)], [mu(2) - scale * V(2,1) mu(2) + scale * V(2,1)]);
+pc2 = line([mu(1) - scale * V(1,2) mu(1) + scale * V(1,2)], [mu(2) - scale * V(2,2) mu(2) + scale * V(2,2)]);
+
+set(pc1, 'color', [1 0 0], "linestyle", "--")
+set(pc2, 'color', [0 1 0], "linestyle", "--")
+</code>
+
+yields a new coordinate system with the mean as origin and the orthogonal principal components as axes:
+
+{{ :wiki:principal.png?400 |}}
+
+According to the PCA we can safely discard the second component, because the first principal component is responsible for 85% of the total variance.
+
+<code>
+octave> cumsum(D) / sum(D)
+ans =
+
+   0.85471
+   1.00000
+</code>
+
+But what will happen if we project the data on the first principal component (red)? Do you already see the problem?
+
+=== projection and reconstruction ===
+To understand why the PCA fails in some situations, project the data onto the first principal component: 
+
+<code>
+% project on pc1
+z = Xm*V(:,1)
+% and reconstruct it
+p = z*V(:,1)'
+p = bsxfun(@plus, p, mu)
+</code>
+
+and visualize it:
+
+<code>
+% delete old plots
+delete(p1);delete(p2);
+
+y1 = p(find(c==1),:)
+y2 = p(find(c==2),:)
+
+p1 = plot(y1(:,1),y1(:,2),"ro", "markersize", 10, "linewidth", 3);
+p2 = plot(y2(:,1), y2(:,2),"go", "markersize", 10, "linewidth", 3); 
+</code>
+
+... et voilà. The data isn't [[http://en.wikipedia.org/wiki/Linear_separability|linearly separable]] anymore in this lower-dimensional representation. What does this mean? The classes are smeared together and classification becomes tough:
+
+{{ :wiki:pc1.png?400 |}}
+
+... while a projection on the second principal component yields a much better representation for classification:
+
+{{ :wiki:pc2.png?400 |}}
+
+See that even a simple Nearest Neighbor classifier would perform awesome here? So we learn that the directions of maximum variance may be useless for classification tasks. The second principal component had a smaller variance, but provided a much better discrimination between the two classes. 
+
+==== Linear Discriminant Analysis ====
+
+What we aim for is a projection, that maintains the maximum discriminative power of a given dataset, so a method should make use of class labels (if they are known a priori).  The Linear Discriminant Analysis, invented by [[http://en.wikipedia.org/wiki/Ronald_Fisher|R. A. Fisher, 1936]], does so by maximizing the between-class scatter, while minimizing the within-class scatter at the same time.
+
+I took the equations from [[http://research.cs.tamu.edu/prism/rgo.htm|Ricardo Gutierrez-Osuna's]] [[http://research.cs.tamu.edu/prism/lectures/pr/pr_l10.pdf|lecture notes on Linear Discriminant Analysis]] and [[http://en.wikipedia.org/wiki/Linear_discriminant_analysis|Wikipedia on LDA]].
+
+We'll use the same data as for the PCA example. Again create the data in //X// with corresponding classes in //c//:
+
+<code>
+X = [2 3;3 4;4 5;5 6;5 7;2 1;3 2;4 2;4 3;6 4;7 6];
+c = [  1;  1;  1;  1;  1;  2;  2;  2;  2;  2;  2]; 
+</code>
+
+Find the indices of each class {1,2}:
+
+<code>
+c1 = X(find(c==1),:)
+c2 = X(find(c==2),:)
+</code>
+
+And then plot the data:
+
+<code>
+figure;
+
+p1 = plot(c1(:,1), c1(:,2), "ro", "markersize",10, "linewidth", 3); hold on;
+p2 = plot(c2(:,1), c2(:,2), "go", "markersize",10, "linewidth", 3)
+
+xlim([0 8])
+ylim([0 8])
+</code>
+
+So how does a Linear Discriminant Analysis perform on this dataset?
+
+=== finding the projection matrix ===
+
+Finding the between and within-classes scatter matrices is easy for our two classes example:
+
+<code>
+classes = max(c)
+mu_total = mean(X)
+mu = [ mean(c1); mean(c2) ]
+Sw = (X - mu(c,:))'*(X - mu(c,:))
+Sb = (ones(classes,1) * mu_total - mu)' * (ones(classes,1) * mu_total - mu)
+</code>
+
+The General Eigenvalue problem is now solved by simply doing:
+<code>
+[V, D] = eig(Sw\Sb)
+</code>
+
+And that's it. Now let's see what separations the LDA method has found! Don't forget to first sort the Eigenvectors in a descending order:
+
+<code>
+% sort eigenvectors desc
+[D, i] = sort(diag(D), 'descend');
+V = V(:,i);
+</code>
+
+and then plot them:
+
+<code>
+scale = 5
+pc1 = line([mu_total(1) - scale * V(1,1) mu_total(1) + scale * V(1,1)], [mu_total(2) - scale * V(2,1) mu_total(2) + scale * V(2,1)]);
+
+set(pc1, 'color', [1 0 0], "linestyle", "--")
+</code>
+
+Let's look at the component found by the LDA:
+
+{{ :wiki:lda_components.png?400 |}}
+
+
+Yeah! Perfect separation on the first component, that was what we were looking for!
+
+=== projection and reconstruction ===
+First shift the data to the new center:
+
+<code>
+Xm = bsxfun(@minus, X, mu_total)
+</code>
+
+then calculate the projection and reconstruction:
+
+<code>
+z = Xm*V(:,1)
+% and reconstruct it
+p = z*V(:,1)'
+p = bsxfun(@plus, p, mu_total)
+</code>
+
+and now plotting it:
+
+<code>
+% delete old plots
+delete(p1);delete(p2);
+
+y1 = p(find(c==1),:)
+y2 = p(find(c==2),:)
+
+p1 = plot(y1(:,1),y1(:,2),"ro", "markersize", 10, "linewidth", 3);
+p2 = plot(y2(:,1), y2(:,2),"go", "markersize", 10, "linewidth", 3);
+</code>
+
+yields this beautiful plot:
+
+{{ :wiki:lda_pc1.png?400 |}}
+
+===== Experiment 2: Wine Dataset =====
+
+The first experiment was somewhat constructed. Let's get our hands now on some real data from the [[http://archive.ics.uci.edu/ml/index.html|UCI Machine Learning Repository]]! I decided to test both methods on the [[http://archive.ics.uci.edu/ml/datasets/Wine|Wine Dataset]]((Allthough I prefer beer.)), an admittedly easy dataset. It consists of 178 samples with 13 constituents drawn from three types of wine.
+
+==== Functions ====
+We will turn the methods from the first experiment into functions to make them a bit more usable:
+
+<code>
+function Z = zscore(X)
+  Z = bsxfun(@rdivide, bsxfun(@minus, X, mean(X)), std(X));
+endfunction
+
+function [D, W_pca] = pca(X) 
+  mu = mean(X);
+  Xm = bsxfun(@minus, X ,mu);
+  C = cov(Xm);
+  [W_pca,D] = eig(C);
+  [D, i] = sort(diag(D), 'descend');
+  W_pca = W_pca(:,i);
+endfunction
+
+function [D, W_lda] = lda(X,y) 
+  dimension = columns(X);
+  labels = unique(y);
+  C = length(labels);
+  Sw = zeros(dimension,dimension);
+  Sb = zeros(dimension,dimension);
+  mu = mean(X);
+
+  for i = 1:C
+    Xi = X(find(y == labels(i)),:);
+    n = rows(Xi);
+    mu_i = mean(Xi);
+    XMi = bsxfun(@minus, Xi, mu_i);
+    Sw = Sw + (XMi' * XMi );
+    MiM =  mu_i - mu;
+    Sb = Sb + n * MiM' * MiM; 
+  endfor
+  
+  [W_lda, D] = eig(Sw\Sb);
+  [D, i] = sort(diag(D), 'descend');
+  W_lda = W_lda(:,i);
+endfunction
+
+function X_proj = project(X, W)
+  X_proj = X*W;
+endfunction
+
+function X = reconstruct(X_proj, W)
+  X = X_proj * W';
+endfunction
+</code>
+
+==== load data  ====
+Loading the Wine Dataset is easy in GNU Octave with the //dlmread// function: 
+
+<code>
+% http://archive.ics.uci.edu/ml/datasets/Wine
+data = dlmread("wine.data",",");
+y = data(:,1);
+X = data(:,2:end);
+</code>
+Everything's ok?
+<code>
+> size(X)
+ans =
+
+   178    13
+
+> size(y)
+ans =
+
+   178     1
+
+> length(unique(y))
+ans = 3
+</code>
+
+Yes! 178 instances with 13 attributes from 3 classes.
+==== Principal Components without normalization ====
+With the functions it's easy to perform a PCA:
+
+<code>
+[DPca, Wpca] = pca(X);
+Xm = bsxfun(@minus, X, mean(X));
+Xproj = project(Xm, Wpca(:,1:2));
+</code>
+According to the eigenvalues, the first component already accounts for 99% of the total variance.
+<code>
+> cumsum(DPca) / sum(DPca)
+ans =
+
+   0.99809
+   0.99983
+   0.99992
+   0.99997
+   0.99998
+   0.99999
+   1.00000
+   1.00000
+   1.00000
+   1.00000
+   1.00000
+   1.00000
+   1.00000
+</code>
+But the plot
+<code>
+wine1 = Xproj(find(y==1),:);
+wine2 = Xproj(find(y==2),:);
+wine3 = Xproj(find(y==3),:);
+
+figure;
+plot(wine1(:,1), wine1(:,2),"ro", "markersize", 10, "linewidth", 3); hold on;
+plot(wine2(:,1), wine2(:,2),"go", "markersize", 10, "linewidth", 3);
+plot(wine3(:,1), wine3(:,2),"bo", "markersize", 10, "linewidth", 3);
+title("PCA (original data)")
+</code>
+
+shows that the clusters are not clearly separated
+
+{{ :wiki:pca_wine_original_data.png?400 |}}
+
+==== Linear Discriminant Analysis without normalization ====
+
+If we apply Fisher's Discriminant Analysis on the Wine Dataset:
+
+<code>
+[D, W_lda] = lda(X,y);
+Xproj = project(Xm, W_lda(:,1:2));
+</code>
+
+and project it on the first two components, the classes are way better separated:
+
+{{ :wiki:lda_wine_original_data.png?400 |}}
+==== when normalization matters ====
+The PCA performs bad. Why is that? Because the features are all on a different scale. A common trick is to scale the input to zero mean and unit variance, also called [[http://en.wikipedia.org/wiki/Standard_score|z-scores]]. If the normalization is applied on the data:
+<code>
+Xm = zscore(X);
+</code>
+then the first principal component is responsible for only 36% of the total variance. We have to take 8 components to rise above 90% variance.
+<code>
+> cumsum(DPca) / sum(DPca)
+ans =
+
+   0.36199
+   0.55406
+   0.66530
+   0.73599
+   0.80162
+   0.85098
+   0.89337
+   0.92018
+   0.94240
+   0.96170
+   0.97907
+   0.99205
+   1.00000
+</code>
+
+On normalized data the clusters are better separated by the PCA:
+
+{{ :wiki:pca_wine_normalized_data.png?400 |}}
+
+While the projection found by Fisher's Discriminant Analysis only changes in scale:
+
+{{ :wiki:lda_wine_normalized_data.png?400 |}}
+
+==== pca and svd ====
+Something I didn't mention is the close relation between a [[http://en.wikipedia.org/wiki/Singular_value_decomposition|Singular Value Decomposition]] (SVD) and a Principle Component Analysis. A nice tutorial for the SVD is given [[http://web.ics.purdue.edu/~park283/wp-content/uploads/2010/10/Singular_Value_Decomposition_Tutorial.pdf|here]] and a real-life example with Ruby is given [[http://www.igvita.com/2007/01/15/svd-recommendation-system-in-ruby/|here]]. 
+
+Let's decompose the data matrix:
+
+<code>
+[U, S, V] = svd(Xm);
+Xproj = project(Xm,V(:,1:2));
+DSvd = diag(S).^2;
+</code>
+and you can compare yourself. The diagonal elements squared are the eigenvalues found by the PCA. We need to normalize both vectors first:
+<code>
+function N = normalize(I, l, h)
+    % set default values
+    if(nargin < 3)
+     l=0;
+     h=1;
+    endif 
+    minI = min(I(:));
+    maxI = max(I(:));
+    %% normalize between [0...1]
+    N = I - minI;
+    N = N ./ (maxI - minI);
+    %% scale between [l...h]
+    N = N .* (h-l);
+    N = N + l;
+end
+</code>
+and then we can compare both:
+<code>
+all((normalize(DPca) - normalize(DSvd)) < eps)
+</code>
+Does it return //1//? Hooray:
+<code>
+1
+</code>
+
+===== Conclusion =====
+
+Performing a PCA and LDA is easy, as long as you got a solver! You have seen that the PCA is likely to fail under certain conditions. While the first example was constructed to fail, the second example showed some other limitations you can encounter in real life.
+
+So why is this important for object recognition? The PCA finds a coordinate system,  which points into the direction of maximum variance. It doesn't use any class labels and so it doesn't know wether an axis is actually discriminative or not. In face recognition and general object recognition, you'll often run into situations where most of the variance is generated from external sources; let it be the illumination or the background. If this is the case, the axes you identify with a PCA will describe the variance in light or background instead of describing discriminative parts of your objects. The classes will be smeared together in the lower dimensional representation, your classification results are bad.
+
+The LDA can help by learning a subspace, where the scatter within a class is minimized and the scatter between the classes is maximized. With this formulation, the instances will be clearer separated in the subspace. [[blog:fisherfaces|In my blog]] you can see it works and generates good recognition results. But don't get too excited! The LDA has some limitations I can't discuss in the scope of this article, that makes its usage in real life almost impossible. If you want to research on this topic, go for //Small Sample Size Problem// on [[http://scholar.google.com|Google Scholar]].
+
+===== Appendix =====
+
+==== R ====
+If you don't like GNU Octave for some reasons, you can also use [[http://www.r-project.org/|R]] for the above examples. Please note that there is already the sophisticated function //[[http://stat.ethz.ch/R-manual/R-patched/library/stats/html/princomp.html|princomp]]// in R. Anyway, here is the first example translated to R:
+
+<code r>
+repmat <- function(data, nrows, ncols, byrow=T) {
+  ncols <- length(data) * ncols
+  rep <- matrix(rep(data, nrows), nrow=nrows, ncol=ncols, byrow=byrow)
+  return(rep)
+}
+
+data <- c(2,3,3,4,4,5,5,6,5,7,2,1,3,2,4,2,4,3,6,4,7,6)
+y <- c(1,1,1,1,1,2,2,2,2,2,2);
+X <- matrix(data, ncol=2, byrow=T)
+mean <- colMeans(X)
+Xm <- X - repmat(mean, nrow(X), 1)
+C <- cov(Xm)
+eig <- eigen(C)
+
+z <- Xm%*%eig$vectors[,1]
+p <- z%*%eig$vectors[,1]
+p <- p + repmat(mean, nrow(p), 1)
+
+plot(p[y==1,], col="red", xlim=c(0,8), ylim=c(0,8))
+points(p[y==2,], col="green")
+
+title(main="PCA projection", xlab="X", ylab="Y")
+</code>
+
+~~DISCUSSION~~
+
+======  ======
+
+{{tag>octave statistics}}

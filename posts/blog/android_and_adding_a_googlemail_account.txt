@@ -1,0 +1,9 @@
+====== android and adding a googlemail account ======
+This is just a short one. Yesterday I accidentally deleted a Googlemail account from my Android phone. No problem? Ha! Whenever I tried to add the account through
+''Accounts & sync -> Add account'' Android was throwing a "Can't establish a reliable data connection to the server [...]" back at me.
+
+Now what's really weird is the solution that works for me: You can add your account by logging in to the Youtube app with your Googlemail credentials. Seems [[http://oonwoye.com/2010/07/29/my-android-problem-and-a-case-for-proprietary-over-opensource/|I am not the only one]] who came up with this workaround.
+
+{{tag>android}}
+
+~~DISCUSSION~~

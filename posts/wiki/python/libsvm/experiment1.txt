@@ -1,0 +1,116 @@
+We'll use NumPy and matplotlib for plotting, so import both:
+
+<code Python>
+import numpy as np
+import matplotlib.pyplot as plt
+</code>
+
+The data we want to classify comes from two circles, so first define a function to generate some points on a circle (plus some noise):
+
+<code Python>
+def circle(radius, sigma=0, num_points=50):
+	t = np.linspace(0, 2*np.pi, num_points)
+	d = np.zeros((num_points,2), dtype=np.float)
+	d[:,0] = radius*np.cos(t) + np.random.randn(t.size)*sigma
+	d[:,1] = radius*np.sin(t) + np.random.randn(t.size)*sigma
+	return d
+</code>
+
+We want to generate 100 training points for each class and 30 points for testing the model, then generate and plot the data:
+
+<code Python>
+num_train = 100
+num_test = 30
+sigma = 0.2
+
+d1 = circle(3, sigma, num_train)
+d2 = circle(5, sigma, num_train)
+
+plt.figure()
+plt.plot(d1[:,0],d1[:,1],'ro')
+plt.plot(d2[:,0],d2[:,1],'bo')
+plt.show()
+</code>
+
+So we get back clearly seperated data:
+
+{{ :wiki:python:circles_0_2.png?300 |}}
+
+Now to the SVM. The LibSVM binding expects a list with the classes and a list with the training data:
+
+<code Python>
+from svmutil import *
+
+# training data
+c_train = []
+c_train.extend([0]*num_train)
+c_train.extend([1]*num_train)
+d_train = np.vstack((circle(3,sigma,num_train), circle(5,sigma,num_train))).tolist() 
+
+# test data
+c_test = []
+c_test.extend([0]*num_test)
+c_test.extend([1]*num_test)
+d_test = np.vstack((circle(3,sigma,num_test), circle(5,sigma,num_test))).tolist()
+
+problem = svm_problem(c_train,d_train)
+</code>
+
+The parameters for the model have to be defined (supress output in training):
+
+<code Python>
+param = svm_parameter("-q") # quiet!
+param.kernel_type=RBF
+</code>
+
+Our model can be trained:
+
+<code Python>
+m = svm_train(problem,param)
+</code>
+
+To get predictions from the model simply pass our test data and the model to //svm_predict//:
+<code>
+pred_lbl, pred_acc, pred_val = svm_predict(c_test,d_test,m)
+</code>
+
+and you see, the SVM perfectly classifies the data:
+
+<code Python>
+>>> p_lbl, p_acc, p_val = svm_predict(c_test,d_test,m)
+Accuracy = 100% (60/60) (classification)
+</code>
+
+But what if the the training data is not that perfect, set //sigma// to 1:
+
+{{ :wiki:python:circles_1.png?300 |}}
+
+then the default parameters yield:
+
+<code Python>
+>>> pred_lbl, pred_acc, pred_val = svm_predict(c_test,d_test,m)
+Accuracy = 76.6667% (46/60) (classification)
+</code>
+
+Often a Grid Search is applied in order to find the best parameters. A Grid Search is nothing but a bruteforce attempt to check all possible parameter combinations. We can easily do that:
+
+<code Python>
+results = []
+for c in range(-5,10):
+  for g in range(-8,4):
+    param.C, param.gamma = 2**c, 2**g
+    m = svm_train(problem,param)
+    p_lbl, p_acc, p_val = svm_predict(c_test,d_test,m)
+    results.append([param.C, param.gamma, p_acc[0]])
+
+bestIdx = np.argmax(np.array(results)[:,2])
+</code>
+
+So the best combination has the parameters:
+
+<code Python>
+>>> results[bestIdx]
+[0.125, 0.5, 83.333333333333329]
+</code>
+
+and is with 83.3% only slightly better than default. That's it! The next experiment will use some real life data for prediction.

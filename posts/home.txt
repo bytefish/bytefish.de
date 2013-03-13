@@ -1,0 +1,10 @@
+Welcome to my page. It contains things I work on, a [[wiki]], a [[blog]] and [[documents]] I wrote. There are articles on [[this>doku.php?id=tag:erlang&do=showtag&tag=tag:erlang|Erlang]], [[this>doku.php?id=tag:opencv&do=showtag&tag=tag:opencv|OpenCV]] and a lot of other things I had fun with.
+
+Enjoy your stay.
+
+====== Contact ======
+
+  * Email: bytefish //AT// gmx //DOT// de
+  * Jabber: bytefish //AT// gmx //DOT// de
+  * Address: Check the WHOIS record.
+  * {{:philipp_wagner.asc.gz|Public Key}}

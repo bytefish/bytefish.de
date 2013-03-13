@@ -1,0 +1,13 @@
+====== face recognition in iOS 5 ======
+
+[[http://www.twitter.com/pcentieiro|Pedro Centieiro]] notified me about his [[http://www.apple.com/ios|Apple iOS 5]] face recognition project, called [[https://github.com/pcentieiro/midian|midian]]. The project uses [[http://opencv.willowgarage.com/wiki/|OpenCV]] (>2.0) and comes with an extensive [[https://github.com/pcentieiro/midian/blob/master/README.md|README]], which explains how to build the code:
+
+  * http://github.com/pcentieiro/midian
+
+It includes parts of [[https://github.com/bytefish/libfacerec|libfacerec]], with tweaks to make it work for [[http://www.apple.com/ios|Apple iOS 5]]. Thanks for this! 
+
+The project is a great start for anyone who wants to create an [[http://www.apple.com/ios|Apple iOS 5]] project with [[http://opencv.willowgarage.com/wiki/|OpenCV]]. 
+
+{{tag>ios opencv}}
+
+~~DISCUSSION~~

@@ -1,0 +1,154 @@
+====== LaTeX ======
+
+I will start with some kind of motivation for using LaTeX. 
+
+Did you ever feel like throwing your computer out of the window? Ten minutes of MS Word (or OpenOffice, it's the same) make me feel this way. The concept of software like Word or OpenOffice is called "What You See Is What You Get" (WYSIWYG). You start writing on an empty page and you immediately see the result of your actions. This means you format the text as you enter it. It's appealing if you are just starting with computers, but if the document gets complex... it is horror. Citing and Referencing in Word... I hope some people acknowledge that the concept should be called "What You See Is What You //Never// Get". Writing a thesis with Word or OpenOffice? I would become the German Bruce Banner, but a lot more angry.
+
+LaTeX is different from word processing software. In LaTeX you write your document in a file, with an editor of //your choice// and use LaTeX as typesetting system to format it (the document can be further formatted as Device independent file format (DVI), Portable Document Format (PDF) or Postscript (PS) to mention a few). You specify the logical structure of your document ''chapter'', ''section'', ''subsection'', ''table'', ... and let the LaTeX system do the presentation of these structures. Starting a new section for example is done by typing ''\section{Section Title}''.
+
+See when we are talking about LaTeX we are talking about a document markup language and a document preparation system for typesetting at the same time. Ever seen HTML and CSS in the Web? The concept is the same: seperate layout and content of a document. Writing documents with TeX feels //natural//. You don't have to worry about the layout anymore, you can concentrate on writing your content and let TeX do the dirty typesetting job.
+
+A bit of history. TeX was started in 1978 by Donald Knuth. The galley proofs of //"The Art of Computer Programming, Volume 2"// were looking awful, because the publisher had to switch to a new typesetting system. It looked even worse than //Volume One// - something had to be done! So TeX was designed with two main goals in mind:
+	* Allow anybody to produce high-quality books.
+	* Provide a system that gives the exact same result on all computers, now and in a hundreds of years.
+
+Knuth approximated very optimistic 6 months for finishing. Optimistic, because the language was finished (or frozen as software engineers say) in 1989 - more than ten years later. The developement yielded a bunch of clever algorithms for mathematical spacing or line breaking. Some of them were integrated into other typesetting systems like Adobe InDesign, some remain unique.
+
+So why am I writing "TeX" and "LaTeX"? TeX is nowadays also called "Plain TeX", with the base TeX system having about 300 commands. A boost for TeX came in 1985 when Leslie Lamport released LaTeX, a rich set of macros that made it a lot easier to write TeX. It is based on TeX (I have read 99% somewhere) and has document styles for books, letters, slides and support for referencing, automatic numbering of sections and equations. 
+
+It should be clear from this trip to history, that TeX/LaTeX is a very mature piece of software: stable, well documented, widely used and well tested. The best things about LaTeX are:
+	* It is free
+	* It is easy
+	* It is available for (almost) all operating systems
+	* The documents look //great//
+
+Hmmm. Now what? I could write a tutorial about learning LaTeX, but there are already a plenty of great written tutorials in the Internet. What you really need when starting with LaTeX is a page to copy from. You don't need to reinvent everything - just copy it! This page contains snippets from installing LaTeX, choosing the right editor, your first documents, reoccuring tasks, working with a bibliography, extending latex with your own macro and such. 
+
+You need two things for LaTeX:
+	* LaTeX Distribution
+	* Editor
+
+===== Installing LaTeX =====
+==== Windows ====
+=== LaTeX Distribution ===
+
+Windows users should try [[http://www.miktex.org|MiKTeX]]. I never had any problems with it. It's available at http://www.miktex.org and comes as an Offline Installer (includes all necessary packages for a complete system) or a Net Installer (downloads all necessary packages and installs a complete system).
+
+{{ :wiki:miktex_installation.png?250|Miktex Installing Picture}}
+
+Installing is easy as double clicking. You can safely use the default settings the installer suggests. If anything is unclear, please consult the Install Guide for MiKTeX: http://docs.miktex.org/2.8/manual/installing.html.
+
+MiKTeX works for:
+
+  * Windows 2000
+  * Windows XP
+  * Windows Server 2003
+  * Windows Vista
+  * Windows Server 2008
+  * Windows 7
+
+Don't worry about missing packages! MikTeX has the ability to install missing packages automatically. It works very well.
+
+=== Editor ===
+I favour TeXnicCenter as the LaTeX editor for Windows. TeXnicCenter is developed under GPL License and has all the functionality for creating, writing, building, viewing and printing LaTeX documents. It has advanced editing features like syntax highlightning or autocompletion. Autocompletion means you start typing a tag, e.g. ''\begin{docu'' and the editor suggests ''\begin{document} \end{document}'' for you. If this is what you wanted to write, hit //Ctrl + Space// and the suggestion is inserted. This saves you a lot of time.
+
+TeXnicCenter is available at: http://www.texniccenter.org/ and has an active community.
+
+It runs on:
+
+  * Windows ME
+  * Windows XP 
+  * Windows Vista
+  * Windows 7
+
+Now the only thing you need to do (after installing MiKTex and TeXnicCenter) is to configure TeXnicCenter to use MiKTex. TeXnicCenter prompts you to do so at the first start. Missed it? You can also set the path in the preferences. Because a picture says more than words, here is what it looks like (I am sorry, because my Windows XP has German Localization):
+
+{{ :wiki:texniccenter_configuration.png?300 |}}
+
+Please check wether this is the correct install path of your MiKTeX distribution, in English Windows Localizations it may be ''C:\Program Files\MiKTeX 2.8\miktex\bin'' (or in Windows Vista and 7 ''C:\Program Files (x86)\MiKTeX 2.8\miktex\bin'').
+
+==== Linux ====
+=== LaTeX Distribution ===
+{{ :wiki:texlive_install.png?250|}}
+
+[[http://www.tug.org/texlive/|TeX Live]] is a very comprehensive TeX distribution originally started in 1996. It is maintained by the Tex User Group at: http://www.tug.org/texlive/ and is the default LaTeX distribution of many Linux distributions (Ubuntu, Debian, Fedora and Gentoo) and other Unix operating systems (OpenBSD, FreeBSD, NetBSD). 
+
+In Ubuntu installing the texlive distribution is done by typing:
+
+<code>
+sudo apt-get install texlive
+</code>
+
+And if you don't care about megabytes use ''texlive-full''. German users should also install ''texlive-lang-german''. Installing the latex extra packages is also recommendable, so you end up with:
+
+<code>
+sudo apt-get install texlive texlive-latex-recommended texlive-latex-extra texlive-lang-german
+</code>
+
+If you feel uncomfortable with the command line interface you can also use the Synaptic Package Manager to install the texlive packages, just search for "texlive" and check the packages you need.
+
+You can obtain the latest TeX Live Release at: http://www.tug.org/texlive/. TeX Live comes with a graphical [[http://www.tug.org/texlive/doc/install-tl.html|install script]] just like MiKTeX. Please refer to the TeX Live installing guide for further information: http://www.tug.org/texlive/quickinstall.html.
+
+//Note: TeX Live is intended to be cross platform, so TeX Live will also work for Windows. I still think that MiKTeX is easier, so I advertised it here.//
+
+=== Editor ===
+{{ :wiki:kile.png?250|Kile Screenshot}}
+
+If you are running KDE, then go for [[http://kile.sourceforge.net|kile]]. If you are running Gnome, then install [[http://www.michaels-website.de/|Michael Zeisings]] LaTeX plugin for Gedit: http://live.gnome.org/Gedit/LaTeXPlugin/Download. 
+
+Installing is as easy as:
+<code>
+$ sudo apt-get install rubber
+$ sudo apt-get install gedit-latex-plugin
+</code>
+
+Of if you are not running Debian:
+<code>
+$ cd .gnome2/gedit
+$ mkdir plugins
+$ cd plugins
+$ tar xzf LaTeXPlugin-0.2.tar.gz
+</code>
+
+==== Mac OS X ====
+=== LaTeX Distribution ===
+
+A friend of mine uses [[http://www.tug.org/mactex/|MacTeX]] on his Mac OS X without any problems. MacTeX is a redistribution of TeX Live with Mac-specific utilities and frontends. You can obtain the install package (MacTeX-2009 at time of writing this) at: http://www.tug.org/mactex/. 
+
+A great starting point for Mac users is here: http://mactex-wiki.tug.org/.
+
+=== Editor ===
+I would advise you to use [[http://www.uoregon.edu/~koch/texshop/|TeXShop]]. TeXShop should be included in the MacTeX distribution so you can start with TeX without any hassle! If you need the latest version you can download TeXShop at: http://www.uoregon.edu/~koch/texshop/.
+
+===== Common Tasks =====
+LaTeX produces great documents, but sometimes you need to adjust some minor things. Here are some configurations I use when writing documents.
+
+==== change page dimensions ====
+In the preamble of the document use the geometry package. Then you can adjust the page dimension for top, left, right and bottom space of a page and for the margin of header and footer:
+
+<code>
+\usepackage{geometry}
+\geometry{a4paper, top=25mm, left=30mm, right=25mm, bottom=30mm,
+         headsep=10mm, footskip=12mm}
+</code>
+
+==== set the color of citations and links ====
+Add some options to the hyperref package in the preamble of your document:
+
+<code>
+\usepackage[pdftex,colorlinks=true,citecolor=blue,urlcolor=blue,linkcolor=blue]{hyperref}
+</code>
+
+==== change the vertical space in an itemize/enumerate environment ====
+The default vertical space in an itemize/enumerate environment is sometimes too large, you can set it to a smaller space by redefining the length of the item seperator:
+
+<code>
+\let\olditemize=\itemize
+   \def\itemize{\olditemize\setlength{\itemsep}{-0.5ex}}
+\let\oldenumerate=\enumerate
+   \def\enumerate{\oldenumerate\setlength{\itemsep}{-0.5ex}}
+</code>
+
+======  ======
+
+{{tag> latex}}

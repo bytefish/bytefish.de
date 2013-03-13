@@ -1,0 +1,6 @@
+====== Python ======
+  * [[wiki:python:basics|Basics]]
+  * [[wiki:python:numpy|NumPy]]
+  * [[wiki:python:matplotlib|matplotlib]]
+  * [[wiki:python:libsvm|libsvm]]
+

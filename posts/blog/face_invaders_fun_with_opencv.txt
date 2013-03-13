@@ -1,0 +1,13 @@
+====== face invaders: fun with opencv ======
+{{:blog:shot0005.png?150 |Augmented Space Invaders}}
+
+This was a one day project by [[http://m4dm4x.zdenkavajsova.cz/|Filip]].
+
+[[http://m4dm4x.zdenkavajsova.cz/|Filip]] hacked a nice version of Space Invaders with OpenCV called: //Face Invaders//. The gameplay is a little different but see yourself: [[http://www.inf.hs-zigr.de/~safimart/si_1.avi|http://www.inf.hs-zigr.de/~safimart/si_1.avi]]. Your ship fires when your nose goes above the line. 
+
+Filip has put the code on his github account at: https://github.com/m4dm4x/FaceInvaders.
+
+{{tag>opencv face_invaders}}
+
+
+~~DISCUSSION~~

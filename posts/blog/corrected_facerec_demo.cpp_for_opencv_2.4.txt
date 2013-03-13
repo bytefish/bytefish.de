@@ -1,0 +1,11 @@
+====== corrected facerec_demo.cpp for OpenCV 2.4 ======
+
+There's a small bug in the facerec_demo.cpp, that ships with OpenCV 2.4. I'll put a corrected version upstream as soon as possible. However, here's a corrected version if you can't wait:
+
+  * http://bytefish.de/dev/cpp/facerec_demo.cpp
+
+
+{{tag>opencv}}
+
+
+~~DISCUSSION~~
