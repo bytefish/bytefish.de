@@ -1,0 +1,5 @@
+*.pyc
+output
+*.pyc
+srv.pid
+develop_server.sh
