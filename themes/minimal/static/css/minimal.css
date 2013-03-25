@@ -119,6 +119,20 @@ body {
 	content: "";
 }
 
+#container #page-title a {
+  float: left;
+  font-size: 200%;
+  font-weight: bolder;
+  color: #dee7ec;
+  text-align: left;
+  vertical-align: middle;
+}
+
+#container #page-title a {
+  color: #002fc8 !important;
+  text-decoration: none !important;
+}
+
 em.u {
   font-style: normal;
   text-decoration: underline;
@@ -255,25 +269,5 @@ blockquote {
   border-left: 2px solid #8cacbb/*__border__*/;
   padding-left: 3px;
 }
-
-/* inline tables */
-table.inline {
-  background-color: #fff/*__background__*/;
-  border-spacing: 0px;
-  border-collapse: collapse;
-}
-
-div.page table.inline th {
-  padding: 3px;
-  border: 1px solid #8cacbb/*__border__*/;
-  background-color: "#dee7ec"/*__background_alt__*/;
-}
-
-div.page table.inline td {
-  padding: 3px;
-  border: 1px solid #8cacbb/*__border__*/;
-}
-
-/* Header Elements */
 
 
