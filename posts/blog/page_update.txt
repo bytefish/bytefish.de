@@ -1,8 +1,0 @@
-====== page update ======
-
-Sorry for the downtime this afternoon. I've updated to a recent [[http://www.dokuwiki.org|DokuWiki]] version, because the old one was ancient. Please contact me if you find any errors or dead links.
-
-{{tag>update}}
-
-
-~~DISCUSSION~~

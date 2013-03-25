@@ -1,5 +1,0 @@
-====== Linear Programming ======
-
-===== Simplex =====
-   * {{:wiki:simplex_tabelau.xls|simplex_tabelau.xls}}
-   * {{:wiki:simplex_tabelau.ods|simplex_tabelau.ods}}

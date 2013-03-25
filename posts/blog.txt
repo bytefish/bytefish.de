@@ -1,5 +1,0 @@
-~~NOTOC~~
-
-{{blog>blog?10}}
-
-~~DISCUSSION:off~~

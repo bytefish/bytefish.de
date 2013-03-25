@@ -1,9 +1,0 @@
-====== opencv developer ======
-
-I am now in the developers list of OpenCV: http://code.opencv.org/projects/opencv. I'll help maintaining and enhancing the contributed face recognition algorithms and I'll work on the documentation. If you have any suggestions what's missing in there, please let me know.
-
-
-{{tag>opencv}}
-
-
-~~DISCUSSION~~
