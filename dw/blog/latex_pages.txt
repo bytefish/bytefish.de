@@ -1,0 +1,12 @@
+====== wiki pages ======
+
+I have started wiki pages on [[wiki:LaTeX]] and [[wiki:Erlang]]. Expect it to grow quickly!
+
+For interesting posts on Erlang (and XMPP) visit: http://pdincau.wordpress.com/. 
+
+Robert has started a [[https://www.kakaomilchkuh.de/journal|journal]] on his studies abroad at [[http://www.ru.nl/|Radboud Universiteit Nijmwegen]]. Spreekt u Duits?
+
+{{tag>wiki erlang}}
+
+
+~~DISCUSSION~~

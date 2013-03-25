@@ -1,0 +1,26 @@
+====== math in the web ======
+
+I am working on a project where mathematical expressions have to be authored and exported into different formats. Representing mathematical expressions in LaTeX seems to be a good choice, because it's kind of a standard in the world of mathematics.
+
+There are two cool projects to handle expressions in LaTeX:
+   * http://gva.noekeon.org/blahtexml/ (C++) Transform LaTeX -> MathML, PNG, ...
+   * http://www.mathjax.org/ (JavaScript) Transform LaTeX -> MathML, PNG, ...
+
+===== online latex editor =====
+
+[[http://www.bytefish.de/editor|Here]] is a demonstration of what can be done with MathJax. It's an online LaTeX editor [[http://m4dm4x.zdenkavajsova.cz|Filip]] and I hacked yesterday. The code may be strange, because we are no JavaScript programmers. The design took some "inspiration" from http://suim.jp (a cool online latex editor).
+
+You will need JavaScript and [[https://developer.mozilla.org/en/Mozilla_MathML_Project/Fonts|MathML Fonts]] for the demo.
+
+==== Demo ====
+You can find the demo at: http://www.bytefish.de/editor.
+
+==== Screenshots ====
+
+| {{:blog:edit2.png?200|}} | Expressions can be written in LaTeX, clicked from the toolbar or drag and dropped into the input area. |
+| {{:blog:edit3.png?200|}} | Invalid expressions render the input box border red. The last valid expression is still in the output area. |
+| {{:blog:edit5.png?200|}} | You can zoom into the rendered expression. Adopted from the MathJax samples. |
+
+{{tag>javascript}}
+
+~~DISCUSSION~~

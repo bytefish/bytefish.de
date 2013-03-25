@@ -1,0 +1,22 @@
+====== opencv facerecognizer documentation ======
+
+I've [[http://code.opencv.org/projects/opencv/repository/revisions/8779|just finished]] the documentation for the new cv::FaceRecognizer, which I have contributed to OpenCV 2.4. All the code and this documentation is going to be included in OpenCV 2.4.2. I hope you like it.
+
+| {{:blog:eigenfaces_opencv.png?200|}} | {{:blog:fisherface_reconstruction_opencv.png?200|}} | {{:blog:facerec_video.png?200|}} |
+
+As of Revision 8779 OpenCV now comes with a thorough documentation for cv::FaceRecognizer. The HTML version of the documentation is online available at:
+
+  * http://docs.opencv.org/trunk/modules/contrib/doc/facerec/index.html
+
+There are several highlights:
+ 
+  * [[http://docs.opencv.org/trunk/modules/contrib/doc/facerec/facerec_api.html|FaceRecognizer API]]
+  * [[http://docs.opencv.org/trunk/modules/contrib/doc/facerec/facerec_tutorial.html|Guide to Face Recognition with OpenCV]]
+  * [[http://docs.opencv.org/trunk/modules/contrib/doc/facerec/tutorial/facerec_gender_classification.html|Gender Classification with OpenCV]]
+  * **[[http://docs.opencv.org/trunk/modules/contrib/doc/facerec/tutorial/facerec_video_recognition.html|Face Recognition in Videos with OpenCV]]**
+
+
+{{tag>opencv cpp}}
+
+
+~~DISCUSSION~~

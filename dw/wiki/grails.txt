@@ -1,0 +1,41 @@
+====== Grails ======
+
+===== Database =====
+For using PostgreSQL as Database configure the DataSource.groovy to:
+
+<code groovy>
+dataSource {
+	pooled = true
+	driverClassName = "org.postgresql.Driver"
+	username = "grails"
+	password = "grails"
+}
+hibernate {
+    cache.use_second_level_cache=true
+    cache.use_query_cache=true
+    cache.provider_class='com.opensymphony.oscache.hibernate.OSCacheProvider'
+}
+
+environments {
+	development {
+		dataSource {
+			dbCreate = "update" // one of 'create', 'create-drop','update'
+			url = "jdbc:postgresql:grails"
+		}
+	}
+	test {
+		dataSource {
+			dbCreate = "update"
+			url = "jdbc:postgresql:grails"
+		}
+	}
+	production {
+		dataSource {
+			dbCreate = "update"
+			url = "jdbc:postgresql:grails"
+		}
+	}
+}
+</code>
+
+Download the JDBC PostgreSQL Driver from: http://jdbc.postgresql.org/ and put it in the ''lib'' folder of your project.

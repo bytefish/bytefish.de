@@ -1,0 +1,13 @@
+====== libfacerec now merged into opencv ======
+
+[[http://www.github.com/bytefish/libfacerec|libfacerec]] has now been merged into the contrib module of OpenCV:
+
+  * http://code.opencv.org/projects/opencv/repository/revisions/7619
+
+Thanks a lot to [[http://code.opencv.org/users/19|Vadim Pisarevsky]] for helping with it.
+
+
+{{tag>libfacerec opencv cpp}}
+
+
+~~DISCUSSION~~

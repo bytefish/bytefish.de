@@ -1,0 +1,279 @@
+/*
+ * Copyright (c) 2011. Philipp Wagner <bytefish[at]gmx[dot]de>.
+ * Released to public domain under terms of the BSD Simplified license.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *   * Redistributions of source code must retain the above copyright
+ *     notice, this list of conditions and the following disclaimer.
+ *   * Redistributions in binary form must reproduce the above copyright
+ *     notice, this list of conditions and the following disclaimer in the
+ *     documentation and/or other materials provided with the distribution.
+ *   * Neither the name of the organization nor the names of its contributors
+ *     may be used to endorse or promote products derived from this software
+ *     without specific prior written permission.
+ *
+ *   See <http://www.opensource.org/licenses/bsd-license>
+ */
+
+@import url("pygment.css");
+
+/*
+
+; main text and background colors
+__text__           = "#000"
+__background__     = "#fff"
+; alternative text and background colors
+__text_alt__       = "#638c9c"
+__background_alt__ = "#dee7ec"
+; neutral text and background colors
+__text_neu__       = "#666"
+__background_neu__ = "#f5f5f5"
+; border color
+__border__         = "#8cacbb"
+
+; these are used for links
+__link__    = "#002fc8"
+__extern__    = "#002fc8"
+__existing__  = "#002fc8"
+__missing__   = "#f30"
+
+*/
+
+/* -------------- general elements --------------- */
+
+* { padding: 0; margin: 0; }
+
+body {
+  font: 80% Helvetica, Arial, sans-serif;
+  background-color: #fff;
+  color: #000;
+}
+
+#container {
+  height: auto;
+  margin: 0 auto;
+  font-size: 110%;
+  width: 800px;
+}
+
+#menu {
+	font-weight: bold;
+	border-bottom: 1px solid black;
+}
+
+#menu a,
+#menu a:visited, 
+#menu a:active,
+#menu a:focus {
+	color: #a6a6a6;
+	text-decoration: none;
+}
+
+#menu a:hover {
+	color: #6499ba;
+}
+
+#menu ul, #menu li {
+	display: inline;
+	color: #638c9c/*__text_alt__*/;
+	margin: 0;
+	padding: 0;
+}
+
+#menu li:after {
+	content: "/";
+	margin-left: 3px;
+}
+
+#menu li:last-child:after {
+	content: "";
+}
+
+#links a,  
+#links a:visited, 
+#links a:active, 
+#links a:focus {
+	color: #a6a6a6;
+	text-decoration: none;
+}
+
+#links a:hover {
+	color: #6499ba;
+}
+	
+#links ul, 
+#links li {
+	display: inline;
+	color: #638c9c/*__text_alt__*/;
+	margin: 0;
+	padding: 0;
+}
+
+#links li:after {
+	content: "/";
+	margin-left: 3px;
+}
+
+#links li:last-child:after {
+	content: "";
+}
+
+em.u {
+  font-style: normal;
+  text-decoration: underline;
+}
+
+em em.u {
+  font-style: italic;
+}
+
+table {
+  background-color: #fff/*__background__*/;
+  border-spacing: 0px;
+  border-collapse: collapse;
+}
+
+table th {
+  padding: 3px;
+  border: 1px solid #8cacbb/*__border__*/;
+  background-color: #dee7ec/*__background_alt__*/;
+}
+
+table td {
+  padding: 3px;
+  border: 1px solid #8cacbb/*__border__*/;
+}
+
+img {
+  border: 0;
+}
+
+p,
+blockquote,
+table,
+pre {
+  margin: 0 0 1.0em 0;
+}
+
+hr {
+  border: 0px;
+  border-top: 1px solid #8cacbb/*__border__*/;
+  text-align: center;
+  height: 0px;
+}
+
+/* --------------- Links ------------------ */
+a {
+  color: #002fc8/*__extern__*/;
+  text-decoration: none;
+}
+
+a:visited {
+  color: purple;
+  text-decoration: none;
+}
+
+
+a:hover,
+a:active {
+  color: #000/*__text__*/;
+  text-decoration: underline;
+}
+
+h1 a,
+h2 a,
+h3 a,
+h4 a,
+h5 a {
+  color: #000/*__text__*/;
+  text-decoration: none;
+}
+
+/* ------------- Page elements ----------------- */
+
+/* general headline setup */
+h1,
+h2,
+h3,
+h4,
+h5 {
+    color: #000/*__text__*/;
+    background-color: inherit;
+    font-size: 100%;
+    font-weight: normal;
+    margin: 0 0 1em 0;
+    padding: 0.5em 0 0 0;
+    border-bottom: 1px solid #8cacbb/*__border__*/;
+    clear: left;
+}
+
+/* special headlines */
+h1 {font-size: 160%; font-weight: bold;}
+h2 {font-size: 150%; }
+h3 {font-size: 140%; border-bottom: none; font-weight: bold;}
+h4 {font-size: 120%; border-bottom: none; font-weight: bold;}
+h5 {font-size: 100%; border-bottom: none; font-weight: bold;}
+
+
+/* unordered lists */
+ul {
+  line-height: 1.5em;
+  list-style-type: square;
+  list-style-image: none;
+  margin: 0 0 1em 3.5em;
+  color: #000/*__text__*/;
+}
+
+/* ordered lists */
+ol {
+  line-height: 1.5em;
+  list-style-image: none;
+  margin: 0 0 1em 3.5em;
+  color: #000/*__text__*/;
+  font-weight: bold;
+}
+
+/* no bottom gap in between and smaller left margin for nested lists */
+li ul,
+li ol {
+  margin: 0 0 0 1.5em;
+}
+
+/* the list items overriding the ul/ol definition */
+div.page .li {
+  color: #000/*__text__*/;
+  font-weight: normal;
+}
+
+ol { list-style-type: decimal; }
+ol ol { list-style-type: upper-roman; }
+ol ol ol { list-style-type: lower-alpha; }
+ol ol ol ol { list-style-type: lower-greek; }
+
+blockquote {
+  border-left: 2px solid #8cacbb/*__border__*/;
+  padding-left: 3px;
+}
+
+/* inline tables */
+table.inline {
+  background-color: #fff/*__background__*/;
+  border-spacing: 0px;
+  border-collapse: collapse;
+}
+
+div.page table.inline th {
+  padding: 3px;
+  border: 1px solid #8cacbb/*__border__*/;
+  background-color: "#dee7ec"/*__background_alt__*/;
+}
+
+div.page table.inline td {
+  padding: 3px;
+  border: 1px solid #8cacbb/*__border__*/;
+}
+
+/* Header Elements */
+
+

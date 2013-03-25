@@ -1,0 +1,14 @@
+====== face recognition in videos with opencv ======
+
+Writing the documentation for the new OpenCV cv::FaceRecognizer class (which is libfacerec) made me realize again, how cool the OpenCV2 C++ API is. You could write an application for face recognition in videos within what... 50 lines of code? 
+
+Expect very, very cool examples for the cv::FaceRecognizer documentation. Sneak preview, because it's such an awesome one. 
+
+Face Recognition from a webcam:
+
+  * https://github.com/bytefish/libfacerec/blob/master/samples/facerec_video.cpp
+
+{{tag>opencv cpp}}
+
+
+~~DISCUSSION~~

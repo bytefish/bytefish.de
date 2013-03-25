@@ -1,0 +1,152 @@
+====== colormaps in opencv ======
+
+===== introduction =====
+
+It's a fact, that human perception isn't built for observing fine changes in grayscale images. Human sensors (eyes and stuff) are more sensitive to observing changes between colors, so you often need to recolor your grayscale images to get a clue about them. Yesterday I needed to visualize some data in [[http://opencv.org|OpenCV]]. And while it's easy to apply a colormap in [[http://www.mathworks.de/index.html|MATLAB]], [[http://opencv.org|OpenCV]] doesn't come with predefined colormaps. I don't have much knowledge about colormaps and I am totally off when it comes to choosing colors anyway (my former art teacher will acknowledge), but there are people with a lot more experience. One page I've found is the blog of [[http://mycarta.wordpress.com|Matteo Niccoli]], who shares some colormaps on [[http://www.mathworks.com/matlabcentral/fileexchange/authors/87376|his FEX page]], along with interesting links to latest research.
+
+So I simply took the interpolation steps from the great [[http://www.gnu.org/software/octave/|GNU Octave]] colormaps and turned them into C++ classes. The source code is on github:
+
+  * https://github.com/bytefish/colormaps-opencv
+
+Please note: This code has been contributed to OpenCV and is available in the //contrib// module since OpenCV 2.4. Simply use //cv::applyColorMap//, the same way as described in this article ([[http://docs.opencv.org/trunk/modules/contrib/doc/facerec/colormaps.html|Official documentation]]). 
+
+===== using the code =====
+
+You only need //cv::applyColorMap// to apply a colormap on a given image. The signature of //cv::applyColorMap// is:
+
+<code cpp>
+void applyColorMap(InputArray src, OutputArray dst, int colormap)
+</code>
+
+The following code for example reads reads an image (path given as command line argument), applies a Jet colormap on it and shows the result:
+
+<code cpp>
+#include <opencv2/core/core.hpp>
+#include <opencv2/highgui/highgui.hpp>
+#include "colormap.hpp"
+
+using namespace cv;
+
+int main(int argc, const char *argv[]) {
+    // Get the path to the image, if it was given
+    // if no arguments were given.
+    string filename;
+    if (argc > 1) {
+        filename = string(argv[1]);
+    }
+	// The following lines show how to apply a colormap on a given image
+	// and show it with cv::imshow example with an image. An exception is
+	// thrown if the path to the image is invalid.
+	if(!filename.empty()) {
+        Mat img0 = imread(filename);
+        // Throw an exception, if the image can't be read:
+        if(img0.empty()) {
+            CV_Error(CV_StsBadArg, "Sample image is empty. Please adjust your path, so it points to a valid input image!");
+        }
+        // Holds the colormap version of the image:
+        Mat cm_img0;
+        // Apply the colormap:
+        applyColorMap(img0, cm_img0, COLORMAP_JET);
+        // Show the result:
+        imshow("cm_img0", cm_img0);
+        waitKey(0);
+	}
+
+	return 0;
+}
+</code>
+
+The available colormaps are:
+
+<code>
+enum
+{
+    COLORMAP_AUTUMN = 0,
+    COLORMAP_BONE = 1,
+    COLORMAP_JET = 2,
+    COLORMAP_WINTER = 3,
+    COLORMAP_RAINBOW = 4,
+    COLORMAP_OCEAN = 5,
+    COLORMAP_SUMMER = 6,
+    COLORMAP_SPRING = 7,
+    COLORMAP_COOL = 8,
+    COLORMAP_HSV = 9,
+    COLORMAP_PINK = 10,
+    COLORMAP_HOT = 11
+}
+</code>
+
+And here are the scales corresponding to each of the maps, so you know what they look like:
+
+^ Name ^ Scale ^
+| Autumn | {{:blog:colormaps:colorscale_autumn.jpg|}} |
+| Bone | {{:blog:colormaps:colorscale_bone.jpg|}} |
+| Cool | {{:blog:colormaps:colorscale_cool.jpg|}} |
+| Hot | {{:blog:colormaps:colorscale_hot.jpg|}} |
+| HSV | {{:blog:colormaps:colorscale_hsv.jpg|}} |
+| Jet | {{:blog:colormaps:colorscale_jet.jpg|}} |
+| Ocean | {{:blog:colormaps:colorscale_ocean.jpg|}} |
+| Pink | {{:blog:colormaps:colorscale_pink.jpg|}} |
+| Rainbow | {{:blog:colormaps:colorscale_rainbow.jpg|}} |
+| Spring | {{:blog:colormaps:colorscale_spring.jpg|}} |
+| Summer | {{:blog:colormaps:colorscale_summer.jpg|}} |
+| Winter | {{:blog:colormaps:colorscale_winter.jpg|}} |
+
+=====  Demo =====
+
+The demo coming with the //cv::applyColorMap// shows how to use the colormaps and how I've created the scales you have seen:
+
+* https://github.com/bytefish/colormaps-opencv/blob/master/src/main.cpp
+
+If you want to apply a Jet colormap on a given image, then call the demo with:
+
+<code>
+./cm_demo /path/to/your/image.ext
+</code>
+
+Or if you just want to generate the color scales, then call the demo with:
+
+<code>
+./cm_demo
+</code>
+
+(Replace //./cm_demo// with //cm_demo.exe// if you are running Windows!)
+
+====  Building the demo ====
+
+The project comes as a CMake project, so building it is as simple as:
+
+<code>
+philipp@mango:~/some/dir/colormaps-opencv$ mkdir build
+philipp@mango:~/some/dir/colormaps-opencv$ cd build
+philipp@mango:~/some/dir/colormaps-opencv/build$ cmake ..
+philipp@mango:~/some/dir/colormaps-opencv/build$ make
+philipp@mango:~/some/dir/colormaps-opencv/build$ ./cm_demo path/to/your/image.ext
+</code>
+
+Or if you use MinGW on Windows:
+
+<code>
+C:\some\dir\colormaps-opencv> mkdir build
+C:\some\dir\colormaps-opencv> cd build
+C:\some\dir\colormaps-opencv\build> cmake -G "MinGW Makefiles" ..
+C:\some\dir\colormaps-opencv\build> mingw32-make
+C:\some\dir\colormaps-opencv\build> cm_demo.exe /path/to/your/image.ext
+</code>
+
+Or if you are using Visual Studio, you can generate yourself a solution like this (please adjust to your version):
+
+<code>
+C:\some\dir\colormaps-opencv> mkdir build
+C:\some\dir\colormaps-opencv> cd build
+C:\some\dir\colormaps-opencv\build> cmake -G "Visual Studio 9 2008" ..
+</code>
+
+===== license =====
+
+I hope this saves someone some time. I've put my code under a [[http://www.opensource.org/licenses/bsd-license|BSD License]], so feel free to use it and enhance it with your own colormaps!
+
+{{tag>opencv cpp}}
+
+
+~~DISCUSSION~~

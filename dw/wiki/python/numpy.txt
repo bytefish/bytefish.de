@@ -1,0 +1,5 @@
+I will copy some snippets to this page and will explain them.
+
+  * [[wiki:python:numpy:performance|NumPy performance]]
+
+

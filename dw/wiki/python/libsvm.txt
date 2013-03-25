@@ -1,0 +1,3 @@
+Support Vector Machines (SVM) are a hot thing in machine learning and there's also a Python binding for [[http://www.csie.ntu.edu.tw/~cjlin/libsvm|LibSVM]], so lets have a look how to use it:
+  * [[wiki:python:libsvm:experiment1|Experiment 1]]
+  * [[wiki:python:libsvm:experiment2|Experiment 2]]

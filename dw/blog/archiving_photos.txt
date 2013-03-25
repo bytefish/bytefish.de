@@ -1,0 +1,89 @@
+====== archiving photos ======
+
+I am currently in the process of archiving hundreds of family pictures, before they get lost and forgotten. It's easy with digital images in the post 2000 era, but photos from the 80s and 90s need to be scanned. While there's no cheap way to automate this (someone wants to buy me an [[http://en.wikipedia.org/wiki/ASIMO|ASIMO]]?), a lot of other tasks can be automated. And more importantly: it's a great chance to play around with computer vision and machine learning algorithms. 
+
+I'll share all my scripts and ideas with you, maybe they're useful for you. I am not halfway finished with the application and entire post, but sharing pieces of code may be helpful for somebody. I'll put everything under a BSD license, so feel free to edit.
+
+Imagine I got this scan ([[http://bytefish.de/_media/blog/scan.jpg|click here for the full image]]):
+
+{{ :blog:scan.jpg?400 | }}
+
+My algorithm works like this:
+
+  - [[http://opencv.willowgarage.com/documentation/cpp/miscellaneous_image_transformations.html#cv-cvtcolor|convert the image to grayscale]]
+  - [[http://opencv.willowgarage.com/documentation/cpp/imgproc_feature_detection.html#cv-canny|find the edges with a Canny filter]]
+  - apply [[http://opencv.willowgarage.com/documentation/cpp/imgproc_image_filtering.html#cv-dilate|dilate]] and [[http://opencv.willowgarage.com/documentation/cpp/imgproc_image_filtering.html#erode|erode]] to close the gaps
+  - [[http://opencv.willowgarage.com/documentation/cpp/structural_analysis_and_shape_descriptors.html#cv-findcontours|find the contours]]
+  - for each contour
+    - [[http://opencv.willowgarage.com/documentation/cpp/structural_analysis_and_shape_descriptors.html#cv-contourarea|calculate the area of the contour]]
+    - //if area > threshold//, [[http://opencv.willowgarage.com/documentation/cpp/structural_analysis_and_shape_descriptors.html#cv-minarearect|find the rotated rectangle of the contour]]
+
+With OpenCV C++ this translates to:
+
+<code cpp>
+#include <cv.h>
+#include <highgui.h>
+#include <iostream>
+#include <vector>
+
+
+using namespace std;
+using namespace cv;
+
+int main(int argc, char *argv[]) {
+	Mat srcg,
+		dst,
+		src = imread("scan.jpg");
+
+	// convert to grayscale
+	cvtColor(src, srcg, CV_BGR2GRAY);
+
+	// find edges
+	Canny(srcg, dst, 50, 200, 3);
+
+	// close gaps
+	dilate(dst, dst, Mat(), Point(-1,-1));
+	erode(dst,dst,Mat(),Point(-1,-1));
+
+	// find the contours
+	vector< vector<Point> > contours;
+	findContours(dst, contours, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_NONE);
+
+    for(int i = 0; i < contours.size(); i++) {
+    	// first calculate the area to remove small areas
+    	double area = contourArea(contours[i]);
+    	// you probably have to adjust the size of the rectangle
+    	// as it depends on the size of the rectangle
+    	if(area > 10000) {
+    		RotatedRect r = minAreaRect(contours[i]);
+    		cout << area << " (angle=" << r.angle << ")" << endl;
+    		Point2f box[4];
+    		r.points(box);
+    		for(int i = 0; i < 4; i++) {
+    			circle(src, box[i] , 5, cvScalar(0, 0, 255));
+    		}
+    	}
+    }
+
+	imshow("src", src);
+	imwrite("result.jpg",src);
+	waitKey(0);
+}
+</code>
+
+this outputs:
+<code cpp>
+64146 (angle=-0.686144)
+64401 (angle=-89.132)
+64507.5 (angle=-0.68206)
+52614.5 (angle=-87.4886)
+</code>
+
+and the resulting image has the corner points as:
+
+{{:blog:result.jpg?400|}}
+
+{{tag>cpp opencv}}
+
+
+~~DISCUSSION~~
