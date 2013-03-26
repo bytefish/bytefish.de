@@ -387,7 +387,7 @@ Let's see what I mean. By computing the Eigenfaces, we have projected the databa
 
 ![Reconstruction of an image from Eigenfaces](/images/blog/fisherfaces/eigenface_reconstructed_face.png)
 
-==== Fisherfaces ====
+### Fisherfaces ###
 
 Time for the Fisherfaces method! If you haven't done already, import the modules and load the data:
 
@@ -469,6 +469,7 @@ On this dataset the Fisherface method performed much better, than the Eigenfaces
 Some years ago a lot of people told me, that I am looking just like [Brad Pitt](http://en.wikipedia.org/wiki/Brad_Pitt). Or did I tell it everyone after seeing [Troy](http://en.wikipedia.org/wiki/Troy_%28film%29) for the fifth time? Whatever -- sadly times have changed. I am losing my hair and now I am exponentially progressing towards a [Sir Patrick Stewart](http://en.wikipedia.org/wiki/Patrick_Stewart) or a bald [Britney Spears](http://en.wikipedia.org/wiki/Britney_Spears). Now armed with the algorithms we've discussed, I can finally clear the confusion and find out which celebrity I resemble the most! This last experiment turned into a weekend project itself, but I had a lot of fun writing it and I hope you have fun reading it. 
 
 My celebrity dataset consists of the following faces:
+
 * [Angelina Jolie](http://en.wikipedia.org/wiki/Angelina_Jolie)
 * [Arnold Schwarzenegger](http://en.wikipedia.org/wiki/Arnold_Schwarzenegger)
 * [Brad Pitt](http://en.wikipedia.org/wiki/Brad_Pitt)
