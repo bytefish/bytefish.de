@@ -22,8 +22,8 @@ PAGE_URL = '{slug}'
 PAGE_SAVE_AS = '{slug}/index.html'
 
 # Generate nice URLs for articles:
-ARTICLE_URL = '{slug}'
-ARTICLE_SAVE_AS = '{slug}/index.html'
+ARTICLE_URL = 'blog/{slug}'
+ARTICLE_SAVE_AS = 'blog/{slug}/index.html'
 
 # Setup the RSS/ATOM feeds:
 FEED_RSS = 'feeds/rss.xml'
@@ -43,19 +43,20 @@ INDEX_SAVE_AS = 'blog/index.html'
 
 # Navigation menu:
 SECTIONS = [
-  ('home', '/'),
-  ('blog', 'blog'),
-  ('documents', 'documents'),
-  ('archive', 'archives'),
-  ('wiki', 'wiki'),
-  ('rss', 'feeds/all.rss.xml'),]
+  ('home', '/index.html'),
+  ('blog', '/blog'),
+  ('documents', '/documents'),
+  ('archive', '/archives'),
+  ('wiki', '/wiki'),
+  ('rss', '/feeds/rss.xml'),
+  ('+', 'https://plus.google.com/102725420896943303368?rel=author'),]
 
 # Links to display in the footer:
 LINKS = [
   ('bsd', 'http://www.opensource.org/licenses/BSD-3-Clause'),
   ('xhtml', 'http://validator.w3.org/check/referer'),
   ('css3', 'http://jigsaw.w3.org/css-validator/check/referer?profile=css'),
-  ('pelican', 'http://www.getpelican.com')]
+  ('pelican', 'http://www.getpelican.com'),]
 
 # Set this to your Disqus account:
 DISQUS_SITENAME = 'bytefish'
