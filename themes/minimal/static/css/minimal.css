@@ -51,10 +51,10 @@ body {
 }
 
 #container {
-  height: auto;
-  margin: 0 auto;
+  width: 740px;
   font-size: 110%;
-  width: 800px;
+  margin: 4px 2em 0 1em;
+  text-align: justify;
 }
 
 #menu {
@@ -131,6 +131,14 @@ body {
 #container #page-title a {
   color: #002fc8 !important;
   text-decoration: none !important;
+}
+
+div.clearer {
+    clear: both;
+    font-size: 0;
+    line-height: 0;
+    height: 0;
+    overflow: hidden;
 }
 
 em.u {

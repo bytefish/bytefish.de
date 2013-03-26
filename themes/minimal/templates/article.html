@@ -1,9 +1,11 @@
 {% extends "base.html" %}
 
+{% block content_title %}<a href="{{ SITEURL }}/{{ article.url }}">{{ article.url }}</a>{% endblock %}
+
 {% block content %}
+  {{ article.content }}
   <div class="comments">
     <h3>Comments</h3>
       {% include 'disqus.html' %}
-    </div>  
-  </div>
+  </div>  
 {% endblock %}

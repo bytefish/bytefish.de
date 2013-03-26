@@ -19,14 +19,14 @@
         {% for title, link in SECTIONS %}
           <li><a href="{{ link }}">{{ title }}</a></li>
         {% endfor %}
-          <li><a href="{{ FEED_DOMAIN }}/{{ FEED_RSS }}">rss</a></li>
-          <li><a href="https://plus.google.com/102725420896943303368?rel=author">+</a></li>
         </ul>
       </div>
       <div id="page-title">{% block content_title %}{% endblock %}</div>
+      <div class="clearer"></div>
       <div id="content">
       {% block content %}{% endblock %}
       </div>
+      <div class="clearer"></div>
       <div id="links">
         <ul>
         {% for title, link in LINKS %}
