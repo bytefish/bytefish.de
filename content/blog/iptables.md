@@ -15,7 +15,7 @@ iptables -L
 
 If you didn't configure anything yet the output is like:
 
-```
+<pre>
 philipp@banana:~$ sudo iptables -L
 Chain INPUT (policy ACCEPT)
 target     prot opt source               destination         
@@ -25,7 +25,7 @@ target     prot opt source               destination
 
 Chain OUTPUT (policy ACCEPT)
 target     prot opt source               destination
-```
+</pre>
 
 This means: no rules are specified for incoming (``INPUT``) and outgoing (``OUTPUT``) packets. Every packet is accepted, because the default policy for all chains is ``ACCEPT``. This is not a desirable setup for a workstation or a server connected to the Internet. There are two options: you either set the default policies to ``ACCEPT`` and define rules to selectively ``DROP`` packets or you set the default policies to ``DROP`` and selectively ``ACCEPT`` packets.
 
@@ -110,4 +110,4 @@ And make it executable:
 chmod +x /etc/network/if-pre-up.d/iptablesload
 ```
 
-You are done! Writing a [startup script](http://www.linux.com/archive/feed/46892) for loading the rules is possible of course, but my advise is to look for the preferred solution of your distribution.
+You are done! Writing a startup script for loading the rules is possible of course, but my advise is to look for the preferred solution of your distribution.

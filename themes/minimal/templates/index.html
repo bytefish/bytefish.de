@@ -7,7 +7,7 @@
   {% if articles %}
   <h1>Blog Posts</h1>
     <ul>
-    {% for article in articles | sort(attribute='locale_date', reverse=True)  %}
+    {% for article in articles %}
       <li><span class="date">{{ article.locale_date }}</span> &raquo; <a href="{{ SITEURL }}/{{ article.url }}">{{ article.title }}</a></li>
     {% endfor %}
   {% endif %}
