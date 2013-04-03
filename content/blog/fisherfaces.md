@@ -18,16 +18,17 @@ I've put all the code under a BSD License, so feel free to use it for your proje
 
 There's also a much simpler implementation in the documents over at:
 
-* http://bytefish.de/pdf/facerec_python.pdf (Python version)
-* http://bytefish.de/pdf/facerec_octave.pdf (GNU Octave/MATLAB version)
+* [http://bytefish.de/pdf/facerec_python.pdf (Python version)](http://bytefish.de/pdf/facerec_python.pdf)
+* [http://bytefish.de/pdf/facerec_octave.pdf (GNU Octave/MATLAB version)](http://bytefish.de/pdf/facerec_octave.pdf)
 
 You'll find all code shown in these documents in the projects github repository:
 
-  * https://github.com/bytefish/facerecognition_guide
+* [https://github.com/bytefish/facerecognition_guide](https://github.com/bytefish/facerecognition_guide)
   
 ## Algorithmic Description ##
 
 The Fisherfaces algorithm we are going to implement basically goes like this:
+
 * Construct the Imagematrix ``X`` with each column representing an image. Each image is a assigned to a class in the corresponding class vector ``C``.
 * Project ``X`` into the ``(N-c)``-dimensional subspace as ``P`` with the rotation matrix ``WPca`` identified by a Principal Component Analysis, where
     * ``N`` is the number of samples in ``X``
@@ -36,12 +37,12 @@ The Fisherfaces algorithm we are going to implement basically goes like this:
     * ``mean`` is the total mean of ``P``
     * ``mean_i`` is the mean of class ``i`` in ``P``
     * ``N_i`` is the number of samples for class ``i``
-  - Calculate the within-classes scatter of ``P`` as ``Sw = \sum_{i=1}^{c} \sum_{x_k \in X_i} (x_k - mean_i) * (x_k - mean_i)^T``, where
+* Calculate the within-classes scatter of ``P`` as ``Sw = \sum_{i=1}^{c} \sum_{x_k \in X_i} (x_k - mean_i) * (x_k - mean_i)^T``, where
     * ``X_i`` are the samples of class ``i``
     * ``x_k`` is a sample of ``X_i``
     * ``mean_i`` is the mean of class ``i`` in ``P``
-  - Apply a standard Linear Discriminant Analysis and maximize the ratio of the determinant of between-class scatter and within-class scatter. The solution is given by the set of generalized eigenvectors ``Wfld`` of ``Sb`` and ``Sw`` corresponding to their eigenvalue. The rank of ``Sb`` is atmost ``(c-1)``, so there are only ``(c-1)`` non-zero eigenvalues, cut off the rest.
-  - Finally obtain the Fisherfaces by ``W = WPca * Wfld``.
+* Apply a standard Linear Discriminant Analysis and maximize the ratio of the determinant of between-class scatter and within-class scatter. The solution is given by the set of generalized eigenvectors ``Wfld`` of ``Sb`` and ``Sw`` corresponding to their eigenvalue. The rank of ``Sb`` is atmost ``(c-1)``, so there are only ``(c-1)`` non-zero eigenvalues, cut off the rest.
+* Finally obtain the Fisherfaces by ``W = WPca * Wfld``.
 
 For a detailed description of the algorithms used in this post, please refer to the paper in [Further Reading](#further_reading).
 
@@ -93,7 +94,7 @@ class Fisherfaces(Model):
 
 All ``models`` in the code derive from a generic ``Model``((Which does absolutely nothing, I just thought it would make a nice OOP hierarchy...)) and implement a ``compute`` and ``predict`` method, which are used to estimate the performance of a classifier with a cross validation. Classes for performing a [leave-one-out](http://en.wikipedia.org/wiki/Cross-validation_%28statistics%29#Leave-one-out_cross-validation) and [k-fold cross validation](http://en.wikipedia.org/wiki/Cross-validation_%28statistics%29#K-fold_cross-validation) are implemented. I only measure the recognition rate of a classifier, so something for your use case might be missing. Feel free to add your measures in the ``validation`` module.
 
-The ``filereader`` module only has a ``FilesystemReader`` right now. It loads images in a given path, assuming a folder structure of <<path>>/<<subject>>/<<image>> for reading in the dataset. There are some limitations, which will be fixed in later versions. For now you must ensure, that all images have equal size and the image format is supported by [PIL](http://www.pythonware.com/library/pil) (same applies for [ImageMagick](http://www.imagemagick.org/script/index.php) in GNU Octave).
+The ``filereader`` module only has a ``FilesystemReader`` right now. It loads images in a given path, assuming a folder structure of ``<path>/<subject>/<image>`` for reading in the dataset. There are some limitations, which will be fixed in later versions. For now you must ensure, that all images have equal size and the image format is supported by [PIL](http://www.pythonware.com/library/pil) (same applies for [ImageMagick](http://www.imagemagick.org/script/index.php) in GNU Octave).
 
 Last but not least, there's a ``visualization`` module. I don't feel afraid to say: it feels very, very hardcoded. Plotting and subplotting eigenvectors is supported, so is comparing accuracy (+ standard deviation) vs. parameters for a bunch of validators (errorbar plot). Absolutely everything regarding the style of a plot is missing, so it will take a lot more iterations to create smoother plotting facilities. If you want to quickly create some plots, go for the Octave version for now.
 
@@ -208,7 +209,7 @@ The first database I will evaluate is the Yale Facedatabase A. It consists of 15
 
 Unfortunately the images in this database are not aligned, so the faces may be at different positions in the image. For the Eigenfaces and Fisherfaces method the images need to be preprocessed, since both methods are sensible to rotation and scale. You don't want to do this manually, so I have written a function [crop.m](https://github.com/bytefish/facerec/blob/master/m/scripts/crop.m)/[crop_face.py](https://github.com/bytefish/facerec/blob/master/py/apps/scripts/crop_face.py) for this, which has the following description:
 
-```
+<pre>
 function crop(filename, eye0, eye1, top, left, dsize)
 	%% Rotates an image around the eyes, resizes to destination size.
 	%%
@@ -230,13 +231,13 @@ function crop(filename, eye0, eye1, top, left, dsize)
 	%% Leaves 21px offset above the eyes (0.3*70px) and 28px horizontal
 	%% offset. 20% of the image to the left eye, 20% to the right eye
 	%% (2*0.2*70=28px).
-```
+</pre>
 
 I specify the dimensions of the cropped image to be ``(100,130)`` for this database. ``top`` is the vertical offset, which specifies how much of the image is above the eyes, 40% seems to be a good value for these images. ``left`` specifies the horizontal offset, how much space is left from an eye to the border, 30% is a good value. The image is then rotated by the eye positions. If it's not desired to align all images at the eyes, scale or rotate them, please adjust the script to your needs. [batch_crop.m](https://github.com/bytefish/facerec/blob/master/m/scripts/batch_crop.m) is a simple script to crop images given by their filename and associated eye coordinates. Feel free to translate it to Python.
 
 After having preprocessed the images ([coordinates for this database are given here](https://github.com/bytefish/facerec/blob/master/m/scripts/files2.txt)) you'll end up with subsets for each person like this ([function used to create the gallery of images](https://github.com/bytefish/facerec/blob/master/m/scripts/gallery.m)):
 
-![Subject 1 of the Yale Facedatabase A](/images/blog/fisherfaces/yale_s01.png "Subject 1 of the Yale Facedatabase A")
+![Subject 1 of the Yale Facedatabase A](/static/images/blog/fisherfaces/yale_s01.png "Subject 1 of the Yale Facedatabase A")
 
 The preprocessed dataset then has to be stored in a hierarchy similiar to this:
 
@@ -368,7 +369,7 @@ and then plot the Eigenfaces:
 Almost everywhere you see grayscaled Eigenfaces, which are really hard to explain. With a colored heatmap instead you can easily see the distribution of grayscale intensities, where 0 codes a dark blue and 255 is a dark red:
 
 
-![First 16 Eigenfaces of the Yale Facedatabase A](/images/blog/fisherfaces/16_eigenfaces.png)
+![First 16 Eigenfaces of the Yale Facedatabase A](/static/images/blog/fisherfaces/16_eigenfaces.png)
 
 Just by looking at the first 16 Eigenfaces we can see, that they don't really describe facial features to distinguish between persons, but find components to reconstruct from. The fourth Eigenface for example describes the left-light, while the principal component 6 describes the right-light. This makes sense if you think of the Principal Component Analysis not as a classification method, but more as a compression method.
 
@@ -385,7 +386,7 @@ Let's see what I mean. By computing the Eigenfaces, we have projected the databa
 
 ... and we should see a face again:
 
-![Reconstruction of an image from Eigenfaces](/images/blog/fisherfaces/eigenface_reconstructed_face.png)
+<img src="/static/images/blog/fisherfaces/eigenface_reconstructed_face.png" height="130" class="mediacenter"/>
 
 ### Fisherfaces ###
 
@@ -443,7 +444,7 @@ Import the visual module and plot the faces:
 
 The Fisherfaces are a bit harder to explain, because they identify regions of a face that separate faces best from each other. None of them seems to encode particular light settings, at least it's not as obvious as in the Eigenfaces method:
 
-![Fisherfaces of the Yale Facedatabase A](/images/blog/fisherfaces/14_fisherfaces.png}
+![Fisherfaces of the Yale Facedatabase A](/static/images/blog/fisherfaces/14_fisherfaces.png}
 
 I could only guess which component describes which features. So I leave the interpretation up to the reader. What we lose with the Fisherfaces method for sure, is the ability to reconstruct faces. If I want to reconstruct face number 17, just like in the Eigenfaces section:
 
@@ -458,7 +459,7 @@ I could only guess which component describes which features. So I leave the inte
 
 We get back a picture similar to:
 
-![Reconstructed images from Fisherfaces](/images/blog/fisherface/fisherface_reconstructed_face.png)
+<img src="/static/images/blog/fisherfaces/fisherface_reconstructed_face.png" height="130" class="mediacenter"/>
 
 ### Conclusion ###
 
@@ -483,7 +484,7 @@ My celebrity dataset consists of the following faces:
 
 I have chosen the images to be frontal face with a similiar perspective and light settings. Since the algorithms are sensible towards rotation and scale, the images have been preprocessed to equal scale of ``70x70``px and centered eyes. Here is my Clooney-Set for example:
 
-![Celebrities Dataset: George Clooney](/images/blog/fisherfaces/clooney_set.png)
+<img src="/static/images/blog/fisherfaces/clooney_set.png" class="mediacenter" />
 
 I hope you understand that I can't share the dataset with you. Some of the photos have a public license, but most of the photos have an unclear license. From my experience all I can tell you is: finding images of George Clooney took less than a minute, but it was really, really hard finding good images of Johnny Depp or Arnold Schwarzenegger.
 
@@ -573,7 +574,7 @@ The Eigenfaces...
 
 ... again encode light in the images, see the second Eigenface for example:
 
-![The first 16 Eigenfaces of the Celebrity Dataset](/images/blog/fisherfaces/16_celebrity_eigenfaces.png)
+![The first 16 Eigenfaces of the Celebrity Dataset](/static/images/blog/fisherfaces/16_celebrity_eigenfaces.png)
 
 While the Fisherfaces identify regions:
 
@@ -583,7 +584,7 @@ While the Fisherfaces identify regions:
 
 ... where you can decide between the persons. The first component for example describes the eyes, while other components describe mouth-ness or eye-browness of a face:
 
-![](/images/blog/fisherfaces/9_celebrity_fisherfaces.png)
+![](/static/images/blog/fisherfaces/9_celebrity_fisherfaces.png)
 
 By using two and three components, we can see how the faces are distributed (using GNU Octave, see [fisherfaces_example.m](https://github.com/bytefish/facerec/blob/master/m/fisherfaces_example.m)). I'll use just one example per class for a better overview:
 
@@ -616,13 +617,13 @@ names =
 
 Brad Pitt (3), Johnny Depp (5) and Tom Cruise (10) seem to have a unique face, as they are far away from all other faces. Surprisingly George Clooney (4) and Justin Timberlake (6) are near to each other. Arnold Schwarzenegger (2), Katy Perry (7), Keanu Reeves (8) and Patrick Stewart (9) are also close to each other. Angelina Jolie (1) is right between those two clusters; with George Clooney (4) and Keanu Reeves (8) as closest match:
 
-![Fisherfaces projection onto the first two components](/images/blog/fisherfaces/celebrity_facespace.png)
+![Fisherfaces projection onto the first two components](/static/images/blog/fisherfaces/celebrity_facespace.png)
 
 ### Who Am I? ###
 
 Now let's finally answer the question why I wrote this post at all. Who do I resemble the most? I'll use a frontal photo of myself and crop it, just like I did with the other faces:
 
-![My cropped face](/images/blog/fisherfaces/crop_philipp.jpg)
+<img src="/static/images/blog/fisherfaces/crop_philipp.jpg" class="mediacenter" />
 
 Then I compute the model:
 
@@ -647,11 +648,11 @@ I knew it. The closest match to my face is [Patrick Stewart](http://en.wikipedia
 
 If I project my face on the first 2 components I would actually resemble Arnie the most:
 
-![My face projected on the first two components](/images/blog/fisherfaces/philipp_facespace_2D_12.png)
+![My face projected on the first two components](/static/images/blog/fisherfaces/philipp_facespace_2D_12.png)
 
 But including the third dimension (projection on second and third component) brings me closer to Patrick Stewart:
 
-![My face projected on the second and third component](/images/blog/fisherfaces/philipp_facespace_2d_23.png)
+![My face projected on the second and third component](/static/images/blog/fisherfaces/philipp_facespace_2d_23.png)
 
 Just because the Eigenfaces algorithm can't classify the persons doesn't mean we can't use it here aswell. It did a great job at reconstructing a projected vector, so if I project my face into the facespace... and reconstruct it... my face should be the mixture of those faces. 
 
@@ -667,7 +668,7 @@ Let's see what I look like:
 
 Sorry it's a bit small, because my training images are only 70x70 pixels:
 
-![Reconstruction from the Eigenspace](/images/blog/fisherfaces/philipp_reconstructed_face.png)
+<img src="/static/images/blog/fisherfaces/philipp_reconstructed_face.png" width="130" class="mediacenter"/>
 
 Definitely some Schwarzenegger in there!
 
