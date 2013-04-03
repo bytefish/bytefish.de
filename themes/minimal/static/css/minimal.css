@@ -119,6 +119,7 @@ body {
 	content: "";
 }
 
+
 #container #page-title a {
   float: left;
   font-size: 200%;
@@ -131,6 +132,13 @@ body {
 #container #page-title a {
   color: #002fc8 !important;
   text-decoration: none !important;
+}
+
+#container .comments {
+  background-color: #dee7ec;
+  margin-top: 1em;
+  padding: 1em;
+  clear: both;
 }
 
 div.clearer {
@@ -185,6 +193,16 @@ hr {
   height: 0px;
 }
 
+pre {
+  overflow: auto;
+}
+
+img.mediacenter {
+  border: 0;
+  display: block;
+  margin: 0 auto;
+}
+
 /* --------------- Links ------------------ */
 a {
   color: #002fc8/*__extern__*/;
@@ -203,6 +221,19 @@ a:active {
   text-decoration: underline;
 }
 
+/* Media Types */
+
+.mediafile {
+  background: transparent url(../images/fileicons/file.png) 0px 1px no-repeat; 
+  padding-left: 18px; 
+  padding-bottom: 1px;
+}
+
+.gz { 
+  background-image: url(../images/fileicons/gz.png);
+}
+
+/* Link Headlines */
 h1 a,
 h2 a,
 h3 a,
@@ -278,4 +309,38 @@ blockquote {
   padding-left: 3px;
 }
 
+.entry-meta {
+  color: #a6a6a6;
+  font-size: 80%;
+  padding-top: 0.2em;
+  border-top: 1px dotted #8cacbb;
+}
 
+
+.entry-meta a:hover, .updated a:hover {
+    color: #6499ba;
+    text-decoration: underline;
+}
+
+.entry-meta .published {
+  background: transparent url(../images/date.gif) 0px 1px no-repeat;
+  padding: 1px 0px 1px 16px;
+  border-bottom: 0;
+}
+
+.entry-meta .author {
+  background: transparent url(../images/user.gif) 0px 1px no-repeat;
+  padding: 1px 0px 1px 16px;
+}
+
+.entry-meta .tags {
+  border-top: 0;
+  font-size: 100%;
+  float: right;
+  clear: none;
+}
+
+.entry-meta .tags span {
+  background: transparent url(../images/tag.gif) 0px 1px no-repeat;
+  padding: 1px 0px 1px 16px;
+}

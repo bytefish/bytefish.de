@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block content_title %}<a href="{{ SITEURL }}/tags">tags</a>{%endblock%}
+
+{% block content %}
+  {% if tags %}
+  <h1>Available Tags and Articles</h1>
+    <ul>
+    {% for (tag, articles) in tags | sort(0)  %}
+      <li><span class="date">{{ tag }}</span> &raquo; <a href="{{ SITEURL }}/tag/{{ tag }}">{{ articles | count }} Article(s)</a></li>
+    {% endfor %}
+  {% endif %}
+{% endblock %}
