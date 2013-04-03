@@ -1,65 +1,80 @@
 # -*- coding: utf-8 -*-
 
+# This is a simple configuration for the Pelican (http://getpelican.com) 
+# project and it is probably closely tied to the 'minimal' theme I am 
+# using.
+
+# Most important metadata:
 AUTHOR = 'Philipp Wagner'
 EMAIL = 'bytefish AT gmx DOT de'
 SITENAME = 'http://bytefish.de'
-
+# Base URL this page is hosted at:
 SITEURL_PUBLIC = 'http://bytefish.de'
-SITEURL_LOCAL = 'http://localhost:8080'
-
-TIMEZONE = 'Europe/Berlin'
-DEFAULT_LANG = 'en'
-LOCALE = ''
-
+SITEURL = 'http://localhost:8000'
+# Timezone is GMT+1:
+TIMEZONE = 'Europe/Paris'
+# Using a simple date format:
+DEFAULT_DATE_FORMAT = ('%d %b %Y')
+# We are using the custom minimal theme:
 THEME = './themes/minimal/'
-MARKUP = 'md'
-
+# Probably add rst here:
+MARKUP = ('md',)
+# We don't use relative URLs:
+RELATIVE_URLS = False
 # Edit predefined pathes:
-ARCHIVES_SAVE_AS = 'archives/index.html'
-
+ARCHIVES_SAVE_AS = 'pages/index.html'
 # Generates nice URLs for pages:
 PAGE_URL = '{slug}'
 PAGE_SAVE_AS = '{slug}/index.html'
-
 # Generate nice URLs for articles:
+ARTICLE_EXCLUDES = (('pages',))
 ARTICLE_URL = 'blog/{slug}'
 ARTICLE_SAVE_AS = 'blog/{slug}/index.html'
-
+# Generate nice URLs for tags:
+TAG_URL = 'tag/{name}/'
+TAG_SAVE_AS = 'tag/{name}/index.html'
+TAGS_SAVE_AS = 'tags/index.html'
+# Generate nice URLs for categories:
+CATEGORY_URL = 'category/{name}/'
+CATEGORY_SAVE_AS = 'category/{name}/index.html'
 # Setup the RSS/ATOM feeds:
+FEED_DOMAIN = SITEURL
+# We only want RSS/ATOM Feeds for all articles, exclude categories:
 FEED_RSS = 'feeds/rss.xml'
 TAG_FEED_RSS = None
 CATEGORY_FEED_RSS = None
-
 FEED_ATOM = 'feeds/atom.xml'
 FEED_ALL_ATOM = None
 TAG_FEED_ATOM = None
 CATEGORY_FEED_ATOM = None
-
-PATH = 'content'
+# Separate page directory and articles directory:
 PAGE_DIR = ('pages')
-
-# Save index as blog/index.html:
+ARTICLE_DIR = ('content')
+# A list of files to copy from the source to the destination
+FILES_TO_COPY = (('extra/robots.txt', 'robots.txt'),)
+# Save index as blog/index.html instead of index.html:
 INDEX_SAVE_AS = 'blog/index.html'
-
 # Navigation menu:
 SECTIONS = [
   ('home', '/index.html'),
   ('blog', '/blog'),
+  ('about', '/about'),
+  ('pages', '/pages'),
   ('documents', '/documents'),
-  ('archive', '/archives'),
-  ('wiki', '/wiki'),
   ('rss', '/feeds/rss.xml'),
   ('+', 'https://plus.google.com/102725420896943303368?rel=author'),]
-
 # Links to display in the footer:
 LINKS = [
   ('bsd', 'http://www.opensource.org/licenses/BSD-3-Clause'),
   ('xhtml', 'http://validator.w3.org/check/referer'),
   ('css3', 'http://jigsaw.w3.org/css-validator/check/referer?profile=css'),
   ('pelican', 'http://www.getpelican.com'),]
-
 # Set this to your Disqus account:
 DISQUS_SITENAME = 'bytefish'
-
 # Set some default category:
-DEFAULT_CATEGORY = 'Uncategorized'
+DEFAULT_CATEGORY = 'uncategorized'
+# Folders to copy to <output>/static/...:
+STATIC_PATHS = ['images', ]
+
+# Jinja Extensions:
+
