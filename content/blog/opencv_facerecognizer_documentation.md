@@ -1,5 +1,5 @@
 title: OpenCV FaceRecognizer documentation
-date: 2012/06/26 01:38
+date: 2012-06-26 01:38
 tags: face recognition, opencv
 category: computer vision
 slug: opencv_facerecognizer_documentation

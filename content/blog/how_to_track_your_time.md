@@ -1,5 +1,5 @@
 title: how to track your time
-date: 2010/07/15 22:29
+date: 2010-07-15 22:29
 tags: python
 category: misc
 slug: how_to_track_your_time

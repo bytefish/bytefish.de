@@ -1,14 +1,19 @@
 ## You should disable Indexes and MultiViews either here or in the
 ## global config. Symlinks maybe needed for URL rewriting.
 Options -Indexes -MultiViews +FollowSymLinks
-#
+##
 ## Make sure nobody gets the htaccess files:
 <Files ~ "^[\._]ht">
     Order allow,deny
     Deny from all
     Satisfy All
 </Files>
-# We rewrite the URL, so the old URLs are located correctly:
+##
+## Set the 404 page:
+ErrorDocument 404                   /404.html
+##
+## We rewrite the URL, so the old URLs are located correctly:
 RewriteEngine on
 RewriteBase /
 RewriteRule ^wiki/(.*)              blog/$1  [QSA,L]
+RewriteRule ^feed.php               feeds/rss.xml

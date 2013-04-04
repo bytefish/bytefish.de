@@ -1,5 +1,5 @@
 title: OpenCV, Microsoft Visual Studio and libfacerec
-date: 2012/04/19 01:13
+date: 2012-04-19 01:13
 tags: face recognition
 category: computer vision
 slug: opencv_visual_studio_and_libfacerec

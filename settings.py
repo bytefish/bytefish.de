@@ -39,6 +39,7 @@ CATEGORY_URL = 'category/{name}/'
 CATEGORY_SAVE_AS = 'category/{name}/index.html'
 # Setup the RSS/ATOM feeds:
 FEED_DOMAIN = SITEURL
+FEED_MAX_ITEMS = 10
 # We only want RSS/ATOM Feeds for all articles, exclude categories:
 FEED_RSS = 'feeds/rss.xml'
 TAG_FEED_RSS = None
@@ -51,7 +52,9 @@ CATEGORY_FEED_ATOM = None
 PAGE_DIR = ('pages')
 ARTICLE_DIR = ('content')
 # A list of files to copy from the source to the destination
-FILES_TO_COPY = (('extra/robots.txt', 'robots.txt'),)
+FILES_TO_COPY = (
+  ('extra/.htaccess', '.htaccess'),
+  ('extra/robots.txt', 'robots.txt'))
 # Save index as blog/index.html instead of index.html:
 INDEX_SAVE_AS = 'blog/index.html'
 # Navigation menu:

@@ -1,5 +1,5 @@
 title: Machine Learning with OpenCV
-date: 2010/11/09 16:33
+date: 2010-05-25 16:33
 tags: machine learning, opencv
 category: computer vision
 slug: machine_learning_opencv

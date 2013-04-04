@@ -30,7 +30,7 @@ If you have read my blog posts on [Fisherfaces](/blog/fisherfaces) or [Eigenface
 
 Now real life isn't perfect. You simply can't guarantee perfect light settings in your images or 10 images of a person. So what if there's only one image for each person? Our covariance estimates for the subspace will be horribly wrong, something also known as the *Small Sample Size Problem*. Remember the Eigenfaces method [had a 96% recognition rate](/blog/eigenfaces) on the AT&T Facedatabase? How many images do we actually need to get such useful estimates? I've put a tiny script for you into the appendix, feel free to experiment with. Running the script on the AT&T Facedatabase, which is a fairly easy image database, shows:
 
-<img src="/static/images/blog/local_binary_patterns/at_database_vs_accuracy_xy.png" width="350" class="mediacenter" />
+<img src="/static/images/blog/local_binary_patterns/at_database_vs_accuracy_xy.png" width="500" class="mediacenter" />
 
 So in order to get good recognition rates you'll need at least 8(+-1) images for each person and the Fisherfaces method doesn't really help here; somewhat logical when the subspace we project our data into is identified by a PCA. You can find similar figures in often cited papers.  
 
@@ -112,7 +112,7 @@ void lbp::ELBP_(const Mat& src, Mat& dst, int radius, int neighbors) {
 }
 ```
 
-Now using an abritrary radius and sample points has two effects. With an educated guess I would say... The more sampling points you take, the more patterns you can encode, the more discriminative power you have, but the higher the computational effort. Instead the larger the radius, the smoother the image, the larger details can be captured, the less discriminative power the description has (if you don't increase the sampling points at the same time). Let's see what the LBP codes look like [[http://www.bytefish.de/_detail/blog/original.jpg|given this sample frame]]. My webcam isn't really high-resolution, please don't laugh at my hardware!
+Now using an abritrary radius and sample points has two effects. With an educated guess I would say... The more sampling points you take, the more patterns you can encode, the more discriminative power you have, but the higher the computational effort. Instead the larger the radius, the smoother the image, the larger details can be captured, the less discriminative power the description has (if you don't increase the sampling points at the same time). Let's see what the LBP codes look like [given this sample frame](http://www.bytefish.de/images/blog/local_binary_patterns/original.jpg). My webcam isn't really high-resolution, please don't laugh at my hardware!
 
 <table>
   <tr>
@@ -149,7 +149,7 @@ Now using an abritrary radius and sample points has two effects. With an educate
   </tr>
 </table>
 
-Now what's left is how to classify an object. If you would throw all features into a single histogram all spatial information is discarded. In tasks like face detection (and a lot of other pattern recognition problems) spatial information is very useful, so it has to be incorporated into the histogram somehow. The representation proposed by Ahonen et al. in [[http://masters.donntu.edu.ua/2011/frt/dyrul/library/article8.pdf|Face Recognition with Local Binary Patterns]] is to divide the LBP image into grids and build a histogram of each cell seperately. Then by concatenating the histograms the spatial information is encoded (//not merging them//), just like this:
+Now what's left is how to classify an object. If you would throw all features into a single histogram all spatial information is discarded. In tasks like face detection (and a lot of other pattern recognition problems) spatial information is very useful, so it has to be incorporated into the histogram somehow. The representation proposed by Ahonen et al. in [Face Recognition with Local Binary Patterns](http://masters.donntu.edu.ua/2011/frt/dyrul/library/article8.pdf) is to divide the LBP image into grids and build a histogram of each cell seperately. Then by concatenating the histograms the spatial information is encoded (*not merging them*), just like this:
 
  <img src="/static/images/blog/local_binary_patterns/philipp_in_a_grid.png" width="300" class="mediacenter" />
 

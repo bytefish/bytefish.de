@@ -1,12 +1,19 @@
-====== Skin Color Thresholding ======
+title: Skin Color Thresholding
+date: 2011/10/09 15:10
+tags: opencv, cpp
+category: computer vision
+slug: skin_color_thresholding
+author: Philipp Wagner
+
+======  ======
 
 This snippet implements common Skin Color Thresholding rules taken from:
 
-  * Nusirwan Anwar bin Abdul Rahman, Kit Chong Wei and John See. //RGB-H-CbCr Skin Colour Model for Human Face Detection//. ([[http://pesona.mmu.edu.my/~johnsee/research/papers/files/rgbhcbcr_m2usic06.pdf| Online available]])
+* Nusirwan Anwar bin Abdul Rahman, Kit Chong Wei and John See. **RGB-H-CbCr Skin Colour Model for Human Face Detection**. ([Online available](http://pesona.mmu.edu.my/~johnsee/research/papers/files/rgbhcbcr_m2usic06.pdf))
 
 Works good for my test data:
 
-<code cpp>
+```cpp
 /*
  * Copyright (c) 2011. Philipp Wagner <bytefish[at]gmx[dot]de>.
  * Released to public domain under terms of the BSD Simplified license.
