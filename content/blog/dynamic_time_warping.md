@@ -2,6 +2,7 @@ title: Dynamic Time Warping
 date: 2010-08-04 00:55 
 tags: c++
 category: programming
+slug: dynamic_time_warping
 author: Philipp Wagner
 
 # Dynamic Time Warping #

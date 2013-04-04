@@ -2,6 +2,7 @@ title: Extracting Contours with OpenCV
 date: 2012-05-26 13:37
 tags: opencv, c++
 category: computer vision
+slug: extracting_contours_with_opencv
 author: Philipp Wagner
 
 # Extracting Contours with OpenCV #

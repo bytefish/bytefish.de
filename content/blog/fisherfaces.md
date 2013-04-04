@@ -2,6 +2,7 @@ title: Fisherfaces
 date: 2012-06-03 09:03
 tags: face recognition, python, octave
 category: computer vision
+slug: fisherfaces
 author: Philipp Wagner
 
 # Fisherfaces #

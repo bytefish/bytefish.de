@@ -6,9 +6,9 @@
 {% block content %}
   {% if articles %}
   <h1>Blog Posts</h1>
-    <ul>
+    <ul class="posts">
     {% for article in articles %}
-      <li><span class="date">{{ article.locale_date }}</span> &raquo; <a href="{{ SITEURL }}/{{ article.url }}">{{ article.title }}</a></li>
+      <li><span>{{ article.locale_date }}</span> &raquo; <a href="{{ SITEURL }}/{{ article.url }}">{{ article.title }}</a></li>
     {% endfor %}
   {% endif %}
 {% endblock %}

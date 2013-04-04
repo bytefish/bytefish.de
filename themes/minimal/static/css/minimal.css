@@ -276,6 +276,10 @@ ul {
   color: #000/*__text__*/;
 }
 
+ul.posts span {
+  font-family: Monaco, "Courier New", monospace;
+}
+
 /* ordered lists */
 ol {
   line-height: 1.5em;

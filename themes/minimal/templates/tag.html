@@ -5,8 +5,8 @@
 {% block content %}
   {% if articles %}
   <h1>Articles for Tag &quot;{{ tag }}&quot;</h1>
-    <ul>
-    {% for article in articles | sort(attribute='locale_date', reverse=True)  %}
+    <ul class="posts">
+    {% for article in articles %}
       <li><span class="date">{{ article.locale_date }}</span> &raquo; <a href="{{ SITEURL }}/{{ article.url }}">{{ article.title }}</a></li>
     {% endfor %}
   {% endif %}

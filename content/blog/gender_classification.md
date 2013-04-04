@@ -2,6 +2,7 @@ title: Gender Classification
 date: 2011-08-17 21:29
 tags: face recognition, matlab, octave
 category: computer vision
+slug: gender_classification
 author: Philipp Wagner
 
 # gender classification #

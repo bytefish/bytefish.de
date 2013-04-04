@@ -1,6 +1,7 @@
 title: iptables
 date: 2011-06-01 11:33
 tags: linux
+slug: iptables
 author: Philipp Wagner
 
 # iptables #
