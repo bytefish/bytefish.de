@@ -76,5 +76,13 @@ DEFAULT_CATEGORY = 'uncategorized'
 # Folders to copy to <output>/static/...:
 STATIC_PATHS = ['images', ]
 
-# Jinja Extensions:
+# Custom functions available to all templates:
+from operator import itemgetter
 
+def sort_tags_by_length(tags):
+  return sorted(tags, key=lambda tup: len(tup[1]), reverse=True)
+  
+  
+JINJA_FILTERS = {
+    'sort_tags_by_length': sort_tags_by_length,
+}
