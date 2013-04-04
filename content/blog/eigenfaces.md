@@ -5,11 +5,11 @@ category: computer vision
 slug: eigenfaces
 author: Philipp Wagner
 
-====== eigenfaces ======
+# eigenfaces #
 
 I had a talk with a friend, who thought face recognition algorithms must be a horribly complicated thing. While this is true for advanced technologies like Facebook's face tagging system, the basic algorithms boil down to just a few lines of code. I'll use [GNU Octave](http://www.gnu.org/software/octave) for illustrating the algorithm (so this should also work with MATLAB), you can translate this to every other programming language as long as you got a solver. The images in this example are taken from [AT&T Laboratories Cambridge Facedatabase](http://www.cl.cam.ac.uk/research/dtg/attarchive/facedatabase.html), so all credit regarding the images goes to them.
 
-There's a good algorithmic description at [[http://en.wikipedia.org/wiki/Eigenface#Practical_implementation|Wikipedia on Eigenface]] and it goes like this:
+There's a good algorithmic description at [Wikipedia on Eigenface](http://en.wikipedia.org/wiki/Eigenface#Practical_implementation) and it goes like this:
 
 - Prepare the data with each column representing an image.
 - Subtract the mean image from the data.
@@ -21,7 +21,7 @@ New faces can then be projected into the linear subspace and the nearest neighbo
 
 Let's start! The first thing you'll need to do is reading the images. I assume the simple folder structure of ``<dataset>/<subject>/<image>``. This function is very basic and does no error checking at all. You probably need to add code for checking if the file is a valid image, if size/width of all images are equal and if the image is grayscale. Anyway here it goes:
 
-* [[https://github.com/bytefish/facerec/blob/master/m/util/read_images.m|read_images.m]]
+* [read_images.m](https://github.com/bytefish/facerec/blob/master/m/util/read_images.m)
 
 Now we can read the Image matrix of a dataset with:
 
@@ -91,7 +91,7 @@ endfor
 
 Resulting in:
 
-<img src="/static/images/blog/eigenfaces/subplot_eigenfaces.png" width="400" class=".mediacenter" />
+<img src="/static/images/blog/eigenfaces/subplot_eigenfaces.png" width="600" class=".mediacenter" />
 
 By plotting the whole stuff in 3D (just three classes here): 
 
@@ -105,7 +105,7 @@ end
 
 you can see that the faces are well seperated:
 
-<img src="/static/images/blog/eigenfaces/eigenfaces_3d.png" width="400" class=".mediacenter" />
+<img src="/static/images/blog/eigenfaces/eigenfaces_3d.png" width="600" class=".mediacenter" />
 
 ## Accuracy ##
 

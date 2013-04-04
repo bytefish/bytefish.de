@@ -15,12 +15,12 @@ Actually validating algorithms is a very interesting topic and it's really not t
 
 So whenever people tell me *"my algorithm performs bad"*, I ask them: 
 
-  * What is *bad* actually?
-  * Did you rate this by looking at one sample?
-  * What was your image data?
-  * How do you split between training and test data? 
-  * What is your metric?
-  * [...]
+* What is *bad* actually?
+* Did you rate this by looking at one sample?
+* What was your image data?
+* How do you split between training and test data? 
+* What is your metric?
+* [...]
 
 My hope is, that this post will clear up some confusion and show how easy it is to validate algorithms. Because what I have learned from experimenting with computer vision and machine learning algorithms is:
 
@@ -47,9 +47,9 @@ It comes with a very good documentation and tutorials for validating algorithms:
 So the plan is the following:
 
 1. Write a function to read some image data.
-2. Wrap the //cv2.FaceRecognizer// into a scikit-learn estimator.
-3. Estimate the performance of our //cv2.FaceRecognizer// with a given validation and metric.
-4. Profit!
+2. Wrap the ``cv2.FaceRecognizer`` into a scikit-learn estimator.
+3. Estimate the performance of our ``cv2.FaceRecognizer`` with a given validation and metric.
+4. Profit!!
 
 ## Getting the image data right ##
 

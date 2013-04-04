@@ -9,7 +9,7 @@ author: Philipp Wagner
 
 The following sample uses the classes ``video`` ([samples/python2/video.py](http://code.opencv.org/projects/opencv/repository/revisions/master/changes/samples/python2/video.py)) and ``common`` ([samples/python2/common.py](http://code.opencv.org/projects/opencv/repository/revisions/master/changes/samples/python2/common.py)), which are helper classes from the [samples/python2](http://code.opencv.org/projects/opencv/repository/revisions/master/show/samples/python2) folder. All available cascades are located in the [data folder](http://code.opencv.org/projects/opencv/repository/revisions/master/show/data) of your OpenCV download, so you'll probably need to adjust the ``cascade_fn`` to make this example work:
 
-``
+```python
 import cv2
 from video import create_capture
 from common import clock, draw_str
@@ -35,7 +35,7 @@ while True:
   cv2.imshow('facedetect', img_copy)
   if cv2.waitKey(20) == 27:
     break
-</code>
+```
 
 If you have any problems let me know.
 

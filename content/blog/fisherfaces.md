@@ -7,7 +7,7 @@ author: Philipp Wagner
 
 # Fisherfaces #
 
-Some time ago I have written [a post on Linear Discriminant Analysis](/wiki/pca_lda_with_gnu_octave), a statistical method often used for dimensionality reduction and classification. It was invented by the great statistician [Sir R. A. Fisher](http://en.wikipedia.org/wiki/Ronald_Fisher), who successfully used it for classifying flowers in his 1936 paper *"The use of multiple measurements in taxonomic problems"* (The famous [Iris Data Set](http://archive.ics.uci.edu/ml/datasets/Iris) is still available at the [UCI Machine Learning Repository](http://archive.ics.uci.edu/ml).). But why do we need another dimensionality reduction method, if the Principal Component Analysis (PCA) did such a good job? Well, the PCA finds a linear combination of features that maximizes the total variance in data. While this is clearly a powerful way to represent data, it doesn't consider any classes and so a lot of discriminative information *may* be lost when throwing some components away. This can yield bad results, especially when it comes to classification. In order to find a combination of features that separates best between classes the Linear Discriminant Analysis instead maximizes the ration of between-classes to within-classes scatter. The idea is, that same classes should cluster tightly together.
+Some time ago I have written [a post on Linear Discriminant Analysis](/blog/pca_lda_with_gnu_octave), a statistical method often used for dimensionality reduction and classification. It was invented by the great statistician [Sir R. A. Fisher](http://en.wikipedia.org/wiki/Ronald_Fisher), who successfully used it for classifying flowers in his 1936 paper *"The use of multiple measurements in taxonomic problems"* (The famous [Iris Data Set](http://archive.ics.uci.edu/ml/datasets/Iris) is still available at the [UCI Machine Learning Repository](http://archive.ics.uci.edu/ml).). But why do we need another dimensionality reduction method, if the Principal Component Analysis (PCA) did such a good job? Well, the PCA finds a linear combination of features that maximizes the total variance in data. While this is clearly a powerful way to represent data, it doesn't consider any classes and so a lot of discriminative information *may* be lost when throwing some components away. This can yield bad results, especially when it comes to classification. In order to find a combination of features that separates best between classes the Linear Discriminant Analysis instead maximizes the ration of between-classes to within-classes scatter. The idea is, that same classes should cluster tightly together.
 
 This was also recognized by [Belhumeur](http://www.cs.columbia.edu/~belhumeur), [Hespanha](http://www.ece.ucsb.edu/~hespanha) and [Kriegman](http://cseweb.ucsd.edu/~kriegman) and so they applied a Discriminant Analysis to face recognition in their paper *"Eigenfaces vs. Fisherfaces: Recognition Using Class Specific Linear Projection"* (1997). The Eigenfaces approach by Pentland and Turk as described in *"Eigenfaces for Recognition"* (1991) was a revolutionary one, but the original paper already discusses the negative effects of images with changes in background, light and perspective. So on datasets with differences in the setup, the Principal Component Analysis is likely to find the wrong components for classification and can perform poorly.
 
@@ -210,7 +210,7 @@ The first database I will evaluate is the Yale Facedatabase A. It consists of 15
 
 Unfortunately the images in this database are not aligned, so the faces may be at different positions in the image. For the Eigenfaces and Fisherfaces method the images need to be preprocessed, since both methods are sensible to rotation and scale. You don't want to do this manually, so I have written a function [crop.m](https://github.com/bytefish/facerec/blob/master/m/scripts/crop.m)/[crop_face.py](https://github.com/bytefish/facerec/blob/master/py/apps/scripts/crop_face.py) for this, which has the following description:
 
-<pre>
+```matlab
 function crop(filename, eye0, eye1, top, left, dsize)
 	%% Rotates an image around the eyes, resizes to destination size.
 	%%
@@ -232,7 +232,7 @@ function crop(filename, eye0, eye1, top, left, dsize)
 	%% Leaves 21px offset above the eyes (0.3*70px) and 28px horizontal
 	%% offset. 20% of the image to the left eye, 20% to the right eye
 	%% (2*0.2*70=28px).
-</pre>
+```
 
 I specify the dimensions of the cropped image to be ``(100,130)`` for this database. ``top`` is the vertical offset, which specifies how much of the image is above the eyes, 40% seems to be a good value for these images. ``left`` specifies the horizontal offset, how much space is left from an eye to the border, 30% is a good value. The image is then rotated by the eye positions. If it's not desired to align all images at the eyes, scale or rotate them, please adjust the script to your needs. [batch_crop.m](https://github.com/bytefish/facerec/blob/master/m/scripts/batch_crop.m) is a simple script to crop images given by their filename and associated eye coordinates. Feel free to translate it to Python.
 
@@ -263,7 +263,7 @@ philipp@mango:~/python/facerec$ tree /home/philipp/facerec/data/yalefaces
 
 I want to do face recognition on this dataset. The Eigenfaces method [did such a good job on the AT&T Facedatabase](/blog/eigenfaces), so how does it work for the Yalefaces? Let's find out and import the ``models``, ``validation`` and ``filereader``:
 
-```python
+```pycon
 >>> from facerec.models import *
 >>> from facerec.validation import *
 >>> from facerec.filereader import *
@@ -271,18 +271,19 @@ I want to do face recognition on this dataset. The Eigenfaces method [did such a
 
 Read in the Yale Facedatabase A:
 
-```python
+```pycon
 >>> dataset = FilesystemReader("/home/philipp/facerec/data/yalefaces")
 ```
 
 Create the Eigenfaces model, we'll take the 50 principal components in this example:
 
-```python
+```pycon
 >>> eigenface = Eigenfaces(num_components=50) # take 50 principal components
 ```
 
 We can measure the performance of this classifier with a Leave-One Out Cross validation:
-```python
+
+```pycon
 >>> cv0 = LeaveOneOutCrossValidation(eigenface)
 >>> cv0.validate(dataset.data,dataset.classes,print_debug=True)
 >>> cv0
@@ -291,7 +292,7 @@ Leave-One-Out Cross Validation (model=Eigenfaces, runs=1, accuracy=81.82%, tp=13
 
 So the model has a recognition rate of 81.82%. Note that a Leave-One-Out Cross validation can be computationally expensive for large datasets. In this example we are computing 165 models, with a computation time of 3 seconds per model this validation will take circa 8 minutes to finish. It's often more useful to perform a k-fold cross validation instead, because a Leave One Out Cross validation can also act weird at times (see the slides at [Introduction to Pattern Analysis: Cross Validation](http://research.cs.tamu.edu/prism/lectures/pr/pr_l13.pdf)). A 5-fold cross validation is good for this database:
 
-```python
+```pycon
 >>> cv1= KFoldCrossValidation(eigenfaces, k=5) # perform a 5-fold cv
 >>> for i in xrange(10):
 ... 	cv1.validate(dataset.data,dataset.classes, print_debug=True)
@@ -301,7 +302,7 @@ The model will be validated 50 times in total, so the loop will take 2.5 minutes
 
 Some coffees later the validation has finished. Before reporting the final figure I'd like to show you some methods common to all validation objects:
 
-```python
+```pycon
 >>> cv1.results
 array([[123,  27,   0,   0],
        [123,  27,   0,   0],
@@ -323,14 +324,14 @@ array([123, 123, 121, 119, 120, 121, 122, 124, 120, 121])
 
 And to get an overview you can simply get the representation of the Validation object:
 
-```python
+```pycon
 >>> cv1 # or simply get the representation
 k-Fold Cross Validation (model=Eigenfaces, k=5, runs=10, accuracy=80.93%, std(accuracy)=1.00%, tp=1214, fp=286, tn=0, fn=0)
 ```
 
 With 80.93%+-1.00% accuracy the Eigenfaces algorithms performs ``OK`` on this dataset, I wouldn't say it performs bad. But can we do better, by taking less or more principal components? We can write a small script to evaluate that. I will perform a 5-fold cross-validation on the Eigenfaces model with ``[10, 25, 40, 55, 70, 85, 100]`` components:
 
-```python
+```pycon
 parameter = range(10,101,15)
 results = []
 for i in parameter:
@@ -341,7 +342,7 @@ for i in parameter:
 
 And we can see, that it doesn't really better the recognition rate:
 
-```python
+```pycon
 >>> for result in results:
 ...     print "%d components: %.2f%%+-%.2f%%" % (result.model.num_components, result.accuracy*100, result.std_accuracy*100)
 ... 
@@ -356,13 +357,13 @@ And we can see, that it doesn't really better the recognition rate:
 
 Maybe we can get a better understanding of the method if we look at the Eigenfaces. Computing the model is necessary, because in the validation the model is cleared.
 
-```python
+```pycon
 >>> eigenfaces = Eigenfaces(dataset.data,dataset.classes,num_components=100) # model will now be computed
 ```
 
 and then plot the Eigenfaces:
 
-```python
+```pycon
 >>> from facerec.visual import *
 >>> PlotSubspace.plot_weight(model=eigenfaces, num_components=16, dataset=dataset, title="Eigenfaces", rows=4, cols=4, filename="16_eigenfaces.png")
 ```
@@ -376,12 +377,13 @@ Just by looking at the first 16 Eigenfaces we can see, that they don't really de
 
 Let's see what I mean. By computing the Eigenfaces, we have projected the database onto the first hundred components as identified by a Principal Component Analysis. This effectively reduced the dimensionality of the images to 100. We can now try to reconstruct the real faces from these 100 components:
 
-```python
+```pycon
 >>> proj1 = eigenfaces.P[:,17].copy()
 >>> I = eigenfaces.reconstruct(proj1)
 ```
 ... and plot it:
-```python
+
+```pycon
 >>> PlotBasic.plot_grayscale(I, "eigenface_reconstructed_face.png", (dataset.width, dataset.height))
 ```
 
@@ -393,7 +395,7 @@ Let's see what I mean. By computing the Eigenfaces, we have projected the databa
 
 Time for the Fisherfaces method! If you haven't done already, import the modules and load the data:
 
-```python
+```pycon
 >>> from facerec.models import *
 >>> from facerec.validation import *
 >>> from facerec.filereader import *
@@ -401,19 +403,19 @@ Time for the Fisherfaces method! If you haven't done already, import the modules
 
 Read the dataset:
 
-```python
+```pycon
 >>> dataset = FilesystemReader("/home/philipp/facerec/data/yalefaces")
 ```
 
 create the model (default parameters are ok):
 
-```python
+```pycon
 >>> fisherfaces = Fisherfaces()
 ```
 
 And then perform a Leave-One-Out Cross-Validation:
 
-```python
+```pycon
 >>> cv2 = LeaveOneOutCrossValidation(fisherfaces)
 >>> cv2.validate(dataset.data,dataset.classes, print_debug=True)
 >>> cv2
@@ -422,7 +424,7 @@ Leave-One-Out Cross Validation (runs=1, accuracy=96.36%, tp=159, fp=6, tn=0, fn=
 
 ... which yields an accuracy of 96.36%. Performing 10 runs of a 5-fold cross validation supports this:
 
-```python
+```pycon
 >>> cv3 = KFoldCrossValidation(fisherfaces, k=5) # perform a 5-fold cv
 >>> for i in xrange(10):
 ...		cv3.validate(X,y,print_debug=True)
@@ -432,13 +434,13 @@ k-Fold Cross Validation (k=5, runs=10, accuracy=96.80%, std(accuracy)=1.63%, tp=
 
 Allthough the standard deviation is slightly higher for the Fisherfaces, with 96.80%+-1.63% it performs much better than the Eigenfaces method. You can also see that the faces were reduced to only 14 components (equals number of subjects - 1). Let's have a look at the components identified by the Fisherfaces method:
 
-```python
+```pycon
 >>> fisherface = Fisherfaces(dataset.data,dataset.classes) # initialize and compute, or call compute explicitly
 ```
 
 Import the visual module and plot the faces:
 
-```
+```pycon
 >>> from facerec.visual import *
 >>> PlotSubspace.plot_weight(model=fisherface, num_components=14, dataset=dataset, filename="16_fisherfaces.png", rows=4, cols=4)
 ```
@@ -449,12 +451,13 @@ The Fisherfaces are a bit harder to explain, because they identify regions of a 
 
 I could only guess which component describes which features. So I leave the interpretation up to the reader. What we lose with the Fisherfaces method for sure, is the ability to reconstruct faces. If I want to reconstruct face number 17, just like in the Eigenfaces section:
 
-```python
+```pycon
 >>> proj2 = fisherface.P[:,17].copy()
 >>> I2 = fisherface.reconstruct(proj2)
 ```
 ... and plot it:
-```python
+
+```pycon
 >>> PlotBasic.plot_grayscale(I2, "fisherface_reconstructed_face.png", (dataset.width, dataset.height))
 ```
 
@@ -495,7 +498,7 @@ Let's see how both methods perform on the celebrities dataset.
 
 Import the modules:
 
-```python
+```pycon
 >>> from facerec.models import *
 >>> from facerec.validation import *
 >>> from facerec.filereader import *
@@ -504,13 +507,13 @@ Import the modules:
 
 Read in the database:
 
-```python
+```pycon
 >>> dataset = FilesystemReader("/home/philipp/facerec/data/c1")
 ```
 
 The Eigenfaces method with a Leave-One-Out cross validation:
 
-```python
+```pycon
 >>> eigenface = Eigenfaces(num_components=100)
 >>> cv0 = LeaveOneOutCrossValidation(eigenface)
 >>> cv0.validate(dataset.data,dataset.classes,print_debug=True)
@@ -521,7 +524,7 @@ Leave-One-Out Cross Validation (model=Eigenfaces, runs=1, accuracy=44.00%, tp=44
 
 Only achieves 44% recognition rate! A 5-fold cross validation:
 
-```python
+```pycon
 >>> cv1 = KFoldCrossValidation(eigenface, k=5)
 >>> for i in xrange(10):
 ...     cv1.validate(dataset.data,dataset.classes,print_debug=True)
@@ -534,13 +537,13 @@ Shows that the recognition rate of 43.30%+-2.33% is a bit better than guessing, 
 
 The Fisherface method instead:
 
-```python
+```pycon
 >>> fisherface = Fisherfaces()
 ```
 
 ... achieves a 93% recognition rate with a leave one out strategy:
 
-```python
+```pycon
 >>> cv2 = LeaveOneOutCrossValidation(fisherface)
 >>> cv2.validate(dataset.data,dataset.classes, print_debug=True)
 Leave-One-Out Cross Validation (model=Fisherfaces, runs=1, accuracy=93.00%, tp=93,
@@ -549,7 +552,7 @@ Leave-One-Out Cross Validation (model=Fisherfaces, runs=1, accuracy=93.00%, tp=9
 
 And with 5-fold cross validation:
 
-```python
+```pycon
 >>> cv3 = KFoldCrossValidation(fisherface,k=5)
 >>> for i in xrange(10):
 ... 	cv3.validate(dataset.data,dataset.classes,print_debug=True)
@@ -562,14 +565,14 @@ accuracy=90.50%, std(accuracy)=1.36%, tp=905, fp=95, tn=0, fn=0)
 
 Compute both models (necessary because the validation empties the model):
 
-```python
+```pycon
 >>> eigenface = Eigenfaces(dataset.data,dataset.classes,num_components=100)
 >>> fisherface = Fisherfaces(dataset.data,dataset.classes)
 ```
 
 The Eigenfaces...
 
-```python
+```pycon
 >>> PlotSubspace.plot_weight(model=eigenface, num_components=16, dataset=dataset, title="Celebrity Eigenface", rows=4, cols=4, filename="16_celebrity_eigenfaces.png")
 ```
 
@@ -579,7 +582,7 @@ The Eigenfaces...
 
 While the Fisherfaces identify regions:
 
-```python
+```pycon
 >>> PlotSubspace.plot_weight(model=fisherface, num_components=9, dataset=dataset, title="Celebrity Fisherface", rows=3, cols=3, filename="9_celebrity_fisherfaces.png")
 ```
 
@@ -628,17 +631,17 @@ Now let's finally answer the question why I wrote this post at all. Who do I res
 
 Then I compute the model:
 
-```python
+```pycon
 >>> fisherface = Fisherfaces(dataset.data,dataset.classes)
 ```
 Read in my face:
 
-```python
+```pycon
 >>> Q = FilesystemReader.read_image("/home/philipp/crop_me.png")
 ```
 And find the closest match:
 
-```python
+```pycon
 >>> prediction = fisherface.predict(Q)
 >>> print dataset.className(prediction)
 ...
@@ -649,7 +652,7 @@ I knew it. The closest match to my face is [Patrick Stewart](http://en.wikipedia
 
 If I project my face on the first 2 components I would actually resemble Arnie the most:
 
-![My face projected on the first two components](/static/images/blog/fisherfaces/philipp_facespace_2D_12.png)
+![My face projected on the first two components](/static/images/blog/fisherfaces/philipp_facespace_2d_12.png)
 
 But including the third dimension (projection on second and third component) brings me closer to Patrick Stewart:
 
@@ -677,26 +680,26 @@ Definitely some Schwarzenegger in there!
 
 The GNU Octave version is just as simple to use as the Python version. I think there's no need to explain every function argument in detail, the code is short and it's all commented in the definition files already. Let's go and fire up Octave. But before you start to do anything, you have to add the path of definition files to the GNU Octave search path. Since GNU Octave 3 you can use ``addpath(genpath("/path/to/folder/"))`` to add all definition files in a folder and subfolder:
 
-```
+```matlab
 addpath (genpath ("."));
 ```
 
-This makes all function definition in the subfolders available to GNU Octave (see [[https://github.com/bytefish/facerec/blob/master/m/example.m|example.m]]) and now you can read in the dataset:
+This makes all function definition in the subfolders available to GNU Octave (see the examples in [facerec](https://github.com/bytefish/facerec)) and now you can read in the dataset:
 
-```
+```matlab
 % load data
 [X y width height names] = read_images("/home/philipp/facerec/data/yalefaces_recognition");
 ```
 
 from this we can learn the Eigenfaces with 100 principal components:
 
-```
+```matlab
 eigenface = eigenfaces(X,y,100);
 ```
 
 If we want to see the classes in 2D:
 
-```
+```matlab
 %% 2D plot of projection (add the classes you want)
 figure; hold on;
 for i = findclasses(eigenface.y, [1,2,3])
@@ -706,14 +709,14 @@ endfor
 
 I adopted the [KISS](http://en.wikipedia.org/wiki/KISS_principle) principle for the validation. The key idea is the following: the validation gets two function handles ``fun_train``, which learns a model and ``fun_predict``, which tests the learned model. Inside the validation a data array and corresponding classes are passed to the training function; and ``fun_predict`` gets a model and test instance. What to do if you need to add parameters to one of the calls? Bind them! I want to learn eigenfaces with 100 components and the prediction should use a 1 nearest neighbor for the classification:
 
-```
+```matlab
 fun_eigenface = @(X,y) eigenfaces(X,y,100);
 fun_predict = @(model, Xtest) eigenfaces_predict(model, Xtest, 1)
 ```
 
 Easy huh? Performing validations can now be done with:
 
-```
+```matlab
 % perform a Leave-One-Out Cross Validation
 cv0 = LeaveOneOutCV(X,y,fun_eigenface, fun_predict, 1)
 % perform a 10-fold cross validation
@@ -758,14 +761,13 @@ matrix([[ 0. ,  0. ],
 
 So if you want to treat an array like a matrix, then simply call ``numpy.asmatrix`` at some point in your code. Next thing you'll need to understand is related to array slicing and indexing, which is a great thing in NumPy. If you want to just slice the first column off an array, be sure to always ``make a copy of the sliced data`` instead of just assigning a variable to the slice. This applies if you don't go for speed, the situation might change if you are looping through data a million times. See this little example. Let's start the interactive python shell and import numpy:
 
-```
-philipp@mango:~$ python
+```pycon
 >>> import numpy as np
 ```
 
 With ``pmap`` we can now see how much memory the python process currently consumes:
 
-```
+<pre>
 philipp@mango:~$ ps ax | grep python
 27241 pts/7    S+     0:00 python
 philipp@mango:~$ pmap -x 27241
@@ -775,17 +777,17 @@ b78d7000       0       8       8 rw---    [ anon ]
 bf979000       0     172     172 rw---    [ stack ]
 -------- ------- ------- ------- -------
 total kB   26436       -       -       -
-```
+</pre>
 
 ``26`` MB is a pretty good value (rounded up). Now let's create a huge NumPy matrix with ``9000*9000*64`` bit:
 
-```python
+```pycom
 >>> huge = np.zeros((9000,9000),dtype=np.float64)
 ```
 
 The process should now occupy ``26`` MB + ``618`` MB, making it ``644`` MB in total. ``pmap`` verifies:
 
-```
+<pre>
 philipp@mango:~$ pmap -x 27241
 [...]
 b783c000       0     524     524 rw---    [ anon ]
@@ -793,11 +795,11 @@ b78d7000       0       8       8 rw---    [ anon ]
 bf979000       0     172     172 rw---    [ stack ]
 -------- ------- ------- ------- -------
 total kB  659252       -       -       -
-```
+</pre>
 
 The process now has ``644 MB``. What happens if you attempt to slice the array? Take off the first column and assign it to huge again: 
 
-```python
+```pycon
 >>> huge = huge[:,0]
 >>> huge.shape
 (9000,)
@@ -805,7 +807,7 @@ The process now has ``644 MB``. What happens if you attempt to slice the array? 
 
 Wonderful, and the memory?
 
-```
+<pre>
 philipp@mango:~$ pmap -x 27241
 [...]
 b783c000       0     524     524 rw---    [ anon ]
@@ -813,20 +815,20 @@ b78d7000       0       8       8 rw---    [ anon ]
 bf979000       0     172     172 rw---    [ stack ]
 -------- ------- ------- ------- -------
 total kB  659252       -       -       -
-```
+</pre>
 
 Still 644 MB! Why? Because NumPy on one hand stores your raw array data (called a ``data buffer`` in the [NumPy internals document](http://docs.scipy.org/doc/numpy/reference/internals.html) and on the other hand stores information about the raw data. If you slice a column and assign it to a variable, you basically just create a new metadata object (with the specific information about shape etc.), but it's still a view on the ``same data buffer``. So all your data still resides in memory. This makes slicing and indexing of NumPy arrays and matrices superfast, but it's something you should definitely know about.
 
 If speed is not crucial to you and you care about your bytes, be sure to make a copy:
 
-```python
+```pycon
 >>> huge = huge[0:,0].copy() # version (1)
 >>> huge = np.array(huge[0:,0], copy=True) # or version (2)
 ```
 
 ... and the memory magically shrinks to 26 MB again.:
 
-```
+<pre>
 philipp@mango:~$ pmap -x 27241
 [...]
 b783c000       0     524     524 rw---    [ anon ]
@@ -834,28 +836,28 @@ b78d7000       0       8       8 rw---    [ anon ]
 bf979000       0     172     172 rw---    [ stack ]
 -------- ------- ------- ------- -------
 total kB   26436       -       -       -
-```
+</pre>
 
 ### OOP in GNU Octave ###
 
 I didn't go for OOP in GNU Octave, because even simple examples like ``myclass.m``:
 
-```
+```matlab
 function b = myclass(a)
   b.a = a;
   b = class (b, "myclass");
-endfunction
+end
 ```
 
 fail with GNU Octave, version 3.2.4:
 
-```
+<pre>
 $ octave
 octave:0> x = myclass(1)
 error: class: invalid call from outside class constructor
 error: called from:
 error:   myclass at line 3, column 5
-```
+</pre>
 
 From what I have read the error seems to be a regression bug and it's probably fixed in the latest stable release. However, the implementation of OOP in GNU Octave still seems to be experimental and I don't think everybody is on latest releases. And to be honest, I've seldomly (read almost never) seen object oriented code with either MATLAB or Octave, so I don't really feel guilty about not using it.
 
