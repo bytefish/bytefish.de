@@ -135,7 +135,7 @@ public class AcceleratorDemo extends Activity implements SensorEventListener {
 
 ## Simple Gesture Recognition ##
 
-<img src="/static/images/wiki/mousegesture.png" width="300" />
+<img src="/static/images/blog/mousegesture.png" width="300" />
 
 Here is a super simple application for recognizing mouse gestures. Based on DTW it should give a good accuracy. Complexity is O(n²), so it's not really suited for large training sets. You might want to look at the [$1-Recognizer](http://depts.washington.edu/aimgroup/proj/dollar/) for a faster algorithm.
 

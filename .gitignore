@@ -1,5 +1,9 @@
-*.pyc
+Makefile
+pelican
 output
 *.pyc
 srv.pid
 develop_server.sh
+pelicanconf.py
+publishconf.py
+pelican.pid
