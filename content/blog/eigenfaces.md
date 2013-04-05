@@ -91,7 +91,7 @@ endfor
 
 Resulting in:
 
-<img src="/static/images/blog/eigenfaces/subplot_eigenfaces.png" width="600" class=".mediacenter" />
+<img alt="dummy" src="/static/images/blog/eigenfaces/subplot_eigenfaces.png" width="600" class=".mediacenter" />
 
 By plotting the whole stuff in 3D (just three classes here): 
 
@@ -105,7 +105,7 @@ end
 
 you can see that the faces are well seperated:
 
-<img src="/static/images/blog/eigenfaces/eigenfaces_3d.png" width="600" class=".mediacenter" />
+<img alt="dummy" src="/static/images/blog/eigenfaces/eigenfaces_3d.png" width="600" class=".mediacenter" />
 
 ## Accuracy ##
 

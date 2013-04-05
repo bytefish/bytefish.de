@@ -73,7 +73,7 @@ This code yields the same result and needs //0.27// seconds to complete:
 2011-09-30 14:29:40,337 - facerec.models.LBP - DEBUG - time to compute patterns took=0.269666 seconds
 </pre>
 
-By vectorizing the code we can use the [[http://www.scholarpedia.org/article/Local_Binary_Patterns|Local Binary Patterns]] without going to C and stay with our familiar NumPy syntax.
+By vectorizing the code we can use the [Local Binary Patterns](http://www.scholarpedia.org/article/Local_Binary_Patterns) without going to C and stay with our familiar NumPy syntax.
 
 We can still do faster with the tools NumPy and SciPy have. **Beware!** Things get a little bit tough to debug from here on. By using [scipy.weave](http://docs.scipy.org/doc/scipy/reference/tutorial/weave.html) you can either use [weave.blitz](http://docs.scipy.org/doc/scipy/reference/tutorial/weave.html) or [weave.inline](http://docs.scipy.org/doc/scipy/reference/tutorial/weave.html) to weave C/C++ code into your program. Our code is rather easy for [blitz](http://www.oonumerics.org/blitz), because it only has to translate our NumPy ranges into ``blitz::Range`` objects:
 

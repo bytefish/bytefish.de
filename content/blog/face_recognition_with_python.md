@@ -7,7 +7,7 @@ author: Philipp Wagner
 
 # Face Recognition with Python/GNU Octave/Matlab #
 
-I've recently pushed some code to perform face recognition with OpenCV2 into [[http://www.github.com/bytefish|my github repository]]. If you've ever researched on face recognition I am pretty sure you've noticed: there's a [[http://scholar.google.de/scholar?q=face+recognition|gigantic number of publications]], but source code is almost always kept like a secret. Since I've got some positive feedback on [Machine Learning with OpenCV2](http://www.bytefish.de/pdf/machinelearning.pdf), I thought I write a document on:
+I've recently pushed some code to perform face recognition with OpenCV2 into [my github repository](http://www.github.com/bytefish). If you've ever researched on face recognition I am pretty sure you've noticed: there's a [gigantic number of publications](http://scholar.google.de/scholar?q=face+recognition), but source code is almost always kept like a secret. Since I've got some positive feedback on [Machine Learning with OpenCV2](http://www.bytefish.de/pdf/machinelearning.pdf), I thought I write a document on:
 
 * [Face Recognition with OpenCV2 (Python version, pdf)](http://www.bytefish.de/pdf/facerec_python.pdf)
 * [Face Recognition with OpenCV2 (GNU Octave/MATLAB version, pdf)](http://www.bytefish.de/pdf/facerec_octave.pdf)
@@ -46,6 +46,7 @@ If you have troubles using [git](http://git-scm.org), then you can also download
 * https://github.com/bytefish/facerecognition_guide/downloads
 
 Once downloaded (or unzipped) the directory has the following content:
+
 <pre>
 philipp@mango:~/github/facerecognition_guide$ tree -d -L 1
 .
@@ -140,15 +141,15 @@ Where:
 
 Running the Python samples is easy. First of all ``cd`` into ``scripts`` directory:
 
-<pre>
+```sh
 philipp@mango:~/github/facerecognition_guide$ cd src/py/scripts/
-</pre>
+```
 
 and from there you can start the scripts by running:
 
-<pre>
+```sh
 python <scriptname.py> </path/to/your/images>
-</pre>
+```
 
 Where:
 
@@ -171,11 +172,11 @@ And the script will generate two plots for you (in the scripts folder!):
     <th>Plot</th></tr>
   <tr>
     <td>python_pca_eigenfaces.png</td>
-    <td><img src="/static/images/blog/face_recognition_with_python/python_pca_eigenfaces.png" width="500" /></td>
+    <td><img src="/static/images/blog/face_recognition_with_python/python_pca_eigenfaces.png" alt="Eigenfaces" width="500" /></td>
   </tr>
   <tr>
     <td>python_pca_reconstruction.png</td>
-    <td><img src="/static/images/blog/face_recognition_with_python/python_pca_reconstruction.png" width="500" /> </td>
+    <td><img src="/static/images/blog/face_recognition_with_python/python_pca_reconstruction.png" alt="Fisherfaces" width="500" /> </td>
   </tr>
 </table>
 

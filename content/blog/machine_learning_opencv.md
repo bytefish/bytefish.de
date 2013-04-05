@@ -307,7 +307,7 @@ Please note: I didn't optimize any parameters in these experiments. A Support Ve
 
 #### Plot ####
 
-<img src="/static/images/blog/machine_learning_opencv/2x.png" width="600" class="mediacenter" />
+<img alt="dummy" src="/static/images/blog/machine_learning_opencv/2x.png" width="600" class="mediacenter" />
 
 ### y = sin(10x) ###
 
@@ -322,7 +322,7 @@ Please note: I didn't optimize any parameters in these experiments. A Support Ve
 
 #### Plot ####
 
-<img src="/static/images/blog/machine_learning_opencv/sin10x.png" width="600" class="mediacenter" />
+<img alt="dummy" src="/static/images/blog/machine_learning_opencv/sin10x.png" width="600" class="mediacenter" />
 
 ### y = tan(10x) ###
 
@@ -337,4 +337,4 @@ Please note: I didn't optimize any parameters in these experiments. A Support Ve
 
 #### Plot ####
 
-<img src="/static/images/blog/machine_learning_opencv/tan10x.png" width="600" class="mediacenter" />
+<img alt="dummy" src="/static/images/blog/machine_learning_opencv/tan10x.png" width="600" class="mediacenter" />

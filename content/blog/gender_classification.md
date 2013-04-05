@@ -114,7 +114,7 @@ print("-dpng",sprintf("-S%d,%d",width,height),"fisherface.png");
 
 and the Fisherface reveals:
 
-<img src="/static/images/blog/gender_classification/fisherface.png" class="mediacenter" />
+<img alt="dummy" src="/static/images/blog/gender_classification/fisherface.png" class="mediacenter" />
 
 Great surprise: it's the eyes and eyebrows the genders differ in... probably there's also a bit of mouth. We can conclude, that given a preprocessed face the Fisherfaces method can very accurately predict the gender of a given face. The recognition rate for a subject-independent cross-validation was 98.5%, which is only slightly below the 99.2% for a subject-dependent validation. 
 

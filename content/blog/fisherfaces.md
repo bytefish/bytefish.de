@@ -389,7 +389,7 @@ Let's see what I mean. By computing the Eigenfaces, we have projected the databa
 
 ... and we should see a face again:
 
-<img src="/static/images/blog/fisherfaces/eigenface_reconstructed_face.png" height="130" class="mediacenter"/>
+<img src="/static/images/blog/fisherfaces/eigenface_reconstructed_face.png" height="130" class="mediacenter" alt="eigenface_reconstructed_face" />
 
 ### Fisherfaces ###
 
@@ -463,7 +463,7 @@ I could only guess which component describes which features. So I leave the inte
 
 We get back a picture similar to:
 
-<img src="/static/images/blog/fisherfaces/fisherface_reconstructed_face.png" height="130" class="mediacenter"/>
+<img src="/static/images/blog/fisherfaces/fisherface_reconstructed_face.png" height="130" class="mediacenter" alt="fisherface_reconstructed_face"/>
 
 ### Conclusion ###
 
@@ -488,7 +488,7 @@ My celebrity dataset consists of the following faces:
 
 I have chosen the images to be frontal face with a similiar perspective and light settings. Since the algorithms are sensible towards rotation and scale, the images have been preprocessed to equal scale of ``70x70``px and centered eyes. Here is my Clooney-Set for example:
 
-<img src="/static/images/blog/fisherfaces/clooney_set.png" class="mediacenter" />
+<img src="/static/images/blog/fisherfaces/clooney_set.png" class="mediacenter" alt="clooney_set" />
 
 I hope you understand that I can't share the dataset with you. Some of the photos have a public license, but most of the photos have an unclear license. From my experience all I can tell you is: finding images of George Clooney took less than a minute, but it was really, really hard finding good images of Johnny Depp or Arnold Schwarzenegger.
 
@@ -627,7 +627,7 @@ Brad Pitt (3), Johnny Depp (5) and Tom Cruise (10) seem to have a unique face, a
 
 Now let's finally answer the question why I wrote this post at all. Who do I resemble the most? I'll use a frontal photo of myself and crop it, just like I did with the other faces:
 
-<img src="/static/images/blog/fisherfaces/crop_philipp.jpg" class="mediacenter" />
+<img src="/static/images/blog/fisherfaces/crop_philipp.jpg" class="mediacenter" alt="crop_philipp" />
 
 Then I compute the model:
 
@@ -672,7 +672,7 @@ Let's see what I look like:
 
 Sorry it's a bit small, because my training images are only 70x70 pixels:
 
-<img src="/static/images/blog/fisherfaces/philipp_reconstructed_face.png" width="130" class="mediacenter"/>
+<img src="/static/images/blog/fisherfaces/philipp_reconstructed_face.png" width="130" class="mediacenter" alt="philipp_reconstructed_face" />
 
 Definitely some Schwarzenegger in there!
 

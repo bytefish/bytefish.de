@@ -8,7 +8,7 @@ author: Philipp Wagner
 
 Linux comes with a great [firewall](http://en.wikipedia.org/wiki/Firewall_%28computing%29) and with the help of [iptables](http://www.netfilter.org/projects/iptables/index.html) it's easy to secure a workstation. [iptables](http://www.netfilter.org/projects/iptables/index.html) makes it possible to define chains of rules that an incoming or outgoing packet has to pass for getting dropped or accepted. If no rule applies a default policy (either drop or accept) is applied.
 
-You can see your current iptables rules by typing (you must be root to configure iptables, so use [[http://xkcd.com/149/|sudo]]):
+You can see your current iptables rules by typing (you must be root to configure iptables, so use [sudo](http://xkcd.com/149)):
 
 ```sh
 iptables -L

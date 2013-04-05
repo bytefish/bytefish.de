@@ -47,7 +47,7 @@ ylim([0 8])
 
 We can see that both classes can clearly be separated in one dimension:
 
-<img src="/static/images/blog/pca_lda_with_gnu_octave/data.png" width="400" class="mediacenter" />
+<img alt="dummy" src="/static/images/blog/pca_lda_with_gnu_octave/data.png" width="400" class="mediacenter" />
 
 So how does a Principal Component Analysis perform on this dataset?
 
@@ -89,7 +89,7 @@ set(pc2, 'color', [0 1 0], "linestyle", "--")
 
 yields a new coordinate system with the mean as origin and the orthogonal principal components as axes:
 
-<img src="/static/images/blog/pca_lda_with_gnu_octave/principal.png" width="400" class="mediacenter" />
+<img alt="dummy" src="/static/images/blog/pca_lda_with_gnu_octave/principal.png" width="400" class="mediacenter" />
 
 According to the PCA we can safely discard the second component, because the first principal component is responsible for 85% of the total variance.
 
@@ -130,11 +130,11 @@ p2 = plot(y2(:,1), y2(:,2),"go", "markersize", 10, "linewidth", 3);
 
 ... et voilà. The data isn't [linearly separable](http://en.wikipedia.org/wiki/Linear_separability) anymore in this lower-dimensional representation. What does this mean? The classes are smeared together and classification becomes tough:
 
-<img src="/static/images/blog/pca_lda_with_gnu_octave/pc1.png" width="400" class="mediacenter" />
+<img alt="dummy" src="/static/images/blog/pca_lda_with_gnu_octave/pc1.png" width="400" class="mediacenter" />
 
 ... while a projection on the second principal component yields a much better representation for classification:
 
-<img src="/static/images/blog/pca_lda_with_gnu_octave/pc2.png" width="400" class="mediacenter" />
+<img alt="dummy" src="/static/images/blog/pca_lda_with_gnu_octave/pc2.png" width="400" class="mediacenter" />
 
 See that even a simple Nearest Neighbor classifier would perform awesome here? So we learn that the directions of maximum variance may be useless for classification tasks. The second principal component had a smaller variance, but provided a much better discrimination between the two classes. 
 
@@ -209,7 +209,7 @@ set(pc1, 'color', [1 0 0], "linestyle", "--")
 
 Let's look at the component found by the LDA:
 
-<img src="/static/images/blog/pca_lda_with_gnu_octave/lda_components.png" width="400" class="mediacenter" />
+<img alt="dummy" src="/static/images/blog/pca_lda_with_gnu_octave/lda_components.png" width="400" class="mediacenter" />
 
 Yeah! Perfect separation on the first component, that was what we were looking for!
 
@@ -245,7 +245,7 @@ p2 = plot(y2(:,1), y2(:,2),"go", "markersize", 10, "linewidth", 3);
 
 yields this beautiful plot:
 
-<img src="/static/images/blog/pca_lda_with_gnu_octave/lda_pc1.png" width="400" class="mediacenter" />
+<img alt="dummy" src="/static/images/blog/pca_lda_with_gnu_octave/lda_pc1.png" width="400" class="mediacenter" />
 
 ## Experiment 2: Wine Dataset ##
 
@@ -310,9 +310,11 @@ Loading the Wine Dataset is easy in GNU Octave with the //dlmread// function. I 
 data = dlmread("wine.data",",");
 y = data(:,1);
 X = data(:,2:end);
-</code>
+```
+
 Everything's ok?
-<code>
+
+```matlab
 > size(X)
 ans =
 
@@ -374,7 +376,7 @@ title("PCA (original data)")
 
 shows that the clusters are not clearly separated
 
-<img src="/static/images/blog/pca_lda_with_gnu_octave/pca_wine_original_data.png" width="400" class="mediacenter" />
+<img alt="dummy" src="/static/images/blog/pca_lda_with_gnu_octave/pca_wine_original_data.png" width="400" class="mediacenter" />
 
 ### Linear Discriminant Analysis without normalization ###
 
@@ -387,11 +389,11 @@ Xproj = project(Xm, W_lda(:,1:2));
 
 and project it on the first two components, the classes are way better separated:
 
-<img src="/static/images/blog/pca_lda_with_gnu_octave/lda_wine_original_data.png" width="400" class="mediacenter" />
+<img alt="dummy" src="/static/images/blog/pca_lda_with_gnu_octave/lda_wine_original_data.png" width="400" class="mediacenter" />
 
 ### When normalization matters ###
 
-The PCA performs bad. Why is that? Because the features are all on a different scale. A common trick is to scale the input to zero mean and unit variance, also called [[http://en.wikipedia.org/wiki/Standard_score|z-scores]]. If the normalization is applied on the data:
+The PCA performs bad. Why is that? Because the features are all on a different scale. A common trick is to scale the input to zero mean and unit variance, also called [z-scores](http://en.wikipedia.org/wiki/Standard_score). If the normalization is applied on the data:
 
 ```matlab
 Xm = zscore(X);
@@ -420,11 +422,11 @@ ans =
 
 On normalized data the clusters are better separated by the PCA:
 
-<img src="/static/images/blog/pca_lda_with_gnu_octave/pca_wine_normalized_data.png" width="400" class="mediacenter" />
+<img alt="dummy" src="/static/images/blog/pca_lda_with_gnu_octave/pca_wine_normalized_data.png" width="400" class="mediacenter" />
 
 While the projection found by Fisher's Discriminant Analysis only changes in scale:
 
-<img src="/static/images/blog/pca_lda_with_gnu_octave/lda_wine_normalized_data.png" width="400" class="mediacenter" />
+<img alt="dummy" src="/static/images/blog/pca_lda_with_gnu_octave/lda_wine_normalized_data.png" width="400" class="mediacenter" />
 
 ## Relationship between a PCA and SVD ##
 
@@ -460,10 +462,10 @@ end
 
 and then we can compare both:
 
-<pre>
+```
 octave> all((normalize(DPca) - normalize(DSvd)) < eps)
 ans = 1
-</pre>
+```
 
 Where ``1`` is for ``true``.
 

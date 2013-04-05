@@ -30,7 +30,7 @@ If you have read my blog posts on [Fisherfaces](/blog/fisherfaces) or [Eigenface
 
 Now real life isn't perfect. You simply can't guarantee perfect light settings in your images or 10 images of a person. So what if there's only one image for each person? Our covariance estimates for the subspace will be horribly wrong, something also known as the *Small Sample Size Problem*. Remember the Eigenfaces method [had a 96% recognition rate](/blog/eigenfaces) on the AT&T Facedatabase? How many images do we actually need to get such useful estimates? I've put a tiny script for you into the appendix, feel free to experiment with. Running the script on the AT&T Facedatabase, which is a fairly easy image database, shows:
 
-<img src="/static/images/blog/local_binary_patterns/at_database_vs_accuracy_xy.png" width="500" class="mediacenter" />
+<img alt="dummy" src="/static/images/blog/local_binary_patterns/at_database_vs_accuracy_xy.png" width="500" class="mediacenter" />
 
 So in order to get good recognition rates you'll need at least 8(+-1) images for each person and the Fisherfaces method doesn't really help here; somewhat logical when the subspace we project our data into is identified by a PCA. You can find similar figures in often cited papers.  
 
@@ -42,7 +42,7 @@ So some research concentrated on extracting local features from images. The idea
 
 You've seen those cool [SIFT Features in OpenCV](http://opencv.willowgarage.com/documentation/cpp/feature_detection.html)? The algorithm extracts local keypoints in your image that doesn't mind the scale, one of the reasons why it's called **S**cale-**i**nvariant **f**eature **t**ransform. Just like SIFT, the Local Binary Patterns methodology has its roots in 2D texture analysis. The basic idea is to summarize the local structure in an image by comparing each pixel with its neighborhood. Take a pixel as center and threshold its neighbors against. If the intensity of the center pixel is greater-equal its neighbor, then denote it with 1 and 0 if not. You'll end up with a binary number for each pixel, just like ``11001111``. With 8 surrounding pixels you'll end up with ``2^8`` possible combinations, which are called *Local Binary Patterns* or sometimes abbreviated as *LBP codes*. The first LBP operator actually used a fixed ``3 x 3`` neighborhood just like this:
 
-<img src="/static/images/blog/local_binary_patterns/lbp.png" width="400" class="mediacenter" />
+<img alt="dummy" src="/static/images/blog/local_binary_patterns/lbp.png" width="400" class="mediacenter" />
 
 So why is this description so great? Because it's dead simple to implement and fast as hell. I'll just name it **O**riginal **LBP** in code: 
 
@@ -70,7 +70,7 @@ void lbp::OLBP_(const Mat& src, Mat& dst) {
 
 This description enables you to capture very fine grained details in images. In fact the authors were able to compete with state of the art results for texture classification. Soon after the operator was published it was noted, that a fixed neighborhood fails to encode details differing in scale. So the operator was extended to use a variable neighborhood. The idea is to align an abritrary number of neighbors on a circle with a variable radius, which enables to capture the following neighborhoods:
 
-<img src="/static/images/blog/local_binary_patterns/patterns.png" class="mediacenter" />
+<img alt="dummy" src="/static/images/blog/local_binary_patterns/patterns.png" class="mediacenter" />
 
 The operator is an extension to the original LBP codes, so it gets called the **E**xtended **LBP** (sometimes also referred to as **C**ircular **LBP**) . If a points coordinate on the circle doesn't correspond to image coordinates, the point get's interpolated. Computer science has [a bunch of clever interpolation schemes](http://en.wikipedia.org/wiki/Interpolation), I'll simply do a [bilinear interpolation](http://en.wikipedia.org/wiki/Bilinear_interpolation):
 
@@ -121,37 +121,37 @@ Now using an abritrary radius and sample points has two effects. With an educate
     <th>LBP Image</th>
   </tr>
   <tr>
-    <td>1</td><td>4</td><td> <img src="/static/images/blog/local_binary_patterns/lbp_r1_p4.jpg" class="mediacenter" width="300" /> </td>
+    <td>1</td><td>4</td><td> <img alt="dummy" src="/static/images/blog/local_binary_patterns/lbp_r1_p4.jpg" class="mediacenter" width="300" /> </td>
   </tr>
   <tr>
-    <td>1</td><td>8</td><td> <img src="/static/images/blog/local_binary_patterns/lbp_r1_p8.jpg" class="mediacenter" width="300" /> </td>
+    <td>1</td><td>8</td><td> <img alt="dummy" src="/static/images/blog/local_binary_patterns/lbp_r1_p8.jpg" class="mediacenter" width="300" /> </td>
   </tr>
   <tr>
-    <td>1</td><td>16</td><td> <img src="/static/images/blog/local_binary_patterns/lbp_r1_p16.jpg" class="mediacenter" width="300" /> </td>
+    <td>1</td><td>16</td><td> <img alt="dummy" src="/static/images/blog/local_binary_patterns/lbp_r1_p16.jpg" class="mediacenter" width="300" /> </td>
   </tr>
   <tr>
-    <td>2</td><td>4</td><td> <img src="/static/images/blog/local_binary_patterns/lbp_r2_p4.jpg" class="mediacenter" width="300" /> </td>
+    <td>2</td><td>4</td><td> <img alt="dummy" src="/static/images/blog/local_binary_patterns/lbp_r2_p4.jpg" class="mediacenter" width="300" /> </td>
   </tr>
   <tr>
-    <td>2</td><td>8</td><td> <img src="/static/images/blog/local_binary_patterns/lbp_r2_p8.jpg" class="mediacenter" width="300" /> </td>
+    <td>2</td><td>8</td><td> <img alt="dummy" src="/static/images/blog/local_binary_patterns/lbp_r2_p8.jpg" class="mediacenter" width="300" /> </td>
   </tr>
   <tr>
-    <td>2</td><td>16</td><td> <img src="/static/images/blog/local_binary_patterns/lbp_r2_p16.jpg" class="mediacenter" width="300" /> </td>
+    <td>2</td><td>16</td><td> <img alt="dummy" src="/static/images/blog/local_binary_patterns/lbp_r2_p16.jpg" class="mediacenter" width="300" /> </td>
   </tr>
   <tr>
-    <td>4</td><td>4</td><td> <img src="/static/images/blog/local_binary_patterns/lbp_r4_p4.jpg" class="mediacenter" width="300" /> </td>
+    <td>4</td><td>4</td><td> <img alt="dummy" src="/static/images/blog/local_binary_patterns/lbp_r4_p4.jpg" class="mediacenter" width="300" /> </td>
   </tr>
   <tr>
-    <td>4</td><td>8</td><td> <img src="/static/images/blog/local_binary_patterns/lbp_r4_p8.jpg" class="mediacenter" width="300" /> </td>
+    <td>4</td><td>8</td><td> <img alt="dummy" src="/static/images/blog/local_binary_patterns/lbp_r4_p8.jpg" class="mediacenter" width="300" /> </td>
   </tr>
   <tr>
-    <td>4</td><td>16</td><td> <img src="/static/images/blog/local_binary_patterns/lbp_r4_p16.jpg" class="mediacenter" width="300" /> </td>
+    <td>4</td><td>16</td><td> <img alt="dummy" src="/static/images/blog/local_binary_patterns/lbp_r4_p16.jpg" class="mediacenter" width="300" /> </td>
   </tr>
 </table>
 
 Now what's left is how to classify an object. If you would throw all features into a single histogram all spatial information is discarded. In tasks like face detection (and a lot of other pattern recognition problems) spatial information is very useful, so it has to be incorporated into the histogram somehow. The representation proposed by Ahonen et al. in [Face Recognition with Local Binary Patterns](http://masters.donntu.edu.ua/2011/frt/dyrul/library/article8.pdf) is to divide the LBP image into grids and build a histogram of each cell seperately. Then by concatenating the histograms the spatial information is encoded (*not merging them*), just like this:
 
- <img src="/static/images/blog/local_binary_patterns/philipp_in_a_grid.png" width="300" class="mediacenter" />
+ <img alt="dummy" src="/static/images/blog/local_binary_patterns/philipp_in_a_grid.png" width="300" class="mediacenter" />
 
 This informal description translates to OpenCV as:
 

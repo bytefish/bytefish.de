@@ -19,7 +19,7 @@ There are a lot of other ways to install OpenCV, so please consult the [docs](ht
 
 Double-click the OpenCV-2.3.1-win-superpack.exe and select a folder to extract to. I'll choose ``D:\projects`` in this example:
 
-<img src="/static/images/blog/opencv_visual_studio_and_libfacerec/installer_path.jpg" width="400" class="mediacenter" />
+<img src="/static/images/blog/opencv_visual_studio_and_libfacerec/installer_path.jpg" width="400" class="mediacenter" alt="installer_path" />
 
 The OpenCV superpack is no installer, so you'll need to manually add the OpenCV libraries to the DLL search path of Windows. The search paths of Windows are given in the PATH environment variable, which is a list of the directories to search, each separated by a semicolon.
 ### Windows Vista and Windows 7 users ###
@@ -78,7 +78,7 @@ The difference is, that I've decided to use pre-built Visual Studio 2010 (VC 10)
 
 Start Visual Studio and from the main menu select ``"File -> New Project..."``. Then create an ``"Empty Project"``, name it ``libfacerec`` and store it in ``D:\projects``:
 
-<img src="/static/images/blog/opencv_visual_studio_and_libfacerec/libfacerec_vs_new_proj.jpg" width="400" class="mediacenter" />
+<img src="/static/images/blog/opencv_visual_studio_and_libfacerec/libfacerec_vs_new_proj.jpg" width="400" class="mediacenter" alt="libfacerec_vs_new_proj" />
 
 ### Adding the libfacerec headers and sources ###
 
@@ -88,7 +88,7 @@ Now add the files to the Microsoft Visual Studio solution. In the Solution Explo
 
 Your project now looks like this:
 
-<img src="/static/images/blog/opencv_visual_studio_and_libfacerec/libfacerec_added_files.jpg" width="400" class="mediacenter" />
+<img src="/static/images/blog/opencv_visual_studio_and_libfacerec/libfacerec_added_files.jpg" width="400" class="mediacenter" alt="libfacerec_added_files" />
 
 ### Additional Include Directories ###
 
@@ -100,7 +100,7 @@ Your project doesn't compile yet, because we didn't configure OpenCV. The first 
     * D:\projects\opencv\build\include\opencv
     * D:\projects\opencv\build\include\opencv2
 
-<img src="/static/images/blog/opencv_visual_studio_and_libfacerec/libfacerec_c_cpp.jpg" width="400" class="mediacenter" />
+<img src="/static/images/blog/opencv_visual_studio_and_libfacerec/libfacerec_c_cpp.jpg" width="400" class="mediacenter" alt="libfacerec_c_cpp" />
 
 ### Additional Library Directories and Additional Dependencies ###
 
@@ -115,7 +115,7 @@ Then go to ``Configuration Properties -> Linker -> Input`` and in the ``Addition
 * ``opencv_core231.lib``
 * ``opencv_imgproc231.lib``
 
-<img src="/static/images/blog/opencv_visual_studio_and_libfacerec/libfacerec_linker_input.jpg" width="400" class="mediacenter" />
+<img src="/static/images/blog/opencv_visual_studio_and_libfacerec/libfacerec_linker_input.jpg" width="400" class="mediacenter" alt="libfacerec_linker_input" />
 
 ### Build libfacerec ###
 
@@ -127,11 +127,11 @@ Finally libfacerec can be built.  We are linking against the libraries:
 
 Those libraries have no Debug symbols, so we build libfacerec with the Release Configuration:
 
-<img src="/static/images/blog/opencv_visual_studio_and_libfacerec/release_build.jpg" class="mediacenter" />
+<img src="/static/images/blog/opencv_visual_studio_and_libfacerec/release_build.jpg" class="mediacenter" alt="release_build" />
 
 Then build the project and its executable by simply selecting ``Build -> Build Solution`` (or F7) from the Menu. And you should see:
 
-<img src="/static/images/blog/opencv_visual_studio_and_libfacerec/build.jpg" width="600" class="mediacenter" />
+<img src="/static/images/blog/opencv_visual_studio_and_libfacerec/build.jpg" width="600" class="mediacenter"  alt="build" />
 
 Congratulations!
 
@@ -143,7 +143,7 @@ Now to the Eigenfaces Demo. You need some data to make the examples work, sorry 
 /path/to/image.ext;0
 </pre>
 
-Think of the ``label`` as the subject (the person) this image belongs to, so same subjects (persons) should have the same ``label``. So let's make up an example. Download the AT&T Facedatabase from [[http://www.cl.cam.ac.uk/research/dtg/attarchive/facedatabase.html|AT&T Facedatabase]] and the corresponding CSV file from [[https://github.com/bytefish/opencv/blob/master/eigenfaces/at.txt|at.txt]], which looks like this (file is without ``...`` of course):
+Think of the ``label`` as the subject (the person) this image belongs to, so same subjects (persons) should have the same ``label``. So let's make up an example. Download the AT&T Facedatabase from [AT&T Facedatabase](http://www.cl.cam.ac.uk/research/dtg/attarchive/facedatabase.html) and the corresponding CSV file from [at.txt](https://github.com/bytefish/opencv/blob/master/eigenfaces/at.txt), which looks like this (file is without ``...`` of course):
 
 <pre>
 ./at/s1/1.pgm;0
@@ -164,7 +164,7 @@ D:\projects\libfacerec\Release\libfacerec.exe D:/data/at.txt
 
 and you should see (Note I have switched to the Eigenfaces model in the demo. Latest version in trunk is Fisherfaces!):
 
-<img src="/static/images/blog/opencv_visual_studio_and_libfacerec/eigenfaces.jpg" width="400" class="mediacenter" />
+<img src="/static/images/blog/opencv_visual_studio_and_libfacerec/eigenfaces.jpg" width="400" class="mediacenter" alt="eigenfaces" />
 
 ## Conclusion ##
 

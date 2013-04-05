@@ -1,13 +1,15 @@
 {% extends "base.html" %}
 
-{% block content_title %}<a href="{{ SITEURL }}/{{ page_name }}.html">{{page_name}}{%endblock%}
+{% block content_title %}<a href="{{ SITEURL }}/{{ page_name }}.html" >{{page_name}}</a>{%endblock%}
 
 {% block content %}
   <h1>Posts by {{ author }}:</h1>
-  <dl>
-  {% for article in dates %}
-    <dt>{{ article.locale_date }}</dt>
-    <dd><a href="{{ SITEURL }}/{{ article.url }}">{{ article.title }}</a></dd>
-  {% endfor %}
-  </dl>
+  <ul>
+  {% if articles %}
+    <ul class="posts">
+    {% for article in articles %}
+      <li><span>{{ article.locale_date }}</span> &raquo; <a href="{{ SITEURL }}/{{ article.url }}">{{ article.title }}</a></li>
+    {% endfor %}
+    </ul>
+  {% endif %}
 {% endblock %}

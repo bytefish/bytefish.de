@@ -7,7 +7,7 @@ author: Philipp Wagner
 
 # Validating Algorithms #
 
-This post was originally written for the [[http://answers.opencv.org/questions/|OpenCV QA forum]]. I post it here, because I think it's a great example of how Open Source projects make your life easy.
+This post was originally written for the [OpenCV QA forum](http://answers.opencv.org/questions). I post it here, because I think it's a great example of how Open Source projects make your life easy.
 
 ## introduction ##
 
@@ -85,20 +85,15 @@ philipp@mango:~/facerec/data/at$ tree .
 |-- s1
 |   |-- 1.pgm
 |   |-- 2.pgm
-[...]
-|   //-- 10.pgm
+ ...
 |-- s2
 |   |-- 1.pgm
 |   |-- 2.pgm
-[...]
-|   //-- 10.pgm
+ ...
 |-- s3
 |   |-- 1.pgm
 |   |-- 2.pgm
-[...]
-|   //-- 10.pgm
-   
-...
+ ...
 
 40 directories, 401 files
 </pre>
@@ -154,13 +149,13 @@ Reading in the image data then becomes as easy as calling:
 [X,y] = read_images("/path/to/some/folder")
 ```
     
-Because some algorithms (for example Eigenfaces, Fisherfaces) require your images to be of equal size, I added a second parameter //sz//. By passing the tuple ``sz``, all of the images get resized. So the following call will resize all images in ``/path/to/some/folder`` to ``100x100`` pixels, while loading:
+Because some algorithms (for example Eigenfaces, Fisherfaces) require your images to be of equal size, I added a second parameter ``sz``. By passing the tuple ``sz``, all of the images get resized. So the following call will resize all images in ``/path/to/some/folder`` to ``100x100`` pixels, while loading:
 
 ```python
 [X,y] = read_images("/path/to/some/folder", (100,100))
 ```
     
-All classifiers in scikit-learn are derived from a //BaseEstimator//, which is supposed to have a //fit// and //predict// method. The //fit// method gets a list of samples //X// and corresponding labels //y//, so it's trivial to map to the train method of the //cv2.FaceRecognizer//. The //predict// method also gets a list of samples and corresponding labels, but this time we'll need to return the predictions for each sample:
+All classifiers in scikit-learn are derived from a ``BaseEstimator``, which is supposed to have a ``fit`` and ``predict`` method. The ``fit`` method gets a list of samples ``X`` and corresponding labels ``y``, so it's trivial to map to the train method of the ``cv2.FaceRecognizer``. The ``predict`` method also gets a list of samples and corresponding labels, but this time we'll need to return the predictions for each sample:
 
 ```python
 from sklearn.base import BaseEstimator

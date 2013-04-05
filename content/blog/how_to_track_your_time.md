@@ -7,7 +7,7 @@ author: Philipp Wagner
 
 # How To Track Your Time #
 
-<img src="/static/images/blog/how_to_track_your_time/pymetracker-bar-0.2.0.png" width="200" class="medialeft" />
+<img alt="dummy" src="/static/images/blog/how_to_track_your_time/pymetracker-bar-0.2.0.png" width="200" class="medialeft" />
 
 You always wanted to track the time you spend on your tasks? You've already got the strength to organize yourself into discrete units, but you are unable to find a tool for tracking your time?
 

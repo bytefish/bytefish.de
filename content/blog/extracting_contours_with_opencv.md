@@ -9,15 +9,15 @@ author: Philipp Wagner
 
 Yesterday I was asked how to extract a contour from a given image in OpenCV. Here is an example. Imagine we got this tasty apple and we want to put it in another image (with a green background):
 
-<img src="/static/images/blog/extracting_contours_with_opencv/apple.jpg" width="200" class="mediacenter"/>
+<img src="/static/images/blog/extracting_contours_with_opencv/apple.jpg" width="200" class="mediacenter" alt="apple.jpg" />
 
 *One* solution is to first detect the edges of the apple with a [Canny filter](http://en.wikipedia.org/wiki/Canny_edge_detector), then find the contours with OpenCV's [findContours](http://opencv.willowgarage.com/documentation/cpp/structural_analysis_and_shape_descriptors.html#cv-findcontours) and create a mask with [drawContours](http://opencv.willowgarage.com/documentation/cpp/structural_analysis_and_shape_descriptors.html#cv-drawcontours):
 
-<img src="/static/images/blog/extracting_contours_with_opencv/apple_mask.jpg" width="200" class="mediacenter"/>
+<img src="/static/images/blog/extracting_contours_with_opencv/apple_mask.jpg" width="200" class="mediacenter" alt="apple_mask.jpg" />
 
 Finally copy the masked original image to the new image, which means only the areas of the contours will be copied... and you are done. You end up with a tasty apple on a green background:
 
-<img src="/static/images/blog/extracting_contours_with_opencv/apple_cropped.jpg" width="200" class="mediacenter"/>
+<img src="/static/images/blog/extracting_contours_with_opencv/apple_cropped.jpg" width="200" class="mediacenter" alt="apple_cropped.jpg" />
 
 In code this translates to:
 

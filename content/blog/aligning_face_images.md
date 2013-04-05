@@ -11,12 +11,12 @@ Some people have asked me how I've aligned the face images in my articles. Givin
 
 The code is really easy to use. To scale, rotate and crop the face image you just need to call ``CropFace(image, eye_left, eye_right, offset_pct, dest_sz)``, where:
 
-  * ``eye_left`` is the position of the left eye
-  * ``eye_right`` is the position of the right eye
-  * ``offset_pct`` is the percent of the image you want to keep next to the eyes (horizontal, vertical direction)
-  * ``dest_sz`` is the size of the output image
+* ``eye_left`` is the position of the left eye
+* ``eye_right`` is the position of the right eye
+* ``offset_pct`` is the percent of the image you want to keep next to the eyes (horizontal, vertical direction)
+* ``dest_sz`` is the size of the output image
 
-If you are using the same //offset_pct// and //dest_sz// for your images, they are all aligned at the eyes.
+If you are using the same ``offset_pct`` and ``dest_sz`` for your images, they are all aligned at the eyes.
 
 ## example ##
 
@@ -24,10 +24,10 @@ Imagine we are given [this photo](http://en.wikipedia.org/wiki/File:Arnold_Schwa
 
 <table>
   <tr><th>Configuration</th><th>Cropped, Scaled, Rotated Face</th></tr>
-  <tr><td>0.1 (10%), 0.1 (10%), (200,200)</td><td><img src="/static/images/blog/aligning_face_images/arnie_10_10_200_200.jpg" /></td></tr>
-  <tr><td>0.2 (20%), 0.2 (20%), (200,200)</td><td><img src="/static/images/blog/aligning_face_images/arnie_20_20_200_200.jpg" /></td></tr>
-  <tr><td>0.3 (30%), 0.3 (30%), (200,200)</td><td><img src="/static/images/blog/aligning_face_images/arnie_30_30_200_200.jpg" /></td></tr>
-  <tr><td>0.2 (20%), 0.2 (20%), (70,70)  </td><td><img src="/static/images/blog/aligning_face_images/arnie_20_20_70_70.jpg" /></td></tr>
+  <tr><td>0.1 (10%), 0.1 (10%), (200,200)</td><td><img src="/static/images/blog/aligning_face_images/arnie_10_10_200_200.jpg" alt="configuration" /></td></tr>
+  <tr><td>0.2 (20%), 0.2 (20%), (200,200)</td><td><img src="/static/images/blog/aligning_face_images/arnie_20_20_200_200.jpg" alt="configuration" /></td></tr>
+  <tr><td>0.3 (30%), 0.3 (30%), (200,200)</td><td><img src="/static/images/blog/aligning_face_images/arnie_30_30_200_200.jpg" alt="configuration" /></td></tr>
+  <tr><td>0.2 (20%), 0.2 (20%), (70,70)  </td><td><img src="/static/images/blog/aligning_face_images/arnie_20_20_70_70.jpg" alt="configuration" /></td></tr>
 </table>
 
 ## crop_face.py ##

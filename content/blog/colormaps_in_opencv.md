@@ -86,19 +86,19 @@ enum
 And here are the scales corresponding to each of the maps, so you know what they look like:
 
 <table>
-<tr><th>Name</th><th>Scale</th></tr>
-<tr><td>Autumn</td><td><img src="/static/images/blog/colormaps_in_opencv/colorscale_autumn.jpg" /></td></tr>
-<tr><td>Bone</td><td><img src="/static/images/blog/colormaps_in_opencv/colorscale_bone.jpg" /></td></tr>
-<tr><td>Cool</td><td><img src="/static/images/blog/colormaps_in_opencv/colorscale_cool.jpg" /></td></tr>
-<tr><td>Hot</td><td><img src="/static/images/blog/colormaps_in_opencv/colorscale_hot.jpg" /></td></tr>
-<tr><td>HSV</td><td><img src="/static/images/blog/colormaps_in_opencv/colorscale_hsv.jpg" /></td></tr>
-<tr><td>Jet</td><td><img src="/static/images/blog/colormaps_in_opencv/colorscale_jet.jpg" /></td></tr>
-<tr><td>Ocean</td><td><img src="/static/images/blog/colormaps_in_opencv/colorscale_ocean.jpg" /></td></tr>
-<tr><td>Pink</td><td><img src="/static/images/blog/colormaps_in_opencv/colorscale_pink.jpg" /></td></tr>
-<tr><td>Rainbow</td><td><img src="/static/images/blog/colormaps_in_opencv/colorscale_rainbow.jpg" /></td></tr>
-<tr><td>Spring</td><td><img src="/static/images/blog/colormaps_in_opencv/colorscale_spring.jpg" /></td></tr>
-<tr><td>Summer</td><td><img src="/static/images/blog/colormaps_in_opencv/colorscale_summer.jpg" /></td></tr>
-<tr><td>Winter</td><td><img src="/static/images/blog/colormaps_in_opencv/colorscale_winter.jpg" /></td></tr>
+  <tr><th>Name</th><th>Scale</th></tr>
+  <tr><td>Autumn</td><td><img src="/static/images/blog/colormaps_in_opencv/colorscale_autumn.jpg" alt="colorscale_autumn" /></td></tr>
+  <tr><td>Bone</td><td><img src="/static/images/blog/colormaps_in_opencv/colorscale_bone.jpg" alt="colorscale_bone" /></td></tr>
+  <tr><td>Cool</td><td><img src="/static/images/blog/colormaps_in_opencv/colorscale_cool.jpg" alt="colorscale_cool" /></td></tr>
+  <tr><td>Hot</td><td><img src="/static/images/blog/colormaps_in_opencv/colorscale_hot.jpg" alt="colorscale_hot" /></td></tr>
+  <tr><td>HSV</td><td><img src="/static/images/blog/colormaps_in_opencv/colorscale_hsv.jpg" alt="colorscale_hsv" /></td></tr>
+  <tr><td>Jet</td><td><img src="/static/images/blog/colormaps_in_opencv/colorscale_jet.jpg" alt="colorscale_jet" /></td></tr>
+  <tr><td>Ocean</td><td><img src="/static/images/blog/colormaps_in_opencv/colorscale_ocean.jpg" alt="colorscale_ocean" /></td></tr>
+  <tr><td>Pink</td><td><img src="/static/images/blog/colormaps_in_opencv/colorscale_pink.jpg" alt="colorscale_pink" /></td></tr>
+  <tr><td>Rainbow</td><td><img src="/static/images/blog/colormaps_in_opencv/colorscale_rainbow.jpg" alt="colorscale_rainbow" /></td></tr>
+  <tr><td>Spring</td><td><img src="/static/images/blog/colormaps_in_opencv/colorscale_spring.jpg" alt="colorscale_spring" /></td></tr>
+  <tr><td>Summer</td><td><img src="/static/images/blog/colormaps_in_opencv/colorscale_summer.jpg" alt="colorscale_summer" /></td></tr>
+  <tr><td>Winter</td><td><img src="/static/images/blog/colormaps_in_opencv/colorscale_winter.jpg" alt="colorscale_winter" /></td></tr>
 </table>
 
 ##  Demo ##

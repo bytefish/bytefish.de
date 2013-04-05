@@ -7,16 +7,16 @@ author: Philipp Wagner
 
 # Brutally short introduction to Erlang #
 
-<img src="/static/images/blog/erlang/erlang-logo.png"/>
+<img src="/static/images/blog/erlang/erlang-logo.png" class="medialeft" alt="erlang logo" />
 
 Erlang is a functional programming language developed at the [Ericsson Computer Science Laboratory](http://www.cs-lab.org) in the late 1980s. The language has recently gained some attention for its concept of concurrency (it implements the [actor model](http://en.wikipedia.org/wiki/Actor_model)) and being the inspiration of [Scala](http://www.scala-lang.org). Erlang is great at concurrency and building scalable, fault-tolerant applications. Have you ever seen [2012](http://en.wikipedia.org/wiki/2012_%28film%29)? When Cusack phones while the whole world collapses? I bet there was some Erlang involved!
 
 The characteristics of Erlang are:
 
-  * higher-order functions
-  * scalability
-  * soft realtime properties
-  * processes and message passing
+* higher-order functions
+* scalability
+* soft realtime properties
+* processes and message passing
  
 This introduction to Erlang was written by [Filip](http://www.martinovsky.net) for our [documents](/documents).
 
@@ -130,7 +130,7 @@ Tuples are like ``records`` in other programming languages and you may know list
 
 Tuples are extensively used within Erlang to return status and Data as ``{status, Data}``. Let's open the documentation at a [random point](http://www.erlang.org/doc/man/file.html)! ``file:get_cwd()`` for getting the current working directory is described as:
   
-<pre>
+```
 [...]
 
 Exports
@@ -142,7 +142,7 @@ Types:
   Reason = posix()
 
 [...]
-</pre>
+```
 
 So this method either returns the tuple {ok, Dir}, where Dir is the working directory of the server or returns the Reason for an error. You will see this very often in Erlang programs:
 
@@ -255,7 +255,7 @@ Erlangs built-in function ``spawn`` is used to create a process within the Erlan
 
 You can send a message to a process by using the ``!`` mark and receive messages with the blocking ``receive`` statement. Let's look at an example. 
 
-<img src="/static/images/blog/erlang/message_passing.png"/>
+<img alt="dummy" src="/static/images/blog/erlang/message_passing.png"/>
 
 Imagine we have a function, that waits for an atom ``ping`` to output a ``PONG`` to the screen. You can type this in the Erlang shell, we assign the process to the variable ``NewFun``, you can see the unique process id ``<0.48.0>`` returned by the Erlang VM.
 

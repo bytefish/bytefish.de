@@ -44,9 +44,11 @@ for(int i = 0; i < eval->rows; i++ )
 
 cvReleaseMat(&evec);
 cvReleaseMat(&eval);
-</code>
+```
+
 or using floating point:
-<code c>
+
+```cpp
 float a[] = {
      1.96 , -6.49 , -0.47 , -7.20 , -0.65,
     -6.49 ,  3.80  ,-6.39  , 1.50 , -6.34,

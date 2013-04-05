@@ -54,7 +54,8 @@ ARTICLE_DIR = ('content')
 # A list of files to copy from the source to the destination
 FILES_TO_COPY = (
   ('extra/.htaccess', '.htaccess'),
-  ('extra/robots.txt', 'robots.txt'))
+  ('extra/robots.txt', 'robots.txt'),
+  )
 # Save index as blog/index.html instead of index.html:
 INDEX_SAVE_AS = 'blog/index.html'
 # Navigation menu:
@@ -77,7 +78,7 @@ DISQUS_SITENAME = 'bytefish'
 # Set some default category:
 DEFAULT_CATEGORY = 'uncategorized'
 # Folders to copy to <output>/static/...:
-STATIC_PATHS = ['images', 'pdf', 'dev' ]
+STATIC_PATHS = ['images' ]
 
 # Custom functions available to all templates:
 from operator import itemgetter
@@ -85,7 +86,7 @@ from operator import itemgetter
 def sort_tags_by_length(tags):
   return sorted(tags, key=lambda tup: len(tup[1]), reverse=True)
   
-  
+   
 JINJA_FILTERS = {
     'sort_tags_by_length': sort_tags_by_length,
 }

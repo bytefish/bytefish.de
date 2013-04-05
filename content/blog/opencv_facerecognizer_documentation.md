@@ -11,9 +11,9 @@ I've [just finished](http://code.opencv.org/projects/opencv/repository/revisions
 
 <table>
   <tr>
-    <td><img src="/static/images/blog/opencv_facerecognizer_documentation/eigenfaces_opencv.png" width="200" /></td>
-    <td><img src="/static/images/blog/opencv_facerecognizer_documentation/fisherface_reconstruction_opencv.png" width="200" /></td>
-    <td><img src="/static/images/blog/opencv_facerecognizer_documentation/facerec_video.png" width="200" /></td>
+    <td><img src="/static/images/blog/opencv_facerecognizer_documentation/eigenfaces_opencv.png" width="200" alt="eigenfaces_opencv" /></td>
+    <td><img src="/static/images/blog/opencv_facerecognizer_documentation/fisherface_reconstruction_opencv.png" alt="fisherface_reconstruction_opencv" width="200" /></td>
+    <td><img src="/static/images/blog/opencv_facerecognizer_documentation/facerec_video.png" width="200" alt="facerec_video" /></td>
   </tr>
 </table>
 

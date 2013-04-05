@@ -17,7 +17,7 @@ It was written in preparation of [libfacerec](https://github.com/bytefish/libfac
 
 ## Building the Project ##
 
-This project does not need any external libraries except [[http://opencv.willowgarage.com|OpenCV]], so compiling the project is as easy as writing (assuming you are in this folder):
+This project does not need any external libraries except [OpenCV](http://opencv.willowgarage.com), so compiling the project is as easy as writing (assuming you are in this folder):
 
 <pre>
 philipp@mango:~/some/dir/lda$ mkdir build
@@ -27,7 +27,7 @@ philipp@mango:~/some/dir/lda/build$ make
 philipp@mango:~/some/dir/lda/build$ ./lda filename.ext
 </pre>
 
-And if you are in Windows using [[http://www.mingw.org|MinGW]] it may look like this:
+And if you are in Windows using [MinGW](http://www.mingw.org) it may look like this:
 
 <pre>
 C:\some\dir\lda> mkdir build
