@@ -2,7 +2,7 @@ title: Detect a face with OpenCV
 date: 2010/11/21 17:59
 tags: opencv, c++
 category: computer vision
-slug: detect_face_with_opencv
+slug: opencv/object_detection
 author: Philipp Wagner
 
 # Object Detection with OpenCV #

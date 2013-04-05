@@ -1,5 +1,5 @@
 title: Eigenfaces
-date: 2010/07/15 22:29
+date: 2011-07-11 17:13
 tags: matlab, face recognition
 category: computer vision
 slug: eigenfaces

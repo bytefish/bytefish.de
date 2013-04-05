@@ -1,4 +1,4 @@
-title: using libsvm
+title: On using libsvm
 date: 2011-09-01 14:30
 tags: octave, r
 category: statistics

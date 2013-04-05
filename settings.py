@@ -9,8 +9,8 @@ AUTHOR = 'Philipp Wagner'
 EMAIL = 'bytefish AT gmx DOT de'
 SITENAME = 'http://bytefish.de'
 # Base URL this page is hosted at:
-SITEURL_PUBLIC = 'http://bytefish.de'
-SITEURL = 'http://localhost:8000'
+SITEURL = 'http://bytefish.de'
+#SITEURL = 'http://localhost:8000'
 # Timezone is GMT+1:
 TIMEZONE = 'Europe/Paris'
 # Using a simple date format:
@@ -77,7 +77,7 @@ DISQUS_SITENAME = 'bytefish'
 # Set some default category:
 DEFAULT_CATEGORY = 'uncategorized'
 # Folders to copy to <output>/static/...:
-STATIC_PATHS = ['images', ]
+STATIC_PATHS = ['images', 'pdf', 'dev' ]
 
 # Custom functions available to all templates:
 from operator import itemgetter

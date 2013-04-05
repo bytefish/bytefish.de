@@ -1,7 +1,7 @@
 title: Website Update
 date: 2013-03-13 20:10
-tags: misc
-category: website
+tags: website
+category: infrastructure
 author: Philipp Wagner
 
 # Website Update #
@@ -12,4 +12,6 @@ Most of my private work is open source, so are the sources and content of this p
 
 * [https://github.com/bytefish/bytefish.de](https://github.com/bytefish/bytefish.de)
 
-Most of the existing blog posts and wiki pages have been converted and should be available under the same URLs. I have omitted a few articles, that are not relevant anymore and I had to change some URLs in the wiki pages. Therefore some of the wiki pages have been turned into articles, early drafts will be added to [/pages](/pages) in the future. You can get a list of tags for the articles at [/tags](/tags), see I am not a huge fan of tag clouds, so I have simply ordered the list by the number of articles. I'll probably extend some functionality, but right now I am quite happy. If you find something is missing in here, please do not hesitate to send me a mail.
+The theme is fit to my needs and contains some hardcoded stuff, so it is probably not useful for you without putting some work into. Most of the existing blog posts and wiki pages have been converted and should be available under the same URLs. I have omitted a few articles, that are not relevant anymore and I had to change some URLs in the wiki pages. Therefore some of the wiki pages have been turned into articles, early drafts will be added to [/pages](/pages) in the future. You can get a list of tags for the articles at [/tags](/tags), see I am not a huge fan of tag clouds so I have simply ordered the list by the number of articles. 
+
+I'll probably extend some functionality, but right now I am quite happy. If you find something is missing in here, please do not hesitate to send me a mail!

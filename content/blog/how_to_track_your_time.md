@@ -1,11 +1,11 @@
-title: how to track your time
+title: How To Track Your Time
 date: 2010-07-15 22:29
 tags: python
 category: misc
 slug: how_to_track_your_time
 author: Philipp Wagner
 
-# how to track your time #
+# How To Track Your Time #
 
 <img src="/static/images/blog/how_to_track_your_time/pymetracker-bar-0.2.0.png" width="200" class="medialeft" />
 

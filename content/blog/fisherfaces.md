@@ -331,7 +331,7 @@ k-Fold Cross Validation (model=Eigenfaces, k=5, runs=10, accuracy=80.93%, std(ac
 
 With 80.93%+-1.00% accuracy the Eigenfaces algorithms performs ``OK`` on this dataset, I wouldn't say it performs bad. But can we do better, by taking less or more principal components? We can write a small script to evaluate that. I will perform a 5-fold cross-validation on the Eigenfaces model with ``[10, 25, 40, 55, 70, 85, 100]`` components:
 
-```pycon
+```python
 parameter = range(10,101,15)
 results = []
 for i in parameter:

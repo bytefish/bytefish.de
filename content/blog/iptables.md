@@ -1,4 +1,4 @@
-title: iptables
+title: How to secure your workstation with iptables
 date: 2011-06-01 11:33
 tags: linux
 slug: iptables
