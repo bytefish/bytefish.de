@@ -1,7 +1,7 @@
 title: Brutally short introduction to Erlang
 date: 2010-02-10 18:46
-tags: octave, r
-category: statistics
+tags: erlang
+category: programming
 slug: erlang
 author: Philipp Wagner
 

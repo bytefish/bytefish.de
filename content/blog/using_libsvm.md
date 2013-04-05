@@ -1,6 +1,6 @@
 title: On using libsvm
 date: 2011-09-01 14:30
-tags: octave, r
+tags: python, machine learning
 category: statistics
 slug: using_libsvm
 author: Philipp Wagner

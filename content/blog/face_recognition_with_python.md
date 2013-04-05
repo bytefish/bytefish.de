@@ -2,7 +2,7 @@ title: Face Recognition with Python/GNU Octave/Matlab
 date: 2011-10-09 15:10
 tags: python, matlab, octave, face recognition
 category: computer vision
-slug: face_recognition_with_python
+slug: face_recognition_with_opencv2
 author: Philipp Wagner
 
 # Face Recognition with Python/GNU Octave/Matlab #

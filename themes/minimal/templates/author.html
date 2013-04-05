@@ -4,10 +4,9 @@
 
 {% block content %}
   <h1>Posts by {{ author }}:</h1>
-  <ul>
   {% if articles %}
     <ul class="posts">
-    {% for article in articles %}
+    {% for article in dates %}
       <li><span>{{ article.locale_date }}</span> &raquo; <a href="{{ SITEURL }}/{{ article.url }}">{{ article.title }}</a></li>
     {% endfor %}
     </ul>
