@@ -55,6 +55,7 @@ ARTICLE_DIR = ('content')
 FILES_TO_COPY = (
   ('extra/.htaccess', '.htaccess'),
   ('extra/robots.txt', 'robots.txt'),
+  ('extra/philipp_wagner.asc.gz', 'static/philipp_wagner.asc.gz'),
   )
 # Save index as blog/index.html instead of index.html:
 INDEX_SAVE_AS = 'blog/index.html'
