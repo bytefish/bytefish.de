@@ -144,7 +144,7 @@ What we aim for is a projection, that maintains the maximum discriminative power
 
 I took the equations from [Ricardo Gutierrez-Osuna's](http://research.cs.tamu.edu/prism/rgo.htm): [Lecture notes on Linear Discriminant Analysis](http://research.cs.tamu.edu/prism/lectures/pr/pr_l10.pdf) and [Wikipedia on LDA](http://en.wikipedia.org/wiki/Linear_discriminant_analysis).
 
-We'll use the same data as for the PCA example. Again create the data in //X// with corresponding classes in //c//:
+We'll use the same data as for the PCA example. Again create the data in ``X`` with corresponding classes in ``c``:
 
 ```matlab
 X = [2 3;3 4;4 5;5 6;5 7;2 1;3 2;4 2;4 3;6 4;7 6];
@@ -303,7 +303,7 @@ end
 
 ### Loading the Wine Dataset ###
 
-Loading the Wine Dataset is easy in GNU Octave with the //dlmread// function. I am sure there is something equivalent in MATLAB: 
+Loading the Wine Dataset is easy in GNU Octave with the ``dlmread`` function. I am sure there is something equivalent in MATLAB: 
 
 ```matlab
 % http://archive.ics.uci.edu/ml/datasets/Wine

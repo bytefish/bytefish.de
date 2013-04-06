@@ -67,7 +67,7 @@ def rlbp_fast(X):
 	return X
 ```
 
-This code yields the same result and needs //0.27// seconds to complete:
+This code yields the same result and needs *0.27* seconds to complete:
 
 <pre>
 2011-09-30 14:29:40,337 - facerec.models.LBP - DEBUG - time to compute patterns took=0.269666 seconds
@@ -148,7 +148,7 @@ def rlbp_fast_inline(X):
 
 I'll explain this code a bit. Don't think you've missed something! The ``NX``, ``X2``, ``Y2`` variables are macros created by scipy.weave to make your life easier. ``NX`` has the information about the shape of ``X``; ``X2`` is a macro that allows 2-dimensional indexing.
 
-Now in C++ my naive attempt only takes //0.07// seconds:
+Now in C++ my naive attempt only takes *0.07* seconds:
 
 <pre>
 2011-09-30 15:28:17,026 - facerec.models.LBP - DEBUG - time to compute patterns took=0.069170 seconds

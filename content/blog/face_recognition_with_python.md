@@ -136,7 +136,7 @@ philipp@mango:~/github/facerecognition_guide$ tree -d -L 3
 
 Where:
 
-* ``scripts`` are the scripts to show how to use the tiny library we developed (hence the name //tinyfacerec//). These are the same examples as shown in the guide.
+* ``scripts`` are the scripts to show how to use the tiny library we developed (hence the name *tinyfacerec*). These are the same examples as shown in the guide.
 * ``tinyfacerec`` is the face recognition library, that was developed within the document.
 
 Running the Python samples is easy. First of all ``cd`` into ``scripts`` directory:

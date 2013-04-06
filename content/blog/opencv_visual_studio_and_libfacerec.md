@@ -137,7 +137,7 @@ Congratulations!
 
 ## Running the Demo ##
 
-Now to the Eigenfaces Demo. You need some data to make the examples work, sorry but I really can't include those face databases in my repository. First of all this. In the demo I have decided to read the images from a very simple CSV file. Why? Because it's the simplest platform-independent approach I can think of. However, if you know a simpler solution please ping me about it. Basically all the CSV file needs to contain are lines composed of a ``filename`` followed by a ``;`` followed by the ``label`` (as //integer number//), making up a line like this: 
+Now to the Eigenfaces Demo. You need some data to make the examples work, sorry but I really can't include those face databases in my repository. First of all this. In the demo I have decided to read the images from a very simple CSV file. Why? Because it's the simplest platform-independent approach I can think of. However, if you know a simpler solution please ping me about it. Basically all the CSV file needs to contain are lines composed of a ``filename`` followed by a ``;`` followed by the ``label`` (as *integer number*), making up a line like this: 
 
 <pre>
 /path/to/image.ext;0
@@ -156,7 +156,7 @@ Think of the ``label`` as the subject (the person) this image belongs to, so sam
 ./at/s40/2.pgm;39
 </pre>
 
-Imagine I have extracted the files to ``D:/data/at`` and have downloaded the CSV file to ``D:/data/at.txt``. Then I would simply Search & Replace ``./`` with ``D:/data/``. You can do that in an editor of your choice, every sufficiently advanced editor can do this. Once you have a CSV file with //valid// ``filenames`` and ``labels``, you can run the demo by with the path to the CSV file as parameter:
+Imagine I have extracted the files to ``D:/data/at`` and have downloaded the CSV file to ``D:/data/at.txt``. Then I would simply Search & Replace ``./`` with ``D:/data/``. You can do that in an editor of your choice, every sufficiently advanced editor can do this. Once you have a CSV file with **valid** ``filenames`` and ``labels``, you can run the demo by with the path to the CSV file as parameter:
 
 <pre>
 D:\projects\libfacerec\Release\libfacerec.exe D:/data/at.txt
