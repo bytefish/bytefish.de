@@ -255,12 +255,11 @@ Erlangs built-in function ``spawn`` is used to create a process within the Erlan
 
 You can send a message to a process by using the ``!`` mark and receive messages with the blocking ``receive`` statement. Let's look at an example. 
 
-<img alt="dummy" src="/static/images/blog/erlang/message_passing.png"/>
+<img src="/static/images/blog/erlang/message_passing.jpg" class="mediacenter" alt="dummy" />
 
 Imagine we have a function, that waits for an atom ``ping`` to output a ``PONG`` to the screen. You can type this in the Erlang shell, we assign the process to the variable ``NewFun``, you can see the unique process id ``<0.48.0>`` returned by the Erlang VM.
 
 Now we can send a message to the process by writing ``NewFun ! ping`` and that's it. PONG!
-
 
 ```erl
 1> NewFun = spawn(fun()-> receive

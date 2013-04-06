@@ -2,6 +2,7 @@ title: Website Update
 date: 2013-03-13 20:10
 tags: website
 category: infrastructure
+slug: website_update
 author: Philipp Wagner
 
 # Website Update #

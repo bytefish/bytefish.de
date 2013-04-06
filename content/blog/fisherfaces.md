@@ -238,7 +238,7 @@ I specify the dimensions of the cropped image to be ``(100,130)`` for this datab
 
 After having preprocessed the images ([coordinates for this database are given here](https://github.com/bytefish/facerec/blob/master/m/scripts/files2.txt)) you'll end up with subsets for each person like this ([function used to create the gallery of images](https://github.com/bytefish/facerec/blob/master/m/scripts/gallery.m)):
 
-![Subject 1 of the Yale Facedatabase A](/static/images/blog/fisherfaces/yale_s01.png "Subject 1 of the Yale Facedatabase A")
+<a href="/static/images/blog/fisherfaces/yale_s01.png"><img src="/static/images/blog/fisherfaces/thumbs/yale_s01.jpg" alt="Subject 01 in Yale Facedatabase A" class="mediacenter" /></a> 
 
 The preprocessed dataset then has to be stored in a hierarchy similiar to this:
 
@@ -370,8 +370,7 @@ and then plot the Eigenfaces:
 
 Almost everywhere you see grayscaled Eigenfaces, which are really hard to explain. With a colored heatmap instead you can easily see the distribution of grayscale intensities, where 0 codes a dark blue and 255 is a dark red:
 
-
-![First 16 Eigenfaces of the Yale Facedatabase A](/static/images/blog/fisherfaces/16_eigenfaces.png)
+<a href="/static/images/blog/fisherfaces/16_eigenfaces.png"><img src="/static/images/blog/fisherfaces/thumbs/16_eigenfaces.jpg" alt="First 16 Eigenfaces of the Yale Facedatabase A" class="mediacenter" /></a>
 
 Just by looking at the first 16 Eigenfaces we can see, that they don't really describe facial features to distinguish between persons, but find components to reconstruct from. The fourth Eigenface for example describes the left-light, while the principal component 6 describes the right-light. This makes sense if you think of the Principal Component Analysis not as a classification method, but more as a compression method.
 
@@ -389,7 +388,7 @@ Let's see what I mean. By computing the Eigenfaces, we have projected the databa
 
 ... and we should see a face again:
 
-<img src="/static/images/blog/fisherfaces/eigenface_reconstructed_face.png" height="130" class="mediacenter" alt="eigenface_reconstructed_face" />
+<a href="/static/images/blog/fisherfaces/eigenface_reconstructed_face.png"><img src="/static/images/blog/fisherfaces/thumbs/eigenface_reconstructed_face.jpg" class="mediacenter" alt="eigenface_reconstructed_face" /></a>
 
 ### Fisherfaces ###
 
@@ -447,7 +446,7 @@ Import the visual module and plot the faces:
 
 The Fisherfaces are a bit harder to explain, because they identify regions of a face that separate faces best from each other. None of them seems to encode particular light settings, at least it's not as obvious as in the Eigenfaces method:
 
-![Fisherfaces of the Yale Facedatabase A](/static/images/blog/fisherfaces/14_fisherfaces.png}
+<a href="/static/images/blog/fisherfaces/fisherfaces/14_fisherfaces.png"><img src="/static/images/blog/fisherfaces/thumbs/fisherfaces/14_fisherfaces.jpg" class="mediacenter" alt="Fisherfaces of the Yale Facedatabase A" /></a>
 
 I could only guess which component describes which features. So I leave the interpretation up to the reader. What we lose with the Fisherfaces method for sure, is the ability to reconstruct faces. If I want to reconstruct face number 17, just like in the Eigenfaces section:
 
@@ -463,7 +462,7 @@ I could only guess which component describes which features. So I leave the inte
 
 We get back a picture similar to:
 
-<img src="/static/images/blog/fisherfaces/fisherface_reconstructed_face.png" height="130" class="mediacenter" alt="fisherface_reconstructed_face"/>
+<a href="/static/images/blog/fisherfaces/fisherface_reconstructed_face.png"><img src="/static/images/blog/fisherfaces/thumbs/fisherface_reconstructed_face.jpg" class="mediacenter" alt="fisherface_reconstructed_face"/></a>
 
 ### Conclusion ###
 
@@ -488,7 +487,7 @@ My celebrity dataset consists of the following faces:
 
 I have chosen the images to be frontal face with a similiar perspective and light settings. Since the algorithms are sensible towards rotation and scale, the images have been preprocessed to equal scale of ``70x70``px and centered eyes. Here is my Clooney-Set for example:
 
-<img src="/static/images/blog/fisherfaces/clooney_set.png" class="mediacenter" alt="clooney_set" />
+<a href="/static/images/blog/fisherfaces/clooney_set.png"><img src="/static/images/blog/fisherfaces/thumbs/clooney_set.jpg" class="mediacenter" alt="clooney_set" /></a>
 
 I hope you understand that I can't share the dataset with you. Some of the photos have a public license, but most of the photos have an unclear license. From my experience all I can tell you is: finding images of George Clooney took less than a minute, but it was really, really hard finding good images of Johnny Depp or Arnold Schwarzenegger.
 
@@ -578,7 +577,7 @@ The Eigenfaces...
 
 ... again encode light in the images, see the second Eigenface for example:
 
-![The first 16 Eigenfaces of the Celebrity Dataset](/static/images/blog/fisherfaces/16_celebrity_eigenfaces.png)
+<a href="/static/images/blog/fisherfaces/16_celebrity_eigenfaces.png"><img src="/static/images/blog/fisherfaces/thumbs/16_celebrity_eigenfaces.jpg" class="mediacenter" alt="The first 16 Eigenfaces of the Celebrity Dataset" /></a>
 
 While the Fisherfaces identify regions:
 
@@ -588,7 +587,7 @@ While the Fisherfaces identify regions:
 
 ... where you can decide between the persons. The first component for example describes the eyes, while other components describe mouth-ness or eye-browness of a face:
 
-![](/static/images/blog/fisherfaces/9_celebrity_fisherfaces.png)
+<a href="/static/images/blog/fisherfaces/9_celebrity_fisherfaces.png"><img src="/static/images/blog/fisherfaces/thumbs/9_celebrity_fisherfaces.jpg" class="mediacenter" alt="The 9 Fisherfaces of the Celebrity Dataset" /></a>
 
 By using two and three components, we can see how the faces are distributed (using GNU Octave, see [fisherfaces_example.m](https://github.com/bytefish/facerec/blob/master/m/fisherfaces_example.m)). I'll use just one example per class for a better overview:
 
@@ -621,7 +620,7 @@ names =
 
 Brad Pitt (3), Johnny Depp (5) and Tom Cruise (10) seem to have a unique face, as they are far away from all other faces. Surprisingly George Clooney (4) and Justin Timberlake (6) are near to each other. Arnold Schwarzenegger (2), Katy Perry (7), Keanu Reeves (8) and Patrick Stewart (9) are also close to each other. Angelina Jolie (1) is right between those two clusters; with George Clooney (4) and Keanu Reeves (8) as closest match:
 
-![Fisherfaces projection onto the first two components](/static/images/blog/fisherfaces/celebrity_facespace.png)
+<a href="/static/images/blog/fisherfaces/celebrity_facespace.png"><img src="/static/images/blog/fisherfaces/thumbs/celebrity_facespace.jpg" alt="Fisherfaces projection onto the first two components" class="mediacenter" /></a>
 
 ### Who Am I? ###
 
@@ -652,11 +651,11 @@ I knew it. The closest match to my face is [Patrick Stewart](http://en.wikipedia
 
 If I project my face on the first 2 components I would actually resemble Arnie the most:
 
-![My face projected on the first two components](/static/images/blog/fisherfaces/philipp_facespace_2d_12.png)
+<a href="/static/images/blog/fisherfaces/philipp_facespace_2d_12.png"><img src="/static/images/blog/fisherfaces/thumbs/philipp_facespace_2d_12.jpg" alt="My face projected on the first two components" class="mediacenter" /></a>
 
 But including the third dimension (projection on second and third component) brings me closer to Patrick Stewart:
 
-![My face projected on the second and third component](/static/images/blog/fisherfaces/philipp_facespace_2d_23.png)
+<a href="/static/images/blog/fisherfaces/philipp_facespace_2d_23.png"><img src="/static/images/blog/fisherfaces/thumbs/philipp_facespace_2d_23.jpg" alt="My face projected on the second and third component" class="mediacenter" /></a>
 
 Just because the Eigenfaces algorithm can't classify the persons doesn't mean we can't use it here aswell. It did a great job at reconstructing a projected vector, so if I project my face into the facespace... and reconstruct it... my face should be the mixture of those faces. 
 
@@ -672,7 +671,7 @@ Let's see what I look like:
 
 Sorry it's a bit small, because my training images are only 70x70 pixels:
 
-<img src="/static/images/blog/fisherfaces/philipp_reconstructed_face.png" width="130" class="mediacenter" alt="philipp_reconstructed_face" />
+<a href="/static/images/blog/fisherfaces/philipp_reconstructed_face.png"><img src="/static/images/blog/fisherfaces/thumbs/philipp_reconstructed_face.jpg" alt="Eigenface Reconstruction" class="mediacenter" /></a>
 
 Definitely some Schwarzenegger in there!
 

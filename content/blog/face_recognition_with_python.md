@@ -172,11 +172,11 @@ And the script will generate two plots for you (in the scripts folder!):
     <th>Plot</th></tr>
   <tr>
     <td>python_pca_eigenfaces.png</td>
-    <td><img src="/static/images/blog/face_recognition_with_python/python_pca_eigenfaces.png" alt="Eigenfaces" width="500" /></td>
+    <td><a href="/static/images/blog/face_recognition_with_python/python_pca_eigenfaces.png"><img src="/static/images/blog/face_recognition_with_python/thumbs/python_pca_eigenfaces.jpg" alt="Eigenfaces"/></a></td>
   </tr>
   <tr>
     <td>python_pca_reconstruction.png</td>
-    <td><img src="/static/images/blog/face_recognition_with_python/python_pca_reconstruction.png" alt="Fisherfaces" width="500" /> </td>
+    <td><a href="/static/images/blog/face_recognition_with_python/python_pca_reconstruction.png"><img src="/static/images/blog/face_recognition_with_python/thumbs/python_pca_reconstruction.jpg" alt="Eigenfaces Reconstruction" /> </a> </td>
   </tr>
 </table>
 

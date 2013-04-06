@@ -47,7 +47,7 @@ plt.show()
 So we get back clearly seperated data:
 
 
-<img alt="dummy" src="/static/images/blog/using_libsvm/circles_0_2.png" class="mediacenter" width="300" />
+<a href="/static/images/blog/using_libsvm/circles_0_2.png"><img alt="dummy" src="/static/images/blog/using_libsvm/thumbs/circles_0_2.jpg" class="mediacenter" /></a>
 
 Now to the SVM. The LibSVM binding expects a list with the classes and a list with the training data:
 
@@ -97,7 +97,7 @@ Accuracy = 100% (60/60) (classification)
 
 But what if the the training data is not that perfect, set ``sigma`` to 1:
 
-<img alt="dummy" src="/static/images/blog/using_libsvm/circles_1.png" class="mediacenter" width="300" />
+<a href="/static/images/blog/using_libsvm/circles_1.png"><img alt="dummy" src="/static/images/blog/using_libsvm/thumbs/circles_1.jpg" class="mediacenter" /></a>
 
 then the default parameters yield:
 

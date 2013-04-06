@@ -19,7 +19,7 @@ There are a lot of other ways to install OpenCV, so please consult the [docs](ht
 
 Double-click the OpenCV-2.3.1-win-superpack.exe and select a folder to extract to. I'll choose ``D:\projects`` in this example:
 
-<img src="/static/images/blog/opencv_visual_studio_and_libfacerec/installer_path.jpg" width="400" class="mediacenter" alt="installer_path" />
+<a href="/static/images/blog/opencv_visual_studio_and_libfacerec/installer_path.jpg"><img src="/static/images/blog/opencv_visual_studio_and_libfacerec/thumbs/installer_path.jpg" class="mediacenter" alt="installer_path" /></a>
 
 The OpenCV superpack is no installer, so you'll need to manually add the OpenCV libraries to the DLL search path of Windows. The search paths of Windows are given in the PATH environment variable, which is a list of the directories to search, each separated by a semicolon.
 ### Windows Vista and Windows 7 users ###
@@ -78,7 +78,7 @@ The difference is, that I've decided to use pre-built Visual Studio 2010 (VC 10)
 
 Start Visual Studio and from the main menu select ``"File -> New Project..."``. Then create an ``"Empty Project"``, name it ``libfacerec`` and store it in ``D:\projects``:
 
-<img src="/static/images/blog/opencv_visual_studio_and_libfacerec/libfacerec_vs_new_proj.jpg" width="400" class="mediacenter" alt="libfacerec_vs_new_proj" />
+<a href="/static/images/blog/opencv_visual_studio_and_libfacerec/libfacerec_vs_new_proj.jpg"><img src="/static/images/blog/opencv_visual_studio_and_libfacerec/thumbs/libfacerec_vs_new_proj.jpg" class="mediacenter" alt="libfacerec_vs_new_proj" /></a>
 
 ### Adding the libfacerec headers and sources ###
 
@@ -88,7 +88,7 @@ Now add the files to the Microsoft Visual Studio solution. In the Solution Explo
 
 Your project now looks like this:
 
-<img src="/static/images/blog/opencv_visual_studio_and_libfacerec/libfacerec_added_files.jpg" width="400" class="mediacenter" alt="libfacerec_added_files" />
+<a href="/static/images/blog/opencv_visual_studio_and_libfacerec/libfacerec_added_files.jpg"><img src="/static/images/blog/opencv_visual_studio_and_libfacerec/thumbs/libfacerec_added_files.jpg" class="mediacenter" alt="libfacerec_added_files" /></a>
 
 ### Additional Include Directories ###
 
@@ -100,7 +100,7 @@ Your project doesn't compile yet, because we didn't configure OpenCV. The first 
     * D:\projects\opencv\build\include\opencv
     * D:\projects\opencv\build\include\opencv2
 
-<img src="/static/images/blog/opencv_visual_studio_and_libfacerec/libfacerec_c_cpp.jpg" width="400" class="mediacenter" alt="libfacerec_c_cpp" />
+<a href="/static/images/blog/opencv_visual_studio_and_libfacerec/libfacerec_c_cpp.jpg"><img src="/static/images/blog/opencv_visual_studio_and_libfacerec/thumbs/libfacerec_c_cpp.jpg" class="mediacenter" alt="libfacerec_c_cpp" /></a>
 
 ### Additional Library Directories and Additional Dependencies ###
 
@@ -115,7 +115,7 @@ Then go to ``Configuration Properties -> Linker -> Input`` and in the ``Addition
 * ``opencv_core231.lib``
 * ``opencv_imgproc231.lib``
 
-<img src="/static/images/blog/opencv_visual_studio_and_libfacerec/libfacerec_linker_input.jpg" width="400" class="mediacenter" alt="libfacerec_linker_input" />
+<a href="/static/images/blog/opencv_visual_studio_and_libfacerec/libfacerec_linker_input.jpg"><img src="/static/images/blog/opencv_visual_studio_and_libfacerec/thumbs/libfacerec_linker_input.jpg" class="mediacenter" alt="libfacerec_linker_input" /></a>
 
 ### Build libfacerec ###
 
@@ -127,11 +127,11 @@ Finally libfacerec can be built.  We are linking against the libraries:
 
 Those libraries have no Debug symbols, so we build libfacerec with the Release Configuration:
 
-<img src="/static/images/blog/opencv_visual_studio_and_libfacerec/release_build.jpg" class="mediacenter" alt="release_build" />
+<a href="/static/images/blog/opencv_visual_studio_and_libfacerec/release_build.jpg"><img src="/static/images/blog/opencv_visual_studio_and_libfacerec/thumbs/release_build.jpg" class="mediacenter" alt="release_build" /></a>
 
 Then build the project and its executable by simply selecting ``Build -> Build Solution`` (or F7) from the Menu. And you should see:
 
-<img src="/static/images/blog/opencv_visual_studio_and_libfacerec/build.jpg" width="600" class="mediacenter"  alt="build" />
+<a href="/static/images/blog/opencv_visual_studio_and_libfacerec/build.jpg"><img src="/static/images/blog/opencv_visual_studio_and_libfacerec/thumbs/build.jpg" class="mediacenter"  alt="build" /></a>
 
 Congratulations!
 
@@ -164,8 +164,8 @@ D:\projects\libfacerec\Release\libfacerec.exe D:/data/at.txt
 
 and you should see (Note I have switched to the Eigenfaces model in the demo. Latest version in trunk is Fisherfaces!):
 
-<img src="/static/images/blog/opencv_visual_studio_and_libfacerec/eigenfaces.jpg" width="400" class="mediacenter" alt="eigenfaces" />
+<a href="/static/images/blog/opencv_visual_studio_and_libfacerec/eigenfaces.jpg"><img src="/static/images/blog/opencv_visual_studio_and_libfacerec/thumbs/eigenfaces.jpg" class="mediacenter" alt="eigenfaces" /></a>
 
 ## Conclusion ##
 
-To answer the question of many mails I got: Yes. I am pretty sure all this also works with Microsoft Visual Studio.
+So I can finally answer the question of all the mails I got: Yes, I am pretty sure all this also works with Microsoft Visual Studio.
