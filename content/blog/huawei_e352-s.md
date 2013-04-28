@@ -7,11 +7,11 @@ author: Philipp Wagner
 
 # getting the Huawei E352s-5 to work with linux #
 
-Yes, I am alive and well! This is just a quick note on how to get a Huawei E352s-5 working under Linux. I am running an Ubuntu 10.10 installation and I've been quite happy with it ever since. Today I've upgraded my contract to a new mobile data plan and I got a Huawei stick with it, which seems to be the latest model T-Mobile sells you in Germany. Now if you buy hardware without researching the internet thoroughly, you'll almost always need some effort to get it working with Linux, especially if you aren't on the latest distribution. It's not a big deal this time, since Huawei modems are pretty common.
+Yes, I am alive and well! This is just a quick note on how to get a Huawei E352s-5 working under Linux. I am running an Ubuntu 10.10 installation and I've been quite happy with it ever since. Today I've upgraded my contract to a new mobile data plan and I got a Huawei stick with it, which seems to be the latest model [T-Mobile](www.t-mobile.de) sells you in Germany (and now you know I am at the monopolist). If you buy hardware without researching the internet thoroughly, you'll almost always need some effort to get it working with Linux, especially if you aren't on the latest distribution. It's not a big deal this time, since Huawei modems are pretty common.
 
 ## switching into modem mode ##
 
-If you have inserted your SIM card, plugged in the Huawei E352s-5 stick and your distribution recognized it, you can stop reading here. But if you are on an old distribution like I am, you'll probably need to use [usb_modeswitch](http://www.draisberghof.de/usb_modeswitch/) to get it working. First of all, let's see what ``dmesg`` says after inserting the stick:
+If you have inserted your SIM card, plugged in the Huawei E352s-5 stick and your distribution recognized it... you can stop reading here. But if you are on an old distribution like I am, you'll probably need to use [usb_modeswitch](http://www.draisberghof.de/usb_modeswitch/) to get it working. First of all, let's see what ``dmesg`` says after inserting the stick:
 
 <pre>
 philipp@mango:~$ dmesg
@@ -38,7 +38,7 @@ philipp@mango:~$ lsusb
 Bus 002 Device 008: ID 12d1:14fe Huawei Technologies Co., Ltd. 
 </pre>
 
-So let's see how to switch the device into its Modem mode! There is a nice open source project called [usb_modeswitch](http://www.draisberghof.de/usb_modeswitch), which does the job. The [usb_modeswitch](http://www.draisberghof.de/usb_modeswitch/) coming with my Ubuntu 10.10 is rather outdated, so I'll build it from source, which is simple. You'll need ``libusb-dev`` to build it, so if you haven't installed it yet you can simply install it via ``apt-get`` (or your distributions package manager). [usb_modeswitch](http://www.draisberghof.de/usb_modeswitch/) seems to play fine with most of the ``libusb-dev`` versions:
+Fine, let's see how to switch the device into its Modem mode! There is a nice open source project called [usb_modeswitch](http://www.draisberghof.de/usb_modeswitch), which does the job. The [usb_modeswitch](http://www.draisberghof.de/usb_modeswitch/) coming with my Ubuntu 10.10 is rather outdated, so I'll build it from source. You'll need ``libusb-dev`` to build it, so if you haven't installed it yet you can simply install it via ``apt-get`` (or your distributions package manager). [usb_modeswitch](http://www.draisberghof.de/usb_modeswitch/) seems to play fine with most of the ``libusb-dev`` versions:
 
 ```sh
 sudo apt-get install libusb-dev
@@ -63,9 +63,9 @@ cd usb-modeswitch-data-20121109
 sudo make install
 ```
 
-The new [usb_modeswitch](http://www.draisberghof.de/usb_modeswitch/) overrides the old version, so no need to take care about the installation path! With [usb_modeswitch](http://www.draisberghof.de/usb_modeswitch/) it's easy to switch the Huawei E352-s into the Modem mode. A quick research is going to reveal you the switching command. I guess it's the sniffed packet Windows sends to the device in order to switch modes, I really don't feel the need to sniff it all by myself:
+The new [usb_modeswitch](http://www.draisberghof.de/usb_modeswitch/) overrides the old version, so no need to take care about the installation path! With [usb_modeswitch](http://www.draisberghof.de/usb_modeswitch/) it's easy to switch the Huawei E352-s into the Modem mode. A quick research is going to reveal you the switching command. I guess it's the sniffed packet Windows sends to the device in order to switch modes, I really don't feel the need to sniff it all by myself (you have to run the commands as root):
 
-```sh 
+```sh
 usb_modeswitch -v 12d1 -p 14fe -M '55534243123456780000000000000011062000000100000000000000000000' 
 ```
 
@@ -106,13 +106,13 @@ philipp@mango:~$ dmesg
 
 ## udev rules ##
 
-We don't want to impress people by remembering these cryptic lines, so you could write two ``udev`` rules to execute these commands whenever the device is added to the USB subsystem. Store it to ``/etc/udev/rules.d/50-huawei.rules`` 
+We don't want to impress people by remembering these cryptic lines, so you could write two ``udev`` rules to execute these commands whenever the device is added to the USB subsystem. Store it to ``/etc/udev/rules.d/70-huawei_e352.rules`` 
 
-**Filename** ``/etc/udev/rules.d/50-huawei.rules``:
+**Filename** ``/etc/udev/rules.d/70-huawei_e352.rules``:
 
 <pre>
 ACTION=="add", SUBSYSTEM=="usb", ATTRS{idVendor}=="12d1", ATTRS{idProduct}=="14fe", RUN+="/usr/sbin/usb_modeswitch -v 12d1 -p 14fe -M '55534243123456780000000000000011062000000100000000000000000000'"
-ACTION=="add", SUBSYSTEM=="usb", ATTRS{idVendor}=="12d1", ATTRS{idProduct}=="14fe", RUN+="/bin/bash -c 'modprobe option && echo 12d1 14fe > /sys/bus/usb-serial/drivers/option1/new_id'"
+ACTION=="add", SUBSYSTEM=="usb", ATTRS{idVendor}=="12d1", ATTRS{idProduct}=="14fe", RUN+="/bin/bash -c 'modprobe option && echo 12d1 1506 > /sys/bus/usb-serial/drivers/option1/new_id'"
 </pre>
 
 And reload the rules:
