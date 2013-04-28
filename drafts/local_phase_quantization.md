@@ -7,11 +7,11 @@ author: Philipp Wagner
 
 # Local Phase Quantization (LPQ) #
 
-Internet, here I am! Now that [/blog/huawei_e352s](I can work from anywhere I want to), it's finally time to work on new articles again. The first algorithm I'd like to discuss is Local Phase Quantization (LPQ), which has been described in:
+Internet, here I am! Now that [I can work from anywhere I want to](/blog/huawei_e352s), it's finally time to work on new articles again. The first algorithm I'd like to discuss is Local Phase Quantization (LPQ), which has been described in:
 
 * 
 
-Some years ago I was in contact with Timo ..., who . Sorry it took so long! Finally LPQ has been added to the [facerec](http://github.com/bytefish/facerec) project, which is my playground for experimenting with new computer vision algorithms. I have also added the GNU Octave/MATLAB implementation provided by []() and []() with only minor modifications, so all credit goes to the original authors. The experiments in this article are based on the [Python](http://www.python.org) implementation, feel free to verify the results with the GNU Octave/MATLAB branch.
+LPQ has been added to the [facerec](http://github.com/bytefish/facerec) project, which is my playground for experimenting with new computer vision algorithms. I have also added the GNU Octave/MATLAB implementation provided by []() and []() with only minor modifications, so all credit goes to the original authors. The experiments in this article are based on the [Python](http://www.python.org) implementation, feel free to verify the results with the GNU Octave/MATLAB branch.
 
 ## a quick recap ##
 
