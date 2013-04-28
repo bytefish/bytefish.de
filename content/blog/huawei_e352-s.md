@@ -104,6 +104,8 @@ philipp@mango:~$ dmesg
 [ 1472.040496] usb 2-5: GSM modem (1-port) converter now attached to ttyUSB5
 </pre>
 
+The modem should be usable by now and your network-manager should ask you for the PIN to unlock the device. Congratulations!
+
 ## udev rules ##
 
 We don't want to impress people by remembering these cryptic lines, so you could write two ``udev`` rules to execute these commands whenever the device is added to the USB subsystem. Store it to ``/etc/udev/rules.d/70-huawei_e352.rules`` 
@@ -125,7 +127,7 @@ And that's it basically! Your stick should now be put into Modem mode automatica
 
 ## final note ##
 
-I noticed, that my Ubuntu 10.10 ``modem-manager`` sometimes has problems to recognize the device after re-attaching it. This happens especially after I've put my system into hibernation and restarting the ``network-manager`` doesn't help either. I know it doesn't sound great, but killing the ``modem-manager`` process works great for me:
+I have noticed, that my Ubuntu 10.10 ``modem-manager`` sometimes has problems to recognize the device after reattaching it. This happens especially after restoring my system from hibernation. Restarting the ``network-manager`` service doesn't help here either. I know it doesn't sound great, but killing the ``modem-manager`` process works great for me:
 
 <pre>
 philipp@mango:~$ ps ax | grep modem-manager
