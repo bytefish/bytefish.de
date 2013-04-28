@@ -15,7 +15,7 @@ template: page_notitle
 * Email: bytefish *AT* gmx *DOT* de
 * Jabber: bytefish *AT* gmx *DOT* de
 * Address: Check the WHOIS record.
-* <a href="static/philipp_wagner.asc.gz" class="mediafile gz">Public Key</a>
+* <a href="/static/philipp_wagner.asc.gz" class="mediafile gz">Public Key</a>
   
 # Links #
 
@@ -52,3 +52,4 @@ template: page_notitle
 * [http://maggi.cc/](http://maggi.cc/)
 * [http://www.alexdodge.com/](http://www.alexdodge.com/)
 * [http://mishapenkov.blogspot.com](http://mishapenkov.blogspot.com)
+* [http://raufast.org/](http://raufast.org/)

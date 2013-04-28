@@ -446,7 +446,7 @@ Import the visual module and plot the faces:
 
 The Fisherfaces are a bit harder to explain, because they identify regions of a face that separate faces best from each other. None of them seems to encode particular light settings, at least it's not as obvious as in the Eigenfaces method:
 
-<a href="/static/images/blog/fisherfaces/fisherfaces/14_fisherfaces.png"><img src="/static/images/blog/fisherfaces/thumbs/fisherfaces/14_fisherfaces.jpg" class="mediacenter" alt="Fisherfaces of the Yale Facedatabase A" /></a>
+<a href="/static/images/blog/fisherfaces/14_fisherfaces.png"><img src="/static/images/blog/fisherfaces/thumbs/14_fisherfaces.jpg" class="mediacenter" alt="Fisherfaces of the Yale Facedatabase A" /></a>
 
 I could only guess which component describes which features. So I leave the interpretation up to the reader. What we lose with the Fisherfaces method for sure, is the ability to reconstruct faces. If I want to reconstruct face number 17, just like in the Eigenfaces section:
 

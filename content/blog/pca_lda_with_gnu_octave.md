@@ -339,9 +339,11 @@ With the functions it's easy to perform a PCA:
 [DPca, Wpca] = pca(X);
 Xm = bsxfun(@minus, X, mean(X));
 Xproj = project(Xm, Wpca(:,1:2));
-</code>
+```
+
 According to the eigenvalues, the first component already accounts for 99% of the total variance.
-<code>
+
+```matlab
 > cumsum(DPca) / sum(DPca)
 ans =
 

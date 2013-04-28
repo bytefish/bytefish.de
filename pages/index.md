@@ -14,4 +14,4 @@ Enjoy your stay.
 * Email: bytefish *AT* gmx *DOT* de
 * Jabber: bytefish *AT* gmx *DOT* de
 * Address: Check the WHOIS record.
-* <a href="static/philipp_wagner.asc.gz" class="mediafile gz">Public Key</a>
+* <a href="/static/philipp_wagner.asc.gz" class="mediafile gz">Public Key</a>
