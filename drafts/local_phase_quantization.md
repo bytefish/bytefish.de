@@ -15,7 +15,7 @@ LPQ has been added to the [facerec](http://github.com/bytefish/facerec) project,
 
 ## a quick recap ##
 
-In most of my articles on face recognition, I've already discussed the problems you'll encounter when trying to perform face recognition in the wild. The [/blog/eigenfaces](Eigenfaces algorithm) yields a great recognition rate - if we are given images with somewhat similar illumination. The Fisherfaces algorithm was able to compensate large differences in illumination - only if we have images with a fixed position and a light source from different directions. Both methods [/static/images/blog/local_binary_patterns/at_database_vs_accuracy_xy.png](need a lot of training data) to build their models and it's often hard to provide all this in real life. So we had a brief look at [/blog/local_binary_patterns](Local Binary Patterns), a method having its roots in the 2D texture analysis. Local Binary Patterns have the nice property to be computationally very simple and robust against linear grayscale transformations. The downside is, that illumination in real life is a highly non-linear thing. We can also overcome this problem by applying the preprocessing presented by Tan and Triggs in:
+In most of my articles on face recognition, I've already discussed the problems you'll encounter when trying to perform face recognition in the wild. The [Eigenfaces algorithm](/blog/eigenfaces) yields a great recognition rate - if we are given images with somewhat similar illumination. The Fisherfaces algorithm was able to compensate large differences in illumination - only if we have images with a fixed position and a light source from different directions. Both methods [need a lot of training data](/static/images/blog/local_binary_patterns/at_database_vs_accuracy_xy.png) to build their models and it's often hard to provide all this in real life. So we had a brief look at [Local Binary Patterns](/blog/local_binary_patterns), a method having its roots in the 2D texture analysis. Local Binary Patterns have the nice property to be computationally very simple and robust against linear grayscale transformations. The downside is, that illumination in real life is a highly non-linear thing. We can also overcome this problem by applying the preprocessing presented by Tan and Triggs in:
 
 * 
 
@@ -35,7 +35,7 @@ def tantriggs(X, alpha = 0.1, tau = 10.0, gamma = 0.2, sigma0 = 1.0, sigma1 = 2.
   return X
 ```
 
-Almost all of the datasets I've experiment with had high-quality image data. The AT&T Facedatabase and Yale Facedatabase A/B have been taken in very controlled conditions, even for my celebrity dataset I have only chosen quality images. In real life you are often confronted with the problem of lower-quality images and your algorithms have to be able to cope with this problem. Local Phase Quantization is a blur-invariant feature description and I think... this is a great chance for an experiment!
+Almost all of the datasets I've experiment with had high-quality image data. The [AT&T Facedatabase]() and [Yale Facedatabase A/B]() have been taken in very controlled conditions, even for [my celebrity dataset](/blog/fisherfaces) I have only chosen the higher quality images. In real life you are often confronted with the problem of low quality images and your algorithms have to be able to cope with this problem. Local Phase Quantization is a blur-invariant feature description and I think... this is a great chance for an experiment!
 
 ## the algorithm ##
 
@@ -50,15 +50,14 @@ def euclidean_distmatrix(X):
 
 ## experiment ##
 
-As always in my articles you can easily run the experiments all by yourself. I am also adding the complete script to the end of the page, just in case GitHub ever goes down.
+As always in my articles you can easily run the experiments all by yourself. 
 
 
 ### dataset ###
 
-The question is: How do the existing face recognition algorithms cope with blur? I guess it's best to use the [AT&T Dataset](...) for a quick experiment, since all of the [/blog/fisherfaces](existing methods have shown to yield excellent recognition rates on this dataset). The figures in the experiment are determined by running a 10-fold cross validation 5 times on a shuffled dataset. This should give us a good estimate of the classifiers true recognition rate.
+The question is: How do the existing face recognition algorithms cope with blur? I guess it's best to use the [AT&T Dataset](...) for a quick experiment, since all of the [existing methods have shown to yield excellent recognition rates on this dataset](/blog/fisherfaces). The figures in the experiment are determined by running a 10-fold cross validation 5 times on a shuffled dataset. This should give us a good estimate of the classifiers true recognition rate.
 
 ### reading the image data ###
-
 
 ### preprocessing: gaussian blur ###
 
@@ -81,7 +80,7 @@ Y = preprocess_gaussian(X, sigma=2)
 
 ### putting it into a script ###
 
-So let's put everything we have discussed so far into a tiny little script. 
+So let's put everything we have discussed so far into a tiny little script. The parameters used in the experiments are taken from the relevant publications and previous experiments. 
 
 <table>
   <tr>
@@ -100,6 +99,11 @@ So let's put everything we have discussed so far into a tiny little script.
     </td>
     <!-- parameters -->
     <td>
+      <ul>
+        <li>
+        num_components = 50
+        </li>
+      </ul>
     </td>
   </tr>
   <!-- Fisherfaces -->
@@ -113,6 +117,7 @@ So let's put everything we have discussed so far into a tiny little script.
     </td>
     <!-- parameters -->
     <td>
+    - (parameters are determined from data)
     </td>
   </tr>
   <!-- Local Binary Patterns -->
@@ -126,6 +131,10 @@ So let's put everything we have discussed so far into a tiny little script.
     </td>
     <!-- parameters -->
     <td>
+      <ul>
+        <li>radius = 1 (default)</li>
+        <li>neighbors = 8 (default)</li>
+      </ul>    
     </td>
   </tr>
   <!-- Local Phase Quantization -->
@@ -142,3 +151,5 @@ So let's put everything we have discussed so far into a tiny little script.
     </td>
   </tr>
 </table>
+
+
