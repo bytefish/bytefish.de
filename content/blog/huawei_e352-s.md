@@ -108,7 +108,7 @@ The modem should be usable by now and your network-manager should ask you for th
 
 ## udev rules ##
 
-We don't want to impress people by remembering these cryptic lines, so you could write two ``udev`` rules to execute these commands whenever the device is added to the USB subsystem. Store it to ``/etc/udev/rules.d/70-huawei_e352.rules`` 
+We don't want to impress people by remembering these cryptic lines, so you could write two ``udev`` rules to execute these commands whenever the device is added to the USB subsystem. Store it to ``/etc/udev/rules.d/70-huawei_e352.rules`` for example.
 
 **Filename** ``/etc/udev/rules.d/70-huawei_e352.rules``:
 
