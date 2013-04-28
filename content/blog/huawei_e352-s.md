@@ -7,7 +7,7 @@ author: Philipp Wagner
 
 # getting the Huawei E352s-5 to work with linux #
 
-Yes, I am alive and well! This is just a quick note on how to get a Huawei E352s-5 working under Linux. I am running an Ubuntu 10.10 installation and I've been quite happy with it ever since. Today I've upgraded my contract to a new mobile data plan and I got a Huawei stick with it, which seems to be the latest model [T-Mobile](www.t-mobile.de) sells you in Germany (and now you know I am at the monopolist). If you buy hardware without researching the internet thoroughly, you'll almost always need some effort to get it working with Linux, especially if you aren't on the latest distribution. It's not a big deal this time, since Huawei modems are pretty common.
+Yes, I am alive and well! This is just a quick note on how to get a Huawei E352s-5 working under Linux. Today I've upgraded my contract to a new mobile data plan and I got a Huawei stick with it, which seems to be the latest model [T-Mobile](www.t-mobile.de) sells you in Germany (and now you know I am at the monopolist). If you buy hardware without researching the internet thoroughly, you'll almost always need some effort to get it working with Linux, especially if you aren't on the latest distribution.  I am running an Ubuntu 10.10 installation and I've been quite happy with it ever since. As expected, the modem isn't recognized by Ubuntu 10.10. It's not a big deal this time, since Huawei modems are pretty common.
 
 ## switching into modem mode ##
 
