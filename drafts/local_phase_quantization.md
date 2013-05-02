@@ -57,19 +57,116 @@ As always in my articles you can easily run the experiments all by yourself.
 
 The question is: How do the existing face recognition algorithms cope with blur? I guess it's best to use the [AT&T Dataset](...) for a quick experiment, since all of the [existing methods have shown to yield excellent recognition rates on this dataset](/blog/fisherfaces). The figures in the experiment are determined by running a 10-fold cross validation 5 times on a shuffled dataset. This should give us a good estimate of the classifiers true recognition rate.
 
+## getting the image data right ##
+
+I'd like to write some words on the image data to be read, because questions on this **almost always** pop up. For sake of simplicity I have assumed in the experiments, that the images (the *faces*, *persons you want to recognize*) are given in folders. One folder per person. So imagine I have a folder (a dataset) called ``dataset1``, with the subfolders ``person1``, ``person2`` and so on:
+
+<pre>
+philipp@mango:~/facerec/data/dataset1$ tree -L 2 | head -n 20
+.
+|-- person1
+|   |-- 1.jpg
+|   |-- 2.jpg
+|   |-- 3.jpg
+|   |-- 4.jpg
+...
+|-- person2
+|   |-- 1.jpg
+|   |-- 2.jpg
+|   |-- 3.jpg
+|   |-- 4.jpg
+...
+</pre>
+
+This makes it easy to read in the image data, without the need of a configuration file or overkill things like a database. One of the public available datasets, that is already coming in such a folder structure is the AT&T Facedatabase available at:
+
+* [http://www.cl.cam.ac.uk/research/dtg/attarchive/facedatabase.html](http://www.cl.cam.ac.uk/research/dtg/attarchive/facedatabase.html)
+
+Once unpacked it is going to look like this (on my filesystem it is unpacked to ``/home/philipp/facerec/data/at/``, your path is different!):
+
+<pre>
+philipp@mango:~/facerec/data/at$ tree .
+.
+|-- README
+|-- s1
+|   |-- 1.pgm
+|   |-- 2.pgm
+ ...
+|-- s2
+|   |-- 1.pgm
+|   |-- 2.pgm
+ ...
+|-- s3
+|   |-- 1.pgm
+|   |-- 2.pgm
+ ...
+
+40 directories, 401 files
+</pre>
+
 ### reading the image data ###
+
+So now that you know the folder structure, we can define a method ``read_images`` for reading in the image data and associated labels:
+
+```python
+import os
+import sys
+import cv2
+import numpy as np
+
+def read_images(path, sz=None):
+    """Reads the images in a given folder, resizes images on the fly if size is given.
+    
+    Args:
+        path: Path to a folder with subfolders representing the subjects (persons).
+        sz: A tuple with the size Resizes 
+    
+    Returns:
+        A list [X,y]
+        
+            X: The images, which is a Python list of numpy arrays.
+            y: The corresponding labels (the unique number of the subject, person) in a Python list.
+    """
+    c = 0
+    X,y = [], []
+    for dirname, dirnames, filenames in os.walk(path):
+        for subdirname in dirnames:
+            subject_path = os.path.join(dirname, subdirname)
+            for filename in os.listdir(subject_path):
+                try:
+                    im = cv2.imread(os.path.join(subject_path, filename), cv2.IMREAD_GRAYSCALE)
+                    # resize to given size (if given)
+                    if (sz is not None):
+                        im = cv2.resize(im, sz)
+                    X.append(np.asarray(im, dtype=np.uint8))
+                    y.append(c)
+                except IOError, (errno, strerror):
+                    print "I/O error({0}): {1}".format(errno, strerror)
+                except:
+                    print "Unexpected error:", sys.exc_info()[0]
+                    raise
+            c = c+1
+    return [X,y]
+```
+        
+Reading in the image data then becomes as easy as calling:
+
+```python
+[X,y] = read_images("/path/to/some/folder")
+```
 
 ### preprocessing: gaussian blur ###
 
-It's common in image processing to use a Gaussian blur for reducing image noise and detail. I won't implement the good old Gaussian function all by myself, since applying it is trivial with NumPy is so simple. All that needs to be done is a call [ndimage.gaussian_filter(X, sigma)](...) on the image given in ``X``. 
+We are going to validate the algorithms on both, the original dataset and a blurred version. It's common in image processing to use a Gaussian blur for reducing image noise and detail. Applying a Gaussian blur is trivial with NumPy, since all that needs to be done is a call [ndimage.gaussian_filter(x, sigma)](...), with the image given in ``x``. 
 
+To apply the Gaussian filter on each image, you can use a function like ``preprocess_gaussian``:
 
 ```python
 def preprocess_gaussian(X, sigma):
-  return [ndimage.gaussian_filter(xi, sigma) for xi in X]
+  return [ndimage.gaussian_filter(x, sigma) for x in X]
 ```
 
-Then applying a Gaussian blur with ``sigma=2`` on a list of images is easy with:
+Applying a Gaussian blur with ``sigma=2`` on a list of images is then as easy as:
 
 ```python
 # Read in the AT&T Facedatabase, your path is different:
@@ -78,9 +175,9 @@ Then applying a Gaussian blur with ``sigma=2`` on a list of images is easy with:
 Y = preprocess_gaussian(X, sigma=2)
 ```
 
-### putting it into a script ###
+### experimental setup ###
 
-So let's put everything we have discussed so far into a tiny little script. The parameters used in the experiments are taken from the relevant publications and previous experiments. 
+The parameters used in the experiments are taken from the relevant publications and previous experiments. 
 
 <table>
   <tr>
@@ -117,7 +214,9 @@ So let's put everything we have discussed so far into a tiny little script. The 
     </td>
     <!-- parameters -->
     <td>
-    - (parameters are determined from data)
+      <ul>
+        <li>num_components = 0 (default, means: number of components are determined from data)
+      </ul>
     </td>
   </tr>
   <!-- Local Binary Patterns -->
@@ -151,5 +250,7 @@ So let's put everything we have discussed so far into a tiny little script. The 
     </td>
   </tr>
 </table>
+
+### results ###
 
 

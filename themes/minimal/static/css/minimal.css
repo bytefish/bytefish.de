@@ -55,9 +55,14 @@ body {
   text-align: justify;
 }
 
+
 #menu {
 	font-weight: bold;
 	border-bottom: 1px solid black;
+}
+
+#menu .sitename {
+  margin-right: 3px;
 }
 
 #menu a,
