@@ -6,7 +6,7 @@
   {% if tags %}
   <h1>Available Tags and Articles</h1>
     <ul>
-    {% for (tag, articles) in tags | sort_tags_by_length %}
+    {% for (tag, articles) in tags | sortTupleByIndex(index=1) %}
       <li><span class="date">{{ tag }}</span> &raquo; <a href="{{ SITEURL }}/tag/{{ tag }}">{{ articles | count }} Article(s)</a></li>
     {% endfor %}
   {% endif %}

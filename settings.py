@@ -73,7 +73,7 @@ LINKS = [
   ('bsd', 'http://www.opensource.org/licenses/BSD-3-Clause'),
   ('xhtml', 'http://validator.w3.org/check/referer'),
   ('css3', 'http://jigsaw.w3.org/css-validator/check/referer?profile=css'),
-  ('pelican', 'http://www.getpelican.com'),]
+  ('pelican', 'https://github.com/getpelican'),]
 # Set this to your Disqus account:
 DISQUS_SITENAME = 'bytefish'
 # Set some default category:
@@ -82,12 +82,17 @@ DEFAULT_CATEGORY = 'uncategorized'
 STATIC_PATHS = ['images' ]
 
 # Custom functions available to all templates:
-from operator import itemgetter
+from operator import itemgetter, methodcaller
 
-def sort_tags_by_length(tags):
-  return sorted(tags, key=lambda tup: len(tup[1]), reverse=True)
-  
-   
+def sortTupleByIndex(items, index=0, reverse=True):
+  return sorted(items, key=lambda tup: len(tup[index]), reverse=reverse)
+
+def sortDictByKey(items, key, reverse=True, default=None):
+  if default is None:
+    return sorted(items, key=itemgetter(key), reverse=reverse) 
+  return sorted(items, key=methodcaller('get', key, default), reverse=reverse) 
+
 JINJA_FILTERS = {
-    'sort_tags_by_length': sort_tags_by_length,
+    'sortTupleByIndex': sortTupleByIndex,
+    'sortDictByKey': sortDictByKey   
 }
