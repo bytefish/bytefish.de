@@ -8,6 +8,12 @@ Options -Indexes -MultiViews +FollowSymLinks
     Deny from all
     Satisfy All
 </Files>
+## Block some servers not identifying themselves, but harvesting
+## the page like crazy:
+order allow,deny
+deny from feed01.hetzner.itroot.de
+deny from your-server.de
+allow from all
 ##
 ## Set the 404 page:
 ErrorDocument 404                   /404.html
