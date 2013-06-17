@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 
-{# TODO: URL shouldn't be hardcoded! #}
+{# TODO: The URLs shouldn't be hardcoded!! #}
+
+{% block title %}{{ SITEURL }}/blog{% endblock %}
 {% block content_title %}<a href="{{ SITEURL }}/blog">blog</a>{%endblock%}
 
 {% block content %}
