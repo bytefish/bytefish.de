@@ -18,7 +18,7 @@ author: Philipp Wagner
 
 You can find the script and resources at: 
 
-* [https://github.com/bytefish/facerec/tree/master/py/apps/videofacerec](https://github.com/bytefish/facerec/tree/master/py/apps/videofacerec).
+* [https://github.com/bytefish/facerec/tree/master/py/apps/videofacerec](https://github.com/bytefish/facerec/tree/master/py/apps/videofacerec)
 
 Thanks to more than 100 people for watching the repository!
 
