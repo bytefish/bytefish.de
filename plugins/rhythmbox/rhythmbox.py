@@ -35,31 +35,32 @@
  POSSIBILITY OF SUCH DAMAGE.
  
 """
-from datetime import datetime
-from pelican import signals
 from lxml import etree
+from datetime import datetime
+from collections import defaultdict
+import sqlite3
 
 import logging
 logger = logging.getLogger(__name__)
 
-# This builds a list of dictionaries similar to:
+# Builds a list of dictionaries similar to:
 #
 # [{'album': 'Viva La Vida Or Death And All His Friends',
 #  'artist': 'Coldplay',
 #  'bitrate': '192',
 #  'date': '733042',
 #  'duration': '249',
-#  'file-size': '5995610',
-#  'first-seen': datetime.fromtimestamp(1299845660),
+#  'file_size': '5995610',
+#  'first_seen': datetime.fromtimestamp(1299845660),
 #  'genre': 'Other',
-#  'last-played': datetime.fromtimestamp(1367611263),
-#  'last-seen': datetime.fromtimestamp(1368303708),
+#  'last_played': datetime.fromtimestamp(1367611263),
+#  'last_seen': datetime.fromtimestamp(1368303708),
 #  'location': 'file:///home/philipp/Music/coldplay/viva_la_vida_or_death_and_all_his_friends/09-coldplay__strawberry_swing.mp3',
 #  'mimetype': 'application/x-id3',
 #  'mtime': datetime.fromtimestamp(1299836480),
-#  'play-count': 104,
+#  'play_count': 104,
 #  'title': 'Strawberry Swing',
-#  'track-number': '9'},
+#  'track_number': '9'},
 #  ...]
 def read_database(filename):
   doc = etree.parse(filename)
@@ -68,7 +69,7 @@ def read_database(filename):
     if node.attrib["type"] == "song":
       item = {}
       for elem in node:
-        elem_tag = elem.tag.replace("-", "_")
+        elem_tag = elem.tag.replace("-", "_") # Jinja2 has problems with "-" as key
         if elem.tag in ('play-count', 'duration', 'bitrate', 'track-number'):
           item[elem_tag] = int(elem.text)
         elif elem.tag in ('first-seen', 'last-played', 'last-seen', 'mtime'):
@@ -78,9 +79,53 @@ def read_database(filename):
       items.append(item)
   return items
 
-def add_rhythmbox_db(generator, metadata):
-  if 'RHYTHMBOX_DB' in generator.settings.keys():
-    generator.context["rhythmbox_db"] = read_database(generator.settings['RHYTHMBOX_DB'])
+# I'll just throw the data into one fat table. Don't be afraid of duplicates, 
+# we are going to read the Music DB into memory anyway:
+CREATE_TABLE_STATEMENT = """
+  CREATE TABLE rhythmdb
+    (artist VARCHAR(256),
+     album VARCHAR(256),
+     title VARCHAR(256),
+     track_number INTEGER,
+     genre VARCHAR(256),
+     bitrate INTEGER,
+     date DATETIME,
+     duration INTEGER,
+     file_size INTEGER,
+     first_seen DATETIME,
+     last_played DATETIME,
+     last_seen DATETIME,
+     location VARCHAR(256),
+     mimetype VARCHAR(256),
+     mtime DATETIME,
+     play_count INTEGER)
+  """
 
-def register():
-  signals.article_generate_context.connect(add_rhythmbox_db)
+INSERT_STATEMENT = "insert into rhythmdb (artist, album, title, track_number, genre, bitrate, date, duration, file_size, first_seen, last_played, last_seen, location, mimetype, mtime, play_count) values (:artist, :album, :title, :track_number, :genre, :bitrate, :date, :duration, :file_size, :first_seen, :last_played, :last_seen, :location, :mimetype, :mtime, :play_count)"
+
+# Builds a dictionary with the keys for each row 
+# returned by sqlite3:
+def dict_factory(cursor, row):
+    d = {}
+    for idx, col in enumerate(cursor.description):
+        d[col[0]] = row[idx]
+    return d
+ 
+if __name__ == "__main__":
+  items = read_database("/home/philipp/.local/share/rhythmbox/rhythmdb.xml")
+  
+  connection = sqlite3.connect(":memory:")
+  connection.isolation_level = None
+  connection.row_factory = dict_factory
+  
+  cursor = connection.cursor()
+  cursor.execute(CREATE_TABLE_STATEMENT)
+  
+  for item in items:
+    cursor.execute(INSERT_STATEMENT, defaultdict(lambda: None, item))
+  
+  # Top 10 artists:
+  cursor.execute("select artist, sum(play_count) AS play_count from rhythmdb group by artist order by 2 desc LIMIT 10")
+  print cursor.fetchall()
+
+  connection.close()
