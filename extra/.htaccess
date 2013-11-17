@@ -2,6 +2,17 @@
 ## global config. Symlinks maybe needed for URL rewriting.
 Options -Indexes -MultiViews +FollowSymLinks
 ##
+## Set GZIP compression for faster load time and 
+## reduce amount of bandwidth consumed by clients:
+SetOutputFilter DEFLATE
+AddOutputFilterByType DEFLATE text/html text/css text/plain text/xml application/x-javascript application/x-httpd-php
+BrowserMatch ^Mozilla/4 gzip-only-text/html
+BrowserMatch ^Mozilla/4\.0[678] no-gzip
+BrowserMatch \bMSIE !no-gzip !gzip-only-text/html
+BrowserMatch \bMSI[E] !no-gzip !gzip-only-text/html
+SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png)$ no-gzip
+Header append Vary User-Agent env=!dont-vary
+##
 ## Make sure nobody gets the htaccess files:
 <Files ~ "^[\._]ht">
     Order allow,deny
