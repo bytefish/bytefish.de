@@ -4,6 +4,7 @@ tags: python, matlab, octave, face recognition
 category: computer vision
 slug: face_recognition_with_opencv2
 author: Philipp Wagner
+summary: This post presents you the guide I've wished for, when I was working myself into face recognition. The Eigenfaces and Fisherfaces method are explained in detail and implemented with Python and GNU Octave/MATLAB. The code and document is released under a BSD license, so feel free to use it for your commercial and academic projects.
 
 # Face Recognition with Python/GNU Octave/Matlab #
 

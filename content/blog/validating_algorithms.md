@@ -4,14 +4,20 @@ tags: python, opencv
 category: computer vision
 slug: validating_algorithms
 author: Philipp Wagner
+summary: OpenCV2 comes with various face recognition algorithms and questions about the performance have been \ 
+    raised quite often. In this article scikit-learn is used to show how to perform a cross-validation on a \ 
+    given model and image data.
 
 # Validating Algorithms #
 
-This post was originally written for the [OpenCV QA forum](http://answers.opencv.org/questions). I post it here, because I think it's a great example of how Open Source projects make your life easy.
+This post was originally written for the [OpenCV QA forum](http://answers.opencv.org/questions). I post it here, because
+I think it's a great example of how Open Source projects make your life easy.
 
 ## introduction ##
 
-Actually validating algorithms is a very interesting topic and it's really not that hard. In this post I'll show how to validate your algorithms (I'll take the FaceRecognizer in this example). As always in my posts I will show it with a full source code example, because I think it's much easier to explain stuff by code.
+Actually validating algorithms is a very interesting topic and it's really not that hard. In this post I'll show how to
+validate your algorithms (I'll take the FaceRecognizer in this example). As always in my posts I will show it with a
+full source code example, because I think it's much easier to explain stuff by code.
 
 So whenever people tell me *"my algorithm performs bad"*, I ask them: 
 
@@ -22,7 +28,8 @@ So whenever people tell me *"my algorithm performs bad"*, I ask them:
 * What is your metric?
 * [...]
 
-My hope is, that this post will clear up some confusion and show how easy it is to validate algorithms. Because what I have learned from experimenting with computer vision and machine learning algorithms is:
+My hope is, that this post will clear up some confusion and show how easy it is to validate algorithms. Because what I
+have learned from experimenting with computer vision and machine learning algorithms is:
 
 * Without a proper validation it's all about chasing ghosts. You really, really need figures to talk about. 
 
@@ -30,19 +37,27 @@ All code in this post is put under BSD License, so feel free to use it for your 
 
 ## validating algorithms ##
 
-One of the most important tasks of any computer vision project is to acquire image data. You need to get the same image data as you expect in production, so you won't have any bad experiences when going live. A very practical example: If you want to recognize faces in the wild, then it isn't useful to validate your algorithms on images taken in a very controlled scenario. Get as much data as possible, because *Data is king*.
+One of the most important tasks of any computer vision project is to acquire image data. You need to get the same image
+data as you expect in production, so you won't have any bad experiences when going live. A very practical example: If
+you want to recognize faces in the wild, then it isn't useful to validate your algorithms on images taken in a very
+controlled scenario. Get as much data as possible, because *Data is king*.
 
-Once you have got some data and you have written your algorithm, it comes to evaluating it. There are several strategies for validating, but I think you should start with a simple Cross Validation and go on from there, for informations on Cross Validation see:
+Once you have got some data and you have written your algorithm, it comes to evaluating it. There are several strategies
+for validating, but I think you should start with a simple Cross Validation and go on from there, for informations on
+Cross Validation see:
 
 * [Wikipedia on Cross-Validation](http://en.wikipedia.org/wiki/Cross-validation_%28statistics%29)
 
-Instead of implementing it all by ourself, we'll make use of [scikit-learn](https://github.com/scikit-learn/) a great Open Source project:
+Instead of implementing it all by ourself, we'll make use of [scikit-learn](https://github.com/scikit-learn/) a great
+Open Source project:
 
 * [https://github.com/scikit-learn](https://github.com/scikit-learn)
 
 It comes with a very good documentation and tutorials for validating algorithms:
 
-* [http://scikit-learn.org/stable/tutorial/statistical_inference/index.html](http://scikit-learn.org/stable/tutorial/statistical_inference/index.html)
+*
+[http://scikit-learn.org/stable/tutorial/statistical_inference/index.html](http://scikit-learn.org/stable/tutorial/
+statistical_inference/index.html)
 
 So the plan is the following:
 
@@ -53,7 +68,10 @@ So the plan is the following:
 
 ## Getting the image data right ##
 
-First I'd like to write some words on the image data to be read, because questions on this almost always pop up. For sake of simplicity I have assumed in the example, that the images (the *faces*, *persons you want to recognize*) are given in folders. One folder per person. So imagine I have a folder (a dataset) called ``dataset1``, with the subfolders ``person1``, ``person2`` and so on:
+First I'd like to write some words on the image data to be read, because questions on this almost always pop up. For
+sake of simplicity I have assumed in the example, that the images (the *faces*, *persons you want to recognize*) are
+given in folders. One folder per person. So imagine I have a folder (a dataset) called ``dataset1``, with the subfolders
+``person1``, ``person2`` and so on:
 
 <pre>
 philipp@mango:~/facerec/data/dataset1$ tree -L 2 | head -n 20
@@ -72,11 +90,15 @@ philipp@mango:~/facerec/data/dataset1$ tree -L 2 | head -n 20
 [...]
 </pre>
 
-One of the public available datasets, that is already coming in such a folder structure is the AT&T Facedatabase, available at:
+One of the public available datasets, that is already coming in such a folder structure is the AT&T Facedatabase,
+available at:
 
-* [http://www.cl.cam.ac.uk/research/dtg/attarchive/facedatabase.html](http://www.cl.cam.ac.uk/research/dtg/attarchive/facedatabase.html)
+*
+[http://www.cl.cam.ac.uk/research/dtg/attarchive/facedatabase.html](http://www.cl.cam.ac.uk/research/dtg/attarchive/
+facedatabase.html)
 
-Once unpacked it is going to look like this (on my filesystem it is unpacked to ``/home/philipp/facerec/data/at/``, your path is different!):
+Once unpacked it is going to look like this (on my filesystem it is unpacked to ``/home/philipp/facerec/data/at/``, your
+path is different!):
 
 <pre>
 philipp@mango:~/facerec/data/at$ tree .
@@ -149,13 +171,18 @@ Reading in the image data then becomes as easy as calling:
 [X,y] = read_images("/path/to/some/folder")
 ```
     
-Because some algorithms (for example Eigenfaces, Fisherfaces) require your images to be of equal size, I added a second parameter ``sz``. By passing the tuple ``sz``, all of the images get resized. So the following call will resize all images in ``/path/to/some/folder`` to ``100x100`` pixels, while loading:
+Because some algorithms (for example Eigenfaces, Fisherfaces) require your images to be of equal size, I added a second
+parameter ``sz``. By passing the tuple ``sz``, all of the images get resized. So the following call will resize all
+images in ``/path/to/some/folder`` to ``100x100`` pixels, while loading:
 
 ```python
 [X,y] = read_images("/path/to/some/folder", (100,100))
 ```
     
-All classifiers in scikit-learn are derived from a ``BaseEstimator``, which is supposed to have a ``fit`` and ``predict`` method. The ``fit`` method gets a list of samples ``X`` and corresponding labels ``y``, so it's trivial to map to the train method of the ``cv2.FaceRecognizer``. The ``predict`` method also gets a list of samples and corresponding labels, but this time we'll need to return the predictions for each sample:
+All classifiers in scikit-learn are derived from a ``BaseEstimator``, which is supposed to have a ``fit`` and
+``predict`` method. The ``fit`` method gets a list of samples ``X`` and corresponding labels ``y``, so it's trivial to
+map to the train method of the ``cv2.FaceRecognizer``. The ``predict`` method also gets a list of samples and
+corresponding labels, but this time we'll need to return the predictions for each sample:
 
 ```python
 from sklearn.base import BaseEstimator
@@ -172,7 +199,9 @@ class FaceRecognizerModel(BaseEstimator):
         return [self.model.predict(T[i]) for i in range(0, T.shape[0])]
 ```
 
-You can then choose between a large range of validation methods and metrics to test the ``cv2.FaceRecognizer`` with. You can find the available cross validation algorithms in [sklearn.cross_validation](https://github.com/scikit-learn/scikit-learn/blob/master/sklearn/cross_validation.py):
+You can then choose between a large range of validation methods and metrics to test the ``cv2.FaceRecognizer`` with. You
+can find the available cross validation algorithms in
+[sklearn.cross_validation](https://github.com/scikit-learn/scikit-learn/blob/master/sklearn/cross_validation.py):
 
 * Leave-One-Out cross validation
 * K-Folds cross validation
@@ -181,7 +210,11 @@ You can then choose between a large range of validation methods and metrics to t
 * Random sampling with replacement cross-validation
 * [...]
 
-For estimating the recognition rate of the ``cv2.FaceRecognizer`` I suggest using a Stratified Cross Validation. You may ask why anyone needs the other Cross Validation methods. Imagine you want to perform emotion recognition with your algorithm. What happens if your training set has images of the person you test your algorithm with? You will probably find the closest match to the person, but not the emotion. In these cases you should perform a subject-independent cross validation.
+For estimating the recognition rate of the ``cv2.FaceRecognizer`` I suggest using a Stratified Cross Validation. You may
+ask why anyone needs the other Cross Validation methods. Imagine you want to perform emotion recognition with your
+algorithm. What happens if your training set has images of the person you test your algorithm with? You will probably
+find the closest match to the person, but not the emotion. In these cases you should perform a subject-independent cross
+validation.
 
 Creating a Stratified k-Fold Cross Validation Iterator is very simple with scikit-learn:
 
@@ -191,13 +224,15 @@ from sklearn import cross_validation as cval
 cv = cval.StratifiedKFold(y, 10)
 ```
 
-And there's a wide range of metrics we can choose from. For now I only want to know the precision of the model, so we import the callable function ``sklearn.metrics.precision_score``:
+And there's a wide range of metrics we can choose from. For now I only want to know the precision of the model, so we
+import the callable function ``sklearn.metrics.precision_score``:
 
 ```python
 from sklearn.metrics import precision_score
 ```
 
-Now we'll only need to create our estimator and pass the ``estimator``, ``X``, ``y``, ``precision_score`` and ``cv`` to ``sklearn.cross_validation.cross_val_score``, which calculates the cross validation scores for us:
+Now we'll only need to create our estimator and pass the ``estimator``, ``X``, ``y``, ``precision_score`` and ``cv`` to
+``sklearn.cross_validation.cross_val_score``, which calculates the cross validation scores for us:
 
 ```python
 # Now we'll create a classifier, note we wrap it up in the 
@@ -210,7 +245,9 @@ precision_scores = cval.cross_val_score(estimator, X, y, score_func=precision_sc
     
 There's a large amount of metrics available, feel free to choose another one:
 
-* [https://github.com/scikit-learn/scikit-learn/blob/master/sklearn/metrics/metrics.py](https://github.com/scikit-learn/scikit-learn/blob/master/sklearn/metrics/metrics.py)
+*
+[https://github.com/scikit-learn/scikit-learn/blob/master/sklearn/metrics/metrics.py](https://github.com/scikit-learn/
+scikit-learn/blob/master/sklearn/metrics/metrics.py)
 
 So let's put all this in a script!
 
@@ -314,7 +351,8 @@ if __name__ == "__main__":
         
 ## running the script ##
 
-The above script will print out the precision scores for the Fisherfaces method. You simply need to call the script with the image folder:
+The above script will print out the precision scores for the Fisherfaces method. You simply need to call the script with
+the image folder:
 
 <pre>
 philipp@mango:~/src/python$ python validation.py /home/philipp/facerec/data/at
@@ -326,4 +364,8 @@ Precision Scores:
 
 ## conclusion ##
 
-The conclusion is, that... Open Source projects make your life really easy! There's much to enhance for the script. You probably want to add some logging, see which fold you are in for example. But it's a start for evaluating any metric you want, just read through the scikit-learn tutorials and adapt it to the above script. I encourage everybody to play around with OpenCV Python and scikit-learn, because interfacing these two great projects is really, really easy as you can see!
+The conclusion is, that... Open Source projects make your life really easy! There's much to enhance for the script. You
+probably want to add some logging, see which fold you are in for example. But it's a start for evaluating any metric you
+want, just read through the scikit-learn tutorials and adapt it to the above script. I encourage everybody to play
+around with OpenCV Python and scikit-learn, because interfacing these two great projects is really, really easy as you
+can see!

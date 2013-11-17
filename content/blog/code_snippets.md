@@ -4,6 +4,7 @@ tags: opencv, cpp
 category: computer vision
 slug: opencv/code_snippets
 author: Philipp Wagner
+summary: Some OpenCV code snippets that might be useful for somebody.
 
 # OpenCV Code Snippets #
 

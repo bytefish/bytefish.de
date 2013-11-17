@@ -4,6 +4,7 @@ tags: c++
 category: programming
 slug: dynamic_time_warping
 author: Philipp Wagner
+summary: Source code for calculating the Dynamic Time Warping distance in C++.
 
 # Dynamic Time Warping #
 

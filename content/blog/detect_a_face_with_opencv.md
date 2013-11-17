@@ -4,6 +4,7 @@ tags: opencv, c++
 category: computer vision
 slug: opencv/object_detection
 author: Philipp Wagner
+summary: Short snippet on how to perform face detection with the OpenCV2 bindings.
 
 # Object Detection with OpenCV #
 

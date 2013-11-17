@@ -4,6 +4,7 @@ tags: opencv, c++
 category: computer vision, statistics
 slug: pca_in_opencv
 author: Philipp Wagner
+summary: A full source code example on how to do a Principal Component Analysis with the OpenCV C++ API.
 
 # PCA in OpenCV #
 

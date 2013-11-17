@@ -4,6 +4,7 @@ author: Philipp Wagner
 tags: java, android
 category: android
 slug: android
+summary: This is an old wiki page on Android turned into an article, so the redirects should function correctly. There are trivial snippets here, but they may be helpful for someone.
 
 # Android #
 

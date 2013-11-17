@@ -4,6 +4,7 @@ tags: opencv, cpp
 category: computer vision
 slug: opencv/skin_color_thresholding
 author: Philipp Wagner
+summary: This snippet implements common Skin Color Thresholding rules.
 
 # Skin Color Thresholding with OpenCV #
 

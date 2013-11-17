@@ -4,6 +4,7 @@ tags: python, numpy
 category: programming
 slug: numpy_performance
 author: Philipp Wagner
+summary: An article to experiment with NumPy and the possible ways to speed up code. 
 
 # NumPy Performance #
 

@@ -4,6 +4,7 @@ tags: face recognition, opencv
 category: computer vision
 slug: opencv_facerecognizer_documentation
 author: Philipp Wagner
+summary: This post announces the release of the documentation for my OpenCV contribution.
 
 # OpenCV FaceRecognizer documentation #
 

@@ -4,6 +4,7 @@ tags: cryptography
 category: cryptography
 slug: public_key
 author: Philipp Wagner
+summary: In the light of current events I am again sharing my public key:
 
 # Public Key #
 

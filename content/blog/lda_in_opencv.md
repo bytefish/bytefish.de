@@ -4,6 +4,7 @@ tags: c++,
 category: computer vision
 slug: lda_in_opencv
 author: Philipp Wagner
+summary: A project for Linear Discriminant Analysis in OpenCV.
 
 # lda in opencv #
 

@@ -4,6 +4,7 @@ tags: matlab, face recognition
 category: computer vision
 slug: eigenfaces
 author: Philipp Wagner
+summary: This article explains how to implement the Eigenfaces algorithm with GNU Octave/MATLAB.
 
 # eigenfaces #
 

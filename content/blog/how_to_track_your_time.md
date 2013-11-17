@@ -4,6 +4,7 @@ tags: python
 category: misc
 slug: how_to_track_your_time
 author: Philipp Wagner
+summary: Time tracking with Python.
 
 # How To Track Your Time #
 

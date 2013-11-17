@@ -4,6 +4,7 @@ tags: machine learning, opencv
 category: computer vision
 slug: machine_learning_opencv
 author: Philipp Wagner
+summary: Shows how to use several machine learning algorithms with OpenCV.
 
 # Machine Learning with OpenCV #
 

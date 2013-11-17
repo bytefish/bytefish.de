@@ -4,6 +4,7 @@ tags: opencv, python, face recognition
 category: opencv
 slug: videofacerec
 author: Philipp Wagner
+summary: This post shows how to perform face recognition in videos using OpenCV2 and the facerec project. It shows how to use, store and validate a classifier and use the OpenCV2 Python bindings.
 
 # Face Recognition in Videos (or turning videofacerec.py into something useful) #
 

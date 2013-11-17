@@ -4,6 +4,7 @@ tags: face recognition
 category: computer vision
 slug: opencv_visual_studio_and_libfacerec
 author: Philipp Wagner
+summary: A lot of people asked me how to use libfacerec with Visual Studio. This post shows you how to do it.
 
 # OpenCV, Microsoft Visual Studio and libfacerec #
 

@@ -4,6 +4,7 @@ tags: python, machine learning
 category: statistics
 slug: using_libsvm
 author: Philipp Wagner
+summary: libsvm is a great library, that comes with great Python bindings. This post presents two examples for using libsvm in Python.
 
 # using libsvm #
 

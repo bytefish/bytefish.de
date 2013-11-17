@@ -4,6 +4,7 @@ tags: erlang
 category: programming
 slug: erlang
 author: Philipp Wagner
+summary: A brutally short introduction to Erlang.
 
 # Brutally short introduction to Erlang #
 

@@ -4,6 +4,7 @@ tags: opencv
 category: computer vision
 slug: colormaps_in_opencv
 author: Philipp Wagner
+summary: Using colormaps with OpenCV.
 
 # Colormaps in OpenCV #
 

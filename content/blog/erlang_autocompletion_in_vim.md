@@ -4,6 +4,7 @@ tags: vim, erlang
 category: programming
 slug: erlang_autocompletion_in_vim
 author: Philipp Wagner
+summary: Here is my mini how-to for erlang autocompletion in vim
 
 # Erlang autocompletion in vim #
 

@@ -4,6 +4,7 @@ tags: opencv, c++
 category: computer vision
 slug: extracting_contours_with_opencv
 author: Philipp Wagner
+summary: Yesterday I was asked how to extract a contour from a given image in OpenCV. Here is an example, that shows you how to do it.
 
 # Extracting Contours with OpenCV #
 

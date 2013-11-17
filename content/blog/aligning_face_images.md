@@ -4,6 +4,7 @@ tags: python, opencv, face recognition
 category: computer vision
 slug: aligning_face_images
 author: Philipp Wagner
+summary: A Python script to align faces geometrically.
 
 # Aligning face images #
 

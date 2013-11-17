@@ -4,6 +4,7 @@ tags: face recognition, matlab, octave
 category: computer vision
 slug: gender_classification
 author: Philipp Wagner
+summary: In this post I want to do gender classification on a set of face images and find out which are the specific features faces differ in.
 
 # gender classification #
 

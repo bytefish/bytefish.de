@@ -4,6 +4,7 @@ tags: c++
 category: programming
 slug: longest_common_subsequence
 author: Philipp Wagner
+summary: Longest Common Subsequence implementation in C++.
 
 # Longest Common Subsequence #
 

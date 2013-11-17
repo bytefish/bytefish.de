@@ -4,6 +4,7 @@ tags: octave, r
 category: statistics
 slug: pca_lda_with_gnu_octave
 author: Philipp Wagner
+summary: This page will show you how to do a Principal Component and Linear Discriminant Analysis with [GNU Octave](http://www.gnu.org/software/octave), a high-level language and environment for numerical computing.
 
 # Principal Component Analysis and Linear Discriminant Analysis with GNU Octave #
 

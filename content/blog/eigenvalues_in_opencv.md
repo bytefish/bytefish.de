@@ -4,6 +4,7 @@ tags: opencv
 category: programming
 slug: eigenvalues_in_opencv
 author: Philipp Wagner
+summary: This post shows how to find the Eigenvalues and Eigenvectors of a matrix with OpenCVs C, C++ and Python implementation.
 
 # Eigenvalues in OpenCV #
 

@@ -4,6 +4,7 @@ tags: website
 category: infrastructure
 slug: website_update
 author: Philipp Wagner
+summary: This page has been converted to Pelican, a static website generator. This post discusses my reasons for moving away from DokuWiki and some of the things I've learnt along the way.
 
 # Website Update #
 

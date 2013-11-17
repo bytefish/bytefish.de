@@ -4,6 +4,7 @@ tags: c++, opencv,face recognition
 category: computer vision
 slug: fisherfaces_in_opencv
 author: Philipp Wagner
+summary: Fisherface implementation in OpenCV and how to build the code.
 
 # Fisherfaces in OpenCV #
 
