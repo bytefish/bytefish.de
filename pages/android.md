@@ -97,4 +97,72 @@ public class CameraActivity extends Activity
         mCamera.startPreview();
     }
 }
+
+### Extracting a Face from the PreviewImage ###
+
+In my code I wanted to extract a Camera.Face from the preview image. I thought it might be sufficient for basic face recognition tasks, but in 
+the end, the images have such a low resolution, that they are not really suited for this task. Still I think the task of extracting an object
+from the Camera preview frame might be interesting, so here it goes.
+
+There are functions, which are not necessary for the described task, they are just utility functions. The ``convertYuvByteArrayToBitmap`` method
+is described in the parent snippet.
+
+```java
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        int x = (int)event.getX();
+        int y = (int)event.getY();
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                break;
+            case MotionEvent.ACTION_MOVE:
+                break;
+            case MotionEvent.ACTION_UP:
+            {
+                Face face = mFaceView.touchIntersectsFace(x,y);
+                if(face != null) {
+                    Toast.makeText(getApplicationContext(), "(" + x + "," + y +")", Toast.LENGTH_LONG).show();
+                    try {
+                        lock.lock();
+                        // Process the buffered frame! This is safe, because we have locked the access
+                        // to the resource we are going to work on. This task should be a background
+                        // task, in case it takes too long.
+
+                        // Convert the Image from a Yuv ByteArray into a Bitmap:
+                        Bitmap b = Util.convertYuvByteArrayToBitmap(mPreviewFrameBuffer, mCamera);
+
+                        // The coordinates of the Camera.Face are given in a range of (-1000,1000),
+                        // so let's scale them to the Bitmap coordinate system:
+                        Matrix matrix = new Matrix();
+                        matrix.postScale(b.getWidth() / 2000f, b.getHeight() / 2000f);
+                        matrix.postTranslate(b.getWidth() / 2f, b.getHeight() / 2f);
+                        // Now translate the Camera.Face coordinates into the
+                        // Bitmap coordinate system:
+                        RectF scaledRect = new RectF(face.rect);
+                        matrix.mapRect(scaledRect);
+                        // And make a Rect again, we need it later. It's the source we want
+                        // to crop from:
+                        Rect srcRect = new Rect((int) scaledRect.left, (int) scaledRect.top, (int)scaledRect.right, (int) scaledRect.bottom );
+                        // This is the destination rectangle, we want it to have the width
+                        // and height of the scaled rect:
+                        int width = (int) scaledRect.width();
+                        int height = (int) scaledRect.height();
+                        Rect dstRect = new Rect(0, 0, width, height);
+                        // This is the output image, which is going to store the Camera.Face:
+                        Bitmap croppedImage = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
+                        // And finally crop the image, which is a simple drawBitmap call on the
+                        // Canvas:
+                        Canvas canvas = new Canvas(croppedImage);
+                        canvas.drawBitmap(b, srcRect , dstRect, null);
+                        // And write it to the External storage, this is a simple helper method:
+                        ImageHelper.saveBitmapAsJpegToExternalStorage(croppedImage, "filename.jpg");
+                    } finally {
+                        lock.unlock();
+                    }
+                }
+            }
+            break;
+        }
+        return false;
+    }
 ```
