@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2011. Philipp Wagner <bytefish[at]gmx[dot]de>.
- * Released to public domain under terms of the BSD Simplified license.
+ * Released under terms of the BSD Simplified license.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -198,6 +198,12 @@ hr {
 
 pre {
   overflow: auto;
+  font-size: 12px;
+  line-height: 18px;
+}
+
+code, pre {
+	font-family: Menlo,Monaco,"Courier New",monospace;
 }
 
 /* Image Alignment */

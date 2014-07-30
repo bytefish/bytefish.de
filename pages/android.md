@@ -2,6 +2,7 @@ title: android
 date: 2013-03-25 10:20
 author: Philipp Wagner
 template: page_discussion
+tags: java, android
 
 # Android #
 
@@ -97,6 +98,7 @@ public class CameraActivity extends Activity
         mCamera.startPreview();
     }
 }
+```
 
 ### Extracting a Face from the PreviewImage ###
 
