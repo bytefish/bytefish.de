@@ -8,11 +8,11 @@ summary: Face Detection with the Android Camera.
 
 # Face Detection with the Android API #
 
-In this post I want to show you how to work with the [Android Camera API](http://developer.android.com/reference/android/hardware/Camera.html) to implement an app for Face Detection. The final app will simply draw an overlay on the camera image, which will highlight the detected faces. I thought it would be useful to share the code and give a short explanation on some parts. Basically the application only consists of an Activity and a custom view. The functions for calculating the correct display orientation have been taken from Androids original Camera App, which is released under terms of the Apache License, Version 2.0.
+In this post I want to show you how to work with the [Android Camera API](http://developer.android.com/reference/android/hardware/Camera.html) to implement an app for Face Detection. The final app will draw an overlay on the camera image, which will highlight the detected faces. Basically the application only consists of an Activity and a custom view. The functions for calculating the correct display orientation have been taken from Androids original Camera App, which is released under terms of the Apache License, Version 2.0.
 
 Here is a screenshot of the final application:
 
-<img src="/static/images/blog/face_detection_with_android/face_detection_with_android_app.png" width="500" class="mediacenter" alt="face_detection_with_android_app.png" />
+<img src="/static/images/blog/face_detection_with_android/face_detection_with_android_app.jpg" class="mediacenter" alt="face_detection_with_android_app.jpg" />
 
 I am sure you will come up with a lot of cool ideas to extend the app!
 
@@ -206,7 +206,7 @@ public class CameraActivity extends Activity
 
 The FaceOverlayView is responsible for drawing the detection results on top of the camera preview. 
 
-The camera returns you coordinates in a range of ``(-1000,1000)``, so we need to map them to the coordinates of the View (see the Android Camera Guide on [metering and focus area](http://developer.android.com/guide/topics/media/camera.html#metering-focus-areas)). And it's important to keep in mind, that what the user sees is not necessarily what the camera sensor sees! So the function ``prepareMatrix(Matrix matrix, boolean mirror, int displayOrientation, int viewWidth, int viewHeight)`` also takes the current display rotation into account, so that the coordinates are normalized, translated to the views the origin and rotated by the current display orientation.
+The camera returns you coordinates in a range of ``(-1000,1000)``, so we need to map them to the coordinates of the View (see the Android Camera Guide on [metering and focus area](http://developer.android.com/guide/topics/media/camera.html#metering-focus-areas)). And it's important to keep in mind, that what the user sees is not necessarily what the camera sensor sees! So the function ``prepareMatrix(Matrix matrix, boolean mirror, int displayOrientation, int viewWidth, int viewHeight)`` also takes the current display rotation into account, so that the coordinates are normalized, translated to the views origin and rotated by the current display orientation.
 
 ### Source Code ###
 
@@ -302,15 +302,10 @@ The Util class is used to calculate the phones current orientation angle and pre
  *
  */
 public class Util {
+
     // Orientation hysteresis amount used in rounding, in degrees
     private static final int ORIENTATION_HYSTERESIS = 5;
 
-    /**
-     * Gets the current display rotation in angles.
-     *
-     * @param activity
-     * @return
-     */
     public static int getDisplayRotation(Activity activity) {
         int rotation = activity.getWindowManager().getDefaultDisplay()
                 .getRotation();
