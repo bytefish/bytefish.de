@@ -2,7 +2,7 @@ title: Face Recognition with Android and Python0
 date: 2014-08-02 12:23
 tags: android, java, face detection
 category: android, computer vision
-slug: face_detection_with_android
+slug: face_recognition_webservice
 author: Philipp Wagner
 summary: Face Detection with the Android Camera.
 
@@ -29,7 +29,35 @@ All code is put under a BSD License, so feel free to use it for your projects.
 
 ## facerec ##
 
-### Using a DataSet ###
+### Installing facerec ###
+
+First of all you have to install the facerec framework, which is available at:
+
+* [https://github.com/bytefish/facerec](https://github.com/bytefish/facerec)
+
+The project comes with a ``setup.py`` file, which is located in the ``py`` folder of the project.
+
+To install the Python framework you have to run (may require administrator access):
+
+<pre>
+python setup.py install
+</pre>
+	
+### Dependencies ###
+
+
+[facerec](https://github.com/bytefish/facerec) has dependencies to:
+
+* [PIL](http://www.pythonware.com/products/pil)
+* [NumPy](http://www.numpy.org)
+* [SciPy](http://www.scipy.org)
+* [matplotlib](http://matplotlib.org/)
+
+All of these packages can be obtained with [pip](http://pip.readthedocs.org/en/latest/) or you follow the installation guide of the projects.
+
+My current Windows setup uses PIL 1.1.7, NumPy 1.8.1, SciPy 0.14.0, matplotlib 1.2.0.
+
+### NumericDataSet ###
 
 The current implementation in the facerec framework uses integers as labels for a person. That was a problem
 for many people, since mapping between names and integers might not be obvious, or it makes your code unnecessarily 
@@ -84,6 +112,9 @@ With ``add(identifier, image)`` you can add images to the dataset and assign the
 The images have to be NumPy arrays. The ``get()`` method of the ``NumericDataSet`` returns the 
 representation used for training a ``PredictableModel`` used in previous examples of the framework. 
 
+
+### Wrapping the PredictableModel ###
+
 So how can we use the ``NumericDataSet`` with the framework? 
 
 The simplest solution is to write a wrapper for the ``PredictableModel``, 
@@ -123,8 +154,9 @@ class PredictableModelWrapper(object):
         return "PredictableModelWrapper (Inner Model=%s)" % (str(self.model))
 ```
 
-This is the same API, that has been used for the other examples, so you should be comfortable with it,
-if you have read through the other examples.
+This is exactely the same API, that has been used for the other examples. 
+
+### Defining the Features and Classifier ###
 
 Next we'll define a method to generate us a ``PredictableModel``, which is used to classify incoming images. 
 You can read about the concepts of the framework in the documentation at [http://bytefish.de/dev/facerec](http://bytefish.de/dev/facerec/), 
@@ -151,9 +183,22 @@ def get_model(numeric_dataset, model_filename=None):
     return model
 ```
 
+### Reading the Data ###
+
 We are almost done with the facerec part. What's left is to read in a set of images, 
 which may be a dataset given in a really easy CSV format. It's up to you how to read
 in the data, this is how I do it for this article.
+
+The CSV file simply defines the name of a person and the folder to read the images from:
+
+<pre>
+Angelina Jolie;D:/facerec/data/c1/crop_angelina_jolie
+Arnold Schwarzenegger;D:/facerec/data/c1/crop_arnold_schwarzenegger
+Brad Pitt;D:/facerec/data/c1/crop_brad_pitt
+...
+</pre>
+
+And with the following methods we are reading the image data:
 
 ```python
 # Now a method to read images from a folder. It's pretty simple,
@@ -395,7 +440,44 @@ def read_image(base64_image):
     return im
 ```
 
-## Testing the Web service ##
+### Recognize ###
+
+With all the methods defined, getting a prediction becomes easy. First of all we
+create a new url rule for Flask, which can be done with a [route decorator](http://flask.pocoo.org/docs/api/#flask.Flask.route).
+The method parses the request, decodes the Base64 image and creates a prediction
+with a given facerec model. 
+
+
+```python
+def preprocess_image(image_data):
+    image = read_image(image_data)
+    return image
+
+# Get the prediction from the global model.
+@ThrowsWebAppException(error_code = PREDICTION_ERROR)
+def get_prediction(image_data):
+    image = preprocess_image(image_data)
+    prediction = model.predict(image)
+    return prediction
+
+# Now add the API endpoints for recognizing, learning and 
+# so on. If you want to use this in any public setup, you
+# should add rate limiting, auth tokens and so on.
+@app.route('/api/recognize', methods=['GET', 'POST'])
+def identify():
+    if request.headers['Content-Type'] == 'application/json':
+            try:
+                image_data = request.json['image']
+            except:
+                raise WebAppException(error_code=MISSING_ARGUMENTS)
+            prediction = get_prediction(image_data)
+            response = jsonify(name = prediction) 
+            return response
+    else:
+        raise WebAppException(error_code=INVALID_FORMAT)
+```
+
+## Client ##
 
 Now what's left is testing the Web service. Using a browser might work, but it's probably not a handy tool.
 My next article is going to show how to consume the service with Android, but for now we'll write a small
@@ -411,37 +493,6 @@ This results in the ``client.py`` script:
 
 ```python
 #!/usr/bin/env python
-# Software License Agreement (BSD License)
-#
-# Copyright (c) 2014, Philipp Wagner <bytefish[at]gmx[dot]de>.
-# All rights reserved.
-#
-# Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions
-# are met:
-#
-#  * Redistributions of source code must retain the above copyright
-#    notice, this list of conditions and the following disclaimer.
-#  * Redistributions in binary form must reproduce the above
-#    copyright notice, this list of conditions and the following
-#    disclaimer in the documentation and/or other materials provided
-#    with the distribution.
-#  * Neither the name of the author nor the names of its
-#    contributors may be used to endorse or promote products derived
-#    from this software without specific prior written permission.
-#
-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-# "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
-# FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-# COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
-# INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
-# BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-# LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-# CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
-# LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
-# ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-# POSSIBILITY OF SUCH DAMAGE.
 
 import json
 import base64
@@ -472,27 +523,152 @@ class FaceRecClient(object):
         print json.loads(api_result)
         
 if __name__ == '__main__':
-    from optparse import OptionParser
-    usage = "Usage:"
-    parser = OptionParser(usage=usage)
-    parser.add_option("-s", "--server", dest="host", action="store", default=None)
+    from argparse import ArgumentParser
     
-    (options, args) = parser.parse_args()
-
-    if len(args) == 0:
-        raise Exception("No Filenames given.")
+    parser = ArgumentParser()
+    parser.add_argument("-s", "--server", action="store", dest="host", default=SERVER_ADDRESS, 
+        help="Sets the endpoint for the server to call.", required=False)
+    parser.add_argument('images', nargs='+', help="Images to call the server with.")
     
-    # Set host address:
-    host = SERVER_ADDRESS
-    if options.host:
-        host = options.host
-        
+    print "=== Usage ==="
+    parser.print_help()
+    
     # Recognize each image:        
-    faceRecClient = FaceRecClient(host)
-    
-    for filename in args:
-        faceRecClient.recognize(filename)
+    args = parser.parse_args()
+    print "=== Predictions ==="       
+    faceRecClient = FaceRecClient(args.host)
+    for image in args.images:
+        faceRecClient.recognize(image)
 ```
 
-### Running Client and Server ###
+## Running the Client and Server ##
 
+Now it's time to run the server and client. I don't have a dataset for you to play around with,
+so you might want to come up with your own. In these examples I am using the Celebrities dataset,
+that I have created years ago.
+
+You might want to read my other articles on preprocessing images: [http://bytefish.de/blog/aligning_face_images](http://bytefish.de/blog/aligning_face_images).
+
+### Starting the Server ###
+
+Fire up a shell and type ``python server.py -h`` to get the help message. It shows the available
+parameters and explains them in detail. I've also added a short description at startup to give
+the user additional information (and to warn about using it in production). 
+
+<pre>
+PS D:\github\facerec\py\apps\webapp> python .\server.py -h
+=== Description ===
+server.py is a simple facerec webservice. It provides you with a simple RESTful API to recognize faces from a computed m
+odel. Please don't use this server in a production environment, as it provides no security and there might be ugly concu
+rrency issues with the global state of the model.
+=== Usage ===
+usage: server.py [-h] [-t DATASET] [-a HOST] [-p PORT] [model_filename]
+
+positional arguments:
+  model_filename        Filename of the model to use or store
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -t DATASET, --train DATASET
+                        Calculates a new model from a given CSV file. CSV
+                        format: <person>;</path/to/image/folder>.
+  -a HOST, --address HOST
+                        Sets the endpoint for this server.
+  -p PORT, --port PORT  Sets the port for this server.
+usage: server.py [-h] [-t DATASET] [-a HOST] [-p PORT] [model_filename]
+
+positional arguments:
+  model_filename        Filename of the model to use or store
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -t DATASET, --train DATASET
+                        Calculates a new model from a given CSV file. CSV
+                        format: <person>;</path/to/image/folder>.
+  -a HOST, --address HOST
+                        Sets the endpoint for this server.
+  -p PORT, --port PORT  Sets the port for this server.
+</pre>
+
+Now imagine we have a data set available given in the format as described above:
+
+<pre>
+Angelina Jolie;D:/facerec/data/c1/crop_angelina_jolie
+Arnold Schwarzenegger;D:/facerec/data/c1/crop_arnold_schwarzenegger
+Brad Pitt;D:/facerec/data/c1/crop_brad_pitt
+...
+</pre>
+
+If you don't have a model yet, you have to learn one when starting the server and
+it will be stored to the model filename given in command line. 
+
+Starting the Server then becomes as easy as typing:
+
+<pre>
+python server.py -t D:/facerec/celebrities.csv model.pkl
+</pre>
+
+The server will then start:
+
+<pre>
+=== Server Log (also in serverlog.log) ===
+ * Running on http://0.0.0.0:5000/
+</pre>
+
+So initially it runs on ``localhost`` and port ``5000``, but you can define different 
+parameters with the ``-a`` and ``-p`` switch.
+
+### Consuming the API with the Client ###
+
+Again, we have a look at the help message of the script first:
+
+<pre>
+PS D:\github\facerec\py\apps\webapp> python client.py -h
+=== Usage ===
+usage: client.py [-h] [-s HOST] image [image ...]
+
+positional arguments:
+  image                 Images to call the server with.
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -s HOST, --server HOST
+                        Sets the endpoint for the server to call.
+usage: client.py [-h] [-s HOST] image [image ...]
+
+positional arguments:
+  image                 Images to call the server with.
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -s HOST, --server HOST
+                        Sets the endpoint for the server to call.
+</pre>
+
+And we can see, that the script can be called with a host address (defaults to ``http://localhost:5000``) 
+and a list of images, given as positional arguments.
+
+So to consume the face recognition server, which has been started above, you can call the client script like this:
+
+<pre>
+python client.py "D:\facerec\data\c1\crop_angelina_jolie\crop_09.jpg" "D:\facerec\data\c1\crop_arnold_schwarzenegger\crop_01.jpg"
+</pre>
+
+And it will call the server and print the predictions it got:
+
+<pre>
+=== Predictions ===
+{u'name': u'Angelina Jolie'}
+{u'name': u'Arnold Schwarzenegger'}
+</pre>
+
+## Conclusion ##
+
+And that's it! I hope the big takeaway in this article is, that it's really easy to
+build a server application with Flask and Python. You now have a server for the framework,
+that should be easy to extend, although it might be limited in handling large amount of 
+connections and incoming data. 
+
+The next article is going to show you, how to extend the Face Detection app, so it consumes
+the server written in this article. In the meantime I would love to hear your ideas for new 
+API services and extending the existing script.
