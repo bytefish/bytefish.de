@@ -1,12 +1,12 @@
-title: Face Recognition with Android and Python0
-date: 2014-08-02 12:23
-tags: android, java, face detection
-category: android, computer vision
+title: Implementing a Face Recognition Web service
+date: 2014-08-16 21:29
+tags: python, flask, facerec
+category: python, computer vision
 slug: face_recognition_webservice
 author: Philipp Wagner
-summary: Face Detection with the Android Camera.
+summary: Implementing a Face Recognition Web service with Flask.
 
-# A Face Recognition Webservice #
+# A Face Recognition Web service #
 
 This article deals with writing a RESTful Web service for Face Recognition. It's something a 
 lot of people have asked me for, and it isn't hard to implement with [Python](http://www.python.org). 
@@ -255,9 +255,8 @@ to download an image and recognize it.
 
 We'll start with an important part: Errors. The input data might not be perfect. There are probably images, 
 that can't be read. There are probably errors in the facerec code, that crash the application. It's important
-to not return the Stacktrace of the Exception to the Consumer of the API. Why? Because it might be totally 
-useless to him, without knowing the code in detail. And returning the Stacktrace might leak details, we 
-want to hide.
+to not return the Stacktrace of the Exception to the Consumer of the API. Why? Because without knowing the code in detail 
+it will be totally useless to him. And returning the Stacktrace might leak implementation details, we want to hide.
 
 So if you are building your own RESTful API, you should define a set of errors. The consuming client can 
 react on these errors and take the necessary actions, to inform the user about problems.
