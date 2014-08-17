@@ -114,7 +114,7 @@ void lbp::ELBP_(const Mat& src, Mat& dst, int radius, int neighbors) {
 }
 ```
 
-Now using an abritrary radius and sample points has two effects. With an educated guess I would say... The more sampling points you take, the more patterns you can encode, the more discriminative power you have, but the higher the computational effort. Instead the larger the radius, the smoother the image, the larger details can be captured, the less discriminative power the description has (if you don't increase the sampling points at the same time). Let's see what the LBP codes look like [given this sample frame](http://www.bytefish.de/images/blog/local_binary_patterns/original.jpg). My webcam isn't really high-resolution, please don't laugh at my hardware!
+Now using an abritrary radius and sample points has two effects. With an educated guess I would say... The more sampling points you take, the more patterns you can encode, the more discriminative power you have, but the higher the computational effort. Instead the larger the radius, the smoother the image, the larger details can be captured, the less discriminative power the description has (if you don't increase the sampling points at the same time). Let's see what the LBP codes look like given a sample frame. My webcam isn't really high-resolution, please don't laugh at my hardware!
 
 <table>
   <tr>

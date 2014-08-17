@@ -298,11 +298,12 @@ errors = {
 
 ### Handling Exceptions ###
 
-So how to we return these errors to the consumer?
+So how do we return these errors to the consumer?
 
-Now you don't want to write a try-catch block around each method and return the error. You would repeat 
-yourself a thousand times, writing the blocks and it might lead to errors. Instead we can use a decorator, which 
-we call a ``ThrowsWebAppException``. It catches the original exception and wraps it in a new ``WebAppException``. 
+You don't want to write a try-catch block around each method and return the error. You would repeat 
+yourself a thousand times, and writing the blocks and it might lead to errors, because it's easy to
+miss one. Instead we can use a decorator, which we call a ``ThrowsWebAppException``. It catches the 
+original exception and wraps it in a new ``WebAppException``. 
 
 This ``WebAppException`` exception is then handled by [Flask's errorhandler](http://flask.pocoo.org/docs/api/#flask.Flask.errorhandler),
 which logs the original exception and extracts a meaningful JSON representation from the ``WebAppException``.
@@ -364,15 +365,31 @@ def handle_exception(error):
     return response
 ```
 
-Now imagine we want to throw , if we can't  ``ThrowsWebAppException``
+Now imagine there's a problem with the Base64 represented image data. The function
+for reading the image might throw an exception, either when decoding the Base64
+string or trying to read the image with PIL. 
+
+The trick is to decorate the method with out ``ThrowsWebAppException`` decorator,
+which will return the ``IMAGE_DECODE_ERROR`` to the user, instead of returning
+the original exception.
 
 ```python
-# Get the prediction from the global model.
-@ThrowsWebAppException(error_code = PREDICTION_ERROR)
-def get_prediction(image_data):
-    image = preprocess_image(image_data)
-    prediction = model.predict(image)
-    return prediction
+# Now finally add the methods needed for our FaceRecognition API!
+# Right now there is no rate limiting, no auth tokens and so on.
+# 
+@ThrowsWebAppException(error_code = IMAGE_DECODE_ERROR)
+def read_image(base64_image):
+    """ Decodes Base64 image data, reads it with PIL and converts it into grayscale.
+
+    Args:
+    
+        base64_image [string] A Base64 encoded image (all types PIL supports).
+    """
+    enc_data = base64.b64decode(base64_image)
+    file_like = cStringIO.StringIO(enc_data)
+    im = Image.open(file_like)
+    im = im.convert("L")
+    return im
 ```
 
 ### Logging ###
