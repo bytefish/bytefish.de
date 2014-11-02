@@ -199,8 +199,13 @@ hr {
 
 pre {
   overflow: auto;
+  padding: 5px;
   font-size: 12px;
   line-height: 18px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  background: #f8f8f8;
+  border: 1px dashed #d7d7c8;
 }
 
 code, pre {
