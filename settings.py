@@ -8,6 +8,7 @@
 AUTHOR = 'Philipp Wagner'
 EMAIL = 'bytefish AT gmx DOT de'
 SITENAME = 'http://bytefish.de'
+OUTPUT_PATH = 'output/PROD/'
 # Base URL this page is hosted at:
 SITEURL = 'http://bytefish.de'
 #SITEURL = 'http://localhost:8000'
@@ -50,7 +51,7 @@ TAG_FEED_ATOM = None
 CATEGORY_FEED_ATOM = None
 # Separate page directory and articles directory:
 PAGE_DIR = ('pages')
-ARTICLE_DIR = ('content')
+ARTICLE_DIR = ('blog')
 # A list of files to copy from the source to the destination
 FILES_TO_COPY = (
   ('extra/.htaccess', '.htaccess'),
