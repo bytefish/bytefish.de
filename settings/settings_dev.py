@@ -3,23 +3,22 @@
 # This is a simple configuration for the Pelican (http://getpelican.com) 
 # project and it is probably closely tied to the 'minimal' theme I am 
 # using.
-
-# Most important metadata:
 AUTHOR = 'Philipp Wagner'
 EMAIL = 'bytefish AT gmx DOT de'
 SITENAME = 'http://bytefish.de'
+# How to format the date:
+TIMEZONE = 'Europe/Paris'
+DEFAULT_DATE_FORMAT = ('%d %b %Y')
+# Build the page to:
 OUTPUT_PATH = 'output/DEV/'
 # Base URL this page is hosted at:
 SITEURL = 'http://localhost:8000'
-# Timezone is GMT+1:
-TIMEZONE = 'Europe/Paris'
-# Using a simple date format:
-DEFAULT_DATE_FORMAT = ('%d %b %Y')
 # We are using the custom minimal theme:
 THEME = './themes/minimal/'
-# Probably add rst here:
+# Use Markdown and codehilite:
 MARKUP = ('md',)
-# We don't use relative URLs:
+MD_EXTENSIONS = ['codehilite(linenums = True)']
+# Don't use relative URLs:
 RELATIVE_URLS = False
 # Edit predefined pathes:
 ARCHIVES_SAVE_AS = 'pages/index.html'
@@ -40,7 +39,7 @@ CATEGORY_SAVE_AS = 'category/{name}/index.html'
 # Setup the RSS/ATOM feeds:
 FEED_DOMAIN = SITEURL
 FEED_MAX_ITEMS = 10
-# We only want RSS/ATOM Feeds for all articles, exclude categories:
+# We only want RSS/ATOM Feeds for all articles, exclude categories/tags:
 FEED_RSS = 'feeds/rss.xml'
 TAG_FEED_RSS = None
 CATEGORY_FEED_RSS = None
@@ -58,16 +57,16 @@ FILES_TO_COPY = (
   ('extra/philipp_wagner.asc.gz', 'static/philipp_wagner.asc.gz'),
   )
 # Save index as blog/index.html instead of index.html:
-INDEX_SAVE_AS = 'blog/index.html'
+INDEX_SAVE_AS = 'index.html'
 # Navigation menu:
-SECTIONS = [
-  ('home', '/index.html'),
-  ('blog', '/blog'),
+MENU = [
   ('about', '/about'),
   ('pages', '/pages'),
-  ('documents', '/documents'),
-  ('rss', '/feeds/rss.xml'),
-  ('+', 'https://plus.google.com/102725420896943303368?rel=author'),]
+  ('documents', '/documents')]
+# Social:
+SOCIAL_GITHUB = 'https://github.com/bytefish'
+SOCIAL_GOOGLE_PLUS = 'https://plus.google.com/102725420896943303368?rel=author'
+
 # Links to display in the footer:
 LINKS = [
   ('bsd', 'http://www.opensource.org/licenses/BSD-3-Clause'),

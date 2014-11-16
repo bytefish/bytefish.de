@@ -2,37 +2,37 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <link rel="shortcut icon" href="{{ SITEURL }}/theme/images/favicon.ico" />
+	
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	
     <link rel="stylesheet" type="text/css" href="{{ SITEURL }}/theme/css/minimal.css" />
     <link rel="stylesheet" type="text/css" href="{{ SITEURL }}/theme/css/pygments.css" />
-    <link href="{{ FEED_DOMAIN }}/{{ FEED }}" type="application/atom+xml" rel="alternate" title="{{ SITENAME }} ATOM Feed" />
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
+
+	  <link href="{{ FEED_DOMAIN }}/{{ FEED }}" type="application/atom+xml" rel="alternate" title="{{ SITENAME }} ATOM Feed" />
     {% if FEED_RSS %}
     <link href="{{ FEED_DOMAIN }}/{{ FEED_RSS }}" type="application/atom+xml" rel="alternate" title="{{ SITENAME }} RSS Feed" />
     {% endif %}
     <title>{% block title %}{{ SITENAME }}{% endblock title %}</title>
   </head>
   <body>
-    <div id="container">
+    <div class="container">
       <div id="menu">
-        <span class="sitename">bytefish.de</span>
-        <ul>
-        {% for title, link in SECTIONS %}
-          <li><a href="{{ link }}">{{ title }}</a></li>
-        {% endfor %}
-        </ul>
+        <div class="navigation">
+          <span class="sitename">bytefish.de</span>
+          {% for title, link in MENU %}
+            <a href="{{ link }}">{{ title }}</a>&ensp;&bull;&ensp;
+          {% endfor %}
+        </div>
+        <div class="social">
+          <a class="icon fa fa-github-square" href="{{ GITHUB_LINK }}"></a>
+          <a class="icon fa fa-google-plus-square" href="{{ GOOGLE_PLUS_LINK }}"></a>
+          <a class="icon fa fa-rss-square" href="{{ FEED_DOMAIN }}/{{ FEED_RSS }}"></a>
+        </div>
       </div>
-      <div id="page-title">{% block content_title %}{% endblock %}</div>
-      <div class="clearer"></div>
+      <hr id="menu-divider" class="large" />
       <div id="content">
       {% block content %}{% endblock %}
-      </div>
-      <div class="clearer"></div>
-      <div id="links">
-        <ul>
-        {% for title, link in LINKS %}
-          <li><a href="{{ link }}">{{ title }}</a></li>
-        {% endfor %}
-         </ul>
       </div>
     </div>
   </body>
