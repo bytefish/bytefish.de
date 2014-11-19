@@ -188,6 +188,7 @@ blockquote,
 table,
 pre {
   margin: 0 0 1.0em 0;
+  line-height: 1.27;
 }
 
 hr {
@@ -197,20 +198,24 @@ hr {
   height: 0px;
 }
 
+code, pre {
+  font-family: Consolas, "Liberation Mono", Menlo, monospace;
+	font-weight: inherit;
+	background: #f8f8f8;
+	padding: 0.1em 0.3em;
+	border-radius: 3px;
+}
+
 pre {
   overflow: auto;
-  padding: 5px;
   font-size: 12px;
-  line-height: 18px;
+  padding: 5px;
   margin-top: 5px;
   margin-bottom: 5px;
   background: #f8f8f8;
   border: 1px dashed #d7d7c8;
 }
 
-code, pre {
-	font-family: Menlo,Monaco,"Courier New",monospace;
-}
 
 /* Image Alignment */
 img.mediacenter {
@@ -375,4 +380,11 @@ blockquote {
 .entry-meta .tags span {
   background: transparent url(../images/tag.gif) 0px 1px no-repeat;
   padding: 1px 0px 1px 16px;
+}
+
+/* Do not show header/footer for print */
+@media only print {
+	#comments, #menu, #page-title, #links {
+		display: none !important;
+	}
 }
