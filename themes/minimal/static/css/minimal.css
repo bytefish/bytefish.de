@@ -51,7 +51,7 @@ body {
 #container {
   width: 740px;
   font-size: 110%;
-  margin: 4px 2em 0 1em;
+  margin: 4px 4px 0 1em;
   text-align: justify;
 }
 
@@ -122,7 +122,6 @@ body {
 	content: "";
 }
 
-
 #container #page-title a {
   float: left;
   font-size: 200%;
@@ -142,6 +141,11 @@ body {
   margin-top: 1em;
   padding: 1em;
   clear: both;
+}
+
+#content {
+	clear: both;
+	overflow: hidden;
 }
 
 div.clearer {
@@ -380,6 +384,15 @@ blockquote {
 .entry-meta .tags span {
   background: transparent url(../images/tag.gif) 0px 1px no-repeat;
   padding: 1px 0px 1px 16px;
+}
+
+@media only screen and (max-width: 739px) {
+  
+  #container {
+    width: 90%;
+    margin: 0 auto;
+  }
+  
 }
 
 /* Do not show header/footer for print */
