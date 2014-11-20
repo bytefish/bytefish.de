@@ -46,6 +46,8 @@ body {
   font: 80% Helvetica, Arial, sans-serif;
   background-color: #fff;
   color: #000;
+  -webkit-font-smoothing: antialiased;
+	-webkit-text-size-adjust: 100%;
 }
 
 #container {
@@ -306,7 +308,6 @@ h3 {font-size: 140%; border-bottom: none; font-weight: bold;}
 h4 {font-size: 120%; border-bottom: none; font-weight: bold;}
 h5 {font-size: 100%; border-bottom: none; font-weight: bold;}
 
-
 /* unordered lists */
 ul {
   line-height: 1.5em;
@@ -392,7 +393,7 @@ blockquote {
     width: 90%;
     margin: 0 auto;
   }
-  
+ 
 }
 
 /* Do not show header/footer for print */
