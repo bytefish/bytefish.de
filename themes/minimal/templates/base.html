@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
   <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <link rel="shortcut icon" href="{{ SITEURL }}/theme/images/favicon.ico" />
     <link rel="stylesheet" type="text/css" href="{{ SITEURL }}/theme/css/minimal.css" />
@@ -15,13 +15,14 @@
   <body>
     <div id="container">
       <div id="menu">
-        <span class="sitename">bytefish.de</span>
-        <ul>
-        {% for title, link in SECTIONS %}
-          <li><a href="{{ link }}">{{ title }}</a></li>
-        {% endfor %}
+        <ul class="navigation">
+          <li class="navigation-item sitename">bytefish.de</li>
+          {% for title, link in SECTIONS %}
+          <li class="navigation-item"><a href="{{ link }}">{{ title }}</a></li>
+          {% endfor %}
         </ul>
       </div>
+      <div class="clearer"></div>
       <div id="page-title">{% block content_title %}{% endblock %}</div>
       <div class="clearer"></div>
       <div id="content">
@@ -29,9 +30,9 @@
       </div>
       <div class="clearer"></div>
       <div id="links">
-        <ul>
+        <ul class="footer">
         {% for title, link in LINKS %}
-          <li><a href="{{ link }}">{{ title }}</a></li>
+        <li class="footer-item"><a href="{{ link }}">{{ title }}</a></li>
         {% endfor %}
          </ul>
       </div>
