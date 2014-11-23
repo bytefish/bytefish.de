@@ -114,12 +114,9 @@ li.footer-item, li.navigation-item:last-child:after {
 }
 
 #container #page-title a {
-  float: left;
   font-size: 200%;
-  font-weight: bolder;
-  color: #dee7ec;
-  text-align: left;
-  vertical-align: middle;
+  font-weight: bold;
+  word-break: break-all;  
 }
 
 #container #page-title a {
@@ -291,7 +288,7 @@ h5 {
 
 /* special headlines */
 h1 {font-size: 160%; font-weight: bold;}
-h2 {font-size: 150%; }
+h2 {font-size: 150%; font-weight: bold; }
 h3 {font-size: 140%; border-bottom: none; font-weight: bold;}
 h4 {font-size: 120%; border-bottom: none; font-weight: bold;}
 h5 {font-size: 100%; border-bottom: none; font-weight: bold;}
