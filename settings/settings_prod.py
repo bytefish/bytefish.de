@@ -11,7 +11,6 @@ SITENAME = 'http://bytefish.de'
 OUTPUT_PATH = 'output/PROD/'
 # Base URL this page is hosted at:
 SITEURL = 'http://bytefish.de'
-#SITEURL = 'http://localhost:8000'
 # Timezone is GMT+1:
 TIMEZONE = 'Europe/Paris'
 # Using a simple date format:
@@ -83,6 +82,12 @@ DEFAULT_CATEGORY = 'uncategorized'
 STATIC_PATHS = ['images' ]
 
 # Custom functions available to all templates:
+import calendar
+
+def month_name(month_number):
+    return calendar.month_name[month_number]
+
+# Probably replace those with simpler methods:
 from operator import itemgetter, methodcaller
 
 def sortTupleByIndex(items, index=0, reverse=True):
@@ -94,6 +99,7 @@ def sortDictByKey(items, key, reverse=True, default=None):
   return sorted(items, key=methodcaller('get', key, default), reverse=reverse) 
 
 JINJA_FILTERS = {
+    'month_name' : month_name,
     'sortTupleByIndex': sortTupleByIndex,
     'sortDictByKey': sortDictByKey   
 }
