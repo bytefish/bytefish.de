@@ -16,48 +16,25 @@
  *   See <http://www.opensource.org/licenses/bsd-license>
  */
 
-/*
-
-; main text and background colors
-__text__           = "#000"
-__background__     = "#fff"
-; alternative text and background colors
-__text_alt__       = "#638c9c"
-__background_alt__ = "#dee7ec"
-; neutral text and background colors
-__text_neu__       = "#666"
-__background_neu__ = "#f5f5f5"
-; border color
-__border__         = "#8cacbb"
-
-; these are used for links
-__link__    = "#002fc8"
-__extern__    = "#002fc8"
-__existing__  = "#002fc8"
-__missing__   = "#f30"
-
-*/
-
 /* -------------- general elements --------------- */
 
 * { padding: 0; margin: 0; }
 
 body {
-  font: 80% arial,sans-serif;
+  font: 100% arial,sans-serif;
   background-color: #fff;
   color: #333;
 }
 
 #container {
   width: 740px;
-  font-size: 110%;
   margin: 4px 4px 0 1em;
   text-align: justify;
 }
 
 
 #menu {
-	font-weight: bold;
+  font-weight: bold;
   border-bottom: 1px solid black;
 }
 
@@ -72,20 +49,20 @@ body {
 #menu a,
 #menu a:visited, 
 #menu a:focus {
-	color: #777;
-	text-decoration: none;
+  color: #777;
+  text-decoration: none;
 }
 
 #menu a:hover, a:active {
-	color: #6499ba;
+  color: #6499ba;
 }
 
 .footer, .footer-item, .navigation, .navigation-item {
-	display: inline;
-	color: #638c9c/*__text_alt__*/;
+  display: inline;
+  color: #638c9c/*__text_alt__*/;
   border: 0;
-	margin: 0;
-	padding: 0;
+  margin: 0;
+  padding: 0;
 }
 
 ul.footer, ul.navigation {
@@ -93,24 +70,24 @@ ul.footer, ul.navigation {
 }
 
 li.footer-item, li.navigation-item:after {
-	content: "";
-	margin-left: 3px;
+  content: "";
+  margin-left: 3px;
 }
 
 li.footer-item, li.navigation-item:last-child:after {
-	content: "";
+  content: "";
 }
 
 #links a,  
 #links a:visited, 
 #links a:active, 
 #links a:focus {
-	color: #a6a6a6;
-	text-decoration: none;
+  color: #a6a6a6;
+  text-decoration: none;
 }
 
 #links a:hover {
-	color: #6499ba;
+  color: #6499ba;
 }
 
 #container #page-title a {
@@ -132,16 +109,16 @@ li.footer-item, li.navigation-item:last-child:after {
 }
 
 #content {
-	clear: both;
-	overflow: hidden;
+  clear: both;
+  overflow: hidden;
 }
 
 div.clearer {
-    clear: both;
-    font-size: 0;
-    line-height: 0;
-    height: 0;
-    overflow: hidden;
+  clear: both;
+  font-size: 0;
+  line-height: 0;
+  height: 0;
+  overflow: hidden;
 }
 
 em.u {
@@ -154,20 +131,20 @@ em em.u {
 }
 
 table {
-  background-color: #fff/*__background__*/;
+  background-color: #fff;
   border-spacing: 0px;
   border-collapse: collapse;
 }
 
 table th {
   padding: 3px;
-  border: 1px solid #8cacbb/*__border__*/;
-  background-color: #dee7ec/*__background_alt__*/;
+  border: 1px solid #8cacbb;
+  background-color: #dee7ec;
 }
 
 table td {
   padding: 3px;
-  border: 1px solid #8cacbb/*__border__*/;
+  border: 1px solid #8cacbb;
 }
 
 img {
@@ -185,20 +162,29 @@ pre {
 
 hr {
   border: 0px;
-  border-top: 1px solid #8cacbb/*__border__*/;
+  border-top: 1px solid #8cacbb;
   text-align: center;
   height: 0px;
 }
 
+
+
 code, pre {
   font-family: Consolas, "Liberation Mono", Menlo, monospace;
-	font-weight: inherit;
-	background: #f8f8f8;
-	padding: 0.1em 0.3em;
-	border-radius: 3px;
+  font-weight: inherit;
+  color: #333;
+  padding: 0.1em 0.3em;
+}
+
+code {
+  background: #e9e9e9;
+  border-radius: 2px;
+  font-size: 0.9375em;
+  padding: 2px 8px;
 }
 
 pre {
+  background: #f8f8f8;
   overflow: auto;
   font-size: 12px;
   padding: 5px;
@@ -242,7 +228,7 @@ a:visited {
 
 a:hover,
 a:active {
-  color: #000/*__text__*/;
+  color: #333;
   text-decoration: underline;
 }
 
@@ -264,7 +250,7 @@ h2 a,
 h3 a,
 h4 a,
 h5 a {
-  color: #000/*__text__*/;
+  color: #333;
   text-decoration: none;
 }
 
@@ -276,14 +262,14 @@ h2,
 h3,
 h4,
 h5 {
-    color: #000/*__text__*/;
-    background-color: inherit;
-    font-size: 100%;
-    font-weight: normal;
-    margin: 0 0 1em 0;
-    padding: 0.5em 0 0 0;
-    border-bottom: 1px solid #8cacbb/*__border__*/;
-    clear: left;
+  color: #333;
+  background-color: inherit;
+  font-size: 100%;
+  font-weight: normal;
+  margin: 0 0 1em 0;
+  padding: 0.5em 0 0 0;
+  border-bottom: 1px solid #8cacbb;
+  clear: left;
 }
 
 /* special headlines */
@@ -299,7 +285,7 @@ ul {
   list-style-type: square;
   list-style-image: none;
   margin: 0 0 1em 3.5em;
-  color: #000/*__text__*/;
+  color: #333;
 }
 
 ul.posts span {
@@ -311,7 +297,7 @@ ol {
   line-height: 1.5em;
   list-style-image: none;
   margin: 0 0 1em 3.5em;
-  color: #000/*__text__*/;
+  color: #333;
 }
 
 /* no bottom gap in between and smaller left margin for nested lists */
@@ -322,7 +308,7 @@ li ol {
 
 /* the list items overriding the ul/ol definition */
 div.page .li {
-  color: #000/*__text__*/;
+  color: #000;
   font-weight: normal;
 }
 
@@ -332,7 +318,7 @@ ol ol ol { list-style-type: lower-alpha; }
 ol ol ol ol { list-style-type: lower-greek; }
 
 blockquote {
-  border-left: 2px solid #8cacbb/*__border__*/;
+  border-left: 2px solid #8cacbb;
   padding-left: 3px;
 }
 
@@ -344,8 +330,8 @@ blockquote {
 }
 
 .entry-meta a:hover, .updated a:hover {
-    color: #6499ba;
-    text-decoration: underline;
+  color: #6499ba;
+  text-decoration: underline;
 }
 
 .entry-meta .published {
@@ -429,7 +415,7 @@ blockquote {
 
 /* Do not show header/footer for print */
 @media only print {
-	#comments, #menu, #page-title, #links {
-		display: none !important;
-	}
+  #comments, #menu, #page-title, #links {
+    display: none !important;
+  }
 }
