@@ -1,39 +1,33 @@
-/*
- * Copyright (c) 2011. Philipp Wagner <bytefish[at]gmx[dot]de>.
- * Released under terms of the BSD Simplified license.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *   * Redistributions of source code must retain the above copyright
- *     notice, this list of conditions and the following disclaimer.
- *   * Redistributions in binary form must reproduce the above copyright
- *     notice, this list of conditions and the following disclaimer in the
- *     documentation and/or other materials provided with the distribution.
- *   * Neither the name of the organization nor the names of its contributors
- *     may be used to endorse or promote products derived from this software
- *     without specific prior written permission.
- *
- *   See <http://www.opensource.org/licenses/bsd-license>
- */
+/* minimal.css - A minimalistic style */
 
 /* -------------- general elements --------------- */
 
 * { padding: 0; margin: 0; }
 
+
+html {
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+}
+
+/* General Style */
+
 body {
-  font: 100% arial,sans-serif;
+  font: 100% 'Open Sans', sans-serif;
+  font-weight: 400;
+  line-height: 1.5;
   background-color: #fff;
-  color: #333;
+  color: #222;
 }
 
 #container {
-  width: 740px;
-  margin: 4px 4px 0 1em;
+  width: 875px;
   text-align: justify;
+  margin: 0 auto;
 }
 
 
-#menu {
+#menu {  
   font-weight: bold;
   border-bottom: 1px solid black;
 }
@@ -130,21 +124,32 @@ em em.u {
   font-style: italic;
 }
 
+/* http://blog.apps.npr.org/2014/05/09/responsive-data-tables.html */
 table {
-  background-color: #fff;
-  border-spacing: 0px;
-  border-collapse: collapse;
+    border-collapse: collapse;
+    padding: 0;
+    margin: 0 0 11px 0;
+    width: 100%;
+    text-align: center;
 }
 
 table th {
-  padding: 3px;
-  border: 1px solid #8cacbb;
-  background-color: #dee7ec;
+    border: 1px solid #8cacbb;
+    background-color: #dee7ec;
+    vertical-align: bottom;
+    padding: 0 10px 10px 10px;
 }
 
 table td {
-  padding: 3px;
-  border: 1px solid #8cacbb;
+    border: 1px solid #8cacbb;
+    vertical-align: top;
+    padding: 10px;
+    text-align: center;
+}
+
+table th:nth-child(1),
+table td:nth-child(1) {
+    font-weight: bold;
 }
 
 img {
@@ -157,7 +162,6 @@ blockquote,
 table,
 pre {
   margin: 0 0 1.0em 0;
-  line-height: 1.4;
 }
 
 hr {
@@ -177,7 +181,7 @@ code, pre {
 }
 
 code {
-  background: #e9e9e9;
+  background: #f8f8f8;
   border-radius: 2px;
   font-size: 0.9375em;
   padding: 2px 8px;
@@ -190,7 +194,6 @@ pre {
   padding: 5px;
   margin-top: 5px;
   margin-bottom: 5px;
-  background: #f8f8f8;
   border: 1px dashed #d7d7c8;
 }
 
@@ -357,7 +360,23 @@ blockquote {
   padding: 1px 0px 1px 16px;
 }
 
-@media only screen and (max-width: 739px) {
+.document-author {
+  font-style: italic;
+}
+
+
+
+@media only screen and (max-width: 874px) {
+
+  #container {
+    width: 90%;
+    margin: 0 auto;
+  }
+
+}
+
+
+@media only screen and (max-width: 767px) {
   
   #container {
     width: 90%;
@@ -411,8 +430,45 @@ blockquote {
   li.navigation-item:last-child:after {
     content: "";
   }
+  
+  /* http://blog.apps.npr.org/2014/05/09/responsive-data-tables.html */
+  table,
+  tbody {
+    display: block;
+    width: 100%;
+  }
+  
+  thead { display: none; }
+  
+  table tr,
+  table th,
+  table td {
+    display: block;
+    padding: 0;
+    text-align: left;
+    white-space: normal;
+  }
+
+  table tr {
+    border-bottom: 1px solid #eee;
+    padding-bottom: 11px;
+    margin-bottom: 11px;
+  }
+  
+  table td {
+    border: none;
+    margin-bottom: 6px;
+  }
+  
 }
 
+@media (min-width: 767px) {
+    
+  h1, h2 {
+    font-family: "PT Serif", serif;
+  }
+  
+}
 /* Do not show header/footer for print */
 @media only print {
   #comments, #menu, #page-title, #links {

@@ -8,14 +8,10 @@ summary: This post shows how to perform face recognition in videos using OpenCV2
 
 # Face Recognition in Videos (or turning videofacerec.py into something useful) #
 
-<table>
-    <tr>
-        <td style="border-style: none;"><img src="/static/images/blog/videofacerec/simple_videofacerec.png" class="medialeft" alt="simple_videofacerec.py in action" /></td> 
-        <td style="border-style: none;">
-            <p><a href="https://github.com/bytefish/facerec/tree/master/py/apps/videofacerec">videofacerec</a> is a tiny Python script I wrote to perform face recognition in videos and to showcase some of the <a href="http://www.github.com/bytefish/facerec">facerec framework</a> features. It was a really quick hack and I've always told people, that I can't give much of a help. But since many people kept asking for it recently, I've finally decided to rewrite it into something more useful and robust. And this is also the perfect chance to add some more <a href="http://www.github.com/bytefish/facerec">facerec</a> features and write a new blog post.</p>
-            <p>The screenshot shows you the final applications output, with my beautiful face of course. I've trained a model with the images of some celebrities and the application recognizes me as the <i>terrific</i> <a href="http://en.wikipedia.org/wiki/Patrick_Stewart">Sir Patrick Stewart</a>, which makes perfect sense if you have read <a href="http://www.bytefish.de/blog/fisherfaces">my article on the Fisherfaces algorithm</a>.</p></td>
-    </tr>
-</table>
+<img src="/static/images/blog/videofacerec/simple_videofacerec.png" class="medialeft" alt="simple_videofacerec.py in action" />
+
+<p><a href="https://github.com/bytefish/facerec/tree/master/py/apps/videofacerec">videofacerec</a> is a tiny Python script I wrote to perform face recognition in videos and to showcase some of the <a href="http://www.github.com/bytefish/facerec">facerec framework</a> features. It was a really quick hack and I've always told people, that I can't give much of a help. But since many people kept asking for it recently, I've finally decided to rewrite it into something more useful and robust. And this is also the perfect chance to add some more <a href="http://www.github.com/bytefish/facerec">facerec</a> features and write a new blog post.</p>
+<p>The screenshot shows you the final applications output, with my beautiful face of course. I've trained a model with the images of some celebrities and the application recognizes me as the <i>terrific</i> <a href="http://en.wikipedia.org/wiki/Patrick_Stewart">Sir Patrick Stewart</a>, which makes perfect sense if you have read <a href="http://www.bytefish.de/blog/fisherfaces">my article on the Fisherfaces algorithm</a>.</p>
 
 You can find the script and resources at: 
 
@@ -54,36 +50,40 @@ Options:
 As you can see, the name for the recognition model (called ``model_filename`` above) is required. I don't think everything in the help message is self-explaining, so here is an in-depth summary:
 
 <table>
+  <thead>
     <tr>
         <th>Parameter</th>
         <th>Description</th>
         <th>Example</th>
     </tr>
+  </thead>
+  <tbody>
     <tr>
         <td><code>-r SIZE, --resize=SIZE</code></td>
         <td>Some of the algorithms I have implemented in the framework only work on images with the same dimension. So if you learn a model, you probably need to resize the images to equal length. Moreover the images used in the prediction need to be resized to the training sets size, else the whole thing crashes with cryptic error messages. In the script you can pass the size with the <code>-r</code> or <code>--resize</code> switch and the size in format <code>[width]x[height]</code>, so valid arguments are for example <code>70x70</code> or <code>130x100</code>.</td>
-        <td><code>python simple_videofacerec.py -t /path/to/some/dataset -r 130x100 model_filename.pkl</code></td>
+        <td>Example: <code>python simple_videofacerec.py -t /path/to/some/dataset -r 130x100 model_filename.pkl</code></td>
     </tr>
     <tr>
         <td><code>-v NUMFOLDS, --validate=NUMFOLDS</code></td>
         <td>You really want to validate a model before using it, so you are able to estimate the performance you can expect from it. The script only supports a simple k-Fold Cross Validation and outputs the <i>precision</i> of the model. If you want to use other estimates I suggest reading <a href="http://bytefish.de/blog/validating_algorithms/">my post on validating algorithms</a>, which uses the great <a href="https://github.com/scikit-learn/scikit-learn">scikit-learn</a> project. The following example performs a 10-fold Cross Validation on a given dataset and stores the computed model to <code>model_filename.pkl</code>.</td>
-        <td><code>python simple_videofacerec.py -t /path/to/some/dataset -v 10 model_filename.pkl</code></td>
+        <td>Example: <code>python simple_videofacerec.py -t /path/to/some/dataset -v 10 model_filename.pkl</code></td>
     </tr>
     <tr>
         <td><code>-t DATASET, --train=DATASET</code></td>
         <td>For performing face recognition, you'll need to learn a model first. This is done by passing the <code>-t</code> or <code>--train</code> parameter and the path to a dataset to the script (you've seen this above already). The script has a method <code>get_model</code>, which defines the <code>PredictableModel</code> (please see the <a href="https://github.com/bytefish/facerec/blob/master/README.markdown">README</a> of facerec for full examples and explanation. The following example reads the dataset from <code>/path/to/your/dataset</code> and stores it to <code>model_filename.pkl</code></td>
-        <td><code>python simple_videofacerec.py -t /path/to/your/dataset model_filename.pkl</code></td>
+        <td>Example: <code>python simple_videofacerec.py -t /path/to/your/dataset model_filename.pkl</code></td>
     </tr>
     <tr>
         <td><code>-i CAMERA_ID, --id=CAMERA_ID</code></td>
         <td>OpenCV assigns a number to each of your devices, starting with <code>0</code> (used per default). So if you have multiple cameras and want to use another one, the <code>-i</code> or <code>--id</code> switch is the way to go! The following example uses the camera with id <code>1</code> and <code>model_filename.pkl</code> for recognition.</td>
-        <td><code>python simple_videofacerec.py -c 1 model_filename.pkl</code></td>
+        <td>Example: <code>python simple_videofacerec.py -c 1 model_filename.pkl</code></td>
     </tr>
     <tr>
          <td><code>-c CASCADE_FILENAME</code></td>
          <td>The OpenCV library includes <a href="http://docs.opencv.org/modules/objdetect/doc/cascade_classification.html">Cascade Classification</a> for object recognition, which can be used for realtime face detection. We are going to use the OpenCV Python bindings to <a href="http://docs.opencv.org/modules/objdetect/doc/cascade_classification.html">cv::CascadeClassifier</a> for the face detection part of the application. You can find all available cascades in the <a href="https://github.com/Itseez/opencv/tree/master/data">data folder of your OpenCV installation</a>. I've added a Cascaded to the repository, you probably want to experiment with other ones. The following examples uses the model in <code>model_filename.pkl</code> for recognition and the cascade in <code>haarcascade_frontalface_alt2.xml</code> for face detection.</td>
-         <td><code>python -c haarcascade_frontalface_alt2.xml model_filename.pkl</code></td>
+         <td>Example: <code>python -c haarcascade_frontalface_alt2.xml model_filename.pkl</code></td>
      </tr>
+  </tbody>
 </table>
 
 ## working with the script ##
