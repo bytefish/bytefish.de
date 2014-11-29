@@ -277,18 +277,22 @@ int main() {
 ## Experimental Settings ##
 
 <table>
-  <tr>
-    <th>Parameter</th>
-    <th>Value</th>
-  </tr>
-  <tr>
-    <td>Trainingdata size</td>
-    <td>200</td>
-  </tr>
-  <tr>
-    <td>Testdata size</td>
-    <td>2000</td>
-  </tr>
+  <thead>
+    <tr>
+      <th>Parameter</th>
+      <th>Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Trainingdata size</td>
+      <td>200</td>
+    </tr>
+    <tr>
+      <td>Testdata size</td>
+      <td>2000</td>
+    </tr>
+  </tbody>
 </table>
 
 Please note: I didn't optimize any parameters in these experiments. A Support Vector Machine may perform much better, if you choose an appropriate Kernel and optimize the parameters subsequently (for example with a Grid Search). A Neural Network may perform much better, when choosing the appropriate number of layers and training iterations. And so on... So don't interpret too much into these experimental results, I really wanted to show some features of OpenCV only.
@@ -298,12 +302,16 @@ Please note: I didn't optimize any parameters in these experiments. A Support Ve
 ### y = 2x ###
 
 <table>
-  <tr><th>Predictor</th><th>Accuracy</th></tr>
-  <tr><td>Support Vector Machine </td><td> 0.99</td></tr>
-  <tr><td>Multi Layer Perceptron (2, 10, 15, 1)</td><td> 0.994</td></tr>
-  <tr><td>k-Nearest-Neighbor (k = 3)</td><td> 0.9825</td></tr>
-  <tr><td>Normal Bayes</td><td> 0.9425</td></tr>
-  <tr><td>Decision Tree</td><td>0.923</td></tr>
+  <thead>
+    <tr><th>Predictor</th><th>Accuracy</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Support Vector Machine </td><td> 0.99</td></tr>
+    <tr><td>Multi Layer Perceptron (2, 10, 15, 1)</td><td> 0.994</td></tr>
+    <tr><td>k-Nearest-Neighbor (k = 3)</td><td> 0.9825</td></tr>
+    <tr><td>Normal Bayes</td><td> 0.9425</td></tr>
+    <tr><td>Decision Tree</td><td>0.923</td></tr>
+  </tbody>
 </table>
 
 #### Plot ####
@@ -313,12 +321,16 @@ Please note: I didn't optimize any parameters in these experiments. A Support Ve
 ### y = sin(10x) ###
 
 <table>
-  <tr><th>Predictor</th><th>Accuracy</th></tr>
-  <tr><td>Support Vector Machine </td><td> 0.913</td></tr>
-  <tr><td>Multi Layer Perceptron (2, 10, 15, 1)</td><td> 0.6855 </td></tr>
-  <tr><td>k-Nearest-Neighbor (k = 3)</td><td> 0.9 </td></tr>
-  <tr><td>Normal Bayes</td><td> 0.632 </td></tr>
-  <tr><td>Decision Tree</td><td> 0.886 </td></tr>
+  <thead>
+    <tr><th>Predictor</th><th>Accuracy</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Support Vector Machine </td><td> 0.913</td></tr>
+    <tr><td>Multi Layer Perceptron (2, 10, 15, 1)</td><td> 0.6855 </td></tr>
+    <tr><td>k-Nearest-Neighbor (k = 3)</td><td> 0.9 </td></tr>
+    <tr><td>Normal Bayes</td><td> 0.632 </td></tr>
+    <tr><td>Decision Tree</td><td> 0.886 </td></tr>
+  </tbody>
 </table>
 
 #### Plot ####
@@ -328,12 +340,16 @@ Please note: I didn't optimize any parameters in these experiments. A Support Ve
 ### y = tan(10x) ###
 
 <table>
-  <tr><th>Predictor</th><th>Accuracy</th></tr>
-  <tr><td>Support Vector Machine </td><td> 0.7815</td></tr>
-  <tr><td>Multi Layer Perceptron (2, 10, 15, 1)</td><td>0.5115</td></tr>
-  <tr><td>k-Nearest-Neighbor (k = 3)</td><td> 0.8195 </td></tr>
-  <tr><td>Normal Bayes</td><td> 0.542 </td></tr>
-  <tr><td>Decision Tree</td><td> 0.9155 </td></tr>
+  <thead>
+    <tr><th>Predictor</th><th>Accuracy</th></tr>
+  </thead>
+  <tbody>
+    1<tr><td>Support Vector Machine </td><td> 0.7815</td></tr>
+    <tr><td>Multi Layer Perceptron (2, 10, 15, 1)</td><td>0.5115</td></tr>
+    <tr><td>k-Nearest-Neighbor (k = 3)</td><td> 0.8195 </td></tr>
+    <tr><td>Normal Bayes</td><td> 0.542 </td></tr>
+    <tr><td>Decision Tree</td><td> 0.9155 </td></tr>
+  </tbody>
 </table>
 
 #### Plot ####

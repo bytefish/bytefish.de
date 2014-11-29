@@ -24,11 +24,18 @@ If you are using the same ``offset_pct`` and ``dest_sz`` for your images, they a
 Imagine we are given [this photo](http://en.wikipedia.org/wiki/File:Arnold_Schwarzenegger_edit%28ws%29.jpg) of Arnold Schwarzenegger, which is under a Public Domain license. The ``(x,y)``-position of the eyes are approximately ``(252,364)`` for the left and ``(420,366)`` for the right eye. Now you only need to define the horizontal offset, vertical offset and the size your scaled, rotated & cropped face should have. Here are some examples:
 
 <table>
-  <tr><th>Configuration</th><th>Cropped, Scaled, Rotated Face</th></tr>
-  <tr><td>0.1 (10%), 0.1 (10%), (200,200)</td><td><img src="/static/images/blog/aligning_face_images/arnie_10_10_200_200.jpg" alt="configuration" /></td></tr>
-  <tr><td>0.2 (20%), 0.2 (20%), (200,200)</td><td><img src="/static/images/blog/aligning_face_images/arnie_20_20_200_200.jpg" alt="configuration" /></td></tr>
-  <tr><td>0.3 (30%), 0.3 (30%), (200,200)</td><td><img src="/static/images/blog/aligning_face_images/arnie_30_30_200_200.jpg" alt="configuration" /></td></tr>
-  <tr><td>0.2 (20%), 0.2 (20%), (70,70)  </td><td><img src="/static/images/blog/aligning_face_images/arnie_20_20_70_70.jpg" alt="configuration" /></td></tr>
+  <thead>
+    <tr>
+      <th>Configuration</th>
+      <th>Cropped, Scaled, Rotated Face</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>0.1 (10%), 0.1 (10%), (200,200)</td><td><img src="/static/images/blog/aligning_face_images/arnie_10_10_200_200.jpg" alt="configuration" /></td></tr>
+    <tr><td>0.2 (20%), 0.2 (20%), (200,200)</td><td><img src="/static/images/blog/aligning_face_images/arnie_20_20_200_200.jpg" alt="configuration" /></td></tr>
+    <tr><td>0.3 (30%), 0.3 (30%), (200,200)</td><td><img src="/static/images/blog/aligning_face_images/arnie_30_30_200_200.jpg" alt="configuration" /></td></tr>
+    <tr><td>0.2 (20%), 0.2 (20%), (70,70)  </td><td><img src="/static/images/blog/aligning_face_images/arnie_20_20_70_70.jpg" alt="configuration" /></td></tr>
+  </tbody>
 </table>
 
 ## crop_face.py ##

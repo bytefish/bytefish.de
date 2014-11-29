@@ -171,8 +171,6 @@ hr {
   height: 0px;
 }
 
-
-
 code, pre {
   font-family: Consolas, "Liberation Mono", Menlo, monospace;
   font-weight: inherit;
@@ -181,10 +179,11 @@ code, pre {
 }
 
 code {
-  background: #f8f8f8;
-  border-radius: 2px;
+  padding: 2px 4px;
+  color: #D14;
+  background-color: #F7F7F9;
+  border: 1px solid #E1E1E8;
   font-size: 0.9375em;
-  padding: 2px 8px;
 }
 
 pre {
@@ -364,19 +363,7 @@ blockquote {
   font-style: italic;
 }
 
-
-
 @media only screen and (max-width: 874px) {
-
-  #container {
-    width: 90%;
-    margin: 0 auto;
-  }
-
-}
-
-
-@media only screen and (max-width: 767px) {
   
   #container {
     width: 90%;
@@ -460,6 +447,13 @@ blockquote {
     margin-bottom: 6px;
   }
   
+  table td:empty { display: none; }
+   
+  table th[data-title]:before,
+  table td[data-title]:before {
+    content: attr(data-title) ":\00A0";
+    font-weight: bold;
+  }
 }
 
 @media (min-width: 767px) {
