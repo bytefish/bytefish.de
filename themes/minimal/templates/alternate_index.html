@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block title %}{{ SITEURL }}/blog{% endblock %}
+{% block content_title %}<a href="{{ SITEURL }}/blog">blog</a>{%endblock%}
+
+{% block content %}
+  {% for year, date_year in dates | groupby('date.year') | sort(reverse=True) %}
+  <h2>{{ date_year[0].date.strftime('%Y') }}</h2>
+  <ul>
+    {% for month, date_month in date_year | groupby( 'date.month' ) | sort(reverse=True) %}
+      <li>{{ month | month_name }}</li>
+      <ul>
+      {% for article in date_month %}
+        <li>{{ article.date.strftime('%d') }} &raquo; <a href="/{{ article.url }}">{{ article.title }}</a></li>
+      {% endfor %}
+     </ul>
+   {% endfor %}
+  </ul>
+  {% endfor %}
+{% endblock %}
