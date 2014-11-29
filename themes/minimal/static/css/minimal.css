@@ -452,7 +452,7 @@ blockquote {
   }
 }
 
-@media (min-width: 767px) {
+@media (min-width: 874px) {
     
   h1, h2 {
     font-family: "PT Serif", serif;
