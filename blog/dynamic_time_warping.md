@@ -8,15 +8,7 @@ summary: Source code for calculating the Dynamic Time Warping distance in C++.
 
 # Dynamic Time Warping #
 
-I've read about [Dynamic Time Warping](http://en.wikipedia.org/wiki/Dynamic_time_warping) yesterday and here is how I would do it in C++. [DTW](http://en.wikipedia.org/wiki/Dynamic_time_warping) is a distance measure for sequences that may vary in time or speed, like:
-
-* Gestures ([/wiki/android](/wiki/android))
-* Motion Patterns
-* Sound signals in Speech or Music Recognition
-
-A good introduction is given in:
-
-* http://www.ailab.si/qr09/papers/Strle.pdf
+I've read about [Dynamic Time Warping](http://en.wikipedia.org/wiki/Dynamic_time_warping) yesterday and here is how I would do it in C++. 
 
 ## dtw.h ##
 
@@ -101,4 +93,4 @@ You can obtain the sourcecode from my github page at:
 
 * [http://github.com/bytefish/timeseries](http://github.com/bytefish/timeseries)
 
-To find the minimum warp path between two sequences, you can use a greedy strategy from ``cost[m][n]`` to ``cost[0][0]`` by picking the minimum of the three adjacenct values. I leave this for your personal excercise. Some papers I have read divide the distance by the length of the warp path. This gives you the average distance between two points of the sequence, I doubt that this is useful in all cases, so I have left it out.
+To find the minimum warp path between two sequences, you can use a greedy strategy from ``cost[m][n]`` to ``cost[0][0]`` by picking the minimum of the three adjacenct values.

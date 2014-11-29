@@ -8,7 +8,9 @@ summary: Face Detection with the Android Camera.
 
 # Face Detection with the Android API #
 
-In this post I want to show you how to work with the [Android Camera API](http://developer.android.com/reference/android/hardware/Camera.html) to implement an app for Face Detection. The final app will draw an overlay on the camera image, which will highlight the detected faces. Basically the application only consists of an Activity and a custom view. The functions for calculating the correct display orientation have been taken from Androids original Camera App, which is released under terms of the Apache License, Version 2.0.
+In this post I want to show you how to work with the [Android Camera API](http://developer.android.com/reference/android/hardware/Camera.html) to implement an app for Face Detection. 
+The final app will draw an overlay on the camera image, which will highlight the detected faces. Basically the application only consists of an Activity and a custom view. The functions 
+for calculating the correct display orientation have been taken from Androids original Camera App, which is released under terms of the Apache License, Version 2.0.
 
 Here is a screenshot of the final application:
 

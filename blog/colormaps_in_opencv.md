@@ -8,17 +8,16 @@ summary: Using colormaps with OpenCV.
 
 # Colormaps in OpenCV #
 
-## introduction ##
+## Introduction ##
 
-It's a fact, that human perception isn't built for observing fine changes in grayscale images. Human sensors (eyes and stuff) are more sensitive to observing changes between colors, so you often need to recolor your grayscale images to get a clue about them. Yesterday I needed to visualize some data in [OpenCV](http://opencv.org). And while it's easy to apply a colormap in [MATLAB](http://www.mathworks.de/index.html), [OpenCV](http://opencv.org) doesn't come with predefined colormaps. I don't have much knowledge about colormaps and I am totally off when it comes to choosing colors anyway (my former art teacher will acknowledge), but there are people with a lot more experience. One page I've found is the blog of [Matteo Niccoli](http://mycarta.wordpress.com), who shares some colormaps on [his FEX page](http://www.mathworks.com/matlabcentral/fileexchange/authors/87376), along with a lot of interesting links.
+Yesterday I needed to visualize some data in [OpenCV](http://opencv.org). It's easy to apply a colormap in [MATLAB](http://www.mathworks.de/index.html), but [OpenCV](http://opencv.org) doesn't 
+come with predefined colormaps. So I simply took the interpolation steps from the [GNU Octave](http://www.gnu.org/software/octave/) colormaps and turned them into C++ classes. 
 
-In the end I simply took the interpolation steps from the [GNU Octave](http://www.gnu.org/software/octave/) colormaps and turned them into C++ classes. The source code is on github:
+The source code is on github:
 
 * [https://github.com/bytefish/colormaps-opencv](https://github.com/bytefish/colormaps-opencv)
 
-Please note: This code has been contributed to OpenCV and is available in the ``contrib`` module since OpenCV 2.4. Simply use ``cv::applyColorMap``, the same way as described in this article ([Official documentation](http://docs.opencv.org/trunk/modules/contrib/doc/facerec/colormaps.html)). 
-
-## using the code ##
+## Using the code ##
 
 You only need ``cv::applyColorMap`` to apply a colormap on a given image. The signature of ``cv::applyColorMap`` is:
 

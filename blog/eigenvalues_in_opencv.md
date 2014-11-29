@@ -8,7 +8,10 @@ summary: This post shows how to find the Eigenvalues and Eigenvectors of a matri
 
 # Eigenvalues in OpenCV #
 
-Finding Eigenvalues and Eigenvectors of a matrix is the most important task in the  [Eigenfaces](http://en.wikipedia.org/wiki/Eigenfaces) algorithm (I mean 50% of the word are made up by "Eigen"...). So if you are working with OpenCV, here is how to do it. Note, that this post solves the eigenvalue problem for symmetric matrices only. If you want to solve the Eigenvalue problem for general matrices, you could use the solver I have ported from the JAMA project to C++ with OpenCV: [decomposition.hpp](https://github.com/bytefish/opencv/blob/master/lda/include/decomposition.hpp).
+Finding Eigenvalues and Eigenvectors of a matrix is the most important task in the  [Eigenfaces](http://en.wikipedia.org/wiki/Eigenfaces) algorithm (I mean 50% of the word are made up by "Eigen"...). 
+
+So if you are working with OpenCV, here is how to do it. If you want to solve the Eigenvalue problem for general matrices, you could use the solver I have ported from the JAMA project to C++ with 
+OpenCV: [decomposition.hpp](https://github.com/bytefish/opencv/blob/master/lda/include/decomposition.hpp).
 
 ## OpenCV C API ##
 

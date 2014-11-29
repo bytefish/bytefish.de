@@ -6,7 +6,7 @@ slug: lda_in_opencv
 author: Philipp Wagner
 summary: A project for Linear Discriminant Analysis in OpenCV.
 
-# lda in opencv #
+# Linear Discriminant Analysis with OpenCV #
 
 There was a question on [stackoverflow](http://stackoverflow.com) on:
 
@@ -15,5 +15,3 @@ There was a question on [stackoverflow](http://stackoverflow.com) on:
 So I wrote a class to perform a Linear Discriminant Analysis with OpenCV, which is available at:
 
 * [https://github.com/bytefish/opencv/tree/master/lda](https://github.com/bytefish/opencv/tree/master/lda)
-
-**Please Note:** This post has been updated to [/blog/fisherfaces_in_opencv](/blog/fisherfaces_in_opencv)!
