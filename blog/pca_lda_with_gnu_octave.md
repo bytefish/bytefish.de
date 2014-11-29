@@ -54,9 +54,7 @@ So how does a Principal Component Analysis perform on this dataset?
 
 ### Principal Component Analysis ###
 
-The Principal Component Analysis (PCA) was independently proposed by [Karl Pearson](http://en.wikipedia.org/wiki/Karl_Pearson) (1901) and [Harold Hotelling](http://en.wikipedia.org/wiki/Harold_Hotelling) (1933) to turn a set of possibly correlated variables into a smaller set of uncorrelated variables. The idea is that a high-dimensional dataset is often described by correlated variables and therefore only a few meaningful dimensions account for most of the information. The PCA method finds those directions in the original dataset that account for the greatest variance in data, also called the principal components.
-
-A good start is to read [A tutorial on Principal Components Analysis](http://www.cs.otago.ac.nz/cosc453/student_tutorials/principal_components.pdf) or [Wikipedia on PCA](http://en.wikipedia.org/wiki/Principal_component_analysis).
+A good start for learning about a Principal Component Analysis is the [Wikipedia article on Principle Component Analysis](http://en.wikipedia.org/wiki/Principal_component_analysis).
 
 #### Finding the Principal Components ####
 
@@ -77,7 +75,7 @@ That's it! Note that the Eigenvectors in GNU Octave are sorted ascending, so the
 V = V(:,i);
 ```
 
-Because all variables in this example are measured on the same scale we don't need to apply any standardization. Plotting both eigenvectors:
+Because all variables in this example are measured on the same scale we don't need to apply any standardization. Plot both eigenvectors:
 
 ```matlab
 scale = 5
@@ -88,7 +86,7 @@ set(pc1, 'color', [1 0 0], "linestyle", "--")
 set(pc2, 'color', [0 1 0], "linestyle", "--")
 ```
 
-yields a new coordinate system with the mean as origin and the orthogonal principal components as axes:
+It yields a new coordinate system with the mean as origin and the orthogonal principal components as axes:
 
 <a href="/static/images/blog/pca_lda_with_gnu_octave/principal.png"><img alt="dummy" src="/static/images/blog/pca_lda_with_gnu_octave/thumbs/principal.jpg" class="mediacenter" /></a>
 
@@ -129,7 +127,7 @@ p1 = plot(y1(:,1),y1(:,2),"ro", "markersize", 10, "linewidth", 3);
 p2 = plot(y2(:,1), y2(:,2),"go", "markersize", 10, "linewidth", 3); 
 ```
 
-... et voilà. The data isn't [linearly separable](http://en.wikipedia.org/wiki/Linear_separability) anymore in this lower-dimensional representation. What does this mean? The classes are smeared together and classification becomes tough:
+... et voilà. The data isn't [linearly separable](http://en.wikipedia.org/wiki/Linear_separability) anymore in this lower-dimensional representation.
 
 <a href="/static/images/blog/pca_lda_with_gnu_octave/pc1.png"><img alt="dummy" src="/static/images/blog/pca_lda_with_gnu_octave/thumbs/pc1.jpg" class="mediacenter" /></a>
 
@@ -137,13 +135,16 @@ p2 = plot(y2(:,1), y2(:,2),"go", "markersize", 10, "linewidth", 3);
 
 <a href="/static/images/blog/pca_lda_with_gnu_octave/pc2.png"><img alt="dummy" src="/static/images/blog/pca_lda_with_gnu_octave/thumbs/pc2.jpg" class="mediacenter" /></a>
 
-See that even a simple Nearest Neighbor classifier would perform awesome here? So we learn that the directions of maximum variance may be useless for classification tasks. The second principal component had a smaller variance, but provided a much better discrimination between the two classes. 
+While the second principal component had a smaller variance, it provided a much better discrimination between the two classes. Let's see how we can extract such a feature.
 
 ### Linear Discriminant Analysis ###
 
-What we aim for is a projection, that maintains the maximum discriminative power of a given dataset, so a method should make use of class labels (if they are known a priori).  The Linear Discriminant Analysis, invented by [R. A. Fisher](http://en.wikipedia.org/wiki/Ronald_Fisher) (1936), does so by maximizing the between-class scatter, while minimizing the within-class scatter at the same time.
+What we aim for is a projection, that maintains the maximum discriminative power of a given dataset, so a method should make use of class labels (if they are known a priori).  
+The Linear Discriminant Analysis, invented by [R. A. Fisher](http://en.wikipedia.org/wiki/Ronald_Fisher) (1936), does so by maximizing the between-class scatter, while minimizing 
+the within-class scatter at the same time.
 
-I took the equations from [Ricardo Gutierrez-Osuna's](http://research.cs.tamu.edu/prism/rgo.htm): [Lecture notes on Linear Discriminant Analysis](http://research.cs.tamu.edu/prism/lectures/pr/pr_l10.pdf) and [Wikipedia on LDA](http://en.wikipedia.org/wiki/Linear_discriminant_analysis).
+I took the equations from [Ricardo Gutierrez-Osuna's](http://research.cs.tamu.edu/prism/rgo.htm): [Lecture notes on Linear Discriminant Analysis](http://research.cs.tamu.edu/prism/lectures/pr/pr_l10.pdf) 
+and [Wikipedia on LDA](http://en.wikipedia.org/wiki/Linear_discriminant_analysis).
 
 We'll use the same data as for the PCA example. Again create the data in ``X`` with corresponding classes in ``c``:
 
@@ -250,7 +251,9 @@ yields this beautiful plot:
 
 ## Experiment 2: Wine Dataset ##
 
-The first experiment was somewhat constructed. Let's get our hands now on some real data from the [UCI Machine Learning Repository](http://archive.ics.uci.edu/ml/index.html)! I decided to test both methods on the [Wine Dataset](http://archive.ics.uci.edu/ml/datasets/Wine), an admittedly easy dataset. It consists of 178 samples with 13 constituents drawn from three types of wine.
+The first experiment was somewhat constructed. Let's get our hands now on some real data from the [UCI Machine Learning Repository](http://archive.ics.uci.edu/ml/index.html). I decided 
+to test both methods on the [Wine Dataset](http://archive.ics.uci.edu/ml/datasets/Wine), an admittedly easy dataset. It consists of 178 samples with 13 constituents drawn from three 
+types of wine.
 
 ### Functions ###
 
@@ -304,7 +307,7 @@ end
 
 ### Loading the Wine Dataset ###
 
-Loading the Wine Dataset is easy in GNU Octave with the ``dlmread`` function. I am sure there is something equivalent in MATLAB: 
+Loading the Wine Dataset is easy in GNU Octave with the ``dlmread`` function. I am sure there is a similar function in MATLAB:
 
 ```matlab
 % http://archive.ics.uci.edu/ml/datasets/Wine
@@ -330,7 +333,7 @@ ans =
 ans = 3
 ```
 
-Everything was loaded correctly! 178 instances with 13 attributes from 3 classes.
+Everything was loaded correctly. 178 instances with 13 attributes from 3 classes.
 
 ### Principal Components without normalization ###
 
@@ -377,7 +380,7 @@ plot(wine3(:,1), wine3(:,2),"bo", "markersize", 10, "linewidth", 3);
 title("PCA (original data)")
 ```
 
-shows that the clusters are not clearly separated
+shows that the clusters are not well separated
 
 <a href="/static/images/blog/pca_lda_with_gnu_octave/pca_wine_original_data.png"><img alt="dummy" src="/static/images/blog/pca_lda_with_gnu_octave/thumbs/pca_wine_original_data.jpg" class="mediacenter" /></a>
 
@@ -396,7 +399,8 @@ and project it on the first two components, the classes are way better separated
 
 ### When normalization matters ###
 
-The PCA performs bad. Why is that? Because the features are all on a different scale. A common trick is to scale the input to zero mean and unit variance, also called [z-scores](http://en.wikipedia.org/wiki/Standard_score). If the normalization is applied on the data:
+The PCA performs bad. Why is that? Because the features are all on a different scale. A common trick is to scale the input to zero mean and unit variance, 
+also called [z-scores](http://en.wikipedia.org/wiki/Standard_score). If the normalization is applied on the data:
 
 ```matlab
 Xm = zscore(X);
@@ -423,54 +427,11 @@ ans =
    1.00000
 </pre>
 
-On normalized data the clusters are better separated by the PCA:
+On normalized data the clusters are much better separated by the PCA:
 
 <a href="/static/images/blog/pca_lda_with_gnu_octave/pca_wine_normalized_data.png"><img alt="dummy" src="/static/images/blog/pca_lda_with_gnu_octave/thumbs/pca_wine_normalized_data.jpg" class="mediacenter" /></a>
 
-While the projection found by Fisher's Discriminant Analysis only changes in scale:
-
-<a href="/static/images/blog/pca_lda_with_gnu_octave/lda_wine_normalized_data.png"><img alt="dummy" src="/static/images/blog/pca_lda_with_gnu_octave/thumbs/lda_wine_normalized_data.jpg" class="mediacenter" /></a>
-
-## Relationship between a PCA and SVD ##
-
-Something I didn't mention is the close relation between a [Singular Value Decomposition](http://en.wikipedia.org/wiki/Singular_value_decomposition) (SVD) and a Principle Component Analysis. A nice tutorial for the SVD is given [here](http://web.ics.purdue.edu/~park283/wp-content/uploads/2010/10/Singular_Value_Decomposition_Tutorial.pdf) and a real-life example with Ruby is given [here](http://www.igvita.com/2007/01/15/svd-recommendation-system-in-ruby/).
-
-So let's decompose the data matrix:
-
-```matlab
-[U, S, V] = svd(Xm);
-Xproj = project(Xm,V(:,1:2));
-DSvd = diag(S).^2;
-```
-
-and you can compare yourself. The diagonal elements squared are the eigenvalues found by the PCA. We need to normalize both vectors first:
-
-```matlab
-function N = normalize(I, l, h)
-    % set default values
-    if(nargin < 3)
-     l=0;
-     h=1;
-    endif 
-    minI = min(I(:));
-    maxI = max(I(:));
-    %% normalize between [0...1]
-    N = I - minI;
-    N = N ./ (maxI - minI);
-    %% scale between [l...h]
-    N = N .* (h-l);
-    N = N + l;
-end
-```
-
-and then we can compare both:
-
-```
-octave> all((normalize(DPca) - normalize(DSvd)) < eps)
-ans = 1
-```
-
-Where ``1`` is for ``true``.
+So keep in mind to normalize your data sometimes.
 
 ## Appendix ##
 
