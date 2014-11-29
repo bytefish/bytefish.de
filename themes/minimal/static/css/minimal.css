@@ -148,11 +148,6 @@ table td {
     text-align: center;
 }
 
-table th:nth-child(1),
-table td:nth-child(1) {
-    font-weight: bold;
-}
-
 img {
   border: 0;
   max-width: 100%;
@@ -193,7 +188,7 @@ pre {
   font-size: 12px;
   padding: 5px;
   margin-top: 5px;
-  margin-bottom: 5px;
+  margin-bottom: 1em;
   border: 1px dashed #d7d7c8;
 }
 

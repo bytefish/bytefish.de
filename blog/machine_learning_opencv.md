@@ -344,7 +344,7 @@ Please note: I didn't optimize any parameters in these experiments. A Support Ve
     <tr><th>Predictor</th><th>Accuracy</th></tr>
   </thead>
   <tbody>
-    1<tr><td>Support Vector Machine </td><td> 0.7815</td></tr>
+    <tr><td>Support Vector Machine</td><td> 0.7815</td></tr>
     <tr><td>Multi Layer Perceptron (2, 10, 15, 1)</td><td>0.5115</td></tr>
     <tr><td>k-Nearest-Neighbor (k = 3)</td><td> 0.8195 </td></tr>
     <tr><td>Normal Bayes</td><td> 0.542 </td></tr>
