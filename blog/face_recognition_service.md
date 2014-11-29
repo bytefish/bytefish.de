@@ -9,7 +9,7 @@ summary: Implementing a Face Recognition Web service with Flask.
 # A Face Recognition Web service #
 
 This article deals with writing a RESTful Web service for Face Recognition. It's something a 
-lot of people have asked me for, and it isn't hard to implement with [Python](http://www.python.org). 
+lot of people have asked me for, and it isn't hard to implement with [Python](http://www.python.org).
 
 The [facerec framework](https://github.com/bytefish/facerec) needs to be extended a little and 
 then we are going to use it in a small Web service. I am going to explain how to implement the 
@@ -108,10 +108,10 @@ class NumericDataSet(object):
     def __repr__(self):
         print "NumericDataSet"
 ```
+
 With ``add(identifier, image)`` you can add images to the dataset and assign them with an identifier. 
 The images have to be NumPy arrays. The ``get()`` method of the ``NumericDataSet`` returns the 
 representation used for training a ``PredictableModel`` used in previous examples of the framework. 
-
 
 ### Wrapping the PredictableModel ###
 
@@ -159,6 +159,7 @@ This is exactely the same API, that has been used for the other examples.
 ### Defining the Features and Classifier ###
 
 Next we'll define a method to generate us a ``PredictableModel``, which is used to classify incoming images. 
+
 You can read about the concepts of the framework in the documentation at [http://bytefish.de/dev/facerec](http://bytefish.de/dev/facerec/), 
 so in short: In order to generate predictions, you'll need to define a ``PredictableModel`` which is a combination
 of a feature extraction algorithm (PCA, LDA, LBP, ...) and a classifier (Nearest Neighbor, SVM, ...). With a 
@@ -253,13 +254,17 @@ to download an image and recognize it.
 
 ### Error Codes ###
 
-We'll start with an important part: Errors. The input data might not be perfect. There are probably images, 
-that can't be read. There are probably errors in the facerec code, that crash the application. It's important
-to not return the Stacktrace of the Exception to the Consumer of the API. Why? Because without knowing the code in detail 
-it will be totally useless to him. And returning the Stacktrace might leak implementation details, we want to hide.
+We'll start with an important part: Errors. 
 
-So if you are building your own RESTful API, you should define a set of errors. The consuming client can 
-react on these errors and take the necessary actions, to inform the user about problems.
+You can't expect input data to be perfect. There are probably images, that can't be read. There are probably errors 
+in the facerec code, that crash the application (I am not perfect, and the code obviously lacks any unit tests). 
+
+It's important to not return the Stacktrace of the exception to the Consumer of the API. Why? Because without knowing 
+the code in detail it will be totally useless to him. And returning the Stacktrace might leak implementation details, 
+which we want to hide.
+
+So if you are building your own RESTful API, you should define a set of errors. The consuming client can react on 
+these errors and take the necessary actions, to inform the user about a problem.
 
 The list of error codes in this Web service is:
 
@@ -300,10 +305,9 @@ errors = {
 
 So how do we return these errors to the consumer?
 
-You don't want to write a try-catch block around each method and return the error. You would repeat 
-yourself a thousand times, and writing the blocks and it might lead to errors, because it's easy to
-miss one. Instead we can use a decorator, which we call a ``ThrowsWebAppException``. It catches the 
-original exception and wraps it in a new ``WebAppException``. 
+You don't want to write a try-catch block around each method, at least I don't want to. Instead we can use a decorator, 
+which we call a ``ThrowsWebAppException``. It catches the original exception and wraps it in a new ``WebAppException``,
+which in turn is thrown at flask. 
 
 This ``WebAppException`` exception is then handled by [Flask's errorhandler](http://flask.pocoo.org/docs/api/#flask.Flask.errorhandler),
 which logs the original exception and extracts a meaningful JSON representation from the ``WebAppException``.
@@ -458,10 +462,8 @@ def read_image(base64_image):
 
 ### Recognize ###
 
-With all the methods defined, getting a prediction becomes easy. First of all we
-create a new url rule for Flask, which can be done with a [route decorator](http://flask.pocoo.org/docs/api/#flask.Flask.route).
-The method parses the request, decodes the Base64 image and creates a prediction
-with a given facerec model. 
+With all the methods defined, getting a prediction becomes easy. First of all we create a new url rule for Flask, which can be done with a [route decorator](http://flask.pocoo.org/docs/api/#flask.Flask.route).
+The method parses the request, decodes the Base64 image and creates a prediction with a given facerec model. 
 
 
 ```python
@@ -592,18 +594,6 @@ optional arguments:
                         Sets the endpoint for this server.
   -p PORT, --port PORT  Sets the port for this server.
 usage: server.py [-h] [-t DATASET] [-a HOST] [-p PORT] [model_filename]
-
-positional arguments:
-  model_filename        Filename of the model to use or store
-
-optional arguments:
-  -h, --help            show this help message and exit
-  -t DATASET, --train DATASET
-                        Calculates a new model from a given CSV file. CSV
-                        format: <person>;</path/to/image/folder>.
-  -a HOST, --address HOST
-                        Sets the endpoint for this server.
-  -p PORT, --port PORT  Sets the port for this server.
 </pre>
 
 Now imagine we have a data set available given in the format as described above:
@@ -631,8 +621,7 @@ The server will then start:
  * Running on http://0.0.0.0:5000/
 </pre>
 
-So initially it runs on ``localhost`` and port ``5000``, but you can define different 
-parameters with the ``-a`` and ``-p`` switch.
+So initially it runs on ``localhost`` and port ``5000``, but you can define different parameters with the ``-a`` and ``-p`` switch.
 
 ### Consuming the API with the Client ###
 
@@ -680,11 +669,4 @@ And it will call the server and print the predictions it got:
 
 ## Conclusion ##
 
-And that's it! I hope the big takeaway in this article is, that it's really easy to
-build a server application with Flask and Python. You now have a server for the framework,
-that should be easy to extend, although it might be limited in handling large amount of 
-connections and incoming data. 
-
-The next article is going to show you, how to extend the Face Detection app, so it consumes
-the server written in this article. In the meantime I would love to hear your ideas for new 
-API services and extending the existing script.
+And that's it! I hope the big takeaway in this article is, that it's really easy to build a server application with Flask and Python.

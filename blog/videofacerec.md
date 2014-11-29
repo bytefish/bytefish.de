@@ -19,9 +19,13 @@ You can find the script and resources at:
 
 Thanks to more than 100 people for watching the repository!
 
-## usage ##
+## Usage ##
 
-The old script was hard to use and since the new one is easy to use I've called it ``simple_videofacerec.py``. Basically the script allows you to compute, save and load models for face recognition in videos (e.g. webcam feeds). Moreover you can optionally validate your model to see the performance you can expect. [OpenCV](http://www.opencv.org), which is a great Open Source project, is used for the face detection part and you can use all the available cascades coming with [OpenCV](http://www.opencv.org) for face detection.
+I've called the script ``simple_videofacerec.py``, because it doesn't have a lot functionality. 
+
+Basically the script allows you to compute, save and load models for face recognition in videos (e.g. webcam feeds). Moreover you can optionally validate 
+your model to see the performance you can expect. [OpenCV](http://www.opencv.org), which is a great Open Source project, is used for the face detection part 
+and you can use all the available cascades coming with [OpenCV](http://www.opencv.org) for face detection.
 
 Here is the usage and help message you get by calling ``simple_videofacerec.py -h``:
 
@@ -86,9 +90,9 @@ As you can see, the name for the recognition model (called ``model_filename`` ab
   </tbody>
 </table>
 
-## working with the script ##
+## Working with the script ##
 
-### getting the image data right ###
+### Getting the image data right ###
 
 All of my recent tutorials include the same part, that explains how to prepare the image data for my scripts. It's not because I love repeating myself, but because readers almost always ask this question, so I am copy and pasting it to avoid the confusion. For sake of simplicity I have assumed in the script, that the images (the *faces*, the *persons you want to recognize*) are given in folders. One folder per person. So imagine I have a folder (a dataset) called ``celebrities`` with the subfolders ``tom_hanks``, ``philipp_wagner``, ``angelina_jolie`` and so on. 
 
@@ -119,7 +123,7 @@ philipp@mango:~/facerec/data/celebrities$ tree -L 2
 
 If you pass a dataset with a similar hierarchie to ``simple_videofacerec.py``, it is able to read the images and use the folder names for identification.
 
-### learning and validating a model ###
+### Learning and validating a model ###
 
 Imagine I have prepared some images of celebrities and stored them in ``/home/philipp/facerec/data/celebrities``, of course in the hierarchie as described above. The images are all aligned at the eyes, as most of the algorithms need aligned images to learn a good model, similar to my set of [George Clooney](http://en.wikipedia.org/wiki/George_Clooney) images (he was so amazing in *Batman & Robin*!):
 
@@ -203,7 +207,7 @@ Saving the model...
 Starting application...
 </pre>
 
-### defining your own model ###
+### Defining your own model ###
 
 If you are experimenting with the framework, you probably don't want to stick to the [Fisherfaces](http://www.bytefish.de/blog/fisherfaces) algorithm used as default. Instead of coming up with an own language for defining a model or using a XML configuration (*please not!*), there's simply a method which returns the model definition. Sometimes a method is totally sufficient in programming:
 
@@ -223,12 +227,8 @@ def get_model(image_size, subject_names):
 
 So if you want to define your own algorithms, this is place to overwrite. You need to return an ``ExtendedPredictableModel`` for the script to work (``ExtendedPredictableModel`` is defined in the script).
 
-## conclusion ##
+## Conclusion ##
 
-This was my first blog post for a long time, and I hope you had as much fun reading it as I had writing it. If there's anything you'd like to see in the script, then let me know and I'll be happy to add it. Before you comment below and ask about the recognition performance of the implemented algorithms: they do not work perfect on not preprocessed input images. In order to create a more robust recognition, your input images should be aligned in the same manner as we did for the training set.
-
-Pose estimation is a topic far, far, far from being easy and covering it in the scope of this blog post is not possible. Some of the upcoming articles I am preparing will evaluate algorithms for head pose estimation and see how they enhance the overall recognition process. But I also need time to dig through current literature, prepare interesting experiments and finally write the article - this takes time!
-
-For now I'd like to refer to the most interesting approach for object alignment I know of:
-
-* [Gary B. Huang](http://www.janelia.org/people/scientist/gary-huang), [Vidit Jain](http://vis-www.cs.umass.edu/~vidit), and [Erik Learned-Miller](http://www.cs.umass.edu/~elm/). **Unsupervised joint alignment of complex images.** International Conference on Computer Vision (ICCV), 2007. ([Project page](http://vis-www.cs.umass.edu/congeal_complex.html), [PDF Online available](http://vis-www.cs.umass.edu/congeal_complex.html), [C++ Code](https://bitbucket.org/gbhuang/congealreal))
+This was my first blog post for a long time, and I hope you had as much fun reading it as I had writing it. If there's anything you'd like to see in the script, then let me know and I'll be happy to 
+add it. Before you comment below and ask about the recognition performance of the implemented algorithms: they do not work perfect on not preprocessed input images. In order to create a more robust 
+recognition, your input images should be aligned in the same manner as we did for the training set.

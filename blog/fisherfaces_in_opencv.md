@@ -12,7 +12,9 @@ This project is a C++ implementation of the Fisherfaces method as described in:
 
 * P. Belhumeur, J. Hespanha, and D. Kriegman, *"Eigenfaces vs. Fisherfaces: Recognition Using Class Specific Linear Projection"*, IEEE Transactions on Pattern Analysis and Machine Intelligence, 19(7):711--720, 1997.
 
-It was written in preparation of [libfacerec](https://github.com/bytefish/libfacerec) and its contribution to OpenCV. The project has no other dependencies except a recent OpenCV2. All code is put under a [BSD license](http://www.opensource.org/licenses/bsd-license), so feel free to use it for your projects:
+It was written in preparation of [libfacerec](https://github.com/bytefish/libfacerec) and its contribution to OpenCV. The project has no other dependencies except a recent OpenCV2. 
+
+All code is put under a [BSD license](http://www.opensource.org/licenses/bsd-license), so feel free to use it for your projects:
 
 * [https://github.com/bytefish/opencv/blob/master/lda](https://github.com/bytefish/opencv/blob/master/lda)
 
