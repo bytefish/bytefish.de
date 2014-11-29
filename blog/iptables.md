@@ -7,7 +7,10 @@ summary: Some iptable rules I use for my boxes.
 
 # iptables #
 
-Linux comes with a great [firewall](http://en.wikipedia.org/wiki/Firewall_%28computing%29) and with the help of [iptables](http://www.netfilter.org/projects/iptables/index.html) it's easy to secure a workstation. [iptables](http://www.netfilter.org/projects/iptables/index.html) makes it possible to define chains of rules that an incoming or outgoing packet has to pass for getting dropped or accepted. If no rule applies a default policy (either drop or accept) is applied.
+Linux comes with a great [firewall](http://en.wikipedia.org/wiki/Firewall_%28computing%29) and with the help of [iptables](http://www.netfilter.org/projects/iptables/index.html) it's easy to secure a workstation. 
+
+[iptables](http://www.netfilter.org/projects/iptables/index.html) makes it possible to define chains of rules that an incoming or outgoing packet has to pass for getting dropped or accepted. 
+If no rule applies a default policy (either drop or accept) is applied.
 
 You can see your current iptables rules by typing (you must be root to configure iptables, so use [sudo](http://xkcd.com/149)):
 
@@ -29,7 +32,9 @@ Chain OUTPUT (policy ACCEPT)
 target     prot opt source               destination
 </pre>
 
-This means: no rules are specified for incoming (``INPUT``) and outgoing (``OUTPUT``) packets. Every packet is accepted, because the default policy for all chains is ``ACCEPT``. This is not a desirable setup for a workstation or a server connected to the Internet. There are two options: you either set the default policies to ``ACCEPT`` and define rules to selectively ``DROP`` packets or you set the default policies to ``DROP`` and selectively ``ACCEPT`` packets.
+This means: no rules are specified for incoming (``INPUT``) and outgoing (``OUTPUT``) packets. Every packet is accepted, because the default policy for all chains is ``ACCEPT``. 
+This is not a desirable setup for a workstation or a server connected to the Internet. There are two options now: you either set the default policies to ``ACCEPT`` and define 
+rules to selectively ``DROP`` packets or you set the default policies to ``DROP`` and selectively ``ACCEPT`` packets.
 
 I've decided to use the second way and instead of teaching you how to write iptables rules at this point (the iptables man page is really exhaustive) I am posting the script to append the rules:
 
@@ -98,7 +103,8 @@ But note that the rules get lost if you reboot, so make them persistent:
 iptables-save > /etc/iptables.rules
 ```
 
-These rules should be loaded on (network) startup. If you are in [Debian](http://www.debian.org) or [Ubuntu](http://www.ubuntu.com) create a script in ``/etc/network/if-pre-up.d/`` with the following content (I'll give it the filename ``iptablesload`` in this example):
+These rules should be loaded on (network) startup. If you are in [Debian](http://www.debian.org) or [Ubuntu](http://www.ubuntu.com) create a script in ``/etc/network/if-pre-up.d/`` with the following 
+content (I'll give it the filename ``iptablesload`` in this example):
 
 ```sh
 #!/bin/sh

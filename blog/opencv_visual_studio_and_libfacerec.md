@@ -8,7 +8,11 @@ summary: A lot of people asked me how to use libfacerec with Visual Studio. This
 
 # OpenCV, Microsoft Visual Studio and libfacerec #
 
-I've got a lot of mails from people, who have problems to use OpenCV with Microsoft Visual Studio 2008/2010. While I think it's unbelievably easy by using CMake, I am going to explain how to build the libfacerec demo without using CMake. I have illustrated each step with screenshots and detailed explanation, so it's easy for you to follow. I am going to use Microsoft Windows 7, Microsoft Visual Studio 2010 and OpenCV 2.3.1 in this tutorial.
+I've got a lot of mails from people, who have problems to use OpenCV with Microsoft Visual Studio 2008/2010. While I think it's unbelievably easy by using CMake, 
+I am going to explain how to build the libfacerec demo without using CMake. I have illustrated each step with screenshots and detailed explanation, so it's easy 
+for you to follow. 
+
+I am going to use Microsoft Windows 7, Microsoft Visual Studio 2010 and OpenCV 2.3.1 in this tutorial.
 
 ## Setting up OpenCV ##
 
@@ -16,7 +20,9 @@ First of all you'll need OpenCV. For this tutorial I suggest to download the Ope
 
 * [http://sourceforge.net/projects/opencvlibrary/files/opencv-win/2.3.1/](http://sourceforge.net/projects/opencvlibrary/files/opencv-win/2.3.1)
 
-There are a lot of other ways to install OpenCV, so please consult the [docs](http://docs.opencv.org) if you don't like the suggested one. The Superpack itself is not an installer, but a self-extracting archive. It contains the pre-built OpenCV library for VC9 (Microsoft Visual Studio 2008), VC10 (Microsoft Visual Studio 2010) and MinGW to mention a few. You'll only need the VC10 binaries for this tutorial.
+There are a lot of other ways to install OpenCV, so please consult the [docs](http://docs.opencv.org) if you don't like the suggested one. The Superpack itself is not an installer, 
+but a self-extracting archive. It contains the pre-built OpenCV library for VC9 (Microsoft Visual Studio 2008), VC10 (Microsoft Visual Studio 2010) and MinGW to mention a few. 
+You'll only need the VC10 binaries for this tutorial.
 
 Double-click the OpenCV-2.3.1-win-superpack.exe and select a folder to extract to. I'll choose ``D:\projects`` in this example:
 
@@ -73,17 +79,22 @@ You'll now learn how to configure a Microsoft Visual Studio 10 C++ project with 
 
 * [http://stackoverflow.com/a/7014918/513875](http://stackoverflow.com/a/7014918/513875)
 
-The difference is, that I've decided to use pre-built Visual Studio 2010 (VC 10) libraries from the superpack. And I mention some pitfalls you'll encounter when compiling libfacerec.
+The difference is, that I've decided to use pre-built Visual Studio 2010 (VC 10) libraries from the superpack. 
+
+And I mention some pitfalls I have encountered when compiling libfacerec.
 
 ### Create an Empty project ###
 
-Start Visual Studio and from the main menu select ``"File -> New Project..."``. Then create an ``"Empty Project"``, name it ``libfacerec`` and store it in ``D:\projects``:
+Start Visual Studio and from the main menu select ``"File -> New Project..."``. 
+
+Then create an ``"Empty Project"``, name it ``libfacerec`` and store it in ``D:\projects``:
 
 <a href="/static/images/blog/opencv_visual_studio_and_libfacerec/libfacerec_vs_new_proj.jpg"><img src="/static/images/blog/opencv_visual_studio_and_libfacerec/thumbs/libfacerec_vs_new_proj.jpg" class="mediacenter" alt="libfacerec_vs_new_proj" /></a>
 
 ### Adding the libfacerec headers and sources ###
 
-First of all the libfacerec headers and sources are added to our solution. For this copy the libfacerec header files from your extracted archive in ``D:\downloads\libfacerec\include`` to where your the solution is located in ``D:\projects\libfacerec\libfacerec``. Also copy the source files from ``D:\downloads\libfacerec\src`` to ``D:\projects\libfacerec\libfacerec``. 
+First of all the libfacerec headers and sources are added to our solution. For this copy the libfacerec header files from your extracted archive in ``D:\downloads\libfacerec\include`` to where 
+your the solution is located in ``D:\projects\libfacerec\libfacerec``. Also copy the source files from ``D:\downloads\libfacerec\src`` to ``D:\projects\libfacerec\libfacerec``. 
 
 Now add the files to the Microsoft Visual Studio solution. In the Solution Explorer right click on ``Header Files`` and select ``Add -> Existing Item..."``, then select all *.hpp files you've just copied. Do the same for the source files and right click on ``Source Files`` and select all *.cpp files. 
 
@@ -138,13 +149,16 @@ Congratulations!
 
 ## Running the Demo ##
 
-Now to the Eigenfaces Demo. You need some data to make the examples work, sorry but I really can't include those face databases in my repository. First of all this. In the demo I have decided to read the images from a very simple CSV file. Why? Because it's the simplest platform-independent approach I can think of. However, if you know a simpler solution please ping me about it. Basically all the CSV file needs to contain are lines composed of a ``filename`` followed by a ``;`` followed by the ``label`` (as *integer number*), making up a line like this: 
+In the demo I have decided to read images from a very simple CSV file. Why? Because it's the simplest platform-independent approach I can think of. However, if you know a simpler solution please 
+ping me about it. Basically all the CSV file needs to contain are lines composed of a ``filename`` followed by a ``;`` followed by the ``label`` (as *integer number*), making up a line like this: 
 
 <pre>
 /path/to/image.ext;0
 </pre>
 
-Think of the ``label`` as the subject (the person) this image belongs to, so same subjects (persons) should have the same ``label``. So let's make up an example. Download the AT&T Facedatabase from [AT&T Facedatabase](http://www.cl.cam.ac.uk/research/dtg/attarchive/facedatabase.html) and the corresponding CSV file from [at.txt](https://github.com/bytefish/opencv/blob/master/eigenfaces/at.txt), which looks like this (file is without ``...`` of course):
+Think of the ``label`` as the subject (the person) this image belongs to, so same subjects (persons) should have the same ``label``. So let's make up an example. 
+Download the AT&T Facedatabase from [AT&T Facedatabase](http://www.cl.cam.ac.uk/research/dtg/attarchive/facedatabase.html) and the corresponding CSV file from 
+[at.txt](https://github.com/bytefish/opencv/blob/master/eigenfaces/at.txt), which looks like this (file is without ``...`` of course):
 
 <pre>
 ./at/s1/1.pgm;0
@@ -157,16 +171,18 @@ Think of the ``label`` as the subject (the person) this image belongs to, so sam
 ./at/s40/2.pgm;39
 </pre>
 
-Imagine I have extracted the files to ``D:/data/at`` and have downloaded the CSV file to ``D:/data/at.txt``. Then I would simply Search & Replace ``./`` with ``D:/data/``. You can do that in an editor of your choice, every sufficiently advanced editor can do this. Once you have a CSV file with **valid** ``filenames`` and ``labels``, you can run the demo by with the path to the CSV file as parameter:
+Imagine I have extracted the files to ``D:/data/at`` and have downloaded the CSV file to ``D:/data/at.txt``. Then I would simply Search & Replace ``./`` with ``D:/data/``. You can 
+do that in an editor of your choice, every sufficiently advanced editor can do this. Once you have a CSV file with **valid** ``filenames`` and ``labels``, 
+you can run the demo by with the path to the CSV file as parameter:
 
 <pre>
 D:\projects\libfacerec\Release\libfacerec.exe D:/data/at.txt
 </pre>
 
-and you should see (Note I have switched to the Eigenfaces model in the demo. Latest version in trunk is Fisherfaces!):
+And you should see:
 
 <a href="/static/images/blog/opencv_visual_studio_and_libfacerec/eigenfaces.jpg"><img src="/static/images/blog/opencv_visual_studio_and_libfacerec/thumbs/eigenfaces.jpg" class="mediacenter" alt="eigenfaces" /></a>
 
 ## Conclusion ##
 
-So I can finally answer the question of all the mails I got: Yes, I am pretty sure all this also works with Microsoft Visual Studio.
+So I can finally answer the question of the mails I got: Yes, I am pretty sure all this also works with Microsoft Visual Studio.

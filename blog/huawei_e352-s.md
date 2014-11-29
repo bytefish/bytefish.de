@@ -7,11 +7,14 @@ author: Philipp Wagner
 
 # getting the Huawei E352s-5 to work with linux #
 
-Yes, I am alive and well! This is just a quick note on how to get a Huawei E352s-5 working under Linux. Today I've upgraded my contract to a new mobile data plan and I got a Huawei stick with it, which seems to be the latest model [T-Mobile](http://www.t-mobile.de) sells you in Germany (and now you know I am at the monopolist). If you buy hardware without researching the internet thoroughly, you'll almost always need some effort to get it working with Linux. Especially if you aren't on the latest distribution. I am running an Ubuntu 10.10 for years and I've been quite happy with it ever since. As expected, the modem isn't recognized by Ubuntu 10.10. It's not a big deal, since Huawei modems are pretty common.
+This is just a quick note on how to get a Huawei E352s-5 working under Linux. 
 
 ## switching into modem mode ##
 
-If you have inserted your SIM card, plugged in the Huawei E352s-5 stick and your distribution recognized it... you can stop reading here. But if you are on an old distribution like I am, you'll probably need to use [usb_modeswitch](http://www.draisberghof.de/usb_modeswitch/) to get it working. First of all, let's see what ``dmesg`` says after inserting the stick:
+If you have inserted your SIM card, plugged in the Huawei E352s-5 stick and your distribution recognized it... you can stop reading here. But if you 
+are on an old distribution like I am, you'll probably need to use [usb_modeswitch](http://www.draisberghof.de/usb_modeswitch/) to get it working. 
+
+First of all, let's see what ``dmesg`` says after inserting the stick:
 
 <pre>
 philipp@mango:~$ dmesg
@@ -30,7 +33,7 @@ philipp@mango:~$ dmesg
 [   49.542715] ISOFS: changing to secondary root
 </pre>
 
-So the device seems to register as an USB Mass Storage device, running ``lsusb`` shows us the the Vendor and Product ID:
+The device seems to register as an USB Mass Storage device and not as a modem, running ``lsusb`` shows us the the Vendor and Product ID:
 
 <pre>
 philipp@mango:~$ lsusb
@@ -38,7 +41,11 @@ philipp@mango:~$ lsusb
 Bus 002 Device 008: ID 12d1:14fe Huawei Technologies Co., Ltd. 
 </pre>
 
-Great! So let's see how to switch the device into its Modem mode. There is a nice open source project called [usb_modeswitch](http://www.draisberghof.de/usb_modeswitch), which does the job. The ``usb_modeswitch`` coming with my Ubuntu 10.10 is rather outdated, so I'll build it from source. You'll need ``libusb-dev`` to build it, so if you haven't installed it yet you can simply install it via ``apt-get`` (or your distributions package manager). ``usb_modeswitch`` seems to play fine with most of the ``libusb-dev`` versions:
+Great! So let's see how to switch the device into its Modem mode. 
+
+There is a nice open source project called [usb_modeswitch](http://www.draisberghof.de/usb_modeswitch), which does the job.
+
+First of all let's get ``libusb-dev``, since we may need it for compiling:
 
 ```sh
 sudo apt-get install libusb-dev
@@ -48,7 +55,7 @@ Next we'll download, unpack and install the most recent versions of ``usb_modesw
 
 * [http://www.draisberghof.de/usb_modeswitch](http://www.draisberghof.de/usb_modeswitch)
 
-Installing is easy, I guess you are familiar with the commands (if not comment below):
+Installing is easy, I guess you are familiar with the commands:
 
 ```sh
 # Download sources:
@@ -70,7 +77,11 @@ cd usb-modeswitch-data-20121109
 sudo make install
 ```
 
-The new [usb_modeswitch](http://www.draisberghof.de/usb_modeswitch/) overrides the old version, so there's no need to take care about old installations! With [usb_modeswitch](http://www.draisberghof.de/usb_modeswitch/) it's easy to switch the Huawei E352-s into the Modem mode. A quick research reveals the switching command, I guess it's the packet Windows sends to the device in order to switch modes. I really don't feel the need to sniff it by myself (you have to run the commands as root):
+The new [usb_modeswitch](http://www.draisberghof.de/usb_modeswitch/) overrides the old version, so there's no need to take care about old installations! 
+With [usb_modeswitch](http://www.draisberghof.de/usb_modeswitch/) it's easy to switch the Huawei E352-s into the Modem mode. A quick research reveals the 
+switching command, I guess it's the packet Windows sends to the device in order to switch modes. 
+
+I really don't feel the need to sniff it by myself (you have to run the commands as root):
 
 ```sh
 usb_modeswitch -v 12d1 -p 14fe -M '55534243123456780000000000000011062000000100000000000000000000' 
@@ -111,11 +122,14 @@ philipp@mango:~$ dmesg
 [ 1472.040496] usb 2-5: GSM modem (1-port) converter now attached to ttyUSB5
 </pre>
 
-The modem should be usable by now and your network-manager should ask you for the PIN to unlock the device. Congratulations!
+The modem should be usable by now and your network-manager should ask you for the PIN to unlock the device. 
+
+Congratulations!
 
 ## udev rules ##
 
-If you don't want to impress people by remembering these cryptic lines, you could write two ``udev`` rules to execute these commands whenever the device is added to the USB subsystem. Store it to ``/etc/udev/rules.d/70-huawei_e352.rules`` for example.
+If you don't want to impress people by remembering these cryptic lines, you could write two ``udev`` rules to execute these commands whenever the device is 
+added to the USB subsystem. Store it to ``/etc/udev/rules.d/70-huawei_e352.rules`` for example.
 
 **Filename** ``/etc/udev/rules.d/70-huawei_e352.rules``:
 
@@ -131,20 +145,3 @@ udevadm control --reload-rules
 </pre>
 
 And that's it basically! Your stick should now be put into Modem mode automatically, whenever you plug it in.
-
-## final note ##
-
-I have noticed, that my Ubuntu 10.10 ``modem-manager`` sometimes has problems to recognize the device after reattaching it. This happens especially after restoring my system from hibernation. Restarting the ``network-manager`` service doesn't help here either. I know it doesn't sound great, but killing the ``modem-manager`` process works great for me:
-
-<pre>
-philipp@mango:~$ ps ax | grep modem-manager
- 3914 ?        S      0:00 /usr/sbin/modem-manager
-
-philipp@mango:~$ sudo kill 3914
-</pre>
-
-It is automatically restarted by the ``network-manager`` and the magic happens. If I have some time, I might take a look at it. But I guess it has been fixed in recent versions or doesn't apply to the Unity-based Ubuntu distributions at all.
-
-## useful links ##
-
-* [http://www.draisberghof.de/usb_modeswitch/](http://www.draisberghof.de/usb_modeswitch/)
