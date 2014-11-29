@@ -10,7 +10,9 @@ summary: A full source code example on how to do a Principal Component Analysis 
 
 <img src="/static/images/blog/pca_in_opencv/eigenfaces.png" width="200" class="medialeft" />
 
-There are hardly any useful examples on how to do a [Principal Component Analysis](http://en.wikipedia.org/wiki/Principal_component_analysis) (PCA) with the OpenCV2 C++ API, at time of writing this. Maybe because it's simple for everyone else, but it took me some time to figure it out. So here is an example! The listing shows how to display the average image and the first three principal components. Principal components are the eigenvectors sorted descending by their eigenvalue. The Eigenvectors have the same length as your images and resemble (ghostly) faces, hence the name *Eigenfaces* in the Eigenfaces algorithm.
+There are hardly any useful examples on how to do a [Principal Component Analysis](http://en.wikipedia.org/wiki/Principal_component_analysis) (PCA) with the OpenCV2 C++ API, 
+at time of writing this. Maybe because it's simple for everyone else, but it took me some time to figure it out. So here is an example! The listing shows how to display the 
+average image and the first three principal components.
 
 ```cpp
 /*

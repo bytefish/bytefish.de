@@ -6,9 +6,13 @@ slug: eigenfaces
 author: Philipp Wagner
 summary: This article explains how to implement the Eigenfaces algorithm with GNU Octave/MATLAB.
 
-# eigenfaces #
+# Eigenfaces #
 
-I had a talk with a friend, who thought face recognition algorithms must be a horribly complicated thing. While this is true for advanced technologies like Facebook's face tagging system, the basic algorithms boil down to just a few lines of code. I'll use [GNU Octave](http://www.gnu.org/software/octave) for illustrating the algorithm (so this should also work with MATLAB), you can translate this to every other programming language as long as you got a solver. The images in this example are taken from [AT&T Laboratories Cambridge Facedatabase](http://www.cl.cam.ac.uk/research/dtg/attarchive/facedatabase.html), so all credit regarding the images goes to them.
+I had a talk with a friend, who thought face recognition algorithms must be a horribly complicated thing. While this is true for advanced technologies like Facebook's face tagging system, 
+the basic algorithms boil down to just a few lines of code. I'll use [GNU Octave](http://www.gnu.org/software/octave) for illustrating the algorithm (so this should also work with MATLAB), 
+you can translate this to every other programming language as long as you got a solver. 
+
+The images in this example are taken from [AT&T Laboratories Cambridge Facedatabase](http://www.cl.cam.ac.uk/research/dtg/attarchive/facedatabase.html), so all credit regarding the images goes to them.
 
 There's a good algorithmic description at [Wikipedia on Eigenface](http://en.wikipedia.org/wiki/Eigenface#Practical_implementation) and it goes like this:
 

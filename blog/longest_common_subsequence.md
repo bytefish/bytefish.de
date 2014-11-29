@@ -8,13 +8,8 @@ summary: Longest Common Subsequence implementation in C++.
 
 # Longest Common Subsequence #
 
-[Longest Common Subsequence (LCSS)](http://en.wikipedia.org/wiki/Longest_common_subsequence_problem) is another non-euclidean similarity measure for two timeseries. While [Dynamic Time Warping](http://en.wikipedia.org/wiki/Dynamic_time_warping) is good for tasks like speech recognition, it is only useful for data without gaps. It often happens, that we search for a matching subsequence in inaccurate data and this is where [LCSS](http://en.wikipedia.org/wiki/Longest_common_subsequence_problem) helps.
-
-Again, there is a lot literature. The best start is [Wikipedia: Longest Common Subsequence](http://en.wikipedia.org/wiki/Longest_common_subsequence_problem) or where I got the defintion from:
-
-* [Time-Warped Longest Common Subsequence Algorithm For Music Retrieval](http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.101.6392)
-
-Here is how I would do it in C++.
+[Longest Common Subsequence (LCSS)](http://en.wikipedia.org/wiki/Longest_common_subsequence_problem) is another non-euclidean similarity measure for two timeseries, which may be useful on data with gaps. The 
+[Time-Warped Longest Common Subsequence Algorithm For Music Retrieval](http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.101.6392) is included, because the implementation may be useful for others.
 
 ## tsutil.h ##
 

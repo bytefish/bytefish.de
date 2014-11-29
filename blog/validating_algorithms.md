@@ -13,7 +13,7 @@ summary: OpenCV2 comes with various face recognition algorithms and questions ab
 This post was originally written for the [OpenCV QA forum](http://answers.opencv.org/questions). I post it here, because
 I think it's a great example of how Open Source projects make your life easy.
 
-## introduction ##
+## Introduction ##
 
 Actually validating algorithms is a very interesting topic and it's really not that hard. In this post I'll show how to
 validate your algorithms (I'll take the FaceRecognizer in this example). As always in my posts I will show it with a
@@ -35,7 +35,7 @@ have learned from experimenting with computer vision and machine learning algori
 
 All code in this post is put under BSD License, so feel free to use it for your projects.
 
-## validating algorithms ##
+## Validating Algorithms ##
 
 One of the most important tasks of any computer vision project is to acquire image data. You need to get the same image
 data as you expect in production, so you won't have any bad experiences when going live. A very practical example: If
@@ -55,8 +55,7 @@ Open Source project:
 
 It comes with a very good documentation and tutorials for validating algorithms:
 
-*
-[http://scikit-learn.org/stable/tutorial/statistical_inference/index.html](http://scikit-learn.org/stable/tutorial/
+* [http://scikit-learn.org/stable/tutorial/statistical_inference/index.html](http://scikit-learn.org/stable/tutorial/
 statistical_inference/index.html)
 
 So the plan is the following:
@@ -120,7 +119,7 @@ philipp@mango:~/facerec/data/at$ tree .
 40 directories, 401 files
 </pre>
 
-## putting it together ##
+## Putting it together ##
 
 So first of all we'll define a method ``read_images`` for reading in the image data and labels:
 
@@ -349,7 +348,7 @@ if __name__ == "__main__":
     print precision_scores
 ```
         
-## running the script ##
+## Running the script ##
 
 The above script will print out the precision scores for the Fisherfaces method. You simply need to call the script with
 the image folder:
@@ -362,7 +361,7 @@ Precision Scores:
   0.8875      0.93333333  0.9625      0.925     ]
 </pre>
 
-## conclusion ##
+## Conclusion ##
 
 The conclusion is, that... Open Source projects make your life really easy! There's much to enhance for the script. You
 probably want to add some logging, see which fold you are in for example. But it's a start for evaluating any metric you

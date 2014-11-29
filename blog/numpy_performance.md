@@ -8,7 +8,10 @@ summary: An article to experiment with NumPy and the possible ways to speed up c
 
 # NumPy Performance #
 
-It's always important to perform calculations as fast as you can. That's why performance intensive code is often ported to C or even down to Assembler. Here's an example for performance computing in [NumPy](http://www.scipy.org). In my code I wanted to compute the [Local Binary Patterns](http://www.scholarpedia.org/article/Local_Binary_Patterns) of 165 images each sized ``100x130`` pixels. So the first naive version I came up with looked like this:
+In my Python code I wanted to compute the [Local Binary Patterns](http://www.scholarpedia.org/article/Local_Binary_Patterns) of 165 images each sized ``100x130`` pixels. 
+The algorithm is pretty simple, which should be a very easy task...
+
+The first naive version I came up with looked like this:
 
 ```python
 def rlbp_slow(X):
@@ -31,7 +34,8 @@ def rlbp_slow(X):
 	return result
 ```
 
-You already see the problem... The ``for`` loop over the pixels will be unbelievably slow in [Python](http://www.python.org), but hey I am optimistic. A Dual Core at 2.3 GHz, just throw some more cycles at it -- I don't mind the milliseconds! How long could it take?
+You already see the problem: The ``for`` loop over the pixels will be unbelievably slow in [Python](http://www.python.org), but hey I am optimistic. There's a Multi-core processor inside, just throw some more 
+cycles at it -- I don't mind the milliseconds! How long could it take?
 
 ```python
 # [...]
@@ -49,9 +53,12 @@ Forever. 185 seconds. 3 minutes. Lightyears away from realtime:
 2011-09-30 14:12:39,811 - facerec.models.LBP - DEBUG - time to compute patterns took=185.088027 seconds
 </pre>
 
-Yes... Realtime really get's hard with this. This code is executed in Python and due to checking array bounds (and so on) for each call it get's unbelievably slow; I should really port this to C. But if you think another second about it you will probably recognize that you can perform this calculation by only using ``X``: Take the inner matrix of X as the center values and compare it with the equally sized matrix at a (-1,-1) offset. Multiply the result with ``2^7`` and you are done for the first neighbor. Now take the matrix at a (-1,0) offset, multiply with ``2^6`` and add it... You see where this leads to. 
+Why? This code is executed in Python and due to checking array bounds (and so on) for each call it get's unbelievably slow; I should really port this to C. 
+But if you think another second about it you will probably recognize that you can perform this calculation by only using ``X``:
 
-Is this useful in NumPy? Yes it is, because [now the computations are performed in C](http://www.scipy.org/PerformancePython). 
+* Take the inner matrix of X as the center values and compare it with the equally sized matrix at a (-1,-1) offset. Multiply the result with ``2^7`` and you are done for the first neighbor. Now take the matrix at a (-1,0) offset, multiply with ``2^6`` and add it... You see where this leads to. 
+
+Is this useful in NumPy? Yes it is! Because [now the computations are performed in C](http://www.scipy.org/PerformancePython). 
 
 Let's see what it looks like:
 
@@ -74,9 +81,12 @@ This code yields the same result and needs *0.27* seconds to complete:
 2011-09-30 14:29:40,337 - facerec.models.LBP - DEBUG - time to compute patterns took=0.269666 seconds
 </pre>
 
-By vectorizing the code we can use the [Local Binary Patterns](http://www.scholarpedia.org/article/Local_Binary_Patterns) without going to C and stay with our familiar NumPy syntax.
+By vectorizing the code we can use the [Local Binary Patterns](http://www.scholarpedia.org/article/Local_Binary_Patterns) without going to C and stay with our familiar NumPy syntax. While it was easy to
+vectorize the code in this example, it may not be trivial for complicated algorithms. But we can still do faster with the tools NumPy and SciPy have, and don't need to vectorize the code. 
 
-We can still do faster with the tools NumPy and SciPy have. **Beware!** Things get a little bit tough to debug from here on. By using [scipy.weave](http://docs.scipy.org/doc/scipy/reference/tutorial/weave.html) you can either use [weave.blitz](http://docs.scipy.org/doc/scipy/reference/tutorial/weave.html) or [weave.inline](http://docs.scipy.org/doc/scipy/reference/tutorial/weave.html) to weave C/C++ code into your program. Our code is rather easy for [blitz](http://www.oonumerics.org/blitz), because it only has to translate our NumPy ranges into ``blitz::Range`` objects:
+**Beware!** Things get a little bit tough to debug from here on. By using [scipy.weave](http://docs.scipy.org/doc/scipy/reference/tutorial/weave.html) you can either use [weave.blitz](http://docs.scipy.org/doc/scipy/reference/tutorial/weave.html) 
+or [weave.inline](http://docs.scipy.org/doc/scipy/reference/tutorial/weave.html) to weave C/C++ code into your program. Our code is rather easy for [blitz](http://www.oonumerics.org/blitz), because 
+it only has to translate our NumPy ranges into ``blitz::Range`` objects:
 
 ```python
 from scipy import weave
@@ -117,7 +127,8 @@ But the second call only takes **0.05** seconds to finish:
 2011-09-30 14:50:19,677 - facerec.models.LBP - DEBUG - time to compute patterns took=0.052150 seconds
 </pre>
 
-Sometimes the blitz syntax is not expressive enough, so you want to fall back to standard C/C++. You can write inline C++ with the [weave.inline](http://docs.scipy.org/doc/scipy/reference/tutorial/weave.html) module. The code is first embedded into a C++ file (with all the macros) and is then compiled. 
+Sometimes the blitz syntax is not expressive enough, so you want to fall back to standard C/C++. You can write inline C++ with the [weave.inline](http://docs.scipy.org/doc/scipy/reference/tutorial/weave.html) module. 
+The code is first embedded into a C++ file (with all the macros) and is then compiled. 
 
 Let's see how my very naive attempt performs in C++:
 
@@ -147,7 +158,8 @@ def rlbp_fast_inline(X):
 	return Y
 ```
 
-I'll explain this code a bit. Don't think you've missed something! The ``NX``, ``X2``, ``Y2`` variables are macros created by scipy.weave to make your life easier. ``NX`` has the information about the shape of ``X``; ``X2`` is a macro that allows 2-dimensional indexing.
+I'll explain this code a bit. Don't think you've missed something! The ``NX``, ``X2``, ``Y2`` variables are macros created by scipy.weave to make your life easier. ``NX`` has the information about 
+the shape of ``X``; ``X2`` is a macro that allows 2-dimensional indexing.
 
 Now in C++ my naive attempt only takes *0.07* seconds:
 
@@ -185,4 +197,6 @@ They do. Hooray!
 
 ## Conclusion ##
 
-So you saw that we could speed up our code from 185 seconds to **0.05** seconds. That's one of the reasons why C, C++ and Fortran aren't dead, because they are blazingly fast at some tasks. It's great that NumPy allows to inline C++ code that easy. For more complex tasks you should research for tools like [Cython](http://cython.org), because it's probably easier (and better supported) to interface with external C/C++ code from Python -- at least the documentation suggests it.
+So you saw that we could speed up our code from 185 seconds to **0.05** seconds. That's one of the reasons why C, C++ and Fortran aren't dead, because they are blazingly fast at some tasks. 
+It's great that NumPy allows to inline C++ code that easy. For more complex tasks you should research for tools like [Cython](http://cython.org), because it's probably easier 
+(and better supported) to interface with external C/C++ code from Python -- at least the documentation suggests it.
