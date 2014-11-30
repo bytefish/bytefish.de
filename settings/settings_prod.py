@@ -19,6 +19,8 @@ DEFAULT_DATE_FORMAT = ('%d %b %Y')
 THEME = './themes/minimal/'
 # Probably add rst here:
 MARKUP = ('md',)
+# Turn language guessing off!
+MD_EXTENSIONS = ['codehilite(css_class=highlight, guess_lang=False)','extra']
 # We don't use relative URLs:
 RELATIVE_URLS = False
 # Edit predefined pathes:
@@ -61,13 +63,10 @@ FILES_TO_COPY = (
 INDEX_SAVE_AS = 'blog/index.html'
 # Navigation menu:
 SECTIONS = [
-  ('home', '/index.html'),
   ('blog', '/blog'),
   ('about', '/about'),
   ('pages', '/pages'),
-  ('documents', '/documents'),
-  ('rss', '/feeds/rss.xml'),
-  ('+', 'https://plus.google.com/102725420896943303368?rel=author'),]
+  ('documents', '/documents'),]
 # Links to display in the footer:
 LINKS = [
   ('bsd', 'http://www.opensource.org/licenses/BSD-3-Clause'),

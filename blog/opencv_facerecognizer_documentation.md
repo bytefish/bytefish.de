@@ -6,8 +6,6 @@ slug: opencv_facerecognizer_documentation
 author: Philipp Wagner
 summary: This post announces the release of the documentation for my OpenCV contribution.
 
-# OpenCV FaceRecognizer documentation #
-
 I've [just finished](http://code.opencv.org/projects/opencv/repository/revisions/8779) the documentation for the new ``cv::FaceRecognizer``, which I have contributed to OpenCV 2.4. All the 
 code and this documentation is going to be included in OpenCV 2.4.2. I hope you like it.
 

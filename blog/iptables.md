@@ -5,8 +5,6 @@ slug: iptables
 author: Philipp Wagner
 summary: Some iptable rules I use for my boxes.
 
-# iptables #
-
 Linux comes with a great [firewall](http://en.wikipedia.org/wiki/Firewall_%28computing%29) and with the help of [iptables](http://www.netfilter.org/projects/iptables/index.html) it's easy to secure a workstation. 
 
 [iptables](http://www.netfilter.org/projects/iptables/index.html) makes it possible to define chains of rules that an incoming or outgoing packet has to pass for getting dropped or accepted. 
@@ -20,7 +18,7 @@ iptables -L
 
 If you didn't configure anything yet the output is like:
 
-<pre>
+```
 philipp@banana:~$ sudo iptables -L
 Chain INPUT (policy ACCEPT)
 target     prot opt source               destination         
@@ -30,7 +28,7 @@ target     prot opt source               destination
 
 Chain OUTPUT (policy ACCEPT)
 target     prot opt source               destination
-</pre>
+```
 
 This means: no rules are specified for incoming (``INPUT``) and outgoing (``OUTPUT``) packets. Every packet is accepted, because the default policy for all chains is ``ACCEPT``. 
 This is not a desirable setup for a workstation or a server connected to the Internet. There are two options now: you either set the default policies to ``ACCEPT`` and define 

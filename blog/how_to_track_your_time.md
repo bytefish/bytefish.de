@@ -6,8 +6,6 @@ slug: how_to_track_your_time
 author: Philipp Wagner
 summary: Time tracking with Python.
 
-# How To Track Your Time #
-
 <img alt="dummy" src="/static/images/blog/how_to_track_your_time/pymetracker-bar-0.2.0.png" width="200" class="medialeft" />
 
 You always wanted to track the time you spend on your tasks? You've already got the strength to organize yourself into discrete units, but you are unable to find a tool for tracking your time?

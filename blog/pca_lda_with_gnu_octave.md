@@ -6,8 +6,6 @@ slug: pca_lda_with_gnu_octave
 author: Philipp Wagner
 summary: This page will show you how to do a Principal Component and Linear Discriminant Analysis with [GNU Octave](http://www.gnu.org/software/octave), a high-level language and environment for numerical computing.
 
-# Principal Component Analysis and Linear Discriminant Analysis with GNU Octave #
-
 This page will show you how to do a Principal Component and Linear Discriminant Analysis with [GNU Octave](http://www.gnu.org/software/octave), a high-level language and environment for numerical computing.
 
 ## Experiment 1 ##
@@ -16,9 +14,9 @@ This page will show you how to do a Principal Component and Linear Discriminant 
 
 Start GNU Octave from command line with:
 
-<pre>
+```
 $ octave
-</pre>
+```
 
 and create some data in ``X`` with corresponding classes in ``c``:
 
@@ -92,13 +90,13 @@ It yields a new coordinate system with the mean as origin and the orthogonal pri
 
 According to the PCA we can safely discard the second component, because the first principal component is responsible for 85% of the total variance.
 
-<pre>
+```
 octave> cumsum(D) / sum(D)
 ans =
 
    0.85471
    1.00000
-</pre>
+```
 
 But what will happen if we project the data on the first principal component (red)? Do you already see the problem?
 
@@ -408,7 +406,7 @@ Xm = zscore(X);
 
 then the first principal component is responsible for only 36% of the total variance. We have to take 8 components to rise above 90% variance.
 
-<pre>
+```
 > cumsum(DPca) / sum(DPca)
 ans =
 
@@ -425,7 +423,7 @@ ans =
    0.97907
    0.99205
    1.00000
-</pre>
+```
 
 On normalized data the clusters are much better separated by the PCA:
 

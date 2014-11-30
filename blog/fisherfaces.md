@@ -6,8 +6,6 @@ slug: fisherfaces
 author: Philipp Wagner
 summary: This article shows how to implement the Eigenfaces and Fisherfaces algorithm in GNU Octave/MATLAB and Python. You'll see the cross-validated performance of both algorithms and several interesting experiments.
 
-# Fisherfaces #
-
 Some time ago I have written [a post on Linear Discriminant Analysis](/blog/pca_lda_with_gnu_octave), a statistical method often used for dimensionality reduction and classification. It was invented by the great statistician [Sir R. A. Fisher](http://en.wikipedia.org/wiki/Ronald_Fisher), who successfully used it for classifying flowers in his 1936 paper *"The use of multiple measurements in taxonomic problems"* (The famous [Iris Data Set](http://archive.ics.uci.edu/ml/datasets/Iris) is still available at the [UCI Machine Learning Repository](http://archive.ics.uci.edu/ml).). But why do we need another dimensionality reduction method, if the Principal Component Analysis (PCA) did such a good job? Well, the PCA finds a linear combination of features that maximizes the total variance in data. While this is clearly a powerful way to represent data, it doesn't consider any classes and so a lot of discriminative information *may* be lost when throwing some components away. This can yield bad results, especially when it comes to classification. In order to find a combination of features that separates best between classes the  Linear Discriminant Analysis instead maximizes the ration of between-classes to within-classes scatter. The idea is that same classes should cluster tightly together.                                                                  
 
 This was also recognized by [Belhumeur](http://www.cs.columbia.edu/~belhumeur), [Hespanha](http://www.ece.ucsb.edu/~hespanha) and [Kriegman](http://cseweb.ucsd.edu/~kriegman) and so they applied a  Discriminant Analysis to face recognition in their paper *"Eigenfaces vs. Fisherfaces: Recognition Using Class Specific Linear Projection"* (1997).  The Eigenfaces approach by Pentland and Turk as described in *"Eigenface for Recognition"*  (1991) was a revolutionary one, but the original paper already discusses the negative effects of ima ges with changesn background, light and perspective. So on datasets with differences in the setup, the Principal Component Analysis is  likely to find the wrong components for classification and can perform poorly.                                            
@@ -120,7 +118,7 @@ Cross-... what? Imagine I want to estimate the error of my face recognition algo
 
 For a dataset ``D`` with 3 classes ``{c0,c1,c2}`` each having 4 observations ``{o0,o1,o2,o3}``, a 4-fold cross validation produces the following four folds ``F``:
 
-<pre>
+```
 (F1)
 				
     o0 o1 o2 o3	
@@ -160,7 +158,7 @@ c2 | B  B  B  A |
 
 A = {D[c0][o3], D[c1][o3], D[c2][o3]}
 B = D\A
-</pre>
+```
 
 From these folds the accuracy and the standard deviation can be calculated. Please have a look at the Python or GNU Octave implementations if you have troubles implementing it. It's pretty self-explaining.
 
@@ -170,7 +168,7 @@ A Leave-one-out cross-validation (LOOCV) is the degenerate case of a k-fold cros
 
 For the same example as above you would end up with the following 12 folds ``F`` in a LOOCV:
 
-<pre>
+```
 (F1)
 				
     o0 o1 o2 o3	
@@ -201,7 +199,7 @@ c2 | B  B  B  A |
 
 A = {D[c2][o3]}
 B = D\A
-</pre>
+```
 
 ## Yale Facedatabase A ##
 
@@ -243,7 +241,7 @@ After having preprocessed the images ([coordinates for this database are given h
 
 The preprocessed dataset then has to be stored in a hierarchy similiar to this:
 
-<pre>
+```
 philipp@mango:~/python/facerec$ tree /home/philipp/facerec/data/yalefaces
 /home/philipp/facerec/data/yalefaces
 |-- s01
@@ -258,7 +256,7 @@ philipp@mango:~/python/facerec$ tree /home/philipp/facerec/data/yalefaces
 |		[...]
 
 15 directories, 165 files
-</pre>
+```
 
 ### Eigenfaces ###
 
@@ -767,7 +765,7 @@ So if you want to treat an array like a matrix, then simply call ``numpy.asmatri
 
 With ``pmap`` we can now see how much memory the python process currently consumes:
 
-<pre>
+```
 philipp@mango:~$ ps ax | grep python
 27241 pts/7    S+     0:00 python
 philipp@mango:~$ pmap -x 27241
@@ -777,7 +775,7 @@ b78d7000       0       8       8 rw---    [ anon ]
 bf979000       0     172     172 rw---    [ stack ]
 -------- ------- ------- ------- -------
 total kB   26436       -       -       -
-</pre>
+```
 
 ``26`` MB is a pretty good value (rounded up). Now let's create a huge NumPy matrix with ``9000*9000*64`` bit:
 
@@ -787,7 +785,7 @@ total kB   26436       -       -       -
 
 The process should now occupy ``26`` MB + ``618`` MB, making it ``644`` MB in total. ``pmap`` verifies:
 
-<pre>
+```
 philipp@mango:~$ pmap -x 27241
 [...]
 b783c000       0     524     524 rw---    [ anon ]
@@ -795,7 +793,7 @@ b78d7000       0       8       8 rw---    [ anon ]
 bf979000       0     172     172 rw---    [ stack ]
 -------- ------- ------- ------- -------
 total kB  659252       -       -       -
-</pre>
+```
 
 The process now has ``644 MB``. What happens if you attempt to slice the array? Take off the first column and assign it to huge again: 
 
@@ -807,7 +805,7 @@ The process now has ``644 MB``. What happens if you attempt to slice the array? 
 
 Wonderful, and the memory?
 
-<pre>
+```
 philipp@mango:~$ pmap -x 27241
 [...]
 b783c000       0     524     524 rw---    [ anon ]
@@ -815,7 +813,7 @@ b78d7000       0       8       8 rw---    [ anon ]
 bf979000       0     172     172 rw---    [ stack ]
 -------- ------- ------- ------- -------
 total kB  659252       -       -       -
-</pre>
+```
 
 Still 644 MB! Why? Because NumPy on one hand stores your raw array data (called a ``data buffer`` in the [NumPy internals document](http://docs.scipy.org/doc/numpy/reference/internals.html) and on the other hand stores information about the raw data. If you slice a column and assign it to a variable, you basically just create a new metadata object (with the specific information about shape etc.), but it's still a view on the ``same data buffer``. So all your data still resides in memory. This makes slicing and indexing of NumPy arrays and matrices superfast, but it's something you should definitely know about.
 
@@ -828,7 +826,7 @@ If speed is not crucial to you and you care about your bytes, be sure to make a 
 
 ... and the memory magically shrinks to 26 MB again.:
 
-<pre>
+```
 philipp@mango:~$ pmap -x 27241
 [...]
 b783c000       0     524     524 rw---    [ anon ]
@@ -836,7 +834,7 @@ b78d7000       0       8       8 rw---    [ anon ]
 bf979000       0     172     172 rw---    [ stack ]
 -------- ------- ------- ------- -------
 total kB   26436       -       -       -
-</pre>
+```
 
 ### OOP in GNU Octave ###
 
@@ -851,13 +849,13 @@ end
 
 fail with GNU Octave, version 3.2.4:
 
-<pre>
+```
 $ octave
 octave:0> x = myclass(1)
 error: class: invalid call from outside class constructor
 error: called from:
 error:   myclass at line 3, column 5
-</pre>
+```
 
 From what I have read the error seems to be a regression bug and it's probably fixed in the latest stable release. However, the implementation of OOP in GNU Octave still seems to be experimental and I don't think everybody is on latest releases. And to be honest, I've seldomly (read almost never) seen object oriented code with either MATLAB or Octave, so I don't really feel guilty about not using it.
 

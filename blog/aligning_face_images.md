@@ -6,8 +6,6 @@ slug: aligning_face_images
 author: Philipp Wagner
 summary: A Python script to align faces geometrically.
 
-# Aligning face images #
-
 Some people have asked me how I've aligned the face images in my articles. Giving people my ImageMagick hack is embarrassing for me, so I've decided to rewrite it into a Python script. You don't need to copy and paste it, as the script comes with the source folder of my [Guide on Face Recognition](http://bytefish.de/blog/face_recognition_with_opencv2): [crop_face.py](https://github.com/bytefish/facerecognition_guide/blob/master/src/py/crop_face.py).
 
 The code is really easy to use. To scale, rotate and crop the face image you just need to call ``CropFace(image, eye_left, eye_right, offset_pct, dest_sz)``, where:

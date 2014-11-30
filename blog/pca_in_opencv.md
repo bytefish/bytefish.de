@@ -6,8 +6,6 @@ slug: pca_in_opencv
 author: Philipp Wagner
 summary: A full source code example on how to do a Principal Component Analysis with the OpenCV C++ API.
 
-# PCA in OpenCV #
-
 <img src="/static/images/blog/pca_in_opencv/eigenfaces.png" width="200" class="medialeft" />
 
 There are hardly any useful examples on how to do a [Principal Component Analysis](http://en.wikipedia.org/wiki/Principal_component_analysis) (PCA) with the OpenCV2 C++ API, 

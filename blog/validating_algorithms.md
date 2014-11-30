@@ -8,8 +8,6 @@ summary: OpenCV2 comes with various face recognition algorithms and questions ab
     raised quite often. In this article scikit-learn is used to show how to perform a cross-validation on a \ 
     given model and image data.
 
-# Validating Algorithms #
-
 This post was originally written for the [OpenCV QA forum](http://answers.opencv.org/questions). I post it here, because
 I think it's a great example of how Open Source projects make your life easy.
 
@@ -72,7 +70,7 @@ sake of simplicity I have assumed in the example, that the images (the *faces*, 
 given in folders. One folder per person. So imagine I have a folder (a dataset) called ``dataset1``, with the subfolders
 ``person1``, ``person2`` and so on:
 
-<pre>
+```
 philipp@mango:~/facerec/data/dataset1$ tree -L 2 | head -n 20
 .
 |-- person1
@@ -87,7 +85,7 @@ philipp@mango:~/facerec/data/dataset1$ tree -L 2 | head -n 20
 |   |-- 4.jpg
 
 [...]
-</pre>
+```
 
 One of the public available datasets, that is already coming in such a folder structure is the AT&T Facedatabase,
 available at:
@@ -99,7 +97,7 @@ facedatabase.html)
 Once unpacked it is going to look like this (on my filesystem it is unpacked to ``/home/philipp/facerec/data/at/``, your
 path is different!):
 
-<pre>
+```
 philipp@mango:~/facerec/data/at$ tree .
 .
 |-- README
@@ -117,7 +115,7 @@ philipp@mango:~/facerec/data/at$ tree .
  ...
 
 40 directories, 401 files
-</pre>
+```
 
 ## Putting it together ##
 
@@ -353,13 +351,13 @@ if __name__ == "__main__":
 The above script will print out the precision scores for the Fisherfaces method. You simply need to call the script with
 the image folder:
 
-<pre>
+```
 philipp@mango:~/src/python$ python validation.py /home/philipp/facerec/data/at
 
 Precision Scores:
 [ 1.          0.85        0.925       0.9625      1.          0.9625
   0.8875      0.93333333  0.9625      0.925     ]
-</pre>
+```
 
 ## Conclusion ##
 

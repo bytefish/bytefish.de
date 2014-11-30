@@ -1,12 +1,10 @@
-title: Face Detection with Android
+title: Face Detection with the Android API
 date: 2014-08-02 12:23
 tags: android, java, face detection
 category: android, computer vision
 slug: face_detection_with_android
 author: Philipp Wagner
 summary: Face Detection with the Android Camera.
-
-# Face Detection with the Android API #
 
 In this post I want to show you how to work with the [Android Camera API](http://developer.android.com/reference/android/hardware/Camera.html) to implement an app for Face Detection. 
 The final app will draw an overlay on the camera image, which will highlight the detected faces. Basically the application only consists of an Activity and a custom view. The functions 

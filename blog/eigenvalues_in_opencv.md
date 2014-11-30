@@ -6,8 +6,6 @@ slug: eigenvalues_in_opencv
 author: Philipp Wagner
 summary: This post shows how to find the Eigenvalues and Eigenvectors of a matrix with OpenCVs C, C++ and Python implementation.
 
-# Eigenvalues in OpenCV #
-
 Finding Eigenvalues and Eigenvectors of a matrix is the most important task in the  [Eigenfaces](http://en.wikipedia.org/wiki/Eigenfaces) algorithm (I mean 50% of the word are made up by "Eigen"...). 
 
 So if you are working with OpenCV, here is how to do it. If you want to solve the Eigenvalue problem for general matrices, you could use the solver I have ported from the JAMA project to C++ with 
@@ -155,7 +153,7 @@ print [evalues[i,0] for i in range(5)]
 ## Results ##
 Octave gives us an ascending ordering of eigenvalues:
 
-<pre>
+```
 octave:2> [v,d] = eig(a)
 v = ...
 d =
@@ -165,12 +163,12 @@ d =
     0.00000    0.00000    0.86403    0.00000    0.00000
     0.00000    0.00000    0.00000    8.86546    0.00000
     0.00000    0.00000    0.00000    0.00000   16.09484
-</pre>
+```
 
 Result (plus the [GNU Scientific Library (GSL) Solver for Symmetric Matrices](http://www.gnu.org/software/gsl/manual/html_node/Eigenvalue-and-Eigenvector-Examples.html)). Does that look fine?
 
-<pre>
+```
 OpenCV C      16.094837       8.865457        0.864028        -6.228747       -11.065575
 OpenCV C++    16.0948         8.86546         0.864028        -6.22875        -11.0656 
 GSL           16.0948         8.86546         0.864028        -6.22875        -11.0656 
-</pre>
+```

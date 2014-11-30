@@ -6,8 +6,6 @@ slug: face_recognition_with_opencv2
 author: Philipp Wagner
 summary: This post presents you the guide I've wished for, when I was working myself into face recognition. The Eigenfaces and Fisherfaces method are explained in detail and implemented with Python and GNU Octave/MATLAB. The code and document is released under a BSD license, so feel free to use it for your commercial and academic projects.
 
-# Face Recognition with Python/GNU Octave/Matlab #
-
 I've recently pushed some code to perform face recognition with OpenCV2 into [my github repository](http://www.github.com/bytefish). If you've ever researched on face recognition I am pretty sure you've noticed: there's a [gigantic number of publications](http://scholar.google.de/scholar?q=face+recognition), but source code is almost always kept like a secret. Since I've got some positive feedback on [Machine Learning with OpenCV2](http://www.bytefish.de/pdf/machinelearning.pdf), I thought I write a document on:
 
 * [Face Recognition with OpenCV2 (Python version, pdf)](http://www.bytefish.de/pdf/facerec_python.pdf)
@@ -27,20 +25,20 @@ I've got some mails and comments on how to acquire and use the code in the docum
 
 So the first thing you need to do is to get the code. Since I have git installed on my machine I simply clone the github repository:
 
-<pre>
+```
 philipp@mango:~/github$ git clone https://github.com/bytefish/facerecognition_guide.git
-</pre>
+```
 
 This will check out the latest Face Recognition Guide from the github repository, with all source code examples included in the document. You'll see something like this as output:
 
-<pre>
+```
 Initialized empty Git repository in /home/philipp/github/facerecognition_guide/.git/
 remote: Counting objects: 223, done.
 remote: Compressing objects: 100% (141/141), done.
 remote: Total 223 (delta 82), reused 211 (delta 70)
 Receiving objects: 100% (223/223), 8.89 MiB | 283 KiB/s, done.
 Resolving deltas: 100% (82/82), done.
-</pre>
+```
 
 If you have troubles using [git](http://git-scm.org), then you can also download the entire repository as a zip (or tar.gz) from:
 
@@ -48,7 +46,7 @@ If you have troubles using [git](http://git-scm.org), then you can also download
 
 Once downloaded (or unzipped) the directory has the following content:
 
-<pre>
+```
 philipp@mango:~/github/facerecognition_guide$ tree -d -L 1
 .
 |-- bib
@@ -57,7 +55,7 @@ philipp@mango:~/github/facerecognition_guide$ tree -d -L 1
 `-- src
     |-- m
     `-- py
-</pre>
+```
 
 Where:
 
@@ -72,7 +70,7 @@ Where:
 
 Before we start you should prepare your data. For sake of simplicity I have assumed, that the images (*faces*, *persons you want to recognize*) are given in folders. So imagine I have a folder ``images``, with the subfolders ``person1``, ``person2`` and so on:
 
-<pre>
+```
 philipp@mango:~/facerec/data/images$ tree -L 2 | head -n 20
 .
 |-- person1
@@ -88,7 +86,7 @@ philipp@mango:~/facerec/data/images$ tree -L 2 | head -n 20
 |   |-- 4.jpg
 
 [...]
-</pre>
+```
 
 One of the publicly available datasets, that is already coming in such a folder structure is the AT&T Face Database, available at:
 
@@ -96,7 +94,7 @@ One of the publicly available datasets, that is already coming in such a folder 
 
 Once unpacked it is going to look like this (on my filesystem it is unpacked to ``/home/philipp/facerec/data/at/``, your path is different!):
 
-<pre>
+```
 philipp@mango:~/facerec/data/at$ tree .
 .
 |-- README
@@ -119,13 +117,13 @@ philipp@mango:~/facerec/data/at$ tree .
 ...
 
 40 directories, 401 files
-</pre>
+```
 
 ### Working with the Code ###
 
 So let's have a look at the Python version first! As you have seen, all the source code is in the ``src`` folder, which you have acquired with the repository (or your downloaded zip!). The Python version has two folders ``scripts`` and ``tinyfacerec``:
 
-<pre>
+```
 philipp@mango:~/github/facerecognition_guide$ tree -d -L 3
 .
 `-- src
@@ -133,7 +131,7 @@ philipp@mango:~/github/facerecognition_guide$ tree -d -L 3
     `-- py
         |-- scripts
         `-- tinyfacerec
-</pre>
+```
 
 Where:
 
@@ -161,9 +159,9 @@ Where:
 
 So to learn the Eigenfaces of the AT&T Facedatabase (which I extracted to ``/home/philipp/facerec/data/at``) I would run ``example_eigenfaces.py`` like this (*make sure you adapt the path to the images* for your system):
 
-<pre>
+```
 python example_eigenfaces.py /home/philipp/facerec/data/at
-</pre>
+```
 
 And the script will generate two plots for you (in the scripts folder!):
 

@@ -6,8 +6,6 @@ category: android
 slug: android
 summary: This is an old wiki page on Android turned into an article, so the redirects should function correctly. There are trivial snippets here, but they may be helpful for someone.
 
-# Android #
-
 This is an old wiki page turned into an article, so the redirects function correctly. There are trivial snippets here, but they may be helpful for someone.
 
 ## Bearing and Distance between two given GPS Coordinates ##

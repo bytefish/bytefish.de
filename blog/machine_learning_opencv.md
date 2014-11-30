@@ -6,8 +6,6 @@ slug: machine_learning_opencv
 author: Philipp Wagner
 summary: Shows how to use several machine learning algorithms with OpenCV.
 
-# Machine Learning with OpenCV #
-
 Machine Learning is a branch of Artificial Intelligence and concerned with the question how to make machines able to learn from data. The core idea is to enable a machine to make intelligent decisions and predictions based on experiences from the past. Algorithms of Machine Learning require interdisciplinary knowledge and often intersect with topics of statistics, mathematics, physics, pattern recognition and more.
 
 [OpenCV](http://opencv.org) (Open Source Computer Vision) is a library for computer vision and comes with a machine learning library for:

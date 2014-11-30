@@ -6,8 +6,6 @@ slug: longest_common_subsequence
 author: Philipp Wagner
 summary: Longest Common Subsequence implementation in C++.
 
-# Longest Common Subsequence #
-
 [Longest Common Subsequence (LCSS)](http://en.wikipedia.org/wiki/Longest_common_subsequence_problem) is another non-euclidean similarity measure for two timeseries, which may be useful on data with gaps. The 
 [Time-Warped Longest Common Subsequence Algorithm For Music Retrieval](http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.101.6392) is included, because the implementation may be useful for others.
 

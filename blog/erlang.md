@@ -6,8 +6,6 @@ slug: erlang
 author: Philipp Wagner
 summary: A brutally short introduction to Erlang.
 
-# Brutally short introduction to Erlang #
-
 <img src="/static/images/blog/erlang/erlang-logo.png" class="medialeft" alt="erlang logo" />
 
 Erlang is a functional programming language developed at the [Ericsson Computer Science Laboratory](http://www.cs-lab.org) in the late 1980s. The language has recently gained some attention for its concept of concurrency (it implements the [actor model](http://en.wikipedia.org/wiki/Actor_model)) and being the inspiration of [Scala](http://www.scala-lang.org). Erlang is great at concurrency and building scalable, fault-tolerant applications. Have you ever seen [2012](http://en.wikipedia.org/wiki/2012_%28film%29)? When Cusack phones while the whole world collapses? I bet there was some Erlang involved!
@@ -231,9 +229,9 @@ Save it as ``mymap.erl`` and open up a terminal. Change to the directory you sav
 
 or you use ``erlc`` from command line:
 
-<pre>
+```
 philipp@banana:~/src/erl$ erlc mymap.erl
-</pre>
+```
 
 Now you can have ``fun``!
 

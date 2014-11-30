@@ -6,8 +6,6 @@ slug: opencv_visual_studio_and_libfacerec
 author: Philipp Wagner
 summary: A lot of people asked me how to use libfacerec with Visual Studio. This post shows you how to do it.
 
-# OpenCV, Microsoft Visual Studio and libfacerec #
-
 I've got a lot of mails from people, who have problems to use OpenCV with Microsoft Visual Studio 2008/2010. While I think it's unbelievably easy by using CMake, 
 I am going to explain how to build the libfacerec demo without using CMake. I have illustrated each step with screenshots and detailed explanation, so it's easy 
 for you to follow. 
@@ -41,9 +39,9 @@ The OpenCV superpack is no installer, so you'll need to manually add the OpenCV 
 
 So you have to append a line like this to the existing ``PATH``: 
 
-<pre>
+```
 ;D:\projects\opencv\build\x86\vc10\bin;D:\projects\opencv\build\common\tbb\ia32\vc10
-</pre>
+```
 
 ### Windows 2000 and Windows XP users ###
 
@@ -57,9 +55,9 @@ So you have to append a line like this to the existing ``PATH``:
 
 So you have to append a line like this to the existing PATH: 
 
-<pre>
+```
 ;D:\projects\opencv\build\x86\vc10\bin;D:\projects\opencv\build\common\tbb\ia32\vc10
-</pre>
+```
 
 ## Getting libfacerec ##
 
@@ -152,15 +150,15 @@ Congratulations!
 In the demo I have decided to read images from a very simple CSV file. Why? Because it's the simplest platform-independent approach I can think of. However, if you know a simpler solution please 
 ping me about it. Basically all the CSV file needs to contain are lines composed of a ``filename`` followed by a ``;`` followed by the ``label`` (as *integer number*), making up a line like this: 
 
-<pre>
+```
 /path/to/image.ext;0
-</pre>
+```
 
 Think of the ``label`` as the subject (the person) this image belongs to, so same subjects (persons) should have the same ``label``. So let's make up an example. 
 Download the AT&T Facedatabase from [AT&T Facedatabase](http://www.cl.cam.ac.uk/research/dtg/attarchive/facedatabase.html) and the corresponding CSV file from 
 [at.txt](https://github.com/bytefish/opencv/blob/master/eigenfaces/at.txt), which looks like this (file is without ``...`` of course):
 
-<pre>
+```
 ./at/s1/1.pgm;0
 ./at/s1/2.pgm;0
 ...
@@ -169,15 +167,15 @@ Download the AT&T Facedatabase from [AT&T Facedatabase](http://www.cl.cam.ac.uk/
 ...
 ./at/s40/1.pgm;39
 ./at/s40/2.pgm;39
-</pre>
+```
 
 Imagine I have extracted the files to ``D:/data/at`` and have downloaded the CSV file to ``D:/data/at.txt``. Then I would simply Search & Replace ``./`` with ``D:/data/``. You can 
 do that in an editor of your choice, every sufficiently advanced editor can do this. Once you have a CSV file with **valid** ``filenames`` and ``labels``, 
 you can run the demo by with the path to the CSV file as parameter:
 
-<pre>
+```
 D:\projects\libfacerec\Release\libfacerec.exe D:/data/at.txt
-</pre>
+```
 
 And you should see:
 

@@ -6,8 +6,6 @@ slug: colormaps_in_opencv
 author: Philipp Wagner
 summary: Using colormaps with OpenCV.
 
-# Colormaps in OpenCV #
-
 ## Introduction ##
 
 Yesterday I needed to visualize some data in [OpenCV](http://opencv.org). It's easy to apply a colormap in [MATLAB](http://www.mathworks.de/index.html), but [OpenCV](http://opencv.org) doesn't 
@@ -132,28 +130,28 @@ Note: Replace ``./cm_demo`` with ``cm_demo.exe`` if you are running Windows!
 
 The project comes as a CMake project, so building it is as simple as:
 
-<pre>
+```
 philipp@mango:~/some/dir/colormaps-opencv$ mkdir build
 philipp@mango:~/some/dir/colormaps-opencv$ cd build
 philipp@mango:~/some/dir/colormaps-opencv/build$ cmake ..
 philipp@mango:~/some/dir/colormaps-opencv/build$ make
 philipp@mango:~/some/dir/colormaps-opencv/build$ ./cm_demo path/to/your/image.ext
-</pre>
+```
 
 Or if you use MinGW on Windows:
 
-<pre>
+```
 C:\some\dir\colormaps-opencv> mkdir build
 C:\some\dir\colormaps-opencv> cd build
 C:\some\dir\colormaps-opencv\build> cmake -G "MinGW Makefiles" ..
 C:\some\dir\colormaps-opencv\build> mingw32-make
 C:\some\dir\colormaps-opencv\build> cm_demo.exe /path/to/your/image.ext
-</pre>
+```
 
 Or if you are using Visual Studio, you can generate yourself a solution like this (please adjust to your version):
 
-<pre>
+```
 C:\some\dir\colormaps-opencv> mkdir build
 C:\some\dir\colormaps-opencv> cd build
 C:\some\dir\colormaps-opencv\build> cmake -G "Visual Studio 9 2008" ..
-</pre>
+```

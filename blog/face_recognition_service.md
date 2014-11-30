@@ -6,8 +6,6 @@ slug: face_recognition_webservice
 author: Philipp Wagner
 summary: Implementing a Face Recognition Web service with Flask.
 
-# A Face Recognition Web service #
-
 This article deals with writing a RESTful Web service for Face Recognition. It's something a 
 lot of people have asked me for, and it isn't hard to implement with [Python](http://www.python.org).
 
@@ -39,9 +37,9 @@ The project comes with a ``setup.py`` file, which is located in the ``py`` folde
 
 To install the Python framework you have to run (may require administrator access):
 
-<pre>
+```
 python setup.py install
-</pre>
+```
 	
 ### Dependencies ###
 
@@ -192,12 +190,12 @@ in the data, this is how I do it for this article.
 
 The CSV file simply defines the name of a person and the folder to read the images from:
 
-<pre>
+```
 Angelina Jolie;D:/facerec/data/c1/crop_angelina_jolie
 Arnold Schwarzenegger;D:/facerec/data/c1/crop_arnold_schwarzenegger
 Brad Pitt;D:/facerec/data/c1/crop_brad_pitt
 ...
-</pre>
+```
 
 And with the following methods we are reading the image data:
 
@@ -573,7 +571,7 @@ Fire up a shell and type ``python server.py -h`` to get the help message. It sho
 parameters and explains them in detail. I've also added a short description at startup to give
 the user additional information (and to warn about using it in production). 
 
-<pre>
+```
 PS D:\github\facerec\py\apps\webapp> python .\server.py -h
 === Description ===
 server.py is a simple facerec webservice. It provides you with a simple RESTful API to recognize faces from a computed m
@@ -594,32 +592,32 @@ optional arguments:
                         Sets the endpoint for this server.
   -p PORT, --port PORT  Sets the port for this server.
 usage: server.py [-h] [-t DATASET] [-a HOST] [-p PORT] [model_filename]
-</pre>
+```
 
 Now imagine we have a data set available given in the format as described above:
 
-<pre>
+```
 Angelina Jolie;D:/facerec/data/c1/crop_angelina_jolie
 Arnold Schwarzenegger;D:/facerec/data/c1/crop_arnold_schwarzenegger
 Brad Pitt;D:/facerec/data/c1/crop_brad_pitt
 ...
-</pre>
+```
 
 If you don't have a model yet, you have to learn one when starting the server and
 it will be stored to the model filename given in command line. 
 
 Starting the Server then becomes as easy as typing:
 
-<pre>
+```
 python server.py -t D:/facerec/celebrities.csv model.pkl
-</pre>
+```
 
 The server will then start:
 
-<pre>
+```
 === Server Log (also in serverlog.log) ===
  * Running on http://0.0.0.0:5000/
-</pre>
+```
 
 So initially it runs on ``localhost`` and port ``5000``, but you can define different parameters with the ``-a`` and ``-p`` switch.
 
@@ -627,7 +625,7 @@ So initially it runs on ``localhost`` and port ``5000``, but you can define diff
 
 Again, we have a look at the help message of the script first:
 
-<pre>
+```
 PS D:\github\facerec\py\apps\webapp> python client.py -h
 === Usage ===
 usage: client.py [-h] [-s HOST] image [image ...]
@@ -648,24 +646,24 @@ optional arguments:
   -h, --help            show this help message and exit
   -s HOST, --server HOST
                         Sets the endpoint for the server to call.
-</pre>
+```
 
 And we can see, that the script can be called with a host address (defaults to ``http://localhost:5000``) 
 and a list of images, given as positional arguments.
 
 So to consume the face recognition server, which has been started above, you can call the client script like this:
 
-<pre>
+```
 python client.py "D:\facerec\data\c1\crop_angelina_jolie\crop_09.jpg" "D:\facerec\data\c1\crop_arnold_schwarzenegger\crop_01.jpg"
-</pre>
+```
 
 And it will call the server and print the predictions it got:
 
-<pre>
+```
 === Predictions ===
 {u'name': u'Angelina Jolie'}
 {u'name': u'Arnold Schwarzenegger'}
-</pre>
+```
 
 ## Conclusion ##
 

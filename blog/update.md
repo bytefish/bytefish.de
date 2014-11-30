@@ -6,8 +6,6 @@ slug: website_update
 author: Philipp Wagner
 summary: This page has been converted to Pelican, a static website generator. This post discusses my reasons for moving away from DokuWiki and some of the things I've learnt along the way.
 
-# Website Update #
-
 It's finally time to make a change, so these pages are now built by [Pelican](http://getpelican.com), which is a static website generator and [Disqus](http://disqus.com/) is used for the comments.
 
 Most of my private work is open source, so are the sources and content of this page:
@@ -56,7 +54,7 @@ A month after the website migration, one can see a dramatic improvement in loadi
 
 I have added gzip compression to my ``.htaccess``, in order to save a few extra bytes:
 
-<pre>
+```
 ## Set GZIP compression for faster load time and 
 ## reduce amount of bandwidth consumed by clients:
 SetOutputFilter DEFLATE
@@ -67,4 +65,4 @@ BrowserMatch \bMSIE !no-gzip !gzip-only-text/html
 BrowserMatch \bMSI[E] !no-gzip !gzip-only-text/html
 SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png)$ no-gzip
 Header append Vary User-Agent env=!dont-vary
-</pre>
+```

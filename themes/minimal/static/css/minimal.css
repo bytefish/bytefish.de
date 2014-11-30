@@ -1,9 +1,6 @@
 /* minimal.css - A minimalistic style */
 
-/* -------------- general elements --------------- */
-
 * { padding: 0; margin: 0; }
-
 
 html {
   overflow-y: scroll;
@@ -28,19 +25,25 @@ body {
 }
 
 
+#links {
+  border: 0;
+}
+
+/*----------------------------*/
+/* Menu                       */
+/*----------------------------*/
+
+/*
+  All text in the menu should be bold.
+*/
 #menu {  
   font-weight: bold;
   border-bottom: 1px solid black;
 }
 
-#links {
-  border: 0;
-}
-
-#menu .sitename {
-  color: #000;
-}
-
+/* 
+  Defines the colors and text-decoration for the links.
+*/
 #menu a,
 #menu a:visited, 
 #menu a:focus {
@@ -51,6 +54,28 @@ body {
 #menu a:hover, a:active {
   color: #6499ba;
 }
+
+/*
+  The sitename should have the same color, regardless
+  if it was visited or is hovered.
+*/
+
+#menu a.sitename,
+#menu a.sitename:active,
+#menu a.sitename:hover,
+#menu a.sitename:visited  {
+  color: #000;
+  text-decoration: none;
+}
+
+/* 
+  If we have a large screen, we want a simple horizontal 
+  navigation bar, so the items use display: inline with 
+  some padding after each list element.
+  
+  This is overriden in the media query below, so for small
+  screens we make a vertical navigation list out of it.
+*/
 
 .footer, .footer-item, .navigation, .navigation-item {
   display: inline;
@@ -85,16 +110,20 @@ li.footer-item, li.navigation-item:last-child:after {
   color: #6499ba;
 }
 
-#container #page-title a {
-  font-size: 200%;
+/*
+  The user should know where he is right now, so breadcrumbs
+  might be useful, if there will ever be a complex page structure.
+*/
+.breadcrumbs {
+  font-size: 110%;
+  color: #002fc8;
   font-weight: bold;
   word-break: break-all;  
 }
 
-#container #page-title a {
-  color: #002fc8 !important;
-  text-decoration: none !important;
-}
+/*----------------------------*/
+/* Comments                   */
+/*----------------------------*/
 
 #container .comments {
   background-color: #dee7ec;
@@ -103,7 +132,12 @@ li.footer-item, li.navigation-item:last-child:after {
   clear: both;
 }
 
-#content {
+.main-column {
+  clear: both;
+  overflow: hidden;
+}
+
+.content {
   clear: both;
   overflow: hidden;
 }
@@ -124,6 +158,11 @@ em.u {
 em em.u {
   font-style: italic;
 }
+
+/*----------------------------*/
+/* Tables                     */
+/*----------------------------*/
+
 
 /* http://blog.apps.npr.org/2014/05/09/responsive-data-tables.html */
 table {
@@ -153,6 +192,11 @@ img {
   max-width: 100%;
 }
 
+/*----------------------------*/
+/* Paragraphs                 */
+/*----------------------------*/
+
+
 p,
 blockquote,
 table,
@@ -166,6 +210,10 @@ hr {
   text-align: center;
   height: 0px;
 }
+
+/*----------------------------*/
+/* Syntax Highlightning       */
+/*----------------------------*/
 
 code, pre {
   font-family: Consolas, "Liberation Mono", Menlo, monospace;
@@ -192,8 +240,10 @@ pre {
   border: 1px dashed #d7d7c8;
 }
 
+/*----------------------------*/
+/* Images                     */
+/*----------------------------*/
 
-/* Image Alignment */
 img.mediacenter {
   border: 0;
   display: block;
@@ -212,9 +262,12 @@ img.mediaright {
   margin: 0 0 0 1.5em;
 }
 
-/* --------------- Links ------------------ */
+/*----------------------------*/
+/* Links                     */
+/*----------------------------*/
+
 a {
-  color: #002fc8/*__extern__*/;
+  color: #002fc8;
   text-decoration: none;
 }
 
@@ -223,14 +276,15 @@ a:visited {
   text-decoration: none;
 }
 
-
 a:hover,
 a:active {
   color: #333;
   text-decoration: underline;
 }
 
-/* Media Types */
+/*----------------------------*/
+/* Icons                      */
+/*----------------------------*/
 
 .mediafile {
   background: transparent url(../images/fileicons/file.png) 0px 1px no-repeat; 
@@ -264,10 +318,9 @@ h5 {
   background-color: inherit;
   font-size: 100%;
   font-weight: normal;
-  margin: 0 0 1em 0;
-  padding: 0.5em 0 0 0;
-  border-bottom: 1px solid #8cacbb;
+  margin-bottom: 1em;
   clear: left;
+  border-bottom: 1px solid #8cacbb;
 }
 
 /* special headlines */
@@ -276,6 +329,15 @@ h2 {font-size: 150%; font-weight: bold; }
 h3 {font-size: 140%; border-bottom: none; font-weight: bold;}
 h4 {font-size: 120%; border-bottom: none; font-weight: bold;}
 h5 {font-size: 100%; border-bottom: none; font-weight: bold;}
+
+.title { margin-bottom: 0.25em; }
+
+.byline {
+  font-size: 80%;
+  color: #666;
+  margin-bottom: 1em;
+}
+
 
 /* unordered lists */
 ul {
@@ -323,8 +385,6 @@ blockquote {
 .entry-meta {
   color: #a6a6a6;
   font-size: 80%;
-  padding-top: 0.2em;
-  border-top: 1px dotted #8cacbb;
 }
 
 .entry-meta a:hover, .updated a:hover {
@@ -359,8 +419,16 @@ blockquote {
   font-style: italic;
 }
 
-@media only screen and (max-width: 874px) {
+@media (min-width: 874px) {
+    
+  h1, h2, .date {
+    font-family: "PT Serif", serif;
+  }
   
+}
+
+@media only screen and (max-width: 874px) {
+ 
   #container {
     width: 90%;
     margin: 0 auto;
@@ -459,6 +527,7 @@ blockquote {
   }
   
 }
+
 /* Do not show header/footer for print */
 @media only print {
   #comments, #menu, #page-title, #links {

@@ -6,8 +6,6 @@ slug: erlang_autocompletion_in_vim
 author: Philipp Wagner
 summary: Here is my mini how-to for erlang autocompletion in vim
 
-# Erlang autocompletion in vim #
-
 To enable erlang autocompletion in vim, you'll need to get a dictionary with the Erlang keywords first. There's a file available at: [erlang.dict](http://github.com/cooldaemon/myhome/tree/master/.vim/dict/erlang.dict). 
 
 Save ``erlang.dict`` to the folder ``~/.vim/dict`` (or any folder you wish, just keep it consistent... create if necessary).

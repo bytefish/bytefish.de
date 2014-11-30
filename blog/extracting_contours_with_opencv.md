@@ -6,8 +6,6 @@ slug: extracting_contours_with_opencv
 author: Philipp Wagner
 summary: Yesterday I was asked how to extract a contour from a given image in OpenCV. Here is an example, that shows you how to do it.
 
-# Extracting Contours with OpenCV #
-
 Yesterday I was asked how to extract a contour from a given image in OpenCV. Here is an example. Imagine we got this tasty apple and we want to put it in another image (with a green background):
 
 <img src="/static/images/blog/extracting_contours_with_opencv/apple.jpg" width="200" class="mediacenter" alt="apple.jpg" />

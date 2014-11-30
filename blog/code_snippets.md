@@ -6,8 +6,6 @@ slug: opencv/code_snippets
 author: Philipp Wagner
 summary: Some OpenCV code snippets that might be useful for somebody.
 
-# OpenCV Code Snippets #
-
 ## Datatypes ##
 
 The OpenCV matrices ``CvMat`` and ``cv::Mat`` have their own type system:
@@ -71,10 +69,10 @@ int main(int argc, const char *argv[]) {
 
 If you run the the program you'll get:
 
-<pre>
+```
 d0: 0 1 2 3 4 5 6 7 8 
 d1: 0 1 2 3 4 5 6 7 8 
-</pre>
+```
 
 But what happens if I now choose integers instead?
 
@@ -93,10 +91,10 @@ int main(int argc, const char *argv[]) {
 
 If I now run the function, you'll see where it fails... The element access to the ``cv::Mat`` with ``unsigned char`` will truncate the result:
 
-<pre>
+```
 d0: 255 256 257 258 259 260 261 262 263 
 d1: 255 0 1 2 3 4 5 6 7 
-</pre>
+```
 
 So the first function stays unchanged, because of using templates, while ``printMat(const cv::Mat& mat)`` has to be changed to:
 

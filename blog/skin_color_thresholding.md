@@ -6,8 +6,6 @@ slug: opencv/skin_color_thresholding
 author: Philipp Wagner
 summary: This snippet implements common Skin Color Thresholding rules.
 
-# Skin Color Thresholding with OpenCV #
-
 This snippet implements common Skin Color Thresholding rules taken from:
 
 * Nusirwan Anwar bin Abdul Rahman, Kit Chong Wei and John See. **RGB-H-CbCr Skin Colour Model for Human Face Detection**. ([Online available](http://pesona.mmu.edu.my/~johnsee/research/papers/files/rgbhcbcr_m2usic06.pdf))

@@ -6,8 +6,6 @@ slug: local_binary_patterns
 author: Philipp Wagner
 summary: An article on Local Binary Patterns and the OpenCV C++ implementation.
 
-# Local Binary Patterns #
-
 My website recently saw a lot of hits for a [tiny wiki page on Local Binary Patterns](/wiki/opencv/object_detection), so I thought it might be useful to share some code on generating Local Binary Patterns. 
 
 All source code in this post is available at:
@@ -16,12 +14,12 @@ All source code in this post is available at:
 
 It comes as a [CMake](http://www.cmake.org) project, so to build and run it simply type:
 
-<pre>
+```
 philipp@mango:~/some/dir$ mkdir build; cd build
 philipp@mango:~/some/dir/build$ cmake ..
 philipp@mango:~/some/dir/build$ make
 philipp@mango:~/some/dir/build$ ./lbp <device id (default 0)> 
-</pre>
+```
 
 Python and MATLAB implementations can be obtained from the [facerec](https://github.com/bytefish/facerec) project at:
 

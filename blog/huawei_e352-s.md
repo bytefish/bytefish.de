@@ -5,8 +5,6 @@ category: linux
 slug: huawei_e352s5
 author: Philipp Wagner
 
-# getting the Huawei E352s-5 to work with linux #
-
 This is just a quick note on how to get a Huawei E352s-5 working under Linux. 
 
 ## switching into modem mode ##
@@ -16,7 +14,7 @@ are on an old distribution like I am, you'll probably need to use [usb_modeswitc
 
 First of all, let's see what ``dmesg`` says after inserting the stick:
 
-<pre>
+```
 philipp@mango:~$ dmesg
 ...
 [   48.220072] usb 2-5: new high speed USB device using ehci_hcd and address 4
@@ -31,15 +29,15 @@ philipp@mango:~$ dmesg
 [   49.380995] sd 6:0:0:0: [sdb] Attached SCSI removable disk
 [   49.511962] ISO 9660 Extensions: Microsoft Joliet Level 1
 [   49.542715] ISOFS: changing to secondary root
-</pre>
+```
 
 The device seems to register as an USB Mass Storage device and not as a modem, running ``lsusb`` shows us the the Vendor and Product ID:
 
-<pre>
+```
 philipp@mango:~$ lsusb
 ...
 Bus 002 Device 008: ID 12d1:14fe Huawei Technologies Co., Ltd. 
-</pre>
+```
 
 Great! So let's see how to switch the device into its Modem mode. 
 
@@ -89,11 +87,11 @@ usb_modeswitch -v 12d1 -p 14fe -M '555342431234567800000000000000110620000001000
 
 Now running ``lsusb`` reveals a new Product ID:
 
-<pre>
+```
 philipp@mango:~$ lsusb
 ...
 Bus 002 Device 022: ID 12d1:1506 Huawei Technologies Co., Ltd
-</pre>
+```
 
 Using the ``option`` module should register the modem:
 
@@ -104,7 +102,7 @@ echo "12d1 1506" > /sys/bus/usb-serial/drivers/option1/new_id
 
 Running ``dmesg`` (or looking at ``/var/log/messages`` if you prefer) reveals:
 
-<pre>
+```
 philipp@mango:~$ dmesg
 ...
 [ 1471.905063] usb 2-5: new high speed USB device using ehci_hcd and address 12
@@ -120,7 +118,7 @@ philipp@mango:~$ dmesg
 [ 1472.040268] usb 2-5: GSM modem (1-port) converter now attached to ttyUSB4
 [ 1472.040404] option 2-5:1.5: GSM modem (1-port) converter detected
 [ 1472.040496] usb 2-5: GSM modem (1-port) converter now attached to ttyUSB5
-</pre>
+```
 
 The modem should be usable by now and your network-manager should ask you for the PIN to unlock the device. 
 
@@ -133,15 +131,15 @@ added to the USB subsystem. Store it to ``/etc/udev/rules.d/70-huawei_e352.rules
 
 **Filename** ``/etc/udev/rules.d/70-huawei_e352.rules``:
 
-<pre>
+```
 ACTION=="add", SUBSYSTEM=="usb", ATTRS{idVendor}=="12d1", ATTRS{idProduct}=="14fe", RUN+="/usr/sbin/usb_modeswitch -v 12d1 -p 14fe -M '55534243123456780000000000000011062000000100000000000000000000'"
 ACTION=="add", SUBSYSTEM=="usb", ATTRS{idVendor}=="12d1", ATTRS{idProduct}=="14fe", RUN+="/bin/bash -c 'modprobe option && echo 12d1 1506 > /sys/bus/usb-serial/drivers/option1/new_id'"
-</pre>
+```
 
 And reload the rules:
 
-<pre>
+```
 udevadm control --reload-rules
-</pre>
+```
 
 And that's it basically! Your stick should now be put into Modem mode automatically, whenever you plug it in.

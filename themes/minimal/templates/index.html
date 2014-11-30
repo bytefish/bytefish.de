@@ -4,7 +4,7 @@
 {# https://github.com/iKevinY/iKevinY.github.io/blob/src/pneumatic/templates/archives.html #}
 
 {% block title %}{{ SITEURL }}/blog{% endblock %}
-{% block content_title %}<a href="{{ SITEURL }}/blog">blog</a>{%endblock%}
+{% block content_title %}blog{%endblock%}
 
 {% block content %}
   {% for year, date_year in dates | groupby('date.year') | sort(reverse=True) %}

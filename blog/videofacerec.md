@@ -6,8 +6,6 @@ slug: videofacerec
 author: Philipp Wagner
 summary: This post shows how to perform face recognition in videos using OpenCV2 and the facerec project. It shows how to use, store and validate a classifier and use the OpenCV2 Python bindings.
 
-# Face Recognition in Videos (or turning videofacerec.py into something useful) #
-
 <img src="/static/images/blog/videofacerec/simple_videofacerec.png" class="medialeft" alt="simple_videofacerec.py in action" />
 
 <p><a href="https://github.com/bytefish/facerec/tree/master/py/apps/videofacerec">videofacerec</a> is a tiny Python script I wrote to perform face recognition in videos and to showcase some of the <a href="http://www.github.com/bytefish/facerec">facerec framework</a> features. It was a really quick hack and I've always told people, that I can't give much of a help. But since many people kept asking for it recently, I've finally decided to rewrite it into something more useful and robust. And this is also the perfect chance to add some more <a href="http://www.github.com/bytefish/facerec">facerec</a> features and write a new blog post.</p>
@@ -29,7 +27,7 @@ and you can use all the available cascades coming with [OpenCV](http://www.openc
 
 Here is the usage and help message you get by calling ``simple_videofacerec.py -h``:
 
-<pre>
+```
 philipp@mango:~/github/facerec/py/apps/videofacerec$ ./simple_videofacerec.py -h
 Usage: simple_videofacerec.py [options] model_filename
 
@@ -49,7 +47,7 @@ Options:
                         Sets the path to the Haar Cascade used for the face
                         detection part (default:
                         haarcascade_frontalface_alt2.xml).
-</pre>
+```
 
 As you can see, the name for the recognition model (called ``model_filename`` above) is required. I don't think everything in the help message is self-explaining, so here is an in-depth summary:
 
@@ -98,7 +96,7 @@ All of my recent tutorials include the same part, that explains how to prepare t
 
 The folder (stored at ``~/facerec/data/celebrities`` in this example) will look like this
 
-<pre>
+```
 philipp@mango:~/facerec/data/celebrities$ tree -L 2
 .
 |-- tom_hanks
@@ -119,7 +117,7 @@ philipp@mango:~/facerec/data/celebrities$ tree -L 2
 |   |-- 3.jpg
 |   |-- 4.jpg
 [...]
-</pre>
+```
 
 If you pass a dataset with a similar hierarchie to ``simple_videofacerec.py``, it is able to read the images and use the folder names for identification.
 
@@ -131,13 +129,13 @@ Imagine I have prepared some images of celebrities and stored them in ``/home/ph
 
 Initially you don't have a computed model to perform the face recognition yet. This predicition model has to be trained on the set of images we've prepared. This is done by passing the ``-t`` or ``--train`` parameter, the path to our dataset (``/home/philipp/facerec/data/celebrities``) and the model filename (e.g. ``my_model.pkl``) to the script. So you would start the script with the following call:
 
-<pre>
+```
 python simple_videofacerec.py -t /home/philipp/facerec/data/celebrities my_model.pkl
-</pre>
+```
 
 If you run the script, you'll see an output similar to this:
 
-<pre>
+```
 philipp@mango:~/github/facerec/py/apps/videofacerec$ python simple_videofacerec.py -t /home/philipp/facerec/data/celebrities my_model.pkl
 
 Press [ESC] to exit the program!
@@ -146,43 +144,43 @@ Loading dataset...
 Computing the model...
 Saving the model...
 Starting application...
-</pre>
+```
 
 This line (1) reads the image data in the given folder, (2) computes the model, (3) saves the model to ``my_model.pkl`` and finally starts grabbing images from the webcam. And you can see, that Python serializes you the learnt model to disk:
 
-<pre>
+```
 philipp@mango:~/github/facerec/py/apps/videofacerec$ du -sh my_model.pkl 
 2.0M	my_model.pkl
-</pre>
+```
 
 You can easily reuse the model and don't need to learn it from the dataset all over again. This can be done by simply don't passing the ``-t`` or ``--train`` parameter, but only passing the model filename:
 
-<pre>
+```
 python simple_videofacerec.py my_model.pkl
-</pre>
+```
 
 And the script output is much shorter:
 
-<pre>
+```
 philipp@mango:~/github/facerec/py/apps/videofacerec$ python simple_videofacerec.py my_model.pkl
 
 Press [ESC] to exit the program!
 Script output:
 Loading the model...
 Starting application...
-</pre>
+```
 
 ### validating the model ###
 
 Sometimes you want to know, which performance to expect from the model given the data available. The script optionally performs a k-Fold Cross Validation to estimate the *precision* of the model. This is done by passing the ``-v`` or ``--validate`` switch with the number of folds as parameter. The validation is ignored, if it is not used with the ``-t`` or ``--train`` switch:
 
-<pre>
+```
 python simple_videofacerec.py -t /home/philipp/facerec/data/celebrities -v 10 my_model.pkl
-</pre>
+```
 
 The scripts output then includes some log output and prints the cross validation result:
 
-<pre>
+```
 philipp@mango:~/github/facerec/py/apps/videofacerec$ python simple_videofacerec.py -t /home/philipp/facerec/data/celebrities -v 10 my_model.pkl
 
 Usage: simple_videofacerec.py [options] model_filename
@@ -205,7 +203,7 @@ k-Fold Cross Validation (model=PredictableModel (feature=Fisherfaces (num_compon
 Computing the model...
 Saving the model...
 Starting application...
-</pre>
+```
 
 ### Defining your own model ###
 

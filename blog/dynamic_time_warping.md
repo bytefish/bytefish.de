@@ -6,8 +6,6 @@ slug: dynamic_time_warping
 author: Philipp Wagner
 summary: Source code for calculating the Dynamic Time Warping distance in C++.
 
-# Dynamic Time Warping #
-
 I've read about [Dynamic Time Warping](http://en.wikipedia.org/wiki/Dynamic_time_warping) yesterday and here is how I would do it in C++. 
 
 ## dtw.h ##

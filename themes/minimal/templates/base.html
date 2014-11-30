@@ -1,4 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -6,8 +6,8 @@
     <link rel="shortcut icon" href="{{ SITEURL }}/theme/images/favicon.ico" />
     <link rel="stylesheet" type="text/css" href="{{ SITEURL }}/theme/css/minimal.css" />
     <link rel="stylesheet" type="text/css" href="{{ SITEURL }}/theme/css/pygments.css" />
-    <link href="//fonts.googleapis.com/css?family=Open+Sans:400,300,700" rel="stylesheet" type="text/css">
-    <link href="//fonts.googleapis.com/css?family=PT+Serif:700" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:400,300,700" rel="stylesheet" type="text/css" />
+    <link href="//fonts.googleapis.com/css?family=PT+Serif:700" rel="stylesheet" type="text/css" />
     <link href="{{ FEED_DOMAIN }}/{{ FEED }}" type="application/atom+xml" rel="alternate" title="{{ SITENAME }} ATOM Feed" />
     {% if FEED_RSS %}
     <link href="{{ FEED_DOMAIN }}/{{ FEED_RSS }}" type="application/atom+xml" rel="alternate" title="{{ SITENAME }} RSS Feed" />
@@ -18,18 +18,18 @@
     <div id="container">
       <div id="menu">
         <ul class="navigation">
-          <li class="navigation-item sitename">bytefish.de</li>
+          <li class="navigation-item"><a href="{{ SITEURL }}" class="blocklink sitename">bytefish.de</a></li>
           {% for title, link in SECTIONS %}
           <li class="navigation-item"><a href="{{ link }}" class="blocklink">{{ title }}</a></li>
           {% endfor %}
         </ul>
       </div>
       <div class="clearer"></div>
-      <div id="page-title">{% block content_title %}{% endblock %}</div>
+      <div id="page-title"><span class="breadcrumbs">&raquo; {% block content_title %}{% endblock %}</span></div>
       <div class="clearer"></div>
-      <div id="content">
-      {% block content %}{% endblock %}
-      </div>
+      <article class="main-column">
+        {% block content %}{% endblock %}
+      </article>
       <div class="clearer"></div>
       <div id="links">
         <ul class="footer">

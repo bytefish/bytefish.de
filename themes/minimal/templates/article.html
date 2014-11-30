@@ -2,24 +2,18 @@
 
 {% block title %}{{ article.title }}{% endblock %}
 
-{% block content_title %}<a href="{{ SITEURL }}/{{ article.url }}">{{ article.url }}</a>{% endblock %}
+{% block content_title %}{{ article.url }}{% endblock %}
 
 {% block content %}
-  {{ article.content }}
-    <div class="entry-meta">
-  	<abbr class="published" title="{{ article.date.isoformat() }}">{{ article.date.isoformat() }}</abbr>
-	· <span class="vcard author"><a href="{{ SITEURL }}/{{ article.author.url }}" class="url fn">{{ article.author }}</a></span>
-   {% if article.tags %}
-	  <div class="tags">
-	    <span>
-	    {% for tag in article.tags %}
-	      <a href="{{ SITEURL }}/{{ tag.url }}">{{ tag }}</a>{% if not loop.last %}, {% endif %}
-      {% endfor %}
-      </span>
-    {% endif %}
-    </div>
-	</div>
+  <header>
+    <h1 class="title">{{ article.title }}</h1>
+    <p class="byline">By <a href="{{ SITEURL }}/{{ article.author.url }}">{{ article.author }}</a> | {{ article.date.strftime('%B %d, %Y') }}</p>
+  </header>
+  <section class="content">
+    {{ article.content }}
+  </section>
   <div class="comments">
     {% include 'disqus.html' %}
   </div>  
+  
 {% endblock %}
