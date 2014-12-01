@@ -33,10 +33,14 @@ body {
 /*----------------------------*/
 
 /*
-  All text in the menu should be bold.
+  All text in the menu should be bold. I am still
+  unsure, what's the right size for a navigation
+  menu item, because they might be hard to hit on 
+  an iPad.
 */
 #menu {  
   font-weight: bold;
+  font-size: 110%;
   border-bottom: 1px solid black;
 }
 
@@ -76,25 +80,15 @@ body {
   screens we make a vertical navigation list out of it.
 */
 
-.footer, .footer-item, .navigation, .navigation-item {
-  display: inline;
-  color: #638c9c/*__text_alt__*/;
-  border: 0;
+.navigation, .footer {
   margin: 0;
   padding: 0;
+  color: #638c9c;
 }
 
-ul.footer, ul.navigation {
-  border: 0;
-}
-
-li.footer-item, li.navigation-item:after {
-  content: "";
-  margin-left: 3px;
-}
-
-li.footer-item, li.navigation-item:last-child:after {
-  content: "";
+.footer-item, .navigation-item {
+  display: inline;
+  margin-right: 5px;
 }
 
 #links a,  
@@ -120,9 +114,12 @@ li.footer-item, li.navigation-item:last-child:after {
   word-break: break-all;  
 }
 
-/*----------------------------*/
-/* Archive                    */
-/*----------------------------*/
+/*------------------------------------------*/
+/* Archive                                  */
+/*                                          */
+/* Idea for this simple, but nice design    */
+/* was adapted from: http://hackercodex.com */
+/*------------------------------------------*/
 
 dl {
   margin-bottom: 1em;
@@ -435,27 +432,9 @@ blockquote {
     border: 0;
   }
   
-  li.footer-item {
-    border-top: 1px solid black;
-  }
-  
   li.navigation-item {
     text-align: center;
     border-bottom: 1px solid black;
-  }
-  
-  li.navigation-item:before {
-    content: "";
-    margin-left: 0;
-  }
-
-  li.navigation-item:after {
-    content: "";
-    margin-left: 0;
-  }
-  
-  li.navigation-item:last-child:after {
-    content: "";
   }
   
   dt.article-date {
