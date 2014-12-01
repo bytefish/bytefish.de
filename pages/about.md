@@ -13,7 +13,6 @@ template: page_notitle
 # Contact Details #
 
 * Email: bytefish *AT* gmx *DOT* de
-* Jabber: bytefish *AT* gmx *DOT* de
 * Address: Check the WHOIS record.
 * <a href="/static/philipp_wagner.asc.gz" class="mediafile gz">Public Key</a>
   
