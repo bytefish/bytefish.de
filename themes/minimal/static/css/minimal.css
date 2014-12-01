@@ -121,10 +121,27 @@ li.footer-item, li.navigation-item:last-child:after {
 }
 
 /*----------------------------*/
+/* Archive                    */
+/*----------------------------*/
+
+dl {
+  margin-bottom: 1em;
+}
+
+dt.article-date {
+  font-weight: bold;
+  margin-top: 1em;
+}
+
+dd.article-title {
+  margin-left: 1.5em;
+}
+
+/*----------------------------*/
 /* Comments                   */
 /*----------------------------*/
 
-#container .comments {
+#comments {
   background-color: #dee7ec;
   margin-top: 1em;
   padding: 1em;
@@ -329,6 +346,10 @@ h3 {font-size: 140%; border-bottom: none; font-weight: bold;}
 h4 {font-size: 120%; border-bottom: none; font-weight: bold;}
 h5 {font-size: 100%; border-bottom: none; font-weight: bold;}
 
+/*
+  Special margins and font for title and byline.
+*/
+
 .title { margin-bottom: 0.25em; }
 
 .byline {
@@ -337,10 +358,8 @@ h5 {font-size: 100%; border-bottom: none; font-weight: bold;}
   margin-bottom: 1em;
 }
 
-
 /* unordered lists */
 ul {
-  line-height: 1.5em;
   list-style-type: square;
   list-style-image: none;
   margin: 0 0 1em 3.5em;
@@ -353,22 +372,17 @@ ul.posts span {
 
 /* ordered lists */
 ol {
-  line-height: 1.5em;
   list-style-image: none;
   margin: 0 0 1em 3.5em;
   color: #333;
 }
 
-/* no bottom gap in between and smaller left margin for nested lists */
+/* 
+  No bottom gap in between and smaller left margin for nested lists 
+*/
 li ul,
 li ol {
   margin: 0 0 0 1.5em;
-}
-
-/* the list items overriding the ul/ol definition */
-div.page .li {
-  color: #000;
-  font-weight: normal;
 }
 
 ol { list-style-type: decimal; }
@@ -379,43 +393,6 @@ ol ol ol ol { list-style-type: lower-greek; }
 blockquote {
   border-left: 2px solid #8cacbb;
   padding-left: 3px;
-}
-
-.entry-meta {
-  color: #a6a6a6;
-  font-size: 80%;
-}
-
-.entry-meta a:hover, .updated a:hover {
-  color: #6499ba;
-  text-decoration: underline;
-}
-
-.entry-meta .published {
-  background: transparent url(../images/date.gif) 0px 1px no-repeat;
-  padding: 1px 0px 1px 16px;
-  border-bottom: 0;
-}
-
-.entry-meta .author {
-  background: transparent url(../images/user.gif) 0px 1px no-repeat;
-  padding: 1px 0px 1px 16px;
-}
-
-.entry-meta .tags {
-  border-top: 0;
-  font-size: 100%;
-  float: right;
-  clear: none;
-}
-
-.entry-meta .tags span {
-  background: transparent url(../images/tag.gif) 0px 1px no-repeat;
-  padding: 1px 0px 1px 16px;
-}
-
-.document-author {
-  font-style: italic;
 }
 
 @media (min-width: 874px) {
@@ -466,7 +443,7 @@ blockquote {
     text-align: center;
     border-bottom: 1px solid black;
   }
-      
+  
   li.navigation-item:before {
     content: "";
     margin-left: 0;
@@ -480,6 +457,16 @@ blockquote {
   li.navigation-item:last-child:after {
     content: "";
   }
+  
+  dt.article-date {
+    text-align: center;
+  }
+
+  dd.article-title {
+    margin-left: 0;
+    text-align: center;
+  }
+
   
   /* http://blog.apps.npr.org/2014/05/09/responsive-data-tables.html */
   table,

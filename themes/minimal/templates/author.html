@@ -5,10 +5,13 @@
 {% block content %}
   <h1>Posts by {{ author }}:</h1>
   {% if articles %}
-    <ul class="posts">
-    {% for article in dates %}
-      <li><span>{{ article.locale_date }}</span> &raquo; <a href="{{ SITEURL }}/{{ article.url }}">{{ article.title }}</a></li>
-    {% endfor %}
-    </ul>
+  <dl>
+  {% for year, date_year in dates | groupby('date.year') | sort(reverse=True) %}
+      {% for article in date_year | sort(attribute='date', reverse=True) %}
+      <dt class="article-date">{{ article.date.strftime('%B %d, %Y') }}</dt>
+      <dd class="article-title"><a href="/{{ article.url }}">{{ article.title }}</a></dd>
+      {% endfor %}
+  {% endfor %}
+  </dl>
   {% endif %}
 {% endblock %}

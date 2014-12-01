@@ -5,9 +5,13 @@
 {% block content %}
   {% if articles %}
   <h1>Articles for Tag &quot;{{ tag }}&quot;</h1>
-    <ul class="posts">
-    {% for article in articles %}
-      <li><span class="date">{{ article.locale_date }}</span> &raquo; <a href="{{ SITEURL }}/{{ article.url }}">{{ article.title }}</a></li>
-    {% endfor %}
+  <dl>
+  {% for year, date_year in dates | groupby('date.year') | sort(reverse=True) %}
+      {% for article in date_year | sort(attribute='date', reverse=True) %}
+      <dt class="article-date">{{ article.date.strftime('%B %d, %Y') }}</dt>
+      <dd class="article-title"><a href="/{{ article.url }}">{{ article.title }}</a></dd>
+      {% endfor %}
+  {% endfor %}
+  </dl>
   {% endif %}
 {% endblock %}
