@@ -1,14 +1,20 @@
 /* minimal.css - A minimalistic style */
 
+/*
+  Reset margins. Leave everything else default.
+*/
 * { padding: 0; margin: 0; }
 
+/*
+  Always display a scrollbar by defining the overflow-y,
+  since we don't want the layout to jump if a scrollbar
+  is available or not.
+*/
 html {
   overflow-y: scroll;
   -webkit-text-size-adjust: 100%;
   -ms-text-size-adjust: 100%;
 }
-
-/* General Style */
 
 body {
   font: 100% 'Open Sans', sans-serif;
@@ -116,11 +122,14 @@ body {
 
 /*------------------------------------------*/
 /* Archive                                  */
-/*                                          */
-/* Idea for this simple, but nice design    */
-/* was adapted from: http://hackercodex.com */
 /*------------------------------------------*/
 
+/* 
+  The idea for this simple, but nice design was adapted 
+  from: 
+  
+    * http://hackercodex.com 
+*/
 dl {
   margin-bottom: 1em;
 }
@@ -177,8 +186,6 @@ em em.u {
 /* Tables                     */
 /*----------------------------*/
 
-
-/* http://blog.apps.npr.org/2014/05/09/responsive-data-tables.html */
 table {
     border-collapse: collapse;
     padding: 0;
@@ -201,15 +208,9 @@ table td {
     text-align: center;
 }
 
-img {
-  border: 0;
-  max-width: 100%;
-}
-
 /*----------------------------*/
 /* Paragraphs                 */
 /*----------------------------*/
-
 
 p,
 blockquote,
@@ -225,6 +226,11 @@ hr {
   height: 0px;
 }
 
+blockquote {
+  border-left: 2px solid #8cacbb;
+  padding-left: 3px;
+}
+
 /*----------------------------*/
 /* Syntax Highlightning       */
 /*----------------------------*/
@@ -232,7 +238,6 @@ hr {
 code, pre {
   font-family: Consolas, "Liberation Mono", Menlo, monospace;
   font-weight: inherit;
-  color: #333;
   padding: 0.1em 0.3em;
 }
 
@@ -258,20 +263,22 @@ pre {
 /* Images                     */
 /*----------------------------*/
 
-img.mediacenter {
+img {
   border: 0;
+  max-width: 100%;
+}
+
+img.mediacenter {
   display: block;
   margin: 0 auto;
 }
 
 img.medialeft {
-  border: 0 none;
   float: left;
   margin: 0 1.5em 0 0;
 }
 
 img.mediaright {
-  border: 0 none;
   float: right;
   margin: 0 0 0 1.5em;
 }
@@ -310,7 +317,26 @@ a:active {
   background-image: url(../images/fileicons/gz.png);
 }
 
-/* Link Headlines */
+/*----------------------------*/
+/* Headlines                  */
+/*----------------------------*/
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+  font-weight: bold;
+  margin-bottom: 1em;
+  border-bottom: 1px solid #8cacbb;
+}
+
+h1 {font-size: 160%; }
+h2 {font-size: 150%; }
+h3 {font-size: 140%; border-bottom: none;}
+h4 {font-size: 120%; border-bottom: none; }
+h5 {font-size: 100%; border-bottom: none; }
+
 h1 a,
 h2 a,
 h3 a,
@@ -320,34 +346,10 @@ h5 a {
   text-decoration: none;
 }
 
-/* ------------- Page elements ----------------- */
-
-/* general headline setup */
-h1,
-h2,
-h3,
-h4,
-h5 {
-  color: #333;
-  background-color: inherit;
-  font-size: 100%;
-  font-weight: normal;
-  margin-bottom: 1em;
-  clear: left;
-  border-bottom: 1px solid #8cacbb;
-}
-
-/* special headlines */
-h1 {font-size: 160%; font-weight: bold;}
-h2 {font-size: 150%; font-weight: bold; }
-h3 {font-size: 140%; border-bottom: none; font-weight: bold;}
-h4 {font-size: 120%; border-bottom: none; font-weight: bold;}
-h5 {font-size: 100%; border-bottom: none; font-weight: bold;}
 
 /*
   Special margins and font for title and byline.
 */
-
 .title { margin-bottom: 0.25em; }
 
 .byline {
@@ -356,27 +358,24 @@ h5 {font-size: 100%; border-bottom: none; font-weight: bold;}
   margin-bottom: 1em;
 }
 
-/* unordered lists */
+/*----------------------------*/
+/* Lists                      */
+/*----------------------------*/
+
 ul {
   list-style-type: square;
   list-style-image: none;
   margin: 0 0 1em 3.5em;
-  color: #333;
 }
 
-ul.posts span {
-  font-family: Monaco, "Courier New", monospace;
-}
-
-/* ordered lists */
 ol {
   list-style-image: none;
   margin: 0 0 1em 3.5em;
-  color: #333;
 }
 
 /* 
-  No bottom gap in between and smaller left margin for nested lists 
+  No bottom gap in between and smaller left margin 
+  for nested lists 
 */
 li ul,
 li ol {
@@ -388,35 +387,66 @@ ol ol { list-style-type: upper-roman; }
 ol ol ol { list-style-type: lower-alpha; }
 ol ol ol ol { list-style-type: lower-greek; }
 
-blockquote {
-  border-left: 2px solid #8cacbb;
-  padding-left: 3px;
+ul.posts span {
+  font-family: Monaco, "Courier New", monospace;
 }
 
+/*----------------------------*/
+/* Media Queries              */
+/*----------------------------*/
+
+/*
+  Tablets, Desktops
+*/
 @media (min-width: 874px) {
-    
-  h1, h2, .date {
+  /*
+    Use PT Serif if the screen width is large enough.
+  */
+  h1, h2 {
     font-family: "PT Serif", serif;
   }
-  
 }
 
+/*
+  Mobile
+*/
 @media only screen and (max-width: 874px) {
  
+  /* Turn the absolute width into a percentage at this point. */
   #container {
     width: 90%;
     margin: 0 auto;
   }
   
+  /*
+    Make the menu font a little larger, so it's easier
+    to hit on a phone or tablet.
+  */
   #menu {
     font-size: 130%;
     border: 0;
   }
   
+  /*
+    Don't show the bottom links, since the occupy too much 
+    space on small devices (and may look ugly!).
+  */
   #links {
     display: none !important;
   }
   
+  /* special headlines */
+  h1 {font-size: 130%; }
+  h2 {font-size: 120%; }
+  h3 {font-size: 110%; border-bottom: none;}
+  h4 {font-size: 100%; border-bottom: none; }
+  h5 {font-size: 100%; font-weight: normal; border-bottom: none; }
+
+  /*
+    Define the blocklink now, which turns the menu items
+    into a block link, which is easy to hit with a touch 
+    device.
+  */
   .blocklink {
     display: block;
     top:0px;
@@ -424,7 +454,11 @@ blockquote {
     width:100%;
     height:100%;
   }
-  
+
+  /*
+    Display the links in the menu as block and remove 
+    padding and border for it.
+  */
   .footer, .footer-item, .navigation, .navigation-item {
     display: block;
     color: #638c9c;
@@ -433,11 +467,22 @@ blockquote {
     border: 0;
   }
   
+  /*
+    Center each navigation item. 
+  */
   li.navigation-item {
     text-align: center;
     border-bottom: 1px solid black;
   }
   
+  li.footer-item {
+    text-align: center;
+    border-top: 1px solid black;
+  }
+  /* 
+    The blog archive looks crap on small devices, so let's
+    display the information centered without floating.
+  */
   dt.article-date {
     text-align: center;
   }
@@ -447,8 +492,16 @@ blockquote {
     text-align: center;
   }
 
-  
-  /* http://blog.apps.npr.org/2014/05/09/responsive-data-tables.html */
+  /*
+    Displaying tables on small screens is a problem, so I take the 
+    approach described in:
+      
+      http://blog.apps.npr.org/2014/05/09/responsive-data-tables.html
+      
+    It turns a table into a flat list and appends the title of each 
+    cell before it. You could achieve something better with Java-
+    script, but I don't want to use it.
+  */
   table,
   tbody {
     display: block;
@@ -486,16 +539,14 @@ blockquote {
   }
 }
 
-@media (min-width: 874px) {
-    
-  h1, h2 {
-    font-family: "PT Serif", serif;
-  }
-  
-}
-
 /* Do not show header/footer for print */
 @media only print {
+  
+  /*
+    You don't want the comments, menu, page-title or 
+    footer links when printing a page. Don't display 
+    them.
+  */
   #comments, #menu, #page-title, #links {
     display: none !important;
   }
