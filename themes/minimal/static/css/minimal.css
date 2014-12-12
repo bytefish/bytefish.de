@@ -412,13 +412,9 @@ ul.posts span {
 */
 @media only screen and (max-width: 874px) {
  
-  body {
-    font-size: 90%;
-  }
-  
   /* Turn the absolute width into a percentage at this point. */
   #container {
-    width: 90%;
+    width: 95%;
     margin: 0 auto;
   }
   
@@ -440,10 +436,10 @@ ul.posts span {
   }
   
   /* special headlines */
-  h1 {font-size: 140%; }
-  h2 {font-size: 130%; }
-  h3 {font-size: 120%; border-bottom: none;}
-  h4 {font-size: 110%; border-bottom: none; }
+  h1 {font-size: 130%; }
+  h2 {font-size: 120%; }
+  h3 {font-size: 110%; border-bottom: none;}
+  h4 {font-size: 100%; border-bottom: none; }
   h5 {font-size: 100%; font-weight: normal; border-bottom: none; }
 
   /*
