@@ -3,7 +3,8 @@
 # This is a simple configuration for the Pelican (http://getpelican.com) 
 # project and it is probably closely tied to the 'minimal' theme I am 
 # using.
-
+PLUGIN_PATH = "./plugins/"
+PLUGINS = ['extract_toc']
 # Most important metadata:
 AUTHOR = 'Philipp Wagner'
 EMAIL = 'bytefish AT gmx DOT de'
@@ -20,7 +21,7 @@ THEME = './themes/minimal/'
 # Probably add rst here:
 MARKUP = ('md',)
 # Turn language guessing off!
-MD_EXTENSIONS = ['codehilite(css_class=highlight, guess_lang=False)','extra']
+MD_EXTENSIONS = ['codehilite(css_class=highlight, guess_lang=False)','extra', 'toc(permalink=true)']
 # We don't use relative URLs:
 RELATIVE_URLS = False
 # Edit predefined pathes:
