@@ -20,7 +20,9 @@ You can find a full [Android Studio](https://developer.android.com/sdk/installin
 
 * [https://github.com/bytefish/facerec/tree/master/android/VideoFaceDetection](https://github.com/bytefish/facerec/tree/master/android/VideoFaceDetection)
 
-## Manifest.xml ##
+## CameraActivity ##
+
+### Manifest.xml ###
 
 In order to use the Camera, we need to add the ``uses-permission`` for the Camera to the [App Manifest](http://developer.android.com/guide/topics/manifest/manifest-intro.html). The App Manifest is located in the source folder of your project as ``AndroidManifest.xml``. If you are unsure where to put it, then just have a look at the [AndroidManifest.xml](https://github.com/bytefish/facerec/blob/master/android/VideoFaceDetection/app/src/main/AndroidManifest.xml) of the GitHub project coming with this blog post.
 
@@ -29,8 +31,6 @@ The only ``uses-permission`` you need to add is:
 ```xml
 <uses-permission android:name="android.permission.CAMERA"/>
 ```
-
-## CameraActivity ##
 
 ### Description ###
 

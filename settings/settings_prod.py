@@ -21,7 +21,7 @@ THEME = './themes/minimal/'
 # Probably add rst here:
 MARKUP = ('md',)
 # Turn language guessing off!
-MD_EXTENSIONS = ['codehilite(css_class=highlight, guess_lang=False)','extra', 'toc(permalink=true)']
+MD_EXTENSIONS = ['codehilite(css_class=highlight, guess_lang=False)','extra', 'toc(permalink=false)']
 # We don't use relative URLs:
 RELATIVE_URLS = False
 # Edit predefined pathes:
