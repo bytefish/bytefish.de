@@ -25,7 +25,7 @@ body {
 }
 
 #container {
-  width: 875px;
+  width: 780px;
   margin: 0 auto;
 }
 
@@ -121,6 +121,20 @@ body {
 }
 
 /*------------------------------------------*/
+/* Documents                                */
+/*------------------------------------------*/
+
+ul.document {
+  list-style-type: none;
+  list-style-image: none;
+  margin: 0 0 1em 0;
+}
+
+li.document-downloads {
+  margin: 0.5em 0 0 0;
+}
+
+/*------------------------------------------*/
 /* Archive                                  */
 /*------------------------------------------*/
 
@@ -190,7 +204,6 @@ table {
     border-collapse: collapse;
     padding: 0;
     margin: 0 0 11px 0;
-    width: 100%;
     text-align: center;
 }
 
@@ -317,6 +330,11 @@ a:active {
   background-image: url(../images/fileicons/gz.png);
 }
 
+.pdf { 
+  background-image: url(../images/fileicons/pdf.png);
+}
+
+
 /*----------------------------*/
 /* Headlines                  */
 /*----------------------------*/
@@ -327,7 +345,7 @@ h3,
 h4,
 h5 {
   font-weight: bold;
-  margin-bottom: 1em;
+  margin-bottom: 0.5em;
   border-bottom: 1px solid #8cacbb;
 }
 
@@ -396,21 +414,9 @@ ul.posts span {
 /*----------------------------*/
 
 /*
-  Tablets, Desktops
-*/
-@media (min-width: 874px) {
-  /*
-    Use PT Serif if the screen width is large enough.
-  */
-  h1, h2 {
-    font-family: "PT Serif", serif;
-  }
-}
-
-/*
   Mobile
 */
-@media only screen and (max-width: 874px) {
+@media only screen and (max-width: 779px) {
  
   /* Turn the absolute width into a percentage at this point. */
   #container {

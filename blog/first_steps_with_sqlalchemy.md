@@ -1,18 +1,15 @@
 title: First steps with SQLAlchemy
-date: 2012-04-10 21:58
+date: 2014-12-21 21:08
 tags: python, sqlalchemy
 category: python
-slug: first_contact_with_sqlalchemy
+slug: first_steps_with_sqlalchemy
 author: Philipp Wagner
 
 I am working on a small RESTful Web service with [Flask](http://flask.pocoo.org/), and I am currently evaluating 
 [SQLAlchemy](http://sqlalchemy.org) for the database persistence. It's the first time I am using [SQLAlchemy](http://sqlalchemy.org) 
-and I want to start by building and querying a simple data model.
+and I want to start with a tiny example.
 
-Put simply, the final application should be used to save *images* with *likes*, *tags* and *comments*. Let's see how
-to build and query such data model with [SQLAlchemy] and get a feel for the API and its usage. The tutorial uses 
-[virtualenv] and [ipython].
-
+[Flask]: http://flask.pocoo.org
 [SQLAlchemy]: http://sqlalchemy.org
 [virtualenv]: https://virtualenv.pypa.io
 [ipython]: http://ipython.org
@@ -118,7 +115,7 @@ solve all problems.
 [6]: http://msdn.microsoft.com/en-us/library/bb386976%28v=vs.110%29.aspx
 [7]: http://en.wikipedia.org/wiki/Stored_procedure
 
-## First Contact ##
+## The Example ##
 
 The database application we are going to build should persist images with associated likes, tags and comments. In a later article I want to 
 use it to build a small Web service around it.
@@ -493,7 +490,8 @@ session.query(Image) \
 
 ## Conclusion ##
 
-[SQLAlchemy] is fun to work with. Defining a schema is dead simple and with the query language feels like writing native SQL.
+[SQLAlchemy] is fun to work with. Defining a schema is dead simple and the query language feels like writing native SQL. In the next article 
+we are going to see how [Flask] uses [SQLAlchemy] and write a small Web service with it.
 
 ## Appendix ##
 
