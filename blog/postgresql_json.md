@@ -43,7 +43,7 @@ I am working in a Windows environment right now, so I have used a [Batch](http:/
 the database setup. There is no magic going on, I am just setting the path to ``psql`` and use the ``PGPASSWORD`` environment variable 
 to pass the password to the command line.
 
-``´batch
+```batch
 @echo off
 
 set PGSQL_EXECUTABLE="C:\Program Files\PostgreSQL\9.4\bin\psql.exe"
