@@ -10,9 +10,9 @@ author: Philipp Wagner
 [json_agg]: http://www.postgresql.org/docs/9.3/static/functions-aggregate.html
 [createdb]: http://www.postgresql.org/docs/8.4/static/app-createdb.html
 
-PostgreSQL 9.4 comes with a a set of features for generating and querying [JSON][json_functions] documents. This post deals with 
-generating JSON data from a relational schema in a simple database application. Imagine you want to build a small application for 
-managing images with associated tags and comments in a database.
+PostgreSQL 9.4 comes with a set of features for generating and querying [JSON][json_functions] documents. This post deals with 
+generating JSON data from a relational schema. We are building a tiny database application for managing images with associated 
+tags and comments.
 
 You can get the scripts in this article from:
 
@@ -23,7 +23,7 @@ You can get the scripts in this article from:
 First of all we need to create the ``sampledb`` database for this article. You connect to your local PostgreSQL instance as the 
 default user *postgres* (or any other user with administrative rights) and create a new user and database.
 
-```sql
+```
 PS C:\Users\philipp> psql -U postgres
 psql (9.4.1)
 postgres=# CREATE USER philipp WITH PASSWORD 'test_pwd';
@@ -43,7 +43,7 @@ I am working in a Windows environment right now, so I have used a [Batch](http:/
 the database setup. There is no magic going on, I am just setting the path to ``psql`` and use the ``PGPASSWORD`` environment variable 
 to pass the password to the command line.
 
-```batch
+```bat
 @echo off
 
 set PGSQL_EXECUTABLE="C:\Program Files\PostgreSQL\9.4\bin\psql.exe"
@@ -108,7 +108,7 @@ We can execute this script to create the database schema. Now let's write the SQ
 I am using [Schemas](http://www.postgresql.org/docs/8.2/static/ddl-schemas.html) to keep my database organized, and so should you! The next statements
 will create the schema ``im`` if it is not available in the database.
 
-```sql
+```
 DO $$
 BEGIN
 
@@ -128,7 +128,7 @@ Next we'll create the tables. An image consist of a Hash, Description and a Crea
 a tag can be associated with many images. That's a many-to-many relationship, so we need a mapping table. Finally each image can have 
 multiple comments, a one-to-many relation with a foreign key on the comments side.
 
-```sql
+```
 DO $$
 BEGIN
 
@@ -205,7 +205,7 @@ $$;
 
 And what's a database without referential integrity?
 
-```sql
+```
 DO $$
 BEGIN
 
@@ -327,7 +327,7 @@ PostgreSQL 9.4 and it can be used to build . ``json_build_object`` takes a varia
 
 Let's write the function to pull an image with associated tags and comments off the database. Note how ``json_agg`` and ``json_build_object`` are used to build the final result.
 
-```sql
+```postgresql
 -----------------------------------------------------------------------
 -- 2015/03/08 Philipp Wagner
 --
@@ -399,7 +399,7 @@ The result set contains an image with two comments and two tags:
 Once we have defined the ``get_image`` function, we can build upon it quite easily. You probably want to get the set of images, which belong to a 
 given list of tags. We can easily define a function with a variable number of arguments by using the ``VARIADIC`` keyword.
 
-```sql
+```postgresql
 -----------------------------------------------------------------------
 -- 2015/03/08 Philipp Wagner
 --
@@ -434,7 +434,7 @@ sampledb=> select count(r.*) from (select im.get_image_by_tag('Cool', 'Erlang'))
 
 Or if you only want to get images added in a given timespan, you can use the interval data type.
 
-```sql
+```postgresql
 -----------------------------------------------------------------------
 -- 2015/03/08 Philipp Wagner
 --
