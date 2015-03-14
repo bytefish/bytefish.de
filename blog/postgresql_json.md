@@ -16,7 +16,7 @@ tags and comments.
 
 You can get the scripts in this article from:
 
-* http://www.github.com/bytefish/bytefish.de/code/pgsample
+* [https://github.com/bytefish/bytefish.de/tree/master/code/pgsample](https://github.com/bytefish/bytefish.de/tree/master/code/pgsample)
 
 ## User and Database  ##
 
@@ -124,9 +124,9 @@ $$;
 
 ## 02_create_tables.sql ##
 
-Next we'll create the tables. An image consist of a Hash, Description and a Creation date. Each image can be associated with many tags, 
-a tag can be associated with many images. That's a many-to-many relationship, so we need a mapping table. Finally each image can have 
-multiple comments, a one-to-many relation with a foreign key on the comments side.
+Next we'll create the tables. We want to manage **Images**, **Tags** and **Comments** in our database. An **Image** consist of a *Hash*, *Description* 
+and a *Creation date*. Each image can be associated with many tags, a tag can be associated with many images. That's a many-to-many relationship, so we 
+need a mapping table. Finally each image can have multiple comments, a one-to-many relation with a foreign key on the comments side.
 
 ```
 DO $$
@@ -323,7 +323,8 @@ Result:
 ```
 
 While it's nice to build a JSON representation of our relational data with [json_agg], it's going to get tedious for more complex objects. So [json_build_object] was introduced in 
-PostgreSQL 9.4 and it can be used to build . ``json_build_object`` takes a variadic arguments, where the argument list consists alternating key-value pairs. 
+PostgreSQL 9.4 and it can be used to build arbitrarily complex json trees. ``json_build_object`` takes a variadic arguments, where the argument list consists of alternating 
+key-value pairs. 
 
 Let's write the function to pull an image with associated tags and comments off the database. Note how ``json_agg`` and ``json_build_object`` are used to build the final result.
 
@@ -340,14 +341,13 @@ DECLARE
   image_tags json;
   image_comments json;
 BEGIN
-
   -- Load the image data:
   SELECT * INTO found_image 
   FROM im.image i 
   WHERE i.imageid = image_id;  
   
   -- Get assigned tags:
-  SELECT json_agg(x) INTO image_tags 
+  SELECT CASE WHEN COUNT(x) = 0 THEN '[]' ELSE json_agg(x) END INTO image_tags 
   FROM (SELECT t.* 
         FROM im.image i
         INNER JOIN im.image_tag it ON i.imageid = it.imageid
@@ -355,7 +355,7 @@ BEGIN
         WHERE i.imageid = image_id) x;
 
   -- Get assigned comments:
-  SELECT json_agg(y) INTO image_comments 
+  SELECT CASE WHEN COUNT(y) = 0 THEN '[]' ELSE json_agg(y) END INTO image_comments 
   FROM (SELECT * 
         FROM im.comment c 
         WHERE c.imageid = image_id) y;
@@ -396,8 +396,10 @@ The result set contains an image with two comments and two tags:
 (1 row)
 ```
 
-Once we have defined the ``get_image`` function, we can build upon it quite easily. You probably want to get the set of images, which belong to a 
-given list of tags. We can easily define a function with a variable number of arguments by using the ``VARIADIC`` keyword.
+Once we have defined the ``get_image`` function, we can build upon it quite easily. 
+
+You probably want to get the set of images, which belong to a given list of tags. We can easily define a function with a variable 
+number of arguments by using the ``VARIADIC`` keyword.
 
 ```postgresql
 -----------------------------------------------------------------------
