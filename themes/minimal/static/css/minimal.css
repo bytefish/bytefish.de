@@ -1,119 +1,5 @@
 /* minimal.css - A minimalistic style */
 
-/* latin-ext */
-@font-face {
-  font-family: 'Bitter';
-  font-style: normal;
-  font-weight: 400;
-  src: local('Bitter-Regular'), url(http://fonts.gstatic.com/s/bitter/v7/Qt2dUzVlMd1bCOcZXl06LPesZW2xOQ-xsNqO47m55DA.woff2) format('woff2');
-  unicode-range: U+0100-024F, U+1E00-1EFF, U+20A0-20AB, U+20AD-20CF, U+2C60-2C7F, U+A720-A7FF;
-}
-/* latin */
-@font-face {
-  font-family: 'Bitter';
-  font-style: normal;
-  font-weight: 400;
-  src: local('Bitter-Regular'), url(http://fonts.gstatic.com/s/bitter/v7/zfs6I-5mjWQ3nxqccMoL2A.woff2) format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
-}
-/* cyrillic */
-@font-face {
-  font-family: 'Lora';
-  font-style: normal;
-  font-weight: 400;
-  src: local('Lora'), local('Lora-Regular'), url(http://fonts.gstatic.com/s/lora/v9/GsNxiN0oIzsS201cnUag6w.woff2) format('woff2');
-  unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
-}
-/* latin-ext */
-@font-face {
-  font-family: 'Lora';
-  font-style: normal;
-  font-weight: 400;
-  src: local('Lora'), local('Lora-Regular'), url(http://fonts.gstatic.com/s/lora/v9/I0dEfRgGNE90_hXZq7bjyw.woff2) format('woff2');
-  unicode-range: U+0100-024F, U+1E00-1EFF, U+20A0-20AB, U+20AD-20CF, U+2C60-2C7F, U+A720-A7FF;
-}
-/* latin */
-@font-face {
-  font-family: 'Lora';
-  font-style: normal;
-  font-weight: 400;
-  src: local('Lora'), local('Lora-Regular'), url(http://fonts.gstatic.com/s/lora/v9/4vqKRIwnQQGUQQh-PnvdMA.woff2) format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
-}
-/* cyrillic */
-@font-face {
-  font-family: 'Lora';
-  font-style: normal;
-  font-weight: 700;
-  src: local('Lora Bold'), local('Lora-Bold'), url(http://fonts.gstatic.com/s/lora/v9/VZ-5ejr2fpt5l1RKkVxPr_Y6323mHUZFJMgTvxaG2iE.woff2) format('woff2');
-  unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
-}
-/* latin-ext */
-@font-face {
-  font-family: 'Lora';
-  font-style: normal;
-  font-weight: 700;
-  src: local('Lora Bold'), local('Lora-Bold'), url(http://fonts.gstatic.com/s/lora/v9/BYKAuswRIqh69412sen31PY6323mHUZFJMgTvxaG2iE.woff2) format('woff2');
-  unicode-range: U+0100-024F, U+1E00-1EFF, U+20A0-20AB, U+20AD-20CF, U+2C60-2C7F, U+A720-A7FF;
-}
-/* latin */
-@font-face {
-  font-family: 'Lora';
-  font-style: normal;
-  font-weight: 700;
-  src: local('Lora Bold'), local('Lora-Bold'), url(http://fonts.gstatic.com/s/lora/v9/P18Nsu9EiYldSvHIj_0e5w.woff2) format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
-}
-/* cyrillic */
-@font-face {
-  font-family: 'Lora';
-  font-style: italic;
-  font-weight: 400;
-  src: local('Lora Italic'), local('Lora-Italic'), url(http://fonts.gstatic.com/s/lora/v9/OVZcBeQFqX1w7YhsLFAXp_esZW2xOQ-xsNqO47m55DA.woff2) format('woff2');
-  unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
-}
-/* latin-ext */
-@font-face {
-  font-family: 'Lora';
-  font-style: italic;
-  font-weight: 400;
-  src: local('Lora Italic'), local('Lora-Italic'), url(http://fonts.gstatic.com/s/lora/v9/nRWuMjV9d7Qv7608EovOgfesZW2xOQ-xsNqO47m55DA.woff2) format('woff2');
-  unicode-range: U+0100-024F, U+1E00-1EFF, U+20A0-20AB, U+20AD-20CF, U+2C60-2C7F, U+A720-A7FF;
-}
-/* latin */
-@font-face {
-  font-family: 'Lora';
-  font-style: italic;
-  font-weight: 400;
-  src: local('Lora Italic'), local('Lora-Italic'), url(http://fonts.gstatic.com/s/lora/v9/_RSiB1sBuflZfa9fxV8cOg.woff2) format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
-}
-/* cyrillic */
-@font-face {
-  font-family: 'Lora';
-  font-style: italic;
-  font-weight: 700;
-  src: local('Lora Bold Italic'), local('Lora-BoldItalic'), url(http://fonts.gstatic.com/s/lora/v9/66KG1MDzU5Zo36weZ_yx-RJtnKITppOI_IvcXXDNrsc.woff2) format('woff2');
-  unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
-}
-/* latin-ext */
-@font-face {
-  font-family: 'Lora';
-  font-style: italic;
-  font-weight: 700;
-  src: local('Lora Bold Italic'), local('Lora-BoldItalic'), url(http://fonts.gstatic.com/s/lora/v9/1wR3aOJ69QwyZ9B-WDmIqRJtnKITppOI_IvcXXDNrsc.woff2) format('woff2');
-  unicode-range: U+0100-024F, U+1E00-1EFF, U+20A0-20AB, U+20AD-20CF, U+2C60-2C7F, U+A720-A7FF;
-}
-/* latin */
-@font-face {
-  font-family: 'Lora';
-  font-style: italic;
-  font-weight: 700;
-  src: local('Lora Bold Italic'), local('Lora-BoldItalic'), url(http://fonts.gstatic.com/s/lora/v9/_IxjUs2lbQSu0MyFEAfa7VtXRa8TVwTICgirnJhmVJw.woff2) format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
-}
-
-
 /*
   Reset margins. Leave everything else default.
 */
@@ -152,7 +38,7 @@ body {
   font-weight: 400;
   line-height: 24px;
   background-color: #fff;
-  color: #222;
+  color: #333;
 }
 
 #container {
@@ -208,7 +94,7 @@ body {
 #header h1 a:active,
 #header h1 a:visited
 {
-  color: #222;
+  color: #333;
   text-decoration: none;
 }
 
@@ -216,7 +102,7 @@ body {
 #header a.navigation-link:active,
 #header a.navigation-link:visited
 {
-    color: #222;
+    color: #333;
     text-decoration: none;
 }
 
@@ -589,8 +475,8 @@ ul.posts span {
 @media screen and (min-width: 780px) {
     
     #menu {
-        border-top: 1px solid #222;
-        border-bottom: 1px solid #222;
+        border-top: 1px solid #333;
+        border-bottom: 1px solid #333;
         font-size: 17px;
         line-height: 54px;
     }
@@ -670,7 +556,7 @@ ul.posts span {
 /*
   Mobile
 */
-@media only screen and (max-width: 779px) {
+@media only screen and (max-width: 780px) {
  
   /* Turn the absolute width into a percentage at this point. */
   #container {
@@ -679,7 +565,7 @@ ul.posts span {
   }
 
   #menu {
-    border-top: 1px solid #222;
+    border-top: 1px solid #333;
     font-size: 18px;
     line-height: 42px;
   }
@@ -689,6 +575,12 @@ ul.posts span {
     margin-top: 5px;
   }
   
+  article {
+    font-size: 18px; 
+    line-height: 29px; 
+    margin-bottom: 29px
+  }
+
   /*
     Don't show the bottom links, since the occupy too much 
     space on small devices (and may look ugly!).
