@@ -4,6 +4,7 @@
 {% block content_title %}blog{%endblock%}
 
 {% block content %}
+  <h1>blog</h1>
   {% for year, date_year in dates | groupby('date.year') | sort(reverse=True) %}
   <h2 class="article-year">{{ date_year[0].date.strftime('%Y') }}</h2>
   <dl>

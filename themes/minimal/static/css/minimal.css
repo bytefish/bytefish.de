@@ -34,7 +34,7 @@ html {
 }
 
 body {
-  font: 16px Lora, Georgia, serif;
+  font: 18px Lora, Georgia, serif;
   font-weight: 400;
   line-height: 24px;
   background-color: #fff;
@@ -57,7 +57,6 @@ body {
 }
 
 
-
 /*----------------------------*/
 /* Page Title                 */
 /*----------------------------*/
@@ -74,17 +73,6 @@ body {
 /*----------------------------*/
 /* Menu                       */
 /*----------------------------*/
-
-/*
-  All text in the menu should be bold. I am still
-  unsure, what's the right size for a navigation
-  menu item, because they might be hard to hit on 
-  an iPad.
-*/
-#menu {  
-  font-size: 16px;
-  line-height: 54px;
-}
 
 /* 
   Don't style header.
@@ -133,8 +121,11 @@ body {
 }
 
 .footer-item, .navigation-item {
-  display: inline;
-  margin-right: 10px;
+  display: inline-block;
+}
+
+ .blocklink {
+    display: block;
 }
 
 #links a,  
@@ -163,8 +154,6 @@ li.document-downloads {
   margin: 0.5em 0 0 0;
 }
 
-
-
 /*------------------------------------------*/
 /* Markup                                   */
 /*------------------------------------------*/
@@ -174,6 +163,24 @@ b, strong {
 }
 dfn, cite, em, i {
 	font-style: italic;
+}
+
+blockquote {
+	padding: 28px 0 1px 45px;
+	quotes: "\201C" "\201D" "\2018" "\2019";
+	float: left;
+	clear: both;
+	color: #777;
+}
+
+blockquote:before {
+  content: open-quote;
+  float: left;
+  font-size: 4em;
+  margin-left: -45px;
+  font-family: "times new roman";
+  color: #faa;
+  font-weight: bold;
 }
 
 /*------------------------------------------*/
@@ -202,7 +209,6 @@ dd.article-title {
 /*----------------------------*/
 /* Comments                   */
 /*----------------------------*/
-
 #comments {
   background-color: #dee7ec;
   padding: 1em;
@@ -266,13 +272,6 @@ table td {
 /* Paragraphs                 */
 /*----------------------------*/
 
-p,
-blockquote,
-table,
-pre {
-  margin: 0 0 1.0em 0;
-}
-
 hr {
   border: 0px;
   border-top: 1px solid #8cacbb;
@@ -287,6 +286,10 @@ hr {
 pre, 
 code {
   font-family: Consolas, "Liberation Mono", Menlo, monospace;
+}
+
+code {
+  font-size: 15px;
 }
 
 pre {
@@ -378,14 +381,14 @@ h1 {
 	font-size: 26px;
 	line-height: 32px;
 	margin-bottom: 24px;
-	margin-top: 48px;
+	margin-top: 28px;
 }
 
 h2 {
 	font-size: 22px;
 	line-height: 28px;
 	margin-bottom: 24px;
-	margin-top: 48px;
+	margin-top: 28px;
 }
 
 h3 {
@@ -469,16 +472,32 @@ ul.posts span {
 }
 
 /*----------------------------*/
-/* Media Queries              */
+/* Margins                    */
 /*----------------------------*/
 
+hr,
+p,
+ul,
+ol,
+dd,
+blockquote,
+address,
+pre,
+table {
+	margin-bottom: 29px;
+}  
+
+	
+	
+/*----------------------------*/
+/* Media Queries              */
+/*----------------------------*/
 @media screen and (min-width: 780px) {
     
     #menu {
         border-top: 1px solid #333;
         border-bottom: 1px solid #333;
-        font-size: 17px;
-        line-height: 54px;
+		line-height: 54px;
     }
     
     article {
@@ -493,26 +512,31 @@ ul.posts span {
     .title {
         font-size: 34px;
     }
+	
+	.blocklink {
+	  padding-left: 20px;
+      padding-right: 20px;
+	}
 
 	h1 {
 		font-size: 34px;
 		line-height: 44px;
 		margin-bottom: 28px;
-		margin-top: 56px;
+		margin-top: 28px;
 	}
     
 	h2 {
 		font-size: 28px;
 		line-height: 36px;
 		margin-bottom: 28px;
-		margin-top: 56px;
+		margin-top: 28px;
 	}
     
 	h3 {
 		font-size: 24px;
 		line-height: 30px;
 		margin-bottom: 28px;
-		margin-top: 42px;
+		margin-top: 28px;
 	}
     
 	h4 {
@@ -535,7 +559,8 @@ ul.posts span {
 		margin-bottom: 7px;
 		margin-top: 28px;
 	}
-    
+
+	
 	hr,
 	p,
 	ul,
@@ -546,11 +571,8 @@ ul.posts span {
 	pre,
 	table {
 		margin-bottom: 28px;
-	}
-   
-    blockquote {
-		padding: 28px 0 1px 45px;
-	}
+	}  
+
 }
 
 /*
@@ -567,12 +589,21 @@ ul.posts span {
   #menu {
     border-top: 1px solid #333;
     font-size: 18px;
-    line-height: 42px;
+    line-height: 36px;
   }
   
   .page-title {
     margin-bottom: 5px;
     margin-top: 5px;
+  }
+  
+  .page-title-link {
+    display: block;
+	padding: 0;
+    top:0px;
+    left:0px;
+    width:100%;
+    height:100%;
   }
   
   article {
@@ -596,6 +627,7 @@ ul.posts span {
   */
   .blocklink {
     display: block;
+	padding: 0;
     top:0px;
     left:0px;
     width:100%;
