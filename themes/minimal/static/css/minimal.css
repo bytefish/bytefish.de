@@ -277,6 +277,19 @@ li.document-downloads {
   margin: 0.5em 0 0 0;
 }
 
+
+
+/*------------------------------------------*/
+/* Markup                                   */
+/*------------------------------------------*/
+
+b, strong {
+	font-weight: 700;
+}
+dfn, cite, em, i {
+	font-style: italic;
+}
+
 /*------------------------------------------*/
 /* Archive                                  */
 /*------------------------------------------*/
@@ -670,6 +683,12 @@ ul.posts span {
     font-size: 18px;
     line-height: 42px;
   }
+  
+  .page-title {
+    margin-bottom: 5px;
+    margin-top: 5px;
+  }
+  
   /*
     Don't show the bottom links, since the occupy too much 
     space on small devices (and may look ugly!).
@@ -783,7 +802,7 @@ ul.posts span {
     footer links when printing a page. Don't display 
     them.
   */
-  #comments, #menu, #page-title, #links {
+  #comments, #header, #links {
     display: none !important;
   }
   
