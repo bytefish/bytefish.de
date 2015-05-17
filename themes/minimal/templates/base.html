@@ -14,16 +14,16 @@
   </head>
   <body>
     <div id="container">
-      <div id="menu">
-        <ul class="navigation">
-          <li class="navigation-item"><a href="{{ SITEURL }}" class="blocklink sitename">bytefish.de</a></li>
-          {% for title, link in SECTIONS %}
-          <li class="navigation-item"><a href="{{ link }}" class="blocklink">{{ title }}</a></li>
-          {% endfor %}
-        </ul>
+      <div id="header">
+        <h1 class="page-title"><a href="{{ SITEURL }}">bytefish.de</a></h1>
+          <div id="menu">
+            <ul class="navigation">
+              {% for title, link in SECTIONS %}
+              <li class="navigation-item"><a href="{{ link }}" class="navigation-link blocklink">{{ title }}</a></li>
+              {% endfor %}
+            </ul>
+          </div>
       </div>
-      <div class="clearer"></div>
-      <div id="page-title"><span class="breadcrumbs">&raquo; {% block content_title %}{% endblock %}</span></div>
       <div class="clearer"></div>
       <article class="main-column">
         {% block content %}{% endblock %}

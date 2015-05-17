@@ -1,11 +1,9 @@
 title: research
 date: 2013-03-25 10:20
 author: Philipp Wagner
-template: page_notitle
+template: page
 
 This page serves as a place to put interesting links, ideas, algorithms or implementations to.
-
-# Research #
 
 ## Eye Tracking, Image Alignment and Head Pose Estimation ##
 

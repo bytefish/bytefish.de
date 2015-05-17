@@ -1,14 +1,11 @@
 {% extends "base.html" %}
 
-{# This Listing is based on the archives page by Kevin Yap. All credits go to him. #}
-{# https://github.com/iKevinY/iKevinY.github.io/blob/src/pneumatic/templates/archives.html #}
-
 {% block title %}{{ SITEURL }}/blog{% endblock %}
 {% block content_title %}blog{%endblock%}
 
 {% block content %}
   {% for year, date_year in dates | groupby('date.year') | sort(reverse=True) %}
-  <h2>{{ date_year[0].date.strftime('%Y') }}</h2>
+  <h2 class="article-year">{{ date_year[0].date.strftime('%Y') }}</h2>
   <dl>
     {% for article in date_year | sort(attribute='date', reverse=True) %}
     <dt class="article-date">{{ article.date.strftime('%B %d, %Y') }}</dt>

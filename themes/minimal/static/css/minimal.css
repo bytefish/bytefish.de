@@ -1,9 +1,140 @@
 /* minimal.css - A minimalistic style */
 
+/* latin-ext */
+@font-face {
+  font-family: 'Bitter';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Bitter-Regular'), url(http://fonts.gstatic.com/s/bitter/v7/Qt2dUzVlMd1bCOcZXl06LPesZW2xOQ-xsNqO47m55DA.woff2) format('woff2');
+  unicode-range: U+0100-024F, U+1E00-1EFF, U+20A0-20AB, U+20AD-20CF, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Bitter';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Bitter-Regular'), url(http://fonts.gstatic.com/s/bitter/v7/zfs6I-5mjWQ3nxqccMoL2A.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
+}
+/* cyrillic */
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Lora'), local('Lora-Regular'), url(http://fonts.gstatic.com/s/lora/v9/GsNxiN0oIzsS201cnUag6w.woff2) format('woff2');
+  unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Lora'), local('Lora-Regular'), url(http://fonts.gstatic.com/s/lora/v9/I0dEfRgGNE90_hXZq7bjyw.woff2) format('woff2');
+  unicode-range: U+0100-024F, U+1E00-1EFF, U+20A0-20AB, U+20AD-20CF, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Lora'), local('Lora-Regular'), url(http://fonts.gstatic.com/s/lora/v9/4vqKRIwnQQGUQQh-PnvdMA.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
+}
+/* cyrillic */
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 700;
+  src: local('Lora Bold'), local('Lora-Bold'), url(http://fonts.gstatic.com/s/lora/v9/VZ-5ejr2fpt5l1RKkVxPr_Y6323mHUZFJMgTvxaG2iE.woff2) format('woff2');
+  unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 700;
+  src: local('Lora Bold'), local('Lora-Bold'), url(http://fonts.gstatic.com/s/lora/v9/BYKAuswRIqh69412sen31PY6323mHUZFJMgTvxaG2iE.woff2) format('woff2');
+  unicode-range: U+0100-024F, U+1E00-1EFF, U+20A0-20AB, U+20AD-20CF, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 700;
+  src: local('Lora Bold'), local('Lora-Bold'), url(http://fonts.gstatic.com/s/lora/v9/P18Nsu9EiYldSvHIj_0e5w.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
+}
+/* cyrillic */
+@font-face {
+  font-family: 'Lora';
+  font-style: italic;
+  font-weight: 400;
+  src: local('Lora Italic'), local('Lora-Italic'), url(http://fonts.gstatic.com/s/lora/v9/OVZcBeQFqX1w7YhsLFAXp_esZW2xOQ-xsNqO47m55DA.woff2) format('woff2');
+  unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Lora';
+  font-style: italic;
+  font-weight: 400;
+  src: local('Lora Italic'), local('Lora-Italic'), url(http://fonts.gstatic.com/s/lora/v9/nRWuMjV9d7Qv7608EovOgfesZW2xOQ-xsNqO47m55DA.woff2) format('woff2');
+  unicode-range: U+0100-024F, U+1E00-1EFF, U+20A0-20AB, U+20AD-20CF, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Lora';
+  font-style: italic;
+  font-weight: 400;
+  src: local('Lora Italic'), local('Lora-Italic'), url(http://fonts.gstatic.com/s/lora/v9/_RSiB1sBuflZfa9fxV8cOg.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
+}
+/* cyrillic */
+@font-face {
+  font-family: 'Lora';
+  font-style: italic;
+  font-weight: 700;
+  src: local('Lora Bold Italic'), local('Lora-BoldItalic'), url(http://fonts.gstatic.com/s/lora/v9/66KG1MDzU5Zo36weZ_yx-RJtnKITppOI_IvcXXDNrsc.woff2) format('woff2');
+  unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Lora';
+  font-style: italic;
+  font-weight: 700;
+  src: local('Lora Bold Italic'), local('Lora-BoldItalic'), url(http://fonts.gstatic.com/s/lora/v9/1wR3aOJ69QwyZ9B-WDmIqRJtnKITppOI_IvcXXDNrsc.woff2) format('woff2');
+  unicode-range: U+0100-024F, U+1E00-1EFF, U+20A0-20AB, U+20AD-20CF, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Lora';
+  font-style: italic;
+  font-weight: 700;
+  src: local('Lora Bold Italic'), local('Lora-BoldItalic'), url(http://fonts.gstatic.com/s/lora/v9/_IxjUs2lbQSu0MyFEAfa7VtXRa8TVwTICgirnJhmVJw.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
+}
+
+
 /*
   Reset margins. Leave everything else default.
 */
-* { padding: 0; margin: 0; }
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, font, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td {
+	border: 0;
+	font-family: inherit;
+	font-size: 100%;
+	font-style: inherit;
+	font-weight: inherit;
+	margin: 0;
+	outline: 0;
+	padding: 0;
+	vertical-align: baseline;
+}
 
 /*
   Always display a scrollbar by defining the overflow-y,
@@ -17,21 +148,41 @@ html {
 }
 
 body {
-  font: 100% 'Open Sans', sans-serif;
+  font: 16px Lora, Georgia, serif;
   font-weight: 400;
-  line-height: 1.5;
+  line-height: 24px;
   background-color: #fff;
   color: #222;
 }
 
 #container {
-  width: 780px;
+  width: 700px;
   margin: 0 auto;
 }
 
-
 #links {
   border: 0;
+}
+
+#links a {
+  color: #a6a6a6;
+  text-decoration: none;
+
+}
+
+
+
+/*----------------------------*/
+/* Page Title                 */
+/*----------------------------*/
+
+#header {
+    margin: 0 auto;
+    text-align: center;
+}
+
+.page-title {
+    font-family: Bitter, Georgia, serif;
 }
 
 /*----------------------------*/
@@ -45,36 +196,34 @@ body {
   an iPad.
 */
 #menu {  
-  font-weight: bold;
-  font-size: 110%;
-  border-bottom: 1px solid black;
+  font-size: 16px;
+  line-height: 54px;
 }
 
 /* 
-  Defines the colors and text-decoration for the links.
+  Don't style header.
 */
-#menu a,
-#menu a:visited, 
-#menu a:focus {
-  color: #777;
+#header h1 a,
+#header h1 a:hover, 
+#header h1 a:active,
+#header h1 a:visited
+{
+  color: #222;
   text-decoration: none;
 }
 
-#menu a:hover, a:active {
-  color: #6499ba;
+#header a.navigation-link, 
+#header a.navigation-link:active,
+#header a.navigation-link:visited
+{
+    color: #222;
+    text-decoration: none;
 }
 
-/*
-  The sitename should have the same color, regardless
-  if it was visited or is hovered.
-*/
-
-#menu a.sitename,
-#menu a.sitename:active,
-#menu a.sitename:hover,
-#menu a.sitename:visited  {
-  color: #000;
-  text-decoration: none;
+#header a.navigation-link:hover
+{
+    color: #002fc8;
+    text-decoration: none;
 }
 
 /* 
@@ -86,7 +235,12 @@ body {
   screens we make a vertical navigation list out of it.
 */
 
-.navigation, .footer {
+.navigation {
+  margin: 0;
+  padding: 0;
+}
+
+.footer {
   margin: 0;
   padding: 0;
   color: #638c9c;
@@ -94,7 +248,7 @@ body {
 
 .footer-item, .navigation-item {
   display: inline;
-  margin-right: 5px;
+  margin-right: 10px;
 }
 
 #links a,  
@@ -107,17 +261,6 @@ body {
 
 #links a:hover {
   color: #6499ba;
-}
-
-/*
-  The user should know where he is right now, so breadcrumbs
-  might be useful, if there will ever be a complex page structure.
-*/
-.breadcrumbs {
-  font-size: 110%;
-  color: #002fc8;
-  font-weight: bold;
-  word-break: break-all;  
 }
 
 /*------------------------------------------*/
@@ -163,9 +306,8 @@ dd.article-title {
 
 #comments {
   background-color: #dee7ec;
-  margin-top: 1em;
-  margin-bottom: 1em;
   padding: 1em;
+  margin-bottom: 1em;
   clear: both;
 }
 
@@ -239,35 +381,22 @@ hr {
   height: 0px;
 }
 
-blockquote {
-  border-left: 2px solid #8cacbb;
-  padding-left: 3px;
-}
-
 /*----------------------------*/
 /* Syntax Highlightning       */
 /*----------------------------*/
 
-code, pre {
-  font-family: Consolas, "Liberation Mono", Menlo, monospace;
-  font-weight: inherit;
-  padding: 0.1em 0.3em;
-}
-
+pre, 
 code {
-  padding: 2px 4px;
-  color: #D14;
-  font-size: 0.9375em;
+  font-family: Consolas, "Liberation Mono", Menlo, monospace;
 }
 
 pre {
-  background: #f8f8f8;
-  overflow: auto;
-  font-size: 80%;
-  padding: 5px;
-  margin-top: 5px;
-  margin-bottom: 1em;
+  background: #f8f8f8; 
   border: 1px dashed #d7d7c8;
+  line-height: 20px;
+  font-size: 14px;
+  overflow: auto; /* Do not reformat code, sorry you have to scroll! */
+  padding: 5px;
 }
 
 /*----------------------------*/
@@ -298,18 +427,18 @@ img.mediaright {
 /* Links                     */
 /*----------------------------*/
 
-a {
+article a {
   color: #002fc8;
   text-decoration: none;
 }
 
-a:visited {
+article a:visited {
   color: purple;
   text-decoration: none;
 }
 
-a:hover,
-a:active {
+article a:hover,
+article a:active {
   color: #333;
   text-decoration: underline;
 }
@@ -342,26 +471,51 @@ h2,
 h3,
 h4,
 h5 {
-  font-weight: bold;
   margin-bottom: 0.5em;
-  border-bottom: 1px solid #8cacbb;
+  font-family: Bitter, Georgia, serif;
 }
 
-h1 {font-size: 160%; }
-h2 {font-size: 150%; }
-h3 {font-size: 140%; border-bottom: none;}
-h4 {font-size: 120%; border-bottom: none; }
-h5 {font-size: 100%; border-bottom: none; }
-
-h1 a,
-h2 a,
-h3 a,
-h4 a,
-h5 a {
-  color: #333;
-  text-decoration: none;
+h1 {
+	font-size: 26px;
+	line-height: 32px;
+	margin-bottom: 24px;
+	margin-top: 48px;
 }
 
+h2 {
+	font-size: 22px;
+	line-height: 28px;
+	margin-bottom: 24px;
+	margin-top: 48px;
+}
+
+h3 {
+	font-size: 18px;
+	line-height: 24px;
+	margin-bottom: 24px;
+	margin-top: 24px;
+}
+
+h4 {
+	font-size: 16px;
+	line-height: 20px;
+	margin-bottom: 12px;
+	margin-top: 24px;
+}
+
+h5 {
+	font-size: 14px;
+	line-height: 18px;
+	margin-bottom: 12px;
+	margin-top: 24px;
+}
+
+h6 {
+	font-size: 12px;
+	line-height: 16px;
+	margin-bottom: 0;
+	margin-top: 24px;
+}
 
 /*
   Special margins and font for title and byline.
@@ -369,9 +523,9 @@ h5 a {
 .title { margin-bottom: 0.25em; }
 
 .byline {
-  font-size: 80%;
+  font-size: 15px;
   color: #666;
-  margin-bottom: 1em;
+  margin-bottom: 24px;
 }
 
 /*----------------------------*/
@@ -408,8 +562,97 @@ ul.posts span {
 }
 
 /*----------------------------*/
+/* Disqus                     */
+/*----------------------------*/
+
+#disqus_thread {
+    font-family: Verdana, sans-serif;
+}
+
+/*----------------------------*/
 /* Media Queries              */
 /*----------------------------*/
+
+@media screen and (min-width: 780px) {
+    
+    #menu {
+        border-top: 1px solid #222;
+        border-bottom: 1px solid #222;
+        font-size: 17px;
+        line-height: 54px;
+    }
+    
+    article {
+        font-size: 17px;
+        line-height: 28px;
+    }
+    
+    .byline {
+        font-size: 16px;
+    }
+    
+    .title {
+        font-size: 34px;
+    }
+
+	h1 {
+		font-size: 34px;
+		line-height: 44px;
+		margin-bottom: 28px;
+		margin-top: 56px;
+	}
+    
+	h2 {
+		font-size: 28px;
+		line-height: 36px;
+		margin-bottom: 28px;
+		margin-top: 56px;
+	}
+    
+	h3 {
+		font-size: 24px;
+		line-height: 30px;
+		margin-bottom: 28px;
+		margin-top: 42px;
+	}
+    
+	h4 {
+		font-size: 22px;
+		line-height: 28px;
+		margin-bottom: 28px;
+		margin-top: 28px;
+	}
+    
+	h5 {
+		font-size: 20px;
+		line-height: 26px;
+		margin-bottom: 14px;
+		margin-top: 28px;
+	}
+    
+	h6 {
+		font-size: 18px;
+		line-height: 24px;
+		margin-bottom: 7px;
+		margin-top: 28px;
+	}
+    
+	hr,
+	p,
+	ul,
+	ol,
+	dd,
+	blockquote,
+	address,
+	pre,
+	table {
+		margin-bottom: 28px;
+	}
+   
+    blockquote {
+		padding: 28px 0 1px 45px;
+	}
+}
 
 /*
   Mobile
@@ -421,16 +664,12 @@ ul.posts span {
     width: 95%;
     margin: 0 auto;
   }
-  
-  /*
-    Make the menu font a little larger, so it's easier
-    to hit on a phone or tablet.
-  */
+
   #menu {
-    font-size: 130%;
-    border: 0;
+    border-top: 1px solid #222;
+    font-size: 18px;
+    line-height: 42px;
   }
-  
   /*
     Don't show the bottom links, since the occupy too much 
     space on small devices (and may look ugly!).
@@ -439,13 +678,6 @@ ul.posts span {
     display: none !important;
   }
   
-  /* special headlines */
-  h1 {font-size: 130%; }
-  h2 {font-size: 120%; }
-  h3 {font-size: 110%; border-bottom: none;}
-  h4 {font-size: 100%; border-bottom: none; }
-  h5 {font-size: 100%; font-weight: normal; border-bottom: none; }
-
   /*
     Define the blocklink now, which turns the menu items
     into a block link, which is easy to hit with a touch 
@@ -463,7 +695,7 @@ ul.posts span {
     Display the links in the menu as block and remove 
     padding and border for it.
   */
-  .footer, .footer-item, .navigation, .navigation-item {
+  .navigation, .navigation-item {
     display: block;
     color: #638c9c;
     margin: 0;
@@ -479,14 +711,14 @@ ul.posts span {
     border-bottom: 1px solid black;
   }
   
-  li.footer-item {
-    text-align: center;
-    border-top: 1px solid black;
-  }
   /* 
     The blog archive looks crap on small devices, so let's
     display the information centered without floating.
   */
+  h2.article-year {
+    text-align: center;
+  }
+  
   dt.article-date {
     text-align: center;
   }
@@ -553,5 +785,9 @@ ul.posts span {
   */
   #comments, #menu, #page-title, #links {
     display: none !important;
+  }
+  
+  #container {
+    width: 780px;
   }
 }

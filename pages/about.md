@@ -1,22 +1,20 @@
 title: about
 date: 2013-03-25 10:20
 author: Philipp Wagner
-template: page_notitle
+template: page
 
-*... stalking me.*
-
-# Personal Links #
+## Personal Links ##
 
 * [http://www.github.com/bytefish](http://www.github.com/bytefish)
 * [https://plus.google.com/102725420896943303368](https://plus.google.com/102725420896943303368)
 
-# Contact Details #
+## Contact Details ##
 
 * Email: bytefish *AT* gmx *DOT* de
 * Address: Check the WHOIS record.
 * <a href="/static/philipp_wagner.asc.gz" class="mediafile gz">Public Key</a>
   
-# Links #
+## Links ##
 
 *(in (almost) no special order)*
 
