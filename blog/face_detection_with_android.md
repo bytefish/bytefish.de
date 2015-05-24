@@ -18,7 +18,7 @@ I am sure you will come up with a lot of cool ideas to extend the app!
 
 You can find a full [Android Studio](https://developer.android.com/sdk/installing/studio.html) project with the source code at:
 
-* [https://github.com/bytefish/facerec/tree/master/android/VideoFaceDetection](https://github.com/bytefish/facerec/tree/master/android/VideoFaceDetection)
+* [https://github.com/bytefish/VideoFaceDetection](https://github.com/bytefish/VideoFaceDetection)
 
 ## CameraActivity ##
 
