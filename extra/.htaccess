@@ -29,6 +29,7 @@ deny from in.markelytics.com
 deny from spirit.fibrenetworks.org
 deny from 173.244.194.77.static.midphase.com
 deny from 66.63.177.53.static.quadranet.com
+deny from pptp-212-201-77-65.pptp.stw-bonn.de
 allow from all
 ##
 ## Set the 404 page:

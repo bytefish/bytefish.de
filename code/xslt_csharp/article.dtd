@@ -1,0 +1,114 @@
+<!-- markup.dtd: A sample markup-->
+
+<!ENTITY % Text "CDATA">
+<!ENTITY % URI "CDATA">
+
+<!--=================== Text Elements ====================================-->
+
+<!ENTITY % special "img">
+<!ENTITY % fontstyle "tt | i | b | u | s | strike">
+
+<!ENTITY % inline "a | %special; | %fontstyle;">
+<!ENTITY % Inline "(#PCDATA | %inline;)*">
+
+<!ENTITY % a.content
+    "(#PCDATA | img)*">
+   
+<!--================== Block level elements ==============================-->
+
+<!ENTITY % heading "h1|h2|h3">
+<!ENTITY % lists "ul | ol">
+<!ENTITY % block "p | %heading; | %lists;">
+
+<!-- %Flow; mixes block and inline -->
+<!ENTITY % Flow "(#PCDATA | %block; | %inline;)*">
+
+<!--=================== Exclusions    ====================================-->
+
+<!ENTITY % a.content 
+    "(#PCDATA | %special; | %fontstyle;)*">
+
+<!--=================== Attributes    ====================================-->
+<!ENTITY % coreattrs
+    "id         ID          #IMPLIED
+     class      CDATA       #IMPLIED
+     title      %Text;      #IMPLIED"
+>
+
+<!ENTITY % attrs "%coreattrs;">
+    
+<!--=================== Document Structure ===============================-->
+
+<!ELEMENT article (meta, content)>
+
+<!--=================== Document Metadata ================================-->
+<!ELEMENT meta (author, title, pubdate, category)>
+
+<!ELEMENT author (#PCDATA)>
+<!ELEMENT title (#PCDATA)>
+<!ELEMENT pubdate (#PCDATA)>
+<!ELEMENT category (#PCDATA)>
+
+<!--=================== Document Content =================================-->
+
+<!ELEMENT content %Flow;>
+<!ATTLIST body
+  %attrs;
+  >
+  
+<!ELEMENT p %Inline;>
+<!ATTLIST p
+  %attrs;
+  >
+
+<!-- Header -->
+
+<!ELEMENT h1  %Inline;>
+<!ATTLIST h1
+  %attrs;
+  >
+  
+<!ELEMENT h2 %Inline;>
+<!ATTLIST h2
+  %attrs;
+  >
+  
+<!ELEMENT h3 %Inline;>
+<!ATTLIST h3
+  %attrs;
+  >
+
+<!-- Lists -->
+
+<!ELEMENT ul (li)+>
+<!ATTLIST ul
+  %attrs;
+  >
+
+<!ELEMENT ol (li)+>
+<!ATTLIST ol
+  %attrs;
+  >
+ 
+<!ELEMENT li %Flow;>
+<!ATTLIST li
+  %attrs;
+  >
+
+<!-- Anchors -->
+
+<!ELEMENT a %a.content;>
+<!ATTLIST a
+    %attrs;
+    href    %URI;       #REQUIRED
+    alt     %Text;      #REQUIRED
+    name    NMTOKEN     #IMPLIED
+  >
+  
+<!ELEMENT img EMPTY>
+<!ATTLIST img
+    %attrs;
+    src     %URI;       #REQUIRED
+    alt     %Text;      #REQUIRED
+    name    NMTOKEN     #IMPLIED
+  >

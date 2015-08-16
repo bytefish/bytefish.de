@@ -1,0 +1,18 @@
+<!DOCTYPE article SYSTEM "article.dtd">
+
+<article>
+    <meta>
+        <author>Philipp Wagner</author>
+        <title>Sample XML markup</title>
+        <pubdate>2012-05-26 13:37</pubdate>
+        <category>None</category>
+    </meta>
+    <content>
+        <h1>Header 1</h1>
+        <p>A paragraph <a href="http://www.bytefish.de" name="anchor_name" alt="Alternate Text">with a link</a></p>
+        <ul>
+            <li>Item 1</li>
+            <li>Item 2</li>
+        </ul>
+    </content>
+</article>
