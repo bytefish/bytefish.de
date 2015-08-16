@@ -18,9 +18,7 @@ The file upload will be sent as a HTTP POST request with ``multipart/form-data``
 
 So where to start the example? 
 
-First of all we define an interface to obtain application-wide settings. 
-
-It only holds the upload directory in this example, but you could easily imagine additional settings for a sophisticated application.
+First of all we define an interface to obtain application-wide settings. It only holds the upload directory in this example, but you could easily imagine additional settings for a sophisticated application.
 
 ```csharp
 namespace FileUploadSample.Infrastructure.Settings
@@ -54,7 +52,7 @@ namespace FileUploadSample.Infrastructure.Settings
 
 You could easily write a large [module](https://github.com/NancyFx/Nancy/wiki/Exploring-the-nancy-module) to handle a file upload, but let's break everything down into useful parts.
 
-The uploaded file should get an identifier, so we don't override existing files and use the identifier to obtain it.
+The result of a file upload is an identifier. We don't use the given filename, so we don't override existing files.
 
 ```csharp
 namespace FileUploadSample.Infrastructure.Upload
@@ -66,7 +64,7 @@ namespace FileUploadSample.Infrastructure.Upload
 }
 ```
 
-Then we can define an interface for the upload. Uploading files may performs some I/O, so let's make it an asynchronous method.
+Then we can define an interface for an upload handler. Uploading a file may perform some IO, so let's make it an asynchronous method.
 
 ```csharp
 using System.IO;
@@ -169,7 +167,7 @@ namespace FileUploadSample.Requests
 
 ### Binding ###
 
-So how can the request object be populated for an incoming HTTP request? The automatic binding won't work here, so we are writing a custom IModelBinder. 
+So how to populate the request object for an incoming HTTP request? The automatic binding won't work here, but we can write a custom [IModelBinder](https://github.com/NancyFx/Nancy/blob/master/src/Nancy/ModelBinding/IModelBinder.cs) to bind the incoming data. 
 
 For more details you should ready the Nancy wiki on [ModelBinding](https://github.com/NancyFx/Nancy/wiki/Model-binding).
 
@@ -234,7 +232,7 @@ namespace FileUploadSample.Requests.Binding
 
 ## Response ##
 
-You should also model all outgoing data as response objects. For now the upload response simply holds the file identifier.
+Any outgoing data should also be modeled as a response object . For now the upload response simply holds the file identifier.
 
 ```csharp
 namespace FileUploadSample.Responses
@@ -248,7 +246,7 @@ namespace FileUploadSample.Responses
 
 ## FileUploadModule ##
 
-Finally we can we write a [NancyModule](https://github.com/NancyFx/Nancy/wiki/Exploring-the-nancy-module) to tie everything together. 
+Now we can write a [NancyModule](https://github.com/NancyFx/Nancy/wiki/Exploring-the-nancy-module) to tie everything together. 
 
 The upload handler is injected into the module by the dependency injection container. The model binder will resolve to the custom model binder automatically.
 
