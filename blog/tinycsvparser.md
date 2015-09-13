@@ -35,7 +35,7 @@ Max;Musterman;2014/01/02
 The corresponding domain model in our system might look like this.
 
 ```csharp
-private class Person
+public class Person
 {
     public string FirstName { get; set; }
     public string LastName { get; set; }
@@ -46,7 +46,7 @@ private class Person
 When using [TinyCsvParser] you have to define the mapping between the columns in the CSV data and the property in you domain model.
 
 ```csharp
-private class CsvPersonMapping : CsvMapping<Person>
+public class CsvPersonMapping : CsvMapping<Person>
 {
     public CsvPersonMapping()
         : base()
@@ -61,33 +61,34 @@ private class CsvPersonMapping : CsvMapping<Person>
 And then we can use the mapping to parse the CSV data with a ``CsvParser``.
 
 ```csharp
-using TinyCsvParser;
-using TinyCsvParser.Mapping;
-
 namespace TinyCsvParser.Test
 {
     [TestFixture]
     public class TinyCsvParserTest
     {
-        CsvParserOptions csvParserOptions = new CsvParserOptions(true,  new[] { ';' });
-        CsvReaderOptions csvReaderOptions = new CsvReaderOptions(new []{Environment.NewLine});
-        CsvPersonMapping csvMapper = new CsvPersonMapping();
-        CsvParser<Person> csvParser = new CsvParser<Person>(csvParserOptions, csvMapper);
+        [Test]
+        public void TinyCsvTest()
+        {
+            CsvParserOptions csvParserOptions = new CsvParserOptions(true, new[] { ';' });
+            CsvReaderOptions csvReaderOptions = new CsvReaderOptions(new[] { Environment.NewLine });
+            CsvPersonMapping csvMapper = new CsvPersonMapping();
+            CsvParser<Person> csvParser = new CsvParser<Person>(csvParserOptions, csvMapper);
 
-        var stringBuilder = new StringBuilder()
-            .AppendLine("FirstName;LastName;BirthDate")
-            .AppendLine("Philipp;Wagner;1986/05/12")
-            .AppendLine("Max;Mustermann;2014/01/01");
+            var stringBuilder = new StringBuilder()
+                .AppendLine("FirstName;LastName;BirthDate")
+                .AppendLine("Philipp;Wagner;1986/05/12")
+                .AppendLine("Max;Mustermann;2014/01/01");
 
-        var result = csvParser
-            .ReadFromString(csvReaderOptions, stringBuilder.ToString())
-            .ToList();
+            var result = csvParser
+                .ReadFromString(csvReaderOptions, stringBuilder.ToString())
+                .ToList();
 
-        Assert.AreEqual(2, result.Count);
+            Assert.AreEqual(2, result.Count);
 
-        Assert.IsTrue(result.All(x => x.IsValid));
-        
-        // ... more asserts.
+            Assert.IsTrue(result.All(x => x.IsValid));
+
+            // Asserts ...
+        }
     }
 }
 ```
@@ -104,7 +105,7 @@ a date format with the default converters, but in [TinyCsvParser] we can easily 
 First of all extend the ``CsvPersonMapping`` to take a ``ITypeConverterProvider``.
 
 ```csharp
-private class CsvPersonMapping : CsvMapping<Person>
+public class CsvPersonMapping : CsvMapping<Person>
 {
     public CsvPersonMapping()
         : this(new TypeConverterProvider())
