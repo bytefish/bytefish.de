@@ -1,31 +1,30 @@
-title: Token Authentication with Nancy and Owin
-date: 2015-08-16 14:00
+ï»¿title: Token Authentication with Nancy and Owin
+date: 2015-08-29 15:33
 tags: c#, nancy
 category: c#
-slug: file_upload_nancy
+slug: token_authentication_owin_nancy
 author: Philipp Wagner
 summary: This article describes how to implement Token-based authentication with Nancy.
 
 [Nancy]: https://github.com/NancyFx/Nancy
-[OWIN]: http://owin.org/
+[NPoco]: https://github.com/schotime/NPoco
+[OWIN]: http://owin.org
 [HTML5 reference]: http://www.w3.org/TR/html5/forms.html#multipart/form-data-encoding-algorithm
-[module]: https://github.com/NancyFx/Nancy/wiki/Exploring-the-nancy-module
 [PostgreSQL]: http://www.postgresql.org
 [NHibernate]: http://nhibernate.info
 [Entity Framework]: http://www.asp.net/entity-framework
 
-This post shows how to implement Token-based authentication with [OWIN] and [Nancy]. I will show you how to implement custom claim-based authentication, that you can adapt to your needs. 
+This post shows how to implement Token-based authentication with [OWIN] and [Nancy]. I will show you how to implement a custom claim-based authentication system, that you can adapt to your needs. 
 
 I have always struggled with how to start a project. This is a full-blown example on how to implement such a project with open source applications and libraries.
 
 ## OWIN, Token-authentication, Claims, ...? ##
 
 Before starting a project you should always get the terminology right and understand what you are going to build. I thought about writing a thorough introduction for 
-each topic, but I found myself copying introductions and summaries from Stackoverflow pages, the Microsoft documentation and other peoples blogs. So I think it's 
-better to link these posts and focus on using and implementing the mentioned concepts.
+each topic, but I found myself copying Stackoverflow posts, Microsoft documentation and other peoples blogs. So I think it's better to link these posts and focus on 
+using and implementing the mentioned concepts.
 
-Every client facing API should be secured, which turns out to be a tough problem for a RESTful API. One way to provide authenticated access to an API is using 
-a Token-based authentication scheme.
+Every client facing API should be secured, which turns out to be a tough problem for a RESTful API. One way to provide authenticated access to an API is using a Token-based authentication scheme.
 
 > The general concept behind a token-based authentication system is simple. Allow users to enter their username and password in order to obtain a token which allows them 
 > to fetch a specific resource - without using their username and password. Once their token has been obtained, the user can offer the token - which offers access to a 
@@ -33,9 +32,14 @@ a Token-based authentication scheme.
 
 The tokens in this article will be generated according to the OAuth 2.0 specification: [http://tools.ietf.org/html/rfc6749](http://tools.ietf.org/html/rfc6749).
 
-Once authenticated requests to the API can be made, we have to determine if a user has the permission to access a given method. One way to provide 
+Once authenticated requests to the API can be made, we have to determine if a user has the permission to access a given method. One way is to use claim-based authentication, which 
+is available in the ``System.Security.Claims`` namespace of the .NET Framework.
 
-> When you build claims-aware applications, the user identity is represented in your application as a set of claims. One claim could be the user’s name, 
+Starting with .NET 4.5 the Windows Identity Foundation got fully integrated into the .NET Framework as ``System.Security.Claims``. Using these components in a 
+web applications is really a piece of cake with Microsoft OWIN components, which we are going to use in this article. There is a nice blog post by Daniel Roth 
+about [using claims with the new OWIN security components](http://blogs.msdn.com/b/webdev/archive/2014/02/21/using-claims-in-your-web-app-is-easier-with-the-new-owin-security-components.aspx).
+
+> When you build claims-aware applications, the user identity is represented in your application as a set of claims. One claim could be the users name, 
 > another might be an e-mail address. The idea is that an external identity system is configured to give your application everything it needs to know about 
 > the user with each request she makes, along with cryptographic assurance that the identity data you receive comes from a trusted source.
 >
@@ -47,11 +51,7 @@ Once authenticated requests to the API can be made, we have to determine if a us
 > * Integrating with identity systems from other platforms or companies.
 >
 > Under this model, your application makes identity-related decisions based on claims supplied by the system that authenticated your user. This could be anything 
-> from simple application personalization with the user’s first name, to authorizing the user to access higher valued features and resources in your application.
-
-Starting with .NET 4.5 the Windows Identity Foundation got fully integrated into the .NET Framework as ``System.Security.Claims``. Using these components in a 
-web applications is really a piece of cake with Microsoft OWIN components, which we are going to use in this article. There is a nice blog post by Daniel Roth 
-about [using claims with the new OWIN security components](http://blogs.msdn.com/b/webdev/archive/2014/02/21/using-claims-in-your-web-app-is-easier-with-the-new-owin-security-components.aspx).
+> from simple application personalization with the users first name, to authorizing the user to access higher valued features and resources in your application.
 
 So what is OWIN? Microsoft has noticed, that [Ruby on Rails](rubyonrails.org) and [Node.js](https://nodejs.org) got a lot of (deserved) attention in web programming. 
 I think Microsoft wants to create an open source community around the .NET stack and specified OWIN to enable writing modular components for the web. Prior to OWIN all 
@@ -60,7 +60,7 @@ ASP.NET application were more or less bound to the IIS and took a hard dependenc
 Microsoft explains OWIN as:
 
 > Open Web Interface for .NET (OWIN) defines an abstraction between .NET web servers and web applications. By decoupling the web server from the application, 
-> OWIN makes it easier to create middleware for .NET web development. Also, OWIN makes it easier to port web applications to other hosts—for example, 
+> OWIN makes it easier to create middleware for .NET web development. Also, OWIN makes it easier to port web applications to other hosts for example, 
 > self-hosting in a Windows service or other process.
 
 That's it.
@@ -98,7 +98,7 @@ I am using schemas to keep my database clean and so should you. A database schem
 stored procedures, ... and makes it possible to assign user permissions to the schema. In this example the ``auth`` schema is going 
 to contain all tables for the user and permission management.
 
-```plpgsql
+```
 DO $$
 BEGIN
 
@@ -125,7 +125,7 @@ It's important to note, that you should **never store [plaintext] passwords in a
 damage by exposing all passwords in plaintext. The best way to protect the passwords is to employ salted password hashing. So the user table is going 
 to have a field for the password hash, and a field for the salt used to create the hash.
 
-```plpgsql
+```
 DO $$
 BEGIN
 
@@ -186,7 +186,7 @@ $$;
 
 And what is a relational database without referential integrity? Let's add some keys and constraints!
 
-```plpgsql
+```
 DO $$
 BEGIN
 
@@ -228,7 +228,7 @@ $$;
 
 And finally we should employ a little security to revoke all access from public eyes.
 
-```plpgsql
+```
 DO $$
 BEGIN
 
@@ -248,7 +248,7 @@ Believe me, you need to automate the task of creating and migrating a database a
 I am working in a Windows environment right now, so I have used a [Batch] file to automate the database setup. There is no magic going on, I am just 
 setting the path to ``psql`` and use the ``PGPASSWORD`` environment variable to pass the password to the command line.
 
-```batch
+```bat
 @echo off
 
 :: Copyright (c) Philipp Wagner. All rights reserved.
@@ -346,7 +346,7 @@ namespace TokenAuthentication.Infrastructure.Database
 
 The connection string for the application could be resolved from various sources, so let's define an interface first.
 
-```
+```csharp
 namespace TokenAuthentication.Infrastructure.Database
 {
     public interface IConnectionStringProvider
@@ -358,7 +358,7 @@ namespace TokenAuthentication.Infrastructure.Database
 
 In this example we are going to resolve the connection string from the ``App.config``. We are simply looking for a connection string named ``ApplicationConnectionString``.
 
-```
+```csharp
 namespace TokenAuthentication.Infrastructure.Database
 {
     public class ConnectionStringProvider : IConnectionStringProvider
@@ -647,7 +647,7 @@ namespace TokenAuthentication.Infrastructure.Database
 The application is using log4net for logging. But where are the logs written to? We didn't define a log appender yet, so they are written nowhere at the moment. log4net provides a large 
 set of log appenders, you can find an exhaustive list of example configurations at [https://logging.apache.org/log4net/release/config-examples.html](https://logging.apache.org/log4net/release/config-examples.html).
 
-Configuring log4net is easy. In the ``AssemblyInfo.cs`` of our file we are configuring log4net to use the Xml configuration and watch for changes to the file.
+Configuring log4net is easy. In the ``AssemblyInfo.cs`` of our project we have to configure log4net to use the Xml configuration and watch for changes to the file.
 
 ```csharp
 // Configure log4net by XML and make sure we are watching for changes!
@@ -830,7 +830,7 @@ Install-Package Nancy.Owin
 ```
 
 Now the ``UseNancy`` extension method on the ``IAppBuilder`` interface is used to hook it into the pipeline. Please read up the very detailed 
-wiki page on [hosting Nancy with OWIN], which shows how to do additional configuration.
+wiki page on [hosting Nancy with OWIN](https://github.com/NancyFx/Nancy/wiki/Hosting-nancy-with-owin) for additional configurations.
 
 ```csharp
 using Owin;
@@ -847,7 +847,7 @@ namespace TokenAuthentication
 }
 ```
 
-Let's add a new Folder ``Modules`` to the project and create a new [NancyModule].
+Let's add a new Folder ``Modules`` to the project and create a new NancyModule.
 
 ```csharp
 using Nancy;
@@ -1123,8 +1123,7 @@ namespace TokenAuthentication.Services
 }
 ```
 
-Extension methods are nice syntactic sugar in C#, which makes you APIs much easier to work with. We could have defined the methods 
-in the ``ICryptoService`` as well, it really depends on how you like to build APIs.
+Extension methods are nice syntactic sugar in C#, which make your APIs much easier to work with. We could have defined the methods in the ``ICryptoService`` as well, it really depends on how you like to build APIs.
 
 ### Domain Models ###
 
@@ -1164,7 +1163,7 @@ namespace TokenAuthentication.Model
 }
 ```
 
-And the claims have a Type and Value.
+And the claims simply consist of a type and value.
 
 ```csharp
 namespace TokenAuthentication.Model
@@ -1185,9 +1184,9 @@ namespace TokenAuthentication.Model
 
 ### Authentication Service ###
 
-By now we have finished the database access and implemented the hashing of passwords. Now we can define 
+By now we have finished the database access and implemented the hashing of passwords. Now we can define the service to perform the actual user authentication.
 
-The Authenticatication service is going to access the database, and it is probably not the only service.
+The Authenticatication service is going to access the database, and it is probably not the only service to do so. Let's create a base class, that holds a ``DatabaseFactory``.
 
 ```csharp
 using TokenAuthentication.Infrastructure.Database;
@@ -1330,7 +1329,7 @@ namespace TokenAuthentication.Services
 
 ### Registration Service ###
 
-What's left is how to register a User. 
+What's left is how to register a User. We build a very simple user registration service, so the registration request contains of a user name and password only.
 
 ```csharp
 namespace TokenAuthentication.Requests
@@ -1343,7 +1342,7 @@ namespace TokenAuthentication.Requests
 }
 ```
 
-We only build a very simple user registration.
+The Service has only a ``Register`` method.
 
 ```csharp
 using TokenAuthentication.Requests;
@@ -1357,7 +1356,7 @@ namespace TokenAuthentication.Services
 }
 ```
 
-And the default implementation simply creates a new User in the database.
+The default database implementation creates a new User in the database and doesn't assign any claims.
 
 ```csharp
 using TokenAuthentication.Infrastructure.Database;
@@ -1409,7 +1408,39 @@ namespace TokenAuthentication.Services
 }
 ```
 
+#### Registration Module with Nancy ####
+
+We create a new module, that uses the registration service. The built-in model binding of Nancy makes it easy to consume the request.
+
+```csharp
+using TokenAuthentication.Requests;
+using TokenAuthentication.Services;
+using Nancy;
+using Nancy.ModelBinding;
+
+namespace TokenAuthentication.Modules
+{
+    public class RegistrationModule : NancyModule
+    {
+        public RegistrationModule(IRegistrationService registrationService)
+        {
+            Post["/register"] = x =>
+            {
+                var request = this.Bind<RegisterUserRequest>();
+
+                registrationService.Register(request);
+
+                return Negotiate.WithStatusCode(HttpStatusCode.OK);
+            };
+        }
+    }
+}
+```
+
+
 ## Implementing the OAuthAuthorizationServerProvider ##
+
+Now we are implementing an ``OAuthAuthorizationServerProvider`` to use the custom authentication service we have built.
 
 ```csharp
 using Microsoft.Owin.Security.OAuth;
@@ -1496,8 +1527,9 @@ namespace TokenAuthentication.Infrastructure.Authentication
 }
 ```
 
-The bearer token can be passed to the application in the header or as a query parameter. Sometimes the bearer token cannot be passed through a header (SignalR, I am looking at you!), so 
-we should look in different places for a token. I am using an implementation from [a stackoverflow post](http://stackoverflow.com/questions/22989209/web-api-owin-signalr-authorization) to inspect an incoming request.
+The bearer token can be passed to the application in the request header or as a query parameter. Sometimes the bearer token cannot be passed through a header 
+(SignalR, I am looking at you!), so we should look in different places for a token. I am using an implementation from 
+[a stackoverflow post](http://stackoverflow.com/questions/22989209/web-api-owin-signalr-authorization) to inspect an incoming request.
 
 ```csharp
 using Microsoft.Owin;
@@ -1550,9 +1582,12 @@ namespace TokenAuthentication.Infrastructure.Authentication
 }
 ```
 
-And now let's rewrite the Startup class to setup the authentication.
+And now let's rewrite the Startup class to setup the authentication server.
 
 ```csharp
+// Copyright (c) Philipp Wagner. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
 using Microsoft.Owin;
 using Microsoft.Owin.Security.OAuth;
 using Nancy.TinyIoc;
@@ -1589,6 +1624,8 @@ namespace TokenAuthentication
             container.Register<IDatabaseFactory, DatabaseFactory>().AsSingleton();
             container.Register<IApplicationSettings, ApplicationSettings>();
             container.Register<ICryptoService, CryptoService>();
+            container.Register<IRegistrationService, RegistrationService>();
+            container.Register<IHashProvider, HashProvider>();
             container.Register<IAuthenticationService, AuthenticationService>();
         }
 
@@ -1661,14 +1698,14 @@ namespace TokenAuthentication.Infrastructure.Authentication
 
 ### Obtaining the ClaimsPrincipal  ###
 
-The next step is to get the ``ClaimsPrincipal`` from the OWIN context. An implementation for this is available in the ``Nancy.MSOwinSecurity`` package, 
+The next step is to get the ``ClaimsPrincipal`` from the OWIN request context. An implementation for this is already available in the ``Nancy.MSOwinSecurity`` package, 
 which can easily be installed with NuGet.
 
 ```csharp
 Install-Package Nancy.MSOwinSecurity
 ```
 
-Then we can create our ``SecureModule``, which makes it possible to get the ``ClaimsPrincipal`` by using the ``GetMSOwinUser`` property from the context.
+Then we can create a ``SecureModule``, which makes it possible to get the ``ClaimsPrincipal`` by using the ``GetMSOwinUser`` property from the context.
 
 ```csharp
 using Nancy;
@@ -1728,7 +1765,7 @@ namespace TokenAuthentication.Infrastructure.Authentication
 }
 ```
 
-Now we can secure the Hello World module to allow access for authenticated users only.
+And then we can secure the Hello World module to allow access for authenticated users only.
 
 ```csharp
 using Nancy;
@@ -1763,18 +1800,84 @@ namespace TokenAuthentication.Modules
         }
     }
 }
-```
+``` 
 
 ## Demo ##
 
 [cURL](http://curl.haxx.se/) is a great tool for working with HTTP requests.
 
+### Registering a User ###
+
+Store the following content to a file called ``user_password.json``.
+
+```
+{
+  "username" : "philipp_wagner",
+  "password" : "test_pwd"
+}
+```
+
+And then we can register the user at the server.
+
+```
+curl --verbose -H "Content-Type: application/json" --data @user_password.json http://localhost:8080/api/register
+```
+
 ### Obtaining a Token ###
 
+We have registered a user at the web service, so now we can obtain a token to make authenticated requests.
 
+```
+curl -X POST -H "Content-Type: application/x-www-form-urlencoded" -d "grant_type=password" -d "username=philipp_wagner" -d "password=test_pwd" http://localhost:8080/token
+```
 
+And the ``token`` endpoint returns the generated token:
+
+```
+< HTTP/1.1 200 OK
+< Cache-Control: no-cache
+< Pragma: no-cache
+< Content-Length: 495
+< Content-Type: application/json;charset=UTF-8
+< Expires: -1
+* Server Microsoft-HTTPAPI/2.0 is not blacklisted
+< Server: Microsoft-HTTPAPI/2.0
+< Date: Sat, 29 Aug 2015 13:16:06 GMT
+<
+{"access_token":"AQAAANCMnd8BFdERjHoAwE_Cl-sBAAAAI7O4UaGSa063cCfCsbk32AAAAAACAAA
+AAAAQZgAAAAEAACAAAABoUeoi5FHKTEkkH2H0skU7-WQV-c1RaLppQBb69on6kgAAAAAOgAAAAAIAACA
+AAADeUE498RjGyTNZyN_srtj6e-6CPruSeltuHonouECsJ3AAAABoGO-INRh3liV_btaDgDwAceK3J_N
+2x0VQbkZHkSzmDh88tfBkZcz7Fn5gqYLEQ5HVdbRMYDKXvuwCS8ctbyJN_qXv0EaKnPN6ASLavuzuvi9
+yL59f5C-f2pvcOQ91WcfNJd9ZtV230UossdukSuvOQAAAAHeheBv7ZUQAlAsmCElNFsnkrTNTq30og1a
+4iL9jKd62CQXSdsJqc2w1YYg7ls3uWeeMntIF-hUJq58QWQmqFSc","token_type":"bearer","exp
+ires_in":28799}
+```
+
+Cool!
+
+### Making an authenticated request ###
+
+Sending a request without an access token leads to a HTTP Status Code ``403`` (Forbidden).
+
+```
+curl -v http://localhost:8080/api
+
+< HTTP/1.1 403 Forbidden
+```
+
+If we pass the Access Token in the header, we will be greeted with a ``Hello User!``.
+
+```
+curl -v -H "Authorization: Bearer <Obtained Token>" http://localhost:8080/api
+
+< HTTP/1.1 200 OK
+< Content-Type: text/html
+< Date: Sat, 29 Aug 2015 13:23:13 GMT
+<
+Hello User!
+```
 
 ## Conclusion ##
 
-And that's it! Once you get over the initial problems with OWIN, it is really nice to work with. It was really easy to integrate Nancy into the 
-OWIN Pipeline and secure the Nancy modules with the ClaimsPrincipal from the 
+And that's it! Once you get over the initial problems with OWIN, it is really nice to work with. It was easy to integrate Nancy into the OWIN Pipeline 
+and secure the Nancy modules with the ClaimsPrincipal. I hope sharing this code is useful and saves some time.
