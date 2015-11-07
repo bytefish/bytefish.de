@@ -109,41 +109,31 @@ And that's it! The ``CsvParserOptions`` in this example are set to skip the head
 Now imagine your client suddenly changes a persons birthdate into a weird format and writes dates like this ``2004###01###25``. We can't parse such 
 a date format with the default converters, but in [TinyCsvParser] we can easily define a ``DateTimeConverter`` with a custom date time format.
 
-First of all extend the ``CsvPersonMapping`` to take a ``ITypeConverterProvider``.
+When mapping a property you can override the default converter by using the ``WithCustomConverter`` method. We instantiate the ``DateTimeConverter`` with 
+the given format ``yyyy###MM###dd``.
 
 ```csharp
-public class CsvPersonMapping : CsvMapping<Person>
+private class CsvPersonMappingWithCustomConverter : CsvMapping<Person>
 {
-    public CsvPersonMapping()
-        : this(new TypeConverterProvider())
-    {
-    }
-    public CsvPersonMapping(ITypeConverterProvider typeConverterProvider)
-        : base(typeConverterProvider)
+    public CsvPersonMappingWithCustomConverter()
     {
         MapProperty(0, x => x.FirstName);
         MapProperty(1, x => x.LastName);
-        MapProperty(2, x => x.BirthDate);
+        MapProperty(2, x => x.BirthDate)
+            .WithCustomConverter(new DateTimeConverter("yyyy###MM###dd"));
     }
 }
 ```
 
-And then let's write a Unit Test and override the default ``DateTime`` converter with a custom ``DateTimeConverter``, which takes the custom format string.
+And then let's write a Unit Test to validate the expected results.
 
 ```csharp
 [Test]
-public void WeirdDateTimeTest()
+public void WeirdDateTimeTest_CustomConverterBased()
 {
-    // Instantiate the TypeConverterProvider and override the DateTimeConverter:
-    ITypeConverterProvider csvTypeConverterProvider = 
-        new TypeConverterProvider().Add(new DateTimeConverter("yyyy###MM###dd"));
-    
-    // Make sure you pass the custom provider into the mapping!
-    CsvPersonMapping csvMapper = new CsvPersonMapping(csvTypeConverterProvider);
-
-    // And this is business as usual!
     CsvParserOptions csvParserOptions = new CsvParserOptions(true, new[] { ';' });
     CsvReaderOptions csvReaderOptions = new CsvReaderOptions(new[] { Environment.NewLine });
+    CsvPersonMappingWithCustomConverter csvMapper = new CsvPersonMappingWithCustomConverter();
     CsvParser<Person> csvParser = new CsvParser<Person>(csvParserOptions, csvMapper);
 
     var stringBuilder = new StringBuilder()

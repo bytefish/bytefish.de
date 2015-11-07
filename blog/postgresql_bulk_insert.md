@@ -1,4 +1,4 @@
-﻿title: Bulk Data Transfer into PostgreSQL from .NET (Bulk Insert)
+﻿title: PostgreSQL Bulk Insert with C#
 date: 2015-10-24 10:38
 tags: c#, postgresql, bulk insert
 category: c#, postgresql
@@ -13,7 +13,7 @@ summary: This article shows how to bulk insert data into PostgreSQL from .NET.
 [PostgreSQLCopyHelper]: https://github.com/bytefish/PostgreSQLCopyHelper
 [Npgsql documentation]: http://www.npgsql.org/doc/copy.html
 
-In my last post you have introduced [PostgreSQLCopyHelper], which is a small library to wrap the [Npgsql] 
+In my last post I have introduced [PostgreSQLCopyHelper], which is a small library to wrap the [Npgsql] 
 implementation of the PostgreSQL [Copy command] behind a nice fluent API.
 
 From the good [Npgsql documentation]:
