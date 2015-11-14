@@ -18,6 +18,10 @@ This post shows how to implement Token-based authentication with [OWIN] and [Nan
 
 I have always struggled with how to start a project. This is a full-blown example on how to implement such a project with open source applications and libraries.
 
+The source code is released under MIT license:
+
+* [https://github.com/bytefish/NancyOwinExample](https://github.com/bytefish/NancyOwinExample)
+
 ## OWIN, Token-authentication, Claims, ...? ##
 
 Before starting a project you should always get the terminology right and understand what you are going to build. I thought about writing a thorough introduction for 
