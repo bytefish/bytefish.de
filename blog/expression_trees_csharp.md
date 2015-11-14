@@ -42,7 +42,7 @@ expensive operation, it should be called only once and the resulting delegate sh
 
 I think sharing my code is useful, because a lot of people are looking for something similar I guess. The Unit Tests show you how to use the methods.
 
-## ReflectionUtils ##
+## ExpressionUtils ##
 
 ```csharp
 // Copyright (c) Philipp Wagner. All rights reserved.
@@ -54,7 +54,7 @@ using System.Reflection;
 
 namespace ExpressionExample
 {
-    public static class ReflectionUtils
+    public static class ExpressionUtils
     {
         public static PropertyInfo GetProperty<TEntity, TProperty>(Expression<Func<TEntity, TProperty>> expression)
         {
@@ -90,7 +90,7 @@ namespace ExpressionExample
 
         public static Action<TEntity, TProperty> CreateSetter<TEntity, TProperty>(Expression<Func<TEntity, TProperty>> property)
         {
-            PropertyInfo propertyInfo = ReflectionUtils.GetProperty(property);
+            PropertyInfo propertyInfo = ExpressionUtils.GetProperty(property);
 
             ParameterExpression instance = Expression.Parameter(typeof(TEntity), "instance");
             ParameterExpression parameter = Expression.Parameter(typeof(TProperty), "param");
@@ -103,7 +103,7 @@ namespace ExpressionExample
 
         public static Func<TEntity, TProperty> CreateGetter<TEntity, TProperty>(Expression<Func<TEntity, TProperty>> property)
         {
-            PropertyInfo propertyInfo = ReflectionUtils.GetProperty(property);
+            PropertyInfo propertyInfo = ExpressionUtils.GetProperty(property);
 
             ParameterExpression instance = Expression.Parameter(typeof(TEntity), "instance");
 
@@ -135,7 +135,7 @@ using NUnit.Framework;
 namespace ExpressionExample
 {
     [TestFixture]
-    public class ReflectionUtilsTest
+    public class ExpressionUtilsTest
     {
         public class SampleClass 
         {
@@ -146,8 +146,8 @@ namespace ExpressionExample
         [Test]
         public void SetterTest()
         {
-            var setterIntegerProperty = ReflectionUtils.CreateSetter<SampleClass, int>(x => x.IntegerProperty);
-            var setterStringProperty = ReflectionUtils.CreateSetter<SampleClass, string>(x => x.StringProperty);
+            var setterIntegerProperty = ExpressionUtils.CreateSetter<SampleClass, int>(x => x.IntegerProperty);
+            var setterStringProperty = ExpressionUtils.CreateSetter<SampleClass, string>(x => x.StringProperty);
 
             SampleClass sampleClassInstance = new SampleClass();
 
@@ -161,8 +161,8 @@ namespace ExpressionExample
         [Test]
         public void GetterTest()
         {
-            var getterIntegerProperty = ReflectionUtils.CreateGetter<SampleClass, int>(x => x.IntegerProperty);
-            var getterStringProperty = ReflectionUtils.CreateGetter<SampleClass, string>(x => x.StringProperty);
+            var getterIntegerProperty = ExpressionUtils.CreateGetter<SampleClass, int>(x => x.IntegerProperty);
+            var getterStringProperty = ExpressionUtils.CreateGetter<SampleClass, string>(x => x.StringProperty);
 
             SampleClass sampleClassInstance = new SampleClass()
             {
@@ -177,8 +177,8 @@ namespace ExpressionExample
         [Test]
         public void CreateDefaultConstructorTest()
         {
-            var defaultConstructor = ReflectionUtils.CreateDefaultConstructor<SampleClass>();
-            var setterIntegerProperty = ReflectionUtils.CreateSetter<SampleClass, int>(x => x.IntegerProperty);
+            var defaultConstructor = ExpressionUtils.CreateDefaultConstructor<SampleClass>();
+            var setterIntegerProperty = ExpressionUtils.CreateSetter<SampleClass, int>(x => x.IntegerProperty);
             
             var sampleEntity = defaultConstructor();
 
