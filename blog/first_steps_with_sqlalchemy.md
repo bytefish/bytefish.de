@@ -92,29 +92,6 @@ introduction and show how to build mapping tables and query data with [SQLAlchem
 
 [caching]: http://docs.sqlalchemy.org/en/rel_0_9/orm/examples.html#beaker-caching
 
-### Object Relational Mapping ###
-
-There is [a lot of hate][1] for ORM tools and having worked with [Hibernate][2] myself, I can understand most of the pain. But what 
-is the way around? Document-oriented approaches may reduce the impedance mismatch between code and persistence, but once you have 
-written your first complex Map-Reduce function... you are going to miss SQL *a lot*. I am not arguing against [NoSQL databases][3], 
-they deserve their place. If a NoSQL Database suit your needs, I am cool.
-
-My personal opinion is, that there is no perfect solution for the leaky abstraction between the object oriented and the relational 
-world. You could abandon relational databases completely, and move to document-oriented databases (like CouchDB, Cassandra, ...) or 
-graph databases (neo4j). This may remove the impedance mismatch, but it might lead to a whole new range of problems.
-
-What's the takeaway of this section? Know your tools. Accept the limitations. You need performance? Probably using the low-level SQL 
-access to the database makes your bulk insert faster? Probably a [Stored Procedure][7] does the job? Using an ORM will not magically 
-solve all problems.
-
-[1]: http://blog.codinghorror.com/object-relational-mapping-is-the-vietnam-of-computer-science
-[2]: http://hibernate.org
-[3]: http://en.wikipedia.org/wiki/NoSQL
-[4]: http://en.wikipedia.org/wiki/Relational_database_management_system
-[5]: http://en.wikipedia.org/wiki/Data_access_layer
-[6]: http://msdn.microsoft.com/en-us/library/bb386976%28v=vs.110%29.aspx
-[7]: http://en.wikipedia.org/wiki/Stored_procedure
-
 ## The Example ##
 
 The database application we are going to build should persist images with associated likes, tags and comments. In a later article I want to 
