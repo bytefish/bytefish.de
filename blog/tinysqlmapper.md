@@ -9,6 +9,7 @@ summary: This article introduces TinySqlMapper, which makes querying a database 
 [PostgreSQL]: http://www.postgresql.org
 [MIT License]: https://opensource.org/licenses/MIT
 [TinySqlMapper]: https://github.com/bytefish/TinySqlMapper
+[the TinySqlMapper NuGet package]: https://www.nuget.org/packages/TinySqlMapper
 
 It may be a surprise to read .NET articles on my site. A lot of articles in the past have 
 dealt with Computer Vision and Linux, which are my passions. But I have worked in enterprise software 
@@ -26,8 +27,8 @@ I have released [TinySqlMapper] under terms of the [MIT License]:
 
 * [https://github.com/bytefish/TinySqlMapper](https://github.com/bytefish/TinySqlMapper)
 
-You can also use the [NuGet](https://www.nuget.org) package. To install [TinySqlMapper], run the 
-following command in the [Package Manager Console](http://docs.nuget.org/consume/package-manager-console).
+You can also use [the TinySqlMapper NuGet package]. To install the library, run the following 
+command in the [Package Manager Console](http://docs.nuget.org/consume/package-manager-console).
 
 ```
 PM> Install-Package TinySqlMapper
