@@ -242,6 +242,27 @@ END;
 $$;
 ```
 
+### Data ###
+
+And finally the claims have to be added to the database.
+
+```
+DO $$
+BEGIN
+
+IF NOT EXISTS (
+	SELECT 1 
+	FROM auth.claim 
+	WHERE type = 'urn:sample:admin') THEN
+
+INSERT INTO auth.claim(type, value) VALUES('urn:sample:admin', 'true');
+
+END IF;
+
+END
+$$;
+```
+
 ### Creating a Deployment Script ###
 
 [Batch]: http://en.wikipedia.org/wiki/Batch_file
@@ -293,6 +314,7 @@ set /p PGPASSWORD="Password: "
 	%PGSQL_EXECUTABLE% -h %HostName% -p %PortNumber% -d %DatabaseName% -U %UserName% < 02_Tables/tables_auth.sql -L %LOGFILE%
 	%PGSQL_EXECUTABLE% -h %HostName% -p %PortNumber% -d %DatabaseName% -U %UserName% < 03_Keys/keys_auth.sql -L %LOGFILE%
 	%PGSQL_EXECUTABLE% -h %HostName% -p %PortNumber% -d %DatabaseName% -U %UserName% < 05_Security/security_auth.sql -L %LOGFILE%
+	%PGSQL_EXECUTABLE% -h %HostName% -p %PortNumber% -d %DatabaseName% -U %UserName% < 06_Data/data_auth.sql -L %LOGFILE%
 )
 
 goto :end
@@ -480,12 +502,10 @@ namespace TokenAuthentication.Infrastructure.Database.Entities
         public string UserId { get; set; }
 
         public string ClaimId { get; set; }
-
-        public string Value { get; set; }
-
+        
         public override string ToString()
         {
-            return string.Format("UserClaim ({0}, UserId: {1}, ClaimId: {2}, Value: {3})", base.ToString(), UserId, ClaimId, Value);
+            return string.Format("UserClaim ({0}, UserId: {1}, ClaimId: {2})", base.ToString(), UserId, ClaimId);
         }
     }
 }
@@ -1763,7 +1783,6 @@ namespace TokenAuthentication.Infrastructure.Authentication
 {
     public static class SampleClaimTypes
     {
-        public const string Identifier = "urn:sample:id";
         public const string Admin = "urn:sample:admin";
     }
 }
@@ -1879,6 +1898,39 @@ curl -v -H "Authorization: Bearer <Obtained Token>" http://localhost:8080/api
 < Date: Sat, 29 Aug 2015 13:23:13 GMT
 <
 Hello User!
+```
+
+### Working with Claims (Admin Claim) ###
+
+First of all, we need to assign the registered user to the ``Admin`` claim. We can use a SQL query for this:
+
+```
+insert into auth.user_claim(user_id, claim_id) values (
+    (
+        select user_id 
+        from auth.user
+        where name='philipp_wagner'
+    ),
+    (
+        select claim_id
+        from auth.claim
+        where type='urn:sample:admin'
+    )
+);
+```
+
+When the claim is added to a user, a fresh token has to be obtained. The above cURL Request can be used. 
+The new token will contain the claim with the Admin type. If the Access Token is passed to the ``/admin`` 
+endpoint, we will be greeted with a ``Hello Admin!``.
+
+```
+curl -v -H "Authorization: Bearer <Obtained Token>" http://localhost:8080/api/admin
+
+< HTTP/1.1 200 OK
+< Content-Type: text/html
+< Date: Sat, 29 Aug 2015 13:23:13 GMT
+<
+Hello Admin!
 ```
 
 ## Conclusion ##
