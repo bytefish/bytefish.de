@@ -14,6 +14,10 @@ summary: This article describes how to implement Token-based authentication with
 [NHibernate]: http://nhibernate.info
 [Entity Framework]: http://www.asp.net/entity-framework
 
+[TOC]
+
+## Introduction ##
+
 This post shows how to implement Token-based authentication with [OWIN] and [Nancy]. I will show you how to implement a custom claim-based authentication system, that you can adapt to your needs. 
 
 I have always struggled with how to start a project. This is a full-blown example on how to implement such a project with open source applications and libraries.
@@ -22,7 +26,11 @@ The source code is released under MIT license:
 
 * [https://github.com/bytefish/NancyOwinExample](https://github.com/bytefish/NancyOwinExample)
 
-## OWIN, Token-authentication, Claims, ...? ##
+You can find the SQL scripts used in this article at:
+
+* [https://github.com/bytefish/NancyOwinExample/tree/master/TokenAuthentication/Database](https://github.com/bytefish/NancyOwinExample/tree/master/TokenAuthentication/Database)
+
+### OWIN, Token-authentication, Claims, ...? ###
 
 Before starting a project you should always get the terminology right and understand what you are going to build. I thought about writing a thorough introduction for 
 each topic, but I found myself copying Stackoverflow posts, Microsoft documentation and other peoples blogs. So I think it's better to link these posts and focus on 
@@ -69,7 +77,7 @@ Microsoft explains OWIN as:
 
 That's it.
 
-## Database ##
+## Preparing the Database ##
 
 A claim-based identity model is based around the notion of a user with its associated claims. So where do we store the authentication credentials and claims? I 
 like working with relational databases, because SQL makes it really easy to work with data. Database transactions and constraints ensure data integrity, which 
@@ -77,7 +85,7 @@ is a must for any serious business application.
 
 This post uses [PostgreSQL] as the database backend, which is freely available at [http://www.postgresql.org](http://www.postgresql.org).
 
-### Creating a User and Database ###
+### User and Database ###
 
 [pgAdmin]: http://www.pgadmin.org/
 
@@ -95,6 +103,8 @@ CREATE DATABASE
 ```
 
 You could also use [pgAdmin] for this task, if you are uncomfortable with using a terminal.
+
+## The Database Schema ##
 
 ### Schema ###
 
@@ -1004,7 +1014,7 @@ If you have wondered how an IoC container works, you probably want to read a gre
 
 ## User Management ##
 
-### Hashing Data ###
+### Password Hashing ###
 
 We need to hash the passwords in the application, so we define an interface to hash values. The reason is simple: You probably want to switch the 
 Hash algorithm without changing anything else in code.
@@ -1034,14 +1044,13 @@ namespace TokenAuthentication.Services
             using (var sha512 = SHA512.Create())
             {
                 return sha512.ComputeHash(data);
-                
             }
         }
     }
 }
 ```
 
-### Obtaining Hashes: Crypto Service ###
+#### Crypto Service ####
 
 To do the actual hashing of values we are defining an ``ICryptoService`` that generates and computes hashes.
 
@@ -1146,23 +1155,6 @@ namespace TokenAuthentication.Services
     }
 }
 ```
-
-Extension methods are nice syntactic sugar in C#, which make your APIs much easier to work with. We could have defined the methods in the ``ICryptoService`` as well, it really depends on how you like to build APIs.
-
-### Domain Models ###
-
-Before implementing the actual Authentication Service, I'd like to say a few words on Domain models.
-
-In an object oriented programming language I like providing meaningful objects. I like to model a User identity as a class, which has a list of claims. 
-The alternative is to work with the User, Claim and ClaimsIdentity entities, we have mapped to the database tables. I really think working with 
-objects, that map directly to database entities (means no populated properties, no clear association between each other) work for mid-sized and 
-basic CRUD applications. 
-
-But at some point working with the database entities is not going to scale anymore. Complex business logic will be unbelievably obscured with all the 
-relational stuff leaking heavily into your domain model. So is it really worth to do the mapping between a Data Access Model and a Domain Model? I don't 
-know.
-
-But... Everything is better, than letting the database dictate your domain model.
 
 ### UserIdentity ###
 
@@ -1689,7 +1681,7 @@ namespace TokenAuthentication
 
 ## Securing Nancy Modules ##
 
-### Extension methods for the ClaimsPrincipal ###
+### ClaimsPrincipal Extensions ###
 
 First of all we are defining two extension methods on the ``ClaimsPrincipal`` to make our life easy. 
 
@@ -1720,7 +1712,7 @@ namespace TokenAuthentication.Infrastructure.Authentication
 }
 ```
 
-### Obtaining the ClaimsPrincipal  ###
+### ClaimsPrincipal in Nancy ###
 
 The next step is to get the ``ClaimsPrincipal`` from the OWIN request context. An implementation for this is already available in the ``Nancy.MSOwinSecurity`` package, 
 which can easily be installed with NuGet.
@@ -1774,7 +1766,7 @@ namespace TokenAuthentication.Infrastructure.Nancy
 }
 ```
 
-### Authenticating Requests in a NancyModule ###
+### Authentication for Nancy Modules ###
 
 The claims we want to check have to defined somewhere. I opted for defining them as constants in a static class.
 
@@ -1829,7 +1821,7 @@ namespace TokenAuthentication.Modules
 
 [cURL](http://curl.haxx.se/) is a great tool for working with HTTP requests.
 
-### Registering a User ###
+### User Registeration  ###
 
 Store the following content to a file called ``user_password.json``.
 
@@ -1846,7 +1838,7 @@ And then we can register the user at the server.
 curl --verbose -H "Content-Type: application/json" --data @user_password.json http://localhost:8080/api/register
 ```
 
-### Obtaining a Token ###
+### Obtaining Tokens ###
 
 We have registered a user at the web service, so now we can obtain a token to make authenticated requests.
 
@@ -1878,7 +1870,7 @@ ires_in":28799}
 
 Cool!
 
-### Making an authenticated request ###
+### Authenticated Requests ###
 
 Sending a request without an access token leads to a HTTP Status Code ``403`` (Forbidden).
 
@@ -1900,7 +1892,7 @@ curl -v -H "Authorization: Bearer <Obtained Token>" http://localhost:8080/api
 Hello User!
 ```
 
-### Working with Claims (Admin Claim) ###
+### Assigning Claims (Admin Claim) ###
 
 First of all, we need to assign the registered user to the ``Admin`` claim. We can use a SQL query for this:
 
