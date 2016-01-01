@@ -15,7 +15,7 @@ way, while offering high performance (probably the fastest .NET CSV reader aroun
 ## Why a CSV Parser library? ##
 
 It may be confusing or even amusing to readers of this blog, that I spend so much time writing a 
-library for CSV parsing. But I have been tearing my hair apart at work, when trying to grok CSV 
+library for CSV parsing. But I have been tearing my hair out at work, when trying to grok CSV 
 parsing code.
 
 CSV parsing can lead to code monsters in real life, that will eat your precious lifetime and pose 
@@ -36,7 +36,7 @@ Oh, what about File Encodings? Oh, what about date formats? Oh, what about cultu
 formats? Oh Oh Oh...
 
 A consistent approach for parsing CSV data in your application is important or you will get 
-into severe problems maintaining an application. Let's agree, that enough hair was torn apart by 
+into severe problems maintaining an application. Let's agree, that enough hair was torn out by 
 developers reading custom hand-rolled CSV parsing code.
 
 TinyCsvParser will help you to provide a consistent way for reading your CSV data. It is highly 
