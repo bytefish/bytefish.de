@@ -10,7 +10,7 @@ summary: This article shows how to implement and use a Tokenizer in TinyCsvParse
 [TinyCsvParser]: https://github.com/bytefish/TinyCsvParser
 
 I have been working on [TinyCsvParser] lately, which is a library to parse CSV data in an easy and fun 
-way, while offering high performance (probably the fastest CSV reader around) and a very clean API.
+way, while offering high performance (probably the fastest .NET CSV reader around) and a very clean API.
 
 ## Why a CSV Parser library? ##
 
@@ -32,7 +32,7 @@ of things in reality. They can be complicated beasts and sometimes even contain 
 Often enough you don't have any control of the format. No blaming here, even your client may have no 
 control over the CSV data format. 
 
-Oh, what about File Encodings? Oh, what about date formats? Oh, what about culture-specific nuber 
+Oh, what about File Encodings? Oh, what about date formats? Oh, what about culture-specific number 
 formats? Oh Oh Oh...
 
 A consistent approach for parsing CSV data in your application is important or you will get 
