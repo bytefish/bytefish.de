@@ -7,6 +7,9 @@ author: Philipp Wagner
 summary: This article describes how to serialize and deserialize enums with Json.NET.
 
 [Json.NET]: http://www.newtonsoft.com/json
+[StringEnumConverter]: http://www.newtonsoft.com/json/help/html/t_newtonsoft_json_converters_stringenumconverter.htm
+[JsonConverter]: http://www.newtonsoft.com/json/help/html/T_Newtonsoft_Json_JsonConverter.htm
+[JsonConverter attribute]: http://www.newtonsoft.com/json/help/html/T_Newtonsoft_Json_JsonConverterAttribute.htm
 [GcmSharp]: https://github.com/bytefish/GcmSharp
 [MIT License]: https://opensource.org/licenses/MIT
 
@@ -49,9 +52,107 @@ namespace GcmSharp.Responses
 }
 ```
 
-## ErrorCodeConverter ##
+## Using a StringEnumConverter ##
 
-Next we define a custom [JsonConverter](http://www.newtonsoft.com/json/help/html/T_Newtonsoft_Json_JsonConverter.htm), which is going to be used by [Json.NET] for serialization and deserialization.
+### Entity ###
+
+[Json.NET] comes with the [StringEnumConverter] to convert between an ``enum`` and the JSON string representation. The property of the 
+``ErrorCode`` enum simply needs to be attributed as a [JsonConverter] of type [StringEnumConverter] in order to be serialized and deserialized. 
+
+```csharp
+public class SampleEntity
+{
+    [JsonProperty("error")]
+    [JsonConverter(typeof(StringEnumConverter))]
+    public ErrorCode Error { get; set; }
+}
+```
+
+### Unit Test ###
+
+And then we can write a Unit Test to verify, that the entity is serialized and deserialized correctly.
+
+```csharp
+// Copyright (c) Philipp Wagner. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+using GcmSharp.Responses;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using NUnit.Framework;
+using System.Collections.Generic;
+
+namespace GcmSharp.Test.Responses.Converter
+{
+    [TestFixture]
+    public class StringEnumConverterTest
+    {
+        public class SampleEntity
+        {
+            [JsonProperty("error")]
+            [JsonConverter(typeof(StringEnumConverter))]
+            public ErrorCode Error { get; set; }
+        }
+
+        [Test]
+        public void DeserializeErrorCodeTest()
+        {
+            Dictionary<string, ErrorCode> expectations = GetErrorCodeMapping();
+
+            foreach (var kv in expectations)
+            {
+                var jsonString = string.Format("{{ \"error\" : \"{0}\" }}", kv.Key);
+                var deserializedObject = JsonConvert.DeserializeObject<SampleEntity>(jsonString);
+                Assert.AreEqual(kv.Value, deserializedObject.Error);
+            }
+        }
+
+        [Test]
+        public void SerializeErrorCodeTest()
+        {
+            Dictionary<string, ErrorCode> expectations = GetErrorCodeMapping();
+
+            foreach (var kv in expectations)
+            {
+                var obj = new SampleEntity { Error = kv.Value };
+
+                var expectedJsonString = string.Format("{{\"error\":\"{0}\"}}", kv.Key);
+                var actualJsonString = JsonConvert.SerializeObject(obj);
+
+                Assert.AreEqual(expectedJsonString, actualJsonString);
+            }
+        }
+
+        private Dictionary<string, ErrorCode> GetErrorCodeMapping()
+        {
+            return new Dictionary<string, ErrorCode>()
+            {
+                { "MissingRegistration", ErrorCode.MissingRegistration},
+                { "InvalidRegistration", ErrorCode.InvalidRegistration},
+                { "NotRegistered", ErrorCode.NotRegistered},
+                { "InvalidPackageName", ErrorCode.InvalidPackageName},
+                { "MismatchSenderId", ErrorCode.MismatchSenderId},
+                { "MessageTooBig", ErrorCode.MessageTooBig},
+                { "InvalidDataKey", ErrorCode.InvalidDataKey},
+                { "InvalidTtl", ErrorCode.InvalidTtl},
+                { "Unavailable", ErrorCode.Unavailable},
+                { "InternalServerError", ErrorCode.InternalServerError},
+                { "DeviceMessageRateExceeded",ErrorCode.DeviceMessageRateExceeded },
+                { "TopicsMessageRateExceeded", ErrorCode.TopicsMessageRateExceeded},
+            };
+        }
+    }
+}
+```
+
+
+## Using a Custom JsonConverter ##
+
+### ErrorCodeConverter ###
+
+It may be possible, that the ``enum`` values and the JSON string representation of the ``enum`` do not match. If that's the case, you 
+can't use a [StringEnumConverter], but have to implement your own [JsonConverter](http://www.newtonsoft.com/json/help/html/T_Newtonsoft_Json_JsonConverter.htm), 
+to do the conversion.
 
 ```csharp
 // Copyright (c) Philipp Wagner. All rights reserved.
@@ -124,9 +225,9 @@ namespace GcmSharp.Responses.Converter
 }
 ```
 
-## Using the JsonConverter for your Object ##
+### Using the JsonConverter for your Object ###
 
-All you have to do now is to annotate your ``ErrorCode`` property with a [JsonConverter attribute](http://www.newtonsoft.com/json/help/html/T_Newtonsoft_Json_JsonConverterAttribute.htm).
+Similar to the [StringEnumConverter] you have to attribute the ``ErrorCode`` property with a [JsonConverter attribute].
 
 ```csharp
 // Copyright (c) Philipp Wagner. All rights reserved.
@@ -147,9 +248,9 @@ namespace GcmSharp.Test.Responses.Converter
 }
 ```
 
-## Unit Test ##
+### Unit Test ###
 
-And finally we can write some [Unit Tests](https://en.wikipedia.org/wiki/Unit_testing) to ensure everything works correctly.
+Finally we can write a Unit Test to ensure the serialization and deserialization works as expected.
 
 ```csharp
 // Copyright (c) Philipp Wagner. All rights reserved.
