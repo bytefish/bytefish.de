@@ -103,7 +103,7 @@ public class CsvParserTest {
         csvData.add(""); // An empty line... Should be skipped.
         csvData.add("Max,Musterman,2000-01-07");
 
-        List<CsvMappingResult<Person>> result =  parser.Parse(csvData)
+        List<CsvMappingResult<Person>> result =  parser.parse(csvData)
                 .collect(Collectors.toList()); // turn it into a List!
 
         Assert.assertNotNull(result);
@@ -339,7 +339,7 @@ public void testReadFromFile_LocalWeatherData_Sequential() {
     MeasurementUtils.MeasureElapsedTime("LocalWeatherData_Sequential_Parse", () -> {
 
         // Read the file. Make sure to wrap it in a try, so the file handle gets disposed properly:
-        try(Stream<CsvMappingResult<LocalWeatherData>> stream = parser.ReadFromFile(FileSystems.getDefault().getPath("C:\\Users\\philipp\\Downloads\\csv", "201503hourly.txt"), StandardCharsets.UTF_8)) {
+        try(Stream<CsvMappingResult<LocalWeatherData>> stream = parser.readFromFile(FileSystems.getDefault().getPath("C:\\Users\\philipp\\Downloads\\csv", "201503hourly.txt"), StandardCharsets.UTF_8)) {
 
                 List<CsvMappingResult<LocalWeatherData>> result = stream
                         .filter(e -> e.isValid())
@@ -395,7 +395,7 @@ public void testReadFromFile_LocalWeatherData_Parallel() {
     MeasurementUtils.MeasureElapsedTime("LocalWeatherData_Parallel_Parse", () -> {
 
         // Read the file. Make sure to wrap it in a try, so the file handle gets disposed properly:
-        try(Stream<CsvMappingResult<LocalWeatherData>> stream = parser.ReadFromFile(FileSystems.getDefault().getPath("C:\\Users\\philipp\\Downloads\\csv", "201503hourly.txt"), StandardCharsets.UTF_8)) {
+        try(Stream<CsvMappingResult<LocalWeatherData>> stream = parser.readFromFile(FileSystems.getDefault().getPath("C:\\Users\\philipp\\Downloads\\csv", "201503hourly.txt"), StandardCharsets.UTF_8)) {
 
             List<CsvMappingResult<LocalWeatherData>> result = stream
                     .filter(e -> e.isValid())
