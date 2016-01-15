@@ -1,7 +1,7 @@
 ﻿title: TinySqlMapper
 date: 2015-12-11 09:42
 tags: c#, sql
-category: c#, sql
+category: sql
 slug: tinysqlmapper
 author: Philipp Wagner
 summary: This article introduces TinySqlMapper, which makes querying a database with .NET easy.

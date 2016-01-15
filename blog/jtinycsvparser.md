@@ -1,7 +1,7 @@
 ﻿title: JTinyCsvParser
 date: 2016-01-08 15:02
-tags: csv, tinycsvparser, jtinycsvparser
-category: csv, jtinycsvparser, java
+tags: csv, tinycsvparser, jtinycsvparser, java
+category: java
 slug: jtinycsvparser
 author: Philipp Wagner
 summary: This article introduces JTinyCsvParser, which is a Java 1.8 Framework for CSV parsing.

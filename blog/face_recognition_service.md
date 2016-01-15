@@ -1,7 +1,7 @@
 title: Implementing a Face Recognition Web service
 date: 2014-08-16 21:29
 tags: python, flask, facerec
-category: python, computer vision
+category: computer vision
 slug: face_recognition_webservice
 author: Philipp Wagner
 summary: Implementing a Face Recognition Web service with Flask.

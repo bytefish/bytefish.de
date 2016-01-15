@@ -1,7 +1,7 @@
 ﻿title: TinyCsvParser Documentation
 date: 2016-01-03 17:02
 tags: c#, csv, tinycsvparser
-category: c#, tinycsvparser
+category: tinycsvparser
 slug: tinycsvparser_documentaion
 author: Philipp Wagner
 summary: This article introduces the TinyCsvParser documentation.

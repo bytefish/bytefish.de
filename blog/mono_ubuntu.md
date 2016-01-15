@@ -1,7 +1,7 @@
 ﻿title: Mono on Ubuntu 14.04
 date: 2016-01-15 11:09
 tags: tinycsvparser, mono, linux
-category: linux, mono
+category: mono
 slug: mono_ubuntu
 author: Philipp Wagner
 summary: This article explains how to use Mono on Ubuntu 14.04.3.
@@ -14,8 +14,9 @@ summary: This article explains how to use Mono on Ubuntu 14.04.3.
 [Mono]: http://www.mono-project.com/
 [MonoDevelop]: http://www.monodevelop.com/
 
-There is an open source project called [Mono], which provides a .NET-compatible set of tools, a C# compiler and Common Language Runtime (CLR). 
-I was pleasantly surprised, that all Unit Tests in [TinyCsvParser] succeeded without touching a single line of code in the project.
+There is an open source project called [Mono], which provides a .NET-compatible set of tools, a C# compiler and Common Language Runtime (CLR).
+This makes it possible to run C# code in Linux. I wanted to see, if [TinyCsvParser] works in Linux and I was pleasantly surprised, that all 
+Unit Tests succeeded without touching a single line of code.
 
 Installing the latest stable release [Mono] 4.2 on a fresh Ubuntu installation is easy.
 
