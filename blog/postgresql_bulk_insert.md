@@ -1,7 +1,7 @@
 ﻿title: PostgreSQL Bulk Insert with C#
 date: 2015-10-24 10:38
-tags: c#, postgresql, bulk insert
-category: c#, postgresql
+tags: c#, postgresql, bulk insert, sql
+category: sql
 slug: postgresql_bulk_insert
 author: Philipp Wagner
 summary: This article shows how to bulk insert data into PostgreSQL from .NET.

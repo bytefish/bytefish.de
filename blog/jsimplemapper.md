@@ -14,10 +14,12 @@ summary: This article introduces JSimpleMapper for mapping between Java Beans.
 
 ## Basic Usage ##
 
-A lot of problems in software development boil down to converting or mapping data. The Webservice receives JSON data, that needs to be mapped 
-into an object of the application. A database sends a query result, which has to be mapped to an object in our application. A device sends 
-data with a binary protocol, that has to be parsed and mapped to a protocol model in the application. The UI works with a UI-specific ViewModel, 
-that needs to be mapped to the model in the application...
+A lot of problems in software development boil down to converting or mapping data. 
+
+The Webservice receives JSON data, that needs to be mapped into an object of the application. A database sends a query result, 
+which has to be mapped to an object in our application. A device sends data with a binary protocol, that has to be parsed and 
+mapped to a protocol model in the application. The UI works with a UI-specific ViewModel, that needs to be mapped to the model 
+in the application...
 
 So [JSimpleMapper] is a small program to map between two Java Beans, which happens a lot in layered applications. 
 
@@ -28,7 +30,9 @@ A Java Bean is just a convention (see the [Oracle Documentation]), that says:
 3. Implements Serializable
 
 The basic idea of [JSimpleMapper] is, that you only have to implement an ``AbstractMapper<TSourceEntity, TTargetEntity>`` for mapping between 
-two entities in your application. Imagine, you need to convert between a ``PersonViewModel`` and ``PersonDomainModel``, where the property 
+two entities in your application. 
+
+Imagine, you need to convert between a ``PersonViewModel`` and ``PersonDomainModel``, where the property 
 ``PersonViewModel.birthDate`` is a ``String`` and ``PersonDomainModel.birthDate`` is a ``LocalDate``.
 
 ```java
