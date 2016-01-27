@@ -12,8 +12,7 @@ template: page
 
 * Email: bytefish *AT* gmx *DOT* de
 * Address: Check the WHOIS record.
-* <a href="/static/philipp_wagner.asc.gz" class="mediafile gz">Public Key</a>
-  
+
 ## Links ##
 
 *(in (almost) no special order)*
