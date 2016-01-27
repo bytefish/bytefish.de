@@ -1,7 +1,7 @@
 title: DataContractJsonSerializer: Serializing and Deserializing enum values by their name
 date: 2015-03-27 20:54
-tags: c#
-category: c#
+tags: csharp
+category: csharp
 slug: enum_datacontractjsonserializer
 author: Philipp Wagner
 

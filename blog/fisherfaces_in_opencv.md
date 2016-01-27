@@ -1,6 +1,6 @@
 title: Fisherfaces in OpenCV
 date: 2011-11-12 15:11
-tags: c++, opencv,face recognition
+tags: cpp, opencv,face recognition
 category: computer vision
 slug: fisherfaces_in_opencv
 author: Philipp Wagner

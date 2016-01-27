@@ -1,7 +1,7 @@
 ﻿title: Using TinyCsvParser and FluentValidation
 date: 2015-09-15 22:12
-tags: c#, csv, fluent validation
-category: c#
+tags: csharp, csv, fluent validation
+category: csharp
 slug: fluent_validation
 author: Philipp Wagner
 summary: This article describes how to validate data with TinyCsvParser and FluentValidation.

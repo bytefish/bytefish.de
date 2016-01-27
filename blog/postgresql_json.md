@@ -1,6 +1,6 @@
 title: JSON Generation with PostgreSQL
 date: 2015-03-08 12:54
-tags: sql
+tags: json, sql, postgresql
 category: sql
 slug: postgresql_json
 author: Philipp Wagner

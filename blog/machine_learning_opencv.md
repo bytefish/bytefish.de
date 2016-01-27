@@ -1,6 +1,6 @@
 title: Machine Learning with OpenCV
 date: 2010-05-25 16:33
-tags: machine learning, opencv
+tags: machine learning, opencv, cpp
 category: computer vision
 slug: machine_learning_opencv
 author: Philipp Wagner

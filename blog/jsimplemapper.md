@@ -1,6 +1,6 @@
 ﻿title: Introducing JSimpleMapper
 date: 2016-01-15 18:36
-tags: JSimpleMapper
+tags: JSimpleMapper, java
 category: jsimplemapper 
 slug: jsimplemapper
 author: Philipp Wagner

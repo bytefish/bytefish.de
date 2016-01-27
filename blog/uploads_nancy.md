@@ -1,7 +1,7 @@
 title: File Uploads with Nancy
 date: 2015-08-16 14:00
-tags: c#, nancy
-category: c#
+tags: csharp, nancy
+category: csharp
 slug: file_upload_nancy
 author: Philipp Wagner
 summary: This article describes how to do file uploads with Nancy, a framework for HTTP based services on .NET and Mono.

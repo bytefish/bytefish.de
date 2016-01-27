@@ -1,6 +1,6 @@
 ﻿title: PostgreSQL Bulk Insert with C#
 date: 2015-10-24 10:38
-tags: c#, postgresql, bulk insert, sql
+tags: csharp, postgresql, bulk insert, sql
 category: sql
 slug: postgresql_bulk_insert
 author: Philipp Wagner

@@ -1,6 +1,6 @@
 title: Longest Common Subsequence
 date: 2010-08-09 17:37
-tags: c++
+tags: cpp
 category: programming
 slug: longest_common_subsequence
 author: Philipp Wagner

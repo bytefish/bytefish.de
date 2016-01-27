@@ -1,6 +1,6 @@
 title: Eigenvalues in OpenCV
 date: 2010-07-15 18:35
-tags: opencv, eigenvalues, eigenfaces
+tags: opencv, eigenvalues, eigenfaces, cpp
 category: opencv
 slug: eigenvalues_in_opencv
 author: Philipp Wagner

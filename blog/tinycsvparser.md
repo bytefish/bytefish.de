@@ -1,7 +1,7 @@
 ﻿title: TinyCsvParser - Parsing CSV Data with C#
 date: 2015-09-12 14:35
-tags: c#, csv
-category: c#
+tags: csharp, csv, tinycsvparser
+category: csharp
 slug: tinycsvparser
 author: Philipp Wagner
 summary: This article describes how to parse CSV data with C#.

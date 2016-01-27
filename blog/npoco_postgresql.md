@@ -1,7 +1,7 @@
 title: NPoco with PostgreSQL
 date: 2015-05-24 21:55
-tags: c#, sql
-category: sql
+tags: csharp, sql
+category: csharp
 slug: npoco_postgresql
 author: Philipp Wagner
 

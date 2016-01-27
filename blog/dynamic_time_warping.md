@@ -1,6 +1,6 @@
 title: Dynamic Time Warping
 date: 2010-08-04 00:55 
-tags: c++
+tags: cpp
 category: programming
 slug: dynamic_time_warping
 author: Philipp Wagner

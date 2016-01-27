@@ -1,7 +1,7 @@
 ﻿title: Benchmarking TinyCsvParser
 date: 2015-09-19 10:54
-tags: c#, csv, tinycsvparser
-category: c#
+tags: csharp, csv, tinycsvparser
+category: csharp
 slug: tinycsvparser_benchmark
 author: Philipp Wagner
 summary: This article benchmarks TinyCsvParser on a large file.

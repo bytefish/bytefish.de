@@ -1,7 +1,7 @@
 ﻿title: PostgreSQL and TinyCsvParser
 date: 2015-09-25 10:54
-tags: c#, csv, tinycsvparser, postgresql
-category: c#
+tags: csharp, csv, tinycsvparser, postgresql
+category: csharp
 slug: tinycsvparser_postgresql
 author: Philipp Wagner
 summary: This article shows how to insert a large CSV dataset into PostgreSQL with TinyCsvParser and Npgsql.

@@ -1,7 +1,7 @@
 ﻿title: Token Authentication with Nancy and Owin
 date: 2015-08-29 15:33
-tags: c#, nancy
-category: c#
+tags: csharp, nancy
+category: csharp
 slug: token_authentication_owin_nancy
 author: Philipp Wagner
 summary: This article describes how to implement Token-based authentication with Nancy.

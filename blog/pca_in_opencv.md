@@ -1,6 +1,6 @@
 title: PCA in OpenCV
 date: 2011-04-20 09:06
-tags: opencv, c++
+tags: opencv, cpp
 category: computer vision
 slug: pca_in_opencv
 author: Philipp Wagner

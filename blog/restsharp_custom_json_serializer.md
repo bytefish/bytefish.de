@@ -1,7 +1,7 @@
 ﻿title: Custom JSON Serializer and JSON Deserializer for RestSharp
 date: 2015-11-08 14:41
-tags: c#, restsharp
-category: c#
+tags: csharp, restsharp
+category: csharp
 slug: restsharp_custom_json_serializer
 author: Philipp Wagner
 summary: This article shows how to use a custom JSON serializer and JSON deserializer for RestSharp.

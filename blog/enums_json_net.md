@@ -1,7 +1,7 @@
 ﻿title: Serializing and Deserializing Enumerations with Json.NET 
 date: 2015-11-07 13:22
-tags: c#, rest, software design
-category: c#
+tags: csharp, rest, software design
+category: csharp
 slug: enums_json_net
 author: Philipp Wagner
 summary: This article describes how to serialize and deserialize enums with Json.NET.

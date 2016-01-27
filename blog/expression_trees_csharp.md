@@ -1,7 +1,7 @@
 ﻿title: Create delegates for Constructors, Property Getters and Property Setters by Compiling Expression Trees in C#
 date: 2015-11-08 13:41
-tags: c#, reflection, software design
-category: c#
+tags: csharp, reflection, software design
+category: csharp
 slug: expression_trees_csharp
 author: Philipp Wagner
 summary: This article shows how to use expression trees in C#.

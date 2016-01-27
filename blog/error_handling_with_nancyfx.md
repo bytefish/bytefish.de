@@ -1,7 +1,7 @@
 title: Consistent Error Handling with Nancy
 date: 2015-04-19 13:48
-tags: c#, nancyfx
-category: c#
+tags: csharp, nancy
+category: csharp
 slug: consistent_error_handling_with_nancy
 author: Philipp Wagner
 

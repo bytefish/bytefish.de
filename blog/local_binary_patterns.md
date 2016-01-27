@@ -1,6 +1,6 @@
 title: Local Binary Patterns
 date: 2011-11-08 02:46
-tags: c++, opencv
+tags: cpp, opencv
 category: computer vision
 slug: local_binary_patterns
 author: Philipp Wagner

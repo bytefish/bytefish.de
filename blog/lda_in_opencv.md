@@ -1,6 +1,6 @@
 title: Linear Discriminant Analysis with OpenCV
 date: 2011-10-09 15:10
-tags: c++, 
+tags: cpp, opencv 
 category: computer vision
 slug: lda_in_opencv
 author: Philipp Wagner

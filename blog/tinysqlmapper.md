@@ -1,6 +1,6 @@
 ﻿title: TinySqlMapper
 date: 2015-12-11 09:42
-tags: c#, sql
+tags: csharp, sql
 category: sql
 slug: tinysqlmapper
 author: Philipp Wagner

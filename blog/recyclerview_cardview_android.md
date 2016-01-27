@@ -1,6 +1,6 @@
 ﻿title: Android CardView and RecyclerView Example
 date: 2015-11-14 12:15
-tags: android, software design
+tags: android, java
 category: android
 slug: recyclerview_cardview_android
 author: Philipp Wagner

@@ -1,6 +1,6 @@
 title: Colormaps in OpenCV
 date: 2011-11-25 12:23
-tags: opencv
+tags: opencv, cpp
 category: computer vision
 slug: colormaps_in_opencv
 author: Philipp Wagner

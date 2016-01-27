@@ -1,6 +1,6 @@
 title: Principal Component Analysis and Linear Discriminant Analysis with GNU Octave
 date: 2011-10-01 00:46
-tags: octave, r
+tags: matlab, octave, r
 category: statistics
 slug: pca_lda_with_gnu_octave
 author: Philipp Wagner

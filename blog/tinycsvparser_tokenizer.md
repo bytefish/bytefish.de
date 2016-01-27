@@ -1,6 +1,6 @@
 ﻿title: Using a Tokenizer in TinyCsvParser
 date: 2016-01-01 10:14
-tags: c#, csv
+tags: csharp, csv, tinycsvparser
 category: tinycsvparser
 slug: tinycsvparser_tokenizer
 author: Philipp Wagner

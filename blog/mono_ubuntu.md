@@ -1,6 +1,6 @@
 ﻿title: Mono on Ubuntu 14.04
 date: 2016-01-15 11:09
-tags: tinycsvparser, mono, linux
+tags: csharp, tinycsvparser, mono, linux
 category: mono
 slug: mono_ubuntu
 author: Philipp Wagner
