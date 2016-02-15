@@ -49,38 +49,38 @@ CREATE TABLE sample.unit_test
 The corresponding domain model in the application might look like this.
 
 ```java
-    private class LocalWeatherData
-    {
-        private String WBAN;
+private class LocalWeatherData
+{
+    private String wban;
 
-        private LocalDate Date;
+    private LocalDate date;
 
-        private String SkyCondition;
+    private String skyCondition;
 
-        public String getWBAN() {
-            return WBAN;
-        }
-
-        public void setWBAN(String WBAN) {
-            this.WBAN = WBAN;
-        }
-
-        public LocalDate getDate() {
-            return Date;
-        }
-
-        public void setDate(LocalDate date) {
-            Date = date;
-        }
-
-        public String getSkyCondition() {
-            return SkyCondition;
-        }
-
-        public void setSkyCondition(String skyCondition) {
-            SkyCondition = skyCondition;
-        }
+    public String getWban() {
+        return wban;
     }
+
+    public void setWban(String wban) {
+        this.wban = wban;
+    }
+
+    public LocalDate getDate() {
+        return date;
+    }
+
+    public void setDate(LocalDate date) {
+        this.date = date;
+    }
+
+    public String getSkyCondition() {
+        return skyCondition;
+    }
+
+    public void setSkyCondition(String skyCondition) {
+        this.skyCondition = skyCondition;
+    }
+}
 ```
 
 ## TinyCsvParser ##
@@ -98,7 +98,7 @@ public class LocalWeatherDataMapper extends CsvMapping<LocalWeatherData>
     {
         super(creator);
 
-        MapProperty(0, String.class, LocalWeatherData::setWBAN);
+        MapProperty(0, String.class, LocalWeatherData::setWban);
         MapProperty(1, LocalDate.class, LocalWeatherData::setDate, new LocalDateConverter(DateTimeFormatter.ofPattern("yyyyMMdd")));
         MapProperty(4, String.class, LocalWeatherData::setSkyCondition);
     }
@@ -108,8 +108,10 @@ public class LocalWeatherDataMapper extends CsvMapping<LocalWeatherData>
 ## PgBulkInsert ##
 
 For the bulk inserts to PostgreSQL the mapping between the database table and the domain model needs to be defined. This is done by implementing 
-the abstract base class ``PgBulkInsert<TEntity>``. We can now implement it for the ``Person`` class, and again you can see how the getters of the 
-domain model map to the column names of the database table.
+the abstract base class ``PgBulkInsert<TEntity>``. 
+
+We can now implement it for the ``Person`` class, and again you can see how the getters of the domain model map to the column names of the 
+database table.
 
 ```java
 public class LocalWeatherDataBulkInserter extends PgBulkInsert<LocalWeatherData>
@@ -117,7 +119,7 @@ public class LocalWeatherDataBulkInserter extends PgBulkInsert<LocalWeatherData>
     public LocalWeatherDataBulkInserter() {
         super("sample", "unit_test");
 
-        MapString("wban", LocalWeatherData::getWBAN);
+        MapString("wban", LocalWeatherData::getWban);
         MapString("sky_condition", LocalWeatherData::getSkyCondition);
         MapDate("date", LocalWeatherData::getDate);
     }
@@ -157,8 +159,8 @@ A lot of things are going on here. First of all the ``CsvParser`` is constructed
 for the entity to parse. Then a ``PgBulkInsert`` object is instantiated, which is the ``LocalWeatherDataBulkInserter`` defined above. 
 
 Then the CSV file is parsed. You have to be careful and wrap the ``CsvParser<TEntity>.readFromFile`` method in a [try-with-resources statement](https://docs.oracle.com/javase/tutorial/essential/exceptions/tryResourceClose.html), 
-so the File Handle gets disposed properly. The result of the parsing is a ``Stream<CsvMappingResilt<LocalWeatherData>>``, which is then consumed by the ``LocalWeatherDataBulkInserter``. The 
-``Stream<CsvMappingResilt<LocalWeatherData>>`` result type might look scary, but it basically only contains the parsed object and a flag if it is valid or not. A CSV file might contain invalid 
+so the File Handle gets disposed properly. The result of the parsing is a ``Stream<CsvMappingResult<LocalWeatherData>>``, which is then consumed by the ``LocalWeatherDataBulkInserter``. The 
+``Stream<CsvMappingResult<LocalWeatherData>>`` result type might look scary, but it basically only contains the parsed object and a flag if it is valid or not. A CSV file might contain invalid 
 entries (wrong formats), and you don't want to stop parsing because a single line is invalid.
 
 We only want to import valid entities into the database, so the stream is further filtered for valid entries and then mapped to the result entities. This stream is then consumed by the 
@@ -252,34 +254,34 @@ public class IntegrationTest extends TransactionalTestBase {
 
     private class LocalWeatherData
     {
-        private String WBAN;
+        private String wban;
 
-        private LocalDate Date;
+        private LocalDate date;
 
-        private String SkyCondition;
+        private String skyCondition;
 
-        public String getWBAN() {
-            return WBAN;
+        public String getWban() {
+            return wban;
         }
 
-        public void setWBAN(String WBAN) {
-            this.WBAN = WBAN;
+        public void setWban(String wban) {
+            this.wban = wban;
         }
 
         public LocalDate getDate() {
-            return Date;
+            return date;
         }
 
         public void setDate(LocalDate date) {
-            Date = date;
+            this.date = date;
         }
 
         public String getSkyCondition() {
-            return SkyCondition;
+            return skyCondition;
         }
 
         public void setSkyCondition(String skyCondition) {
-            SkyCondition = skyCondition;
+            this.skyCondition = skyCondition;
         }
     }
 
@@ -288,7 +290,7 @@ public class IntegrationTest extends TransactionalTestBase {
         public LocalWeatherDataBulkInserter() {
             super("sample", "unit_test");
 
-            MapString("wban", LocalWeatherData::getWBAN);
+            MapString("wban", LocalWeatherData::getWban);
             MapString("sky_condition", LocalWeatherData::getSkyCondition);
             MapDate("date", LocalWeatherData::getDate);
         }
@@ -300,7 +302,7 @@ public class IntegrationTest extends TransactionalTestBase {
         {
             super(creator);
 
-            MapProperty(0, String.class, LocalWeatherData::setWBAN);
+            MapProperty(0, String.class, LocalWeatherData::setWban);
             MapProperty(1, LocalDate.class, LocalWeatherData::setDate, new LocalDateConverter(DateTimeFormatter.ofPattern("yyyyMMdd")));
             MapProperty(4, String.class, LocalWeatherData::setSkyCondition);
         }
