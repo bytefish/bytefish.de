@@ -17,8 +17,34 @@ summary: This article shows how to use a custom JSON serializer and JSON deseria
 [ISerializer]: https://github.com/restsharp/RestSharp/blob/master/RestSharp/Serializers/ISerializer.cs
 [IDeserializer]: https://github.com/restsharp/RestSharp/blob/master/RestSharp/Deserializers/IDeserializer.cs
 
-A custom serializer and deserializer for RestSharp simply needs to implement the [ISerializer] and [IDeserializer] interfaces. The example ``NewtonsoftJsonSerializer`` 
-is using [Json.NET], which is a popular library for JSON serialization in the .NET world.
+### ISerializer and IDeserializer ###
+
+A custom serializer and deserializer for RestSharp simply needs to implement the [ISerializer] and [IDeserializer] interfaces. So it is useful 
+to define an interface that is implementing both, the ``ISerializer`` and ``IDeserializer``.
+
+```csharp
+// Copyright (c) Philipp Wagner. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+using RestSharp.Deserializers;
+using RestSharp.Serializers;
+
+namespace GcmSharp.Serialization
+{
+    public interface IJsonSerializer : ISerializer, IDeserializer {
+
+    }
+}
+```
+
+### NewtonsoftJsonSerializer ###
+
+
+The example ``NewtonsoftJsonSerializer`` is using [Json.NET], which is a popular library for JSON serialization in the .NET world. We do this 
+by writing a class, that implements the above ``IJsonSerializer`` interface and wraps a ``Newtonsoft.Json.JsonSerializer``. We are also providing 
+a default getter (``Default``), which returns a new ``NewtonsoftJsonSerializer`` with sane default values.
+
+If the default ``Newtonsoft.Json.JsonSerializer`` doesn't fit your needs, you simply instantiate the correct serializer by using the constructor.
 
 ```csharp
 // Copyright (c) Philipp Wagner. All rights reserved.
@@ -31,23 +57,19 @@ using RestSharp.Deserializers;
 
 namespace GcmSharp.Serialization
 {
-    public class NewtonsoftJsonSerializer : ISerializer, IDeserializer
+    public class NewtonsoftJsonSerializer : IJsonSerializer
     {
-        private Newtonsoft.Json.JsonSerializer jsonSerializer;
+        private Newtonsoft.Json.JsonSerializer serializer;
 
-        public NewtonsoftJsonSerializer()
+        public NewtonsoftJsonSerializer(Newtonsoft.Json.JsonSerializer serializer)
         {
-            this.jsonSerializer = new Newtonsoft.Json.JsonSerializer()
-            {
-                NullValueHandling = NullValueHandling.Ignore
-            };            
+            this.serializer = serializer;           
         }
 
         public string ContentType {
             get { return "application/json"; } // Probably used for Serialization?
             set { }
         }
-
         
         public string DateFormat { get; set; }
 
@@ -61,7 +83,7 @@ namespace GcmSharp.Serialization
             {
                 using (var jsonTextWriter = new JsonTextWriter(stringWriter))
                 {
-                    jsonSerializer.Serialize(jsonTextWriter, obj);
+                    serializer.Serialize(jsonTextWriter, obj);
 
                     return stringWriter.ToString();
                 }
@@ -76,18 +98,27 @@ namespace GcmSharp.Serialization
             {
                 using (var jsonTextReader = new JsonTextReader(stringReader))
                 {
-                    return jsonSerializer.Deserialize<T>(jsonTextReader);
+                    return serializer.Deserialize<T>(jsonTextReader);
                 }
+            }
+        }
+
+        public static NewtonsoftJsonSerializer Default
+        {
+            get
+            {
+                return new NewtonsoftJsonSerializer(new Newtonsoft.Json.JsonSerializer()
+                {
+                    NullValueHandling = NullValueHandling.Ignore,
+                }); 
             }
         }
     }
 }
 ```
 
-Yes, you probably need to extend the constructor, in order to pass a configuration for the Newtonsoft JsonSerializer into the custom serializer. This 
-might be neccessary to handle custom date formats, null value handling and so on.
 
-## Using the Custom Serializer for Requests ##
+### Using the Custom Serializer for Requests ###
 
 [RestRequest]: https://github.com/restsharp/RestSharp/blob/master/RestSharp/RestRequest.cs
 
@@ -98,7 +129,7 @@ and set it as content for a request.
 private void SetJsonContent(RestRequest request, object obj)
 {
     request.RequestFormat = DataFormat.Json;
-    request.JsonSerializer = new NewtonsoftJsonSerializer();
+    request.JsonSerializer = NewtonsoftJsonSerializer.Default;
     request.AddJsonBody(obj);
 }
 ```
@@ -119,11 +150,11 @@ private RestClient CreateClient(string baseUrl)
     var client = new RestClient(baseUrl);
 
     // Override with Newtonsoft JSON Handler
-    client.AddHandler("application/json", new NewtonsoftJsonSerializer());
-    client.AddHandler("text/json", new NewtonsoftJsonSerializer());
-    client.AddHandler("text/x-json", new NewtonsoftJsonSerializer());
-    client.AddHandler("text/javascript", new NewtonsoftJsonSerializer());
-    client.AddHandler("*+json", new NewtonsoftJsonSerializer());
+    client.AddHandler("application/json", NewtonsoftJsonSerializer.Default);
+    client.AddHandler("text/json", NewtonsoftJsonSerializer.Default);
+    client.AddHandler("text/x-json", NewtonsoftJsonSerializer.Default);
+    client.AddHandler("text/javascript", NewtonsoftJsonSerializer.Default);
+    client.AddHandler("*+json", NewtonsoftJsonSerializer.Default);
 
     return client;
 }
