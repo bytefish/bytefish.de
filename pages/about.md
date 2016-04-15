@@ -33,3 +33,4 @@ template: page
 * [http://www.alexdodge.com](http://www.alexdodge.com)
 * [http://www.ebasement.de](http://www.ebasement.de)
 * [http://www.lx200.de](http://www.lx200.de)
+* [http://spurious-logic.net](http://spurious-logic.net)
