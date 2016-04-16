@@ -595,38 +595,56 @@ You are going to the *Settings* tab and set the *Index name or pattern* to ``wea
 	<img src="/static/images/blog/elasticsearch_net/03_create_tilemap_create_tilemap_visualization.jpg" alt="Create Tile Map Visualization Step 1" />
 </a>
 
-### 4. ###
+### 4. Create the Visualization from a New Search ###
+
+We haven't stored any searches over the index yet, so the tile map needs to be created from a new search:
 
 <a href="/static/images/blog/elasticsearch_net/04_create_tilemap_new_search.jpg">
 	<img src="/static/images/blog/elasticsearch_net/04_create_tilemap_new_search.jpg" alt="Create New Search for the Tile Map" />
 </a>
 
-### 5. ###
+### 5. Choosing the Geocordinates for the Tile Map markers ###
+
+The indexed data contains the GPS coordinates of each station. We are going to choose these GPS positions as *Geo Coordinates*:
 
 <a href="/static/images/blog/elasticsearch_net/05_create_tilemap_geo_coordinates.jpg">
 	<img src="/static/images/blog/elasticsearch_net/05_create_tilemap_geo_coordinates.jpg" alt="Choose Geo Coordinates from the Index" />
 </a>
 
-### 6. ###
+### 6. Inspecting the Geo Coordinates ###
+
+There is only one *Geo Position* property in the index. Kibana should automatically choose this property, but you should inspect to 
+see if the correct values has been determined:
 
 <a href="/static/images/blog/elasticsearch_net/06_create_tilemap_geo_coordinates_set.jpg">
 	<img src="/static/images/blog/elasticsearch_net/06_create_tilemap_geo_coordinates_set.jpg" alt="Inspecting the Geocordinates" />
 </a>
 
 
-### 7. ###
+### 7. Adding the Average Temperature Value ###
+
+We want to visualize the Average Temperature, add a new value. *Aggregation* must be set to ``Average`` and *Field* must be set to ``temperature``:
 
 <a href="/static/images/blog/elasticsearch_net/07_create_tilemap_adding_temperature_value.jpg">
 	<img src="/static/images/blog/elasticsearch_net/07_create_tilemap_adding_temperature_value.jpg" alt="Adding Value: Average Temperature" />
 </a>
 
 
-### 8. ###
+### 8. Adjusting the Interval ###
+
+You don't see values yet. This is because of the search interval [Kibana] defaults to. The indexed data is from March 2015, but Kibana visualize only 
+the latest 15 Minutes by default. You need to set the interval to a larger time interval, by adjusting it in the upper right part of the Kibana front-end.
+
+I have highlighted it with a red marker in the following screenshot:
 
 <a href="/static/images/blog/elasticsearch_net/08_create_tilemap_adjust_interval.jpg">
 	<img src="/static/images/blog/elasticsearch_net/08_create_tilemap_adjust_interval.jpg" alt="Inspecting the Weather Data Index Pattern" />
 </a>
 
+
+### Final Visualization ###
+
+And now you can enjoy the final visualization of the Average temperature in March 2015:
 
 <a href="/static/images/blog/elasticsearch_net/kibana.jpg">
 	<img src="/static/images/blog/elasticsearch_net/thumbs/kibana_thumb.jpg" alt="Kibana Map Weather Visualization" />
