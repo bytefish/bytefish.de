@@ -6,22 +6,34 @@ slug: elasticsearch_net
 author: Philipp Wagner
 summary: This article shows how to work with Elasticsearch from .NET.
 
-[Elasticsearch] is described as a "[...] a distributed, open source search and analytics engine, designed for horizontal scalability, reliability, and easy management". Basically 
-[Elasticsearch] is a NoSQL database, that makes it possible to index data in form of JSON documents. In constrast to a traditional relational database the data in [Elasticsearch] 
+I needed to visualize some data, so I wrote a sample .NET application to see how to work with [Elasticsearch] and [Kibana]. 
+
+The [elastic] product page describes [Elasticsearch] as: 
+
+> [...] a distributed, open source search and analytics engine, designed for horizontal 
+> scalability, reliability, and easy management". 
+
+Basically [Elasticsearch] is a NoSQL database, that makes it possible to index data in form of JSON documents. In constrast to a traditional relational database the data in [Elasticsearch] 
 is not stored in separate tables, but stored in JSON documents containing all data neccessary for a query.
 
 At the very core of [Elasticsearch] is [Apache Lucene], which is a text search engine library written entirely in Java. [Apache Lucene] is used to build a search index over the 
 data, and makes it possible to efficiently query the large datasets. In order to make writing queries easier [Elasticsearch] provides a custom query language called the [Query DSL]. 
 
-This article shows how to work with [Elasticsearch] from .NET.
+## Sources ##
 
 You can find the full source code example in my git repository at:
 
 * [https://github.com/bytefish/ElasticSearchExperiment](https://github.com/bytefish/ElasticSearchExperiment)
 
-## Example ##
+## What we are going to build ##
 
 The idea is to store the hourly weather data of 1,600 U.S. locations in an [Elasticsearch] database and visualize it with [Kibana].
+
+The final result will visualize the average temperature in March 2015 on a tile map:
+
+<a href="/static/images/blog/elasticsearch_net/kibana.jpg">
+	<img src="/static/images/blog/elasticsearch_net/thumbs/kibana_thumb.jpg" alt="Kibana Map Weather Visualization" />
+</a>
 
 ## Prerequisites ##
 
@@ -54,8 +66,7 @@ The data is available as CSV files at:
 
 We are going to use the data from March 2015, which is located in the zipped file ``QCLCD201503.zip``.
 
-
-## Parsing the Dataset ###
+## Parsing the CSV Dataset ###
 
 The example is going to use [TinyCsvParser] to read in the CSV data.
 
@@ -268,7 +279,7 @@ Install-Package NEST
 ### Model and Mapping ###
 
 If you are working with [Elasticsearch] the data needs to modeled different to a Relational Database. Instead of modelling relations between data in separate files, you need to store all data neccessary 
-for a query in a document. The Elasticsearch documentation states on [Handling Relationships]:
+for a query in a document. The Elasticsearch documentation states on [Handling Relationships](https://www.elastic.co/guide/en/elasticsearch/guide/current/relations.html):
 
 > Elasticsearch, like most NoSQL databases, treats the world as though it were flat. An index is a flat collection of independent documents. 
 > A single document should contain all of the information that is required to decide whether it matches a search request.
@@ -346,8 +357,8 @@ namespace ElasticSearchExample.Elastic.Model
 
 ### Client ###
 
-``NEST`` is the high-level client to interface with an Elasticsearch instance. In the example I am using a wrapper around an ``IElasticClient``, that 
-makes it possible to create the search index and perform bulk inserts. In order to use the mapping attributes, we are doing an ``AutoMap``, when defining 
+[NEST] is the high-level client to interface with an Elasticsearch instance. In the example I am using a wrapper around the [IElasticClient](https://www.elastic.co/guide/en/elasticsearch/client/net-api/1.x/nest-connecting.html), 
+that makes it possible to create the search index and perform bulk inserts. In order to use the mapping attributes, we are doing an ``AutoMap``, when defining 
 the entity mapping.
 
 ```csharp
@@ -652,10 +663,11 @@ And now you can enjoy the final visualization of the Average temperature in Marc
 
 ## Conclusion ##
 
-Getting started with [Elasticsearch] was very easy. [NEST] is a fine library to work with, once you have understood the basic ideas behind the API. The recent NEST 2.0 library still lacks a little documentation, 
-but I am quite sure the team behind is working hard on it. Getting started with [Kibana] and creating simple visualizations was also very easy. I love how easy it turned out to plot the Geolocations on the world 
-map.
+Getting started with [Elasticsearch] was very easy. [NEST] is a fine library and exceptionally well documented. [Kibana] is a great front-end and it was easy to 
+create simple visualizations, such as a tile map. [Elasticsearch] will never be my primary data store (when in doubt, I am always using PostgreSQL), but if I 
+need to quickly show some data to customers, I will probably use some of the [elastic] products.
 
+[elastic]: https://www.elastic.co/
 [NEST]: https://github.com/elastic/elasticsearch-net
 [Elasticsearch Reference]: https://www.elastic.co/guide/en/elasticsearch/reference/current/index.html
 [MIT License]: https://opensource.org/licenses/MIT
@@ -664,7 +676,6 @@ map.
 [Kibana]: https://www.elastic.co/products/kibana
 [TinyCsvParser]: https://github.com/bytefish/TinyCsvParser/
 [Quality Controlled Local Climatological Data (QCLCD)]: https://www.ncdc.noaa.gov/data-access/land-based-station-data/land-based-datasets/quality-controlled-local-climatological-data-qclcd
-
 [Query DSL]: https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl.html
 [Introducing the Query Language]: https://www.elastic.co/guide/en/elasticsearch/reference/current/_introducing_the_query_language.html
 
