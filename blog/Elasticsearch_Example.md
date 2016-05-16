@@ -664,8 +664,7 @@ And now you can enjoy the final visualization of the Average temperature in Marc
 ## Conclusion ##
 
 Getting started with [Elasticsearch] was very easy. [NEST] is a fine library and exceptionally well documented. [Kibana] is a great front-end and it was easy to 
-create simple visualizations, such as a tile map. [Elasticsearch] will never be my primary data store (when in doubt, I am always using PostgreSQL), but if I 
-need to quickly show some data to customers, I will probably use some of the [elastic] products.
+create simple visualizations, such as a tile map.
 
 [elastic]: https://www.elastic.co/
 [NEST]: https://github.com/elastic/elasticsearch-net
