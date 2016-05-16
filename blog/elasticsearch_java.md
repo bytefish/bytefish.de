@@ -26,20 +26,14 @@ The final result will visualize the average temperature in March 2015 on a tile 
 
 ## ElasticSearchClient ##
 
-Working with the Elasticsearch Java API turned out to be a little hard and low-level. 
+Working with Elasticsearch Java API turned out to be a little complicated, that's why I wrote the ``ElasticSearchClient``. 
 
-What I really want when working with Elasticsearch in Java is a client, that I pass the index name and a mapping into and that's 
-it. I don't want to fiddle around with a PUT Mapping or Index Creation in higher levels of my code. So the ``ElasticSearchClient`` 
-I have implemented wraps the original Elasticsearch client to make it easier to work with data. 
+The ``ElasticSearchClient`` makes it possible to:
 
-The client also makes it possible to insert data from a Stream. Streams are an amazing Java 8 feature, and I encourage you to work 
-with them. A streaming approach to data processing frees you from keeping all data to be inserted in memory.
-
-The ``ElasticSearchClient`` allows you to:
-
-* Create an Index by name, if the Index doesn't exist yet
-* Create the mapping with the PUT Mapping API
-* Bulk Insert a given Stream of data
+* Define Mappings with a Fluent API.
+* Create an Index by name, if the Index doesn't exist yet.
+* Create the Mapping with the PUT Mapping API.
+* Bulk Insert a given ``Stream`` of data.
 
 ```java
 // Copyright (c) Philipp Wagner. All rights reserved.
@@ -127,12 +121,12 @@ So how does it work?
 
 One of the most complicated parts of Elasticsearch with Java was working with the Elasticsearch [Mapping].
 
-Elasticsearch is not a schema-less. If you index a document without explicitly defining a document mapping, then Elasticsearch makes 
-a best guess about your data and infers the mapping based on the document data, see the excellent [Elasticsearch Definitive guide] 
+Elasticsearch is not a schema-less database. If you index a document without explicitly defining a document mapping, then Elasticsearch 
+makes a best guess about your data and infers the mapping based on the document data, see the excellent [Elasticsearch Definitive guide] 
 for more informations.
 
 Sometimes you need to have more control over the data types and the mapping. Sometimes a property needs to be nested and included in the 
-parent object. Sometimes you have a field with a weird datatype, that should still be mapped to an Elasticsearch date type and not a 
+parent object. Sometimes you have a date field with a weird format, that should still be mapped to an Elasticsearch date type and not to a 
 string value.
 
 Citing the Elasticsearch documentation on [Mapping]:
@@ -169,9 +163,6 @@ public interface IObjectMapping {
 ```
 
 #### AbstractMap ####
-
-Now comes the most interesting part, which is building the actual mapping. You really don't want to define your mappings in your application 
-as JSON string. I am generally not a huge fan of strings, this kind of code is error prone and hard to test.
 
 First of all we are writing a base class for the mapping, called ``AbstractMap``. This base class handles building JSON mapping from an 
 ``RootObjectMapper`` (from Elasticsearch) and creating the ``XContentBuilder`` from the defined mapping. Implementations of this abstract 
@@ -263,9 +254,10 @@ public abstract class AbstractMap implements IObjectMapping {
 
 #### LocalWeatherDataMapper ####
 
-Now implementing the mapping for a document is easy. You extend your mapping from the ``AbstractMap`` base class and implement the two 
-methods ``configure(RootObjectMapper.Builder builder)`` and ``configure(Settings.Builder builder)``, that are used to define the field 
-mapping and Settings for the index creation.
+Now implementing the mapping for a document is easy. 
+
+You extend your mapping from the ``AbstractMap`` base class and implement the two methods ``configure(RootObjectMapper.Builder builder)`` 
+and ``configure(Settings.Builder builder)``, which are used for defining the field mapping and Settings for the index creation.
 
 You can see, that the ``RootObjectMapper`` has a Fluent API, that makes it very easy to read and write the actual mapping. The various 
 field mappers from Elasticsearch allow you to access all options for a given data type. This is much safer, than defining the mappings 
@@ -397,9 +389,9 @@ and written to the database as a bulk insert. The official Elasticsearch page on
 
 ##### BulkProcessor.Listener #####
 
-Sometimes you need to do additional work on the inserted data, evaluate if the data was inserted correctly, see what time it took to insert the data 
-or you need to handle specific errors occured during inserting the data. This can be done by implementing the ``BulkProcessor.Listener`` interface, 
-which makes it possible to perform actions before and after the bulk insert.
+Sometimes you need to do additional work on the inserted data. You want to evaluate if the data was inserted correctly, see what time it took to 
+insert the data or you need to handle specific errors occured during inserting the data. This can be done by implementing the 
+``BulkProcessor.Listener`` interface, which makes it possible to perform actions before and after the bulk insert.
  
 In the example application, we are only interested in logging the actions, which is implemented by the ``LoggingBulkProcessorListener``.
 
@@ -449,12 +441,11 @@ public class LoggingBulkProcessorListener implements BulkProcessor.Listener {
 
 The ElasticSearch ``BulkProcessor`` needs to be configured with a set of parameters, like: 
 
-* number of bulk actions
-* number of concurrent requests, 
-* bulk size to flush at
+* Number of Bulk Actions
+* Number of Concurrent Requests
+* Bulk Size to flush at
 
-Thsi configuration should be passed to the ``ElasticSearchClient``, that's why a separate class for the options is created. 
-are defined.
+This configuration is passed into the ``ElasticSearchClient``, that's why a separate class for these options is created.
 
 ```java
 // Copyright (c) Philipp Wagner. All rights reserved.
@@ -515,8 +506,9 @@ public class BulkProcessingOptions {
 ```
 
 You don't want to instantiate the ``BulkProcessingOptions`` with its long parameter list by hand. You also don't want to research the default 
-parameters from the Elasticsearch pages. That's why the ``BulkProcessingOptions`` are instantiated by a builder, that has all the default values 
-set.
+parameters from the Elasticsearch pages. 
+
+That's why the ``BulkProcessingOptions`` are instantiated by the ``BulkProcessingOptionsBuilder``, that already has all the default values set.
 
 ```java
 // Copyright (c) Philipp Wagner. All rights reserved.
@@ -576,8 +568,8 @@ public class BulkProcessingOptionsBuilder {
 
 ##### BulkProcessorConfiguration ######
 
-The ``BulkProcessorConfiguration`` is the class, that holds the listener and the options. it has a ``build`` method, that takes 
-an Elasticsearch ``Client`` to build the ``BulkProcessor``. This configuration is passed into the ``ElasticSearchClient``.
+The ``BulkProcessorConfiguration`` is the class, that holds the listener and the options. It has a ``build`` method, that takes 
+an Elasticsearch ``Client`` to build the final ``BulkProcessor``.
 
 ```java
 // Copyright (c) Philipp Wagner. All rights reserved.
@@ -631,11 +623,11 @@ public class BulkProcessorConfiguration {
 
 #### JsonUtilities ####
 
-We want to index JSON data from a given ``Stream`` of objects. These objects need to be serialized to JSON 
+We want to index JSON data from a given ``Stream`` of Java objects. These objects need to be serialized to JSON 
 messages and transformed into a UTF8 byte array. The indexing should not fail, just because one of the entities 
 cannot be serialized to JSON. 
 
-You can imagine, that probably a number is too huge to fit into the defined JSON data type. Or values set as 
+You can imagine, that probably a number is too large to fit into the defined JSON data type. Or values set as 
 required are missing for the serialization. That's why we are wrapping the call to the Jackson 
 ``ObjectMapper.writeValueAsBytes`` in a try/catch block and make the result optional.
 
@@ -672,9 +664,13 @@ public class JsonUtilities {
 
 #### BulkProcessor Pipeline ####
 
-Having wrapped the JSON serialization in a separate class, we can now write the indexing pipeline for the ``BulkProcessor``. 
-It basically works like this: A ``Stream`` of Java objects is first turned into a ``Stream`` JSON messages. Then the invalid 
-JSON messages are filtered out, and for each valid JSON message an ``IndexRequest`` is added to the ``BulkProcessor``.
+Having wrapped the JSON serialization in a separate class, we can now write the indexing pipeline for the ``BulkProcessor``.
+
+It basically works like this: 
+* A ``Stream`` of Java objects is first turned into a ``Stream`` JSON messages. 
+* Then the invalid JSON messages are filtered out.
+* The ``Stream`` of valid JSON messages is turned into a ``Stream`` of ``IndexRequest``. 
+* Each ``IndexRequest`` is added to the ``BulkProcessor``.
 
 ```java
 public void index(Stream<TEntity> entities) {
@@ -686,8 +682,9 @@ public void index(Stream<TEntity> entities) {
 }
 ```
 
-What's left is creating the ``IndexRequest`` from the message. You can see, that we assign a unique identifier to each message, set 
-the index name, the index type and set the JSON message as source.
+What's left is creating the ``IndexRequest`` from the message. 
+
+You can see, that we assign a unique identifier to each message, set the index name, the index type and set the JSON message as source.
 
 ```java
 private IndexRequest createIndexRequest(byte[] messageBytes) {
@@ -900,13 +897,11 @@ public class StationMapper extends CsvMapping<Station>
 
 #### Converter ####
 
-If you look at the CSV file you will see, that it has missing values. These missing values are identified by an ``M`` (apparently for **m**issing). These 
-values cannot be converted into an ``Float`` as defined in the mapping. Still you don't want to discard the entire line, just because of missing values. 
-Probably these values are optional?
+If you look at the CSV file you will see, that it has missing values. You don't want to discard the entire line, just because of a 
+missing value. Probably these values are optional? The missing values in the CSV files are identified by an ``M`` (apparently for **m**issing). 
 
-That's why a custom converter ``IgnoreMissingValuesConverter`` for the columns is implemented, which is done by deriving from a ``JTinyCsvParser.ITypeConverter``.
-
-You have seen how to use it in the ``LocalWeatherDataMapper``.
+These values cannot be converted into an ``Float`` as defined in the mapping. That's why a custom converter ``IgnoreMissingValuesConverter`` for 
+the columns is implemented, which is done by deriving from a ``ITypeConverter`` from [JTinyCsvParser].
 
 ##### IgnoreMissingValuesConverter #####
 
@@ -963,9 +958,9 @@ public class IgnoreMissingValuesConverter implements ITypeConverter<Float> {
 
 #### Parsers ####
 
-The CSV file is parsed with a ``JTinyCsvParser.CsvParser``. The ``CsvParser`` defines how to tokenize a line of CSV data and how 
-to instantiate the result objects. I am defining a class ``Parsers``, that creates ``CsvParser`` instances for the list 
-of Stations and the LocalWeatherData.  
+The CSV file is parsed with a ``CsvParser`` from [JTinyCsvParser]. The ``CsvParser`` defines how to tokenize a line of CSV data 
+and how to instantiate the result objects. I am defining a class ``Parsers``, that creates ``CsvParser`` instances for the CSV 
+Station and the LocalWeatherData file.
 
 ```java
 // Copyright (c) Philipp Wagner. All rights reserved.
@@ -1012,9 +1007,10 @@ We also need to define how the property names are serialized in the JSON documen
 
 ##### GeoLocation #####
 
-If you want to define a property in your data as an Elasticsearch ``GeoPoint``, it needs to have at least the latitude or longitude with the property names ``lat`` and ``lon``.
+If you want to define a property in your data as an Elasticsearch ``GeoPoint`` type, it needs to have at least the latitude or longitude with the property 
+names ``lat`` and ``lon``.
 
-This can easily be implemented with a class, that we call ``GeoLocation``.
+This can easily be implemented with a custom class, that we call ``GeoLocation``.
 
 ```java
 // Copyright (c) Philipp Wagner. All rights reserved.
@@ -1043,7 +1039,7 @@ public class GeoLocation {
 
 ##### Station #####
 
-The station now has the same properties as the CSV file, and has the GPS informations in a ``GeoLocation`` property.
+The station has the same properties like the CSV file. It has the GPS informations of the station in a ``GeoLocation`` property.
 
 ```java
 // Copyright (c) Philipp Wagner. All rights reserved.
@@ -1076,8 +1072,8 @@ public class Station {
 
 ##### LocalWeatherData #####
 
-The ``LocalWeatherData`` contains the actual temperature, wind speed, pressure and so on. It also contains the ``Station``, that generated 
-the measurements.
+The ``LocalWeatherData`` contains the actual temperature, wind speed, pressure and so on. It also contains the ``Station``, 
+that generated the measurements.
 
 ```java
 // Copyright (c) Philipp Wagner. All rights reserved.
@@ -1113,8 +1109,9 @@ public class LocalWeatherData {
 
 #### Mapping ####
 
-The model is defined. Now the Elasticsearch mapping needs to be defined, so Elasticsearch knows how to treat the JSON data, 
-that we are going to insert. This is done by implementing an ``IObjectMapping`` as explained above.
+Now the Elasticsearch mapping needs to be defined. This is done by implementing an ``IObjectMapping`` as explained above.
+
+The ``AbstractMap`` base class can be used to simplify the mapping creation.
 
 ##### LocalWeatherDataMapper #####
 
@@ -1171,9 +1168,10 @@ public class LocalWeatherDataMapper extends AbstractMap {
 
 ### Converting between the CSV and Elasticsearch model ###
 
-What's left is converting between the CSV data and the object-oriented JSON document. This is done by implementing a 
-simple ``LocalWeatherDataConverter`` class, that takes the flat CSV ``Station`` and ``LocalWeatherData`` and builds 
-the hierachial Elasticsearch model.
+What's left is converting between the CSV data and the object-oriented JSON document. 
+
+This is done by implementing a ``LocalWeatherDataConverter`` class, that takes the flat CSV ``Station`` and ``LocalWeatherData`` 
+and builds the hierachial Elasticsearch model.
 
 ```java
 // Copyright (c) Philipp Wagner. All rights reserved.
@@ -1330,6 +1328,108 @@ public class IntegrationTest {
     }
 }
 ```
+
+## Visualizing the Data with Kibana ##
+
+[Kibana] is a front-end to visualize the indexed data stored in an [Elasticsearch] database. It's possible to create various graphs (line charts, pie charts, tilemaps, ...) and combine the 
+created visualizations into custom dashboards. [Kibana] also updates the dashboard as soon as new data is indexed in Elasticsearch, which is a really cool feature to show your customers.
+
+In the following example I want to show how to create a Tile Map, that shows the Average temperature of March 2015.
+
+### Starting Kibana ###
+
+After starting the [Kibana] you can access the front-end using a browser and visiting:
+
+```
+http://localhost:5601
+```
+
+### 1. Configure the Index Pattern ###
+
+In the example application the created index was called ``weather_data``. To visualize this index with [Kibana], an index pattern must be configured.
+
+You are going to the *Settings* tab and set the *Index name or pattern* to ``weather_data``:
+
+<a href="/static/images/blog/elasticsearch_java/01_create_tilemap_configure_index_pattern.jpg">
+	<img src="/static/images/blog/elasticsearch_java/01_create_tilemap_configure_index_pattern.jpg" alt="Creating the Initial Index Pattern" />
+</a>
+
+### 2. Inspecting the Index Pattern ###
+
+<a href="/static/images/blog/elasticsearch_java/02_create_tilemap_weather_data_mapping.jpg">
+	<img src="/static/images/blog/elasticsearch_java/02_create_tilemap_weather_data_mapping.jpg" alt="Inspecting the Weather Data Index Pattern" />
+</a>
+
+### 3. Create the Tile Map Visualization ###
+
+<a href="/static/images/blog/elasticsearch_java/03_create_tilemap_create_tilemap_visualization.jpg">
+	<img src="/static/images/blog/elasticsearch_java/03_create_tilemap_create_tilemap_visualization.jpg" alt="Create Tile Map Visualization Step 1" />
+</a>
+
+### 4. Create the Visualization from a New Search ###
+
+We haven't stored any searches over the index yet, so the tile map needs to be created from a new search:
+
+<a href="/static/images/blog/elasticsearch_java/04_create_tilemap_new_search.jpg">
+	<img src="/static/images/blog/elasticsearch_java/04_create_tilemap_new_search.jpg" alt="Create New Search for the Tile Map" />
+</a>
+
+### 5. Choosing the Geocordinates for the Tile Map markers ###
+
+The indexed data contains the GPS coordinates of each station. We are going to choose these GPS positions as *Geo Coordinates*:
+
+<a href="/static/images/blog/elasticsearch_java/05_create_tilemap_geo_coordinates.jpg">
+	<img src="/static/images/blog/elasticsearch_java/05_create_tilemap_geo_coordinates.jpg" alt="Choose Geo Coordinates from the Index" />
+</a>
+
+### 6. Inspecting the Geo Coordinates ###
+
+There is only one *Geo Position* property in the index. Kibana should automatically choose this property, but you should inspect to 
+see if the correct values has been determined:
+
+<a href="/static/images/blog/elasticsearch_java/06_create_tilemap_geo_coordinates_set.jpg">
+	<img src="/static/images/blog/elasticsearch_java/06_create_tilemap_geo_coordinates_set.jpg" alt="Inspecting the Geocordinates" />
+</a>
+
+
+### 7. Adding the Average Temperature Value ###
+
+We want to visualize the Average Temperature, add a new value. *Aggregation* must be set to ``Average`` and *Field* must be set to ``temperature``:
+
+<a href="/static/images/blog/elasticsearch_java/07_create_tilemap_adding_temperature_value.jpg">
+	<img src="/static/images/blog/elasticsearch_java/07_create_tilemap_adding_temperature_value.jpg" alt="Adding Value: Average Temperature" />
+</a>
+
+### 8. Adjusting the Interval ###
+
+You don't see values yet. This is because of the search interval [Kibana] defaults to. The indexed data is from March 2015, but Kibana visualize only 
+the latest 15 Minutes by default. You need to set the interval to a larger time interval, by adjusting it in the upper right corner of the Kibana 
+front-end.
+
+I have highlighted it with a red marker in the following screenshot:
+
+<a href="/static/images/blog/elasticsearch_java/08_create_tilemap_adjust_interval.jpg">
+	<img src="/static/images/blog/elasticsearch_java/08_create_tilemap_adjust_interval.jpg" alt="Inspecting the Weather Data Index Pattern" />
+</a>
+
+### Final Visualization ###
+
+And now you can enjoy the final visualization of the Average temperature in March 2015:
+
+<a href="/static/images/blog/elasticsearch_net/kibana.jpg">
+	<img src="/static/images/blog/elasticsearch_net/thumbs/kibana_thumb.jpg" alt="Kibana Map Weather Visualization" />
+</a>
+
+## Conclusion ##
+
+Getting started with [Elasticsearch] in Java was harder, compared to the .NET version. It should be much easier to create a mapping programmatically 
+with the official Elasticsearch client. On the other hand, I found the source code of [Elasticsearch] highly readable and it wasn't hard to implement 
+a simpler client by myself.
+
+[Kibana] is a nice front-end for quickly visualizing data, especially the Tile Map is an amazing feature.
+
+I hope you had fun reading this article, and it gave you some insight on how to work with Elasticsearch in Java.
+
 
 [elastic]: https://www.elastic.co/
 [Kibana]: https://www.elastic.co/products/kibana
