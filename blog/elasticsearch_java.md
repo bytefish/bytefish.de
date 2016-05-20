@@ -26,7 +26,7 @@ The final result will visualize the average temperature in March 2015 on a tile 
 
 ## ElasticSearchClient ##
 
-Working with Elasticsearch Java API turned out to be a little complicated, that's why I wrote the ``ElasticSearchClient``. 
+Working with the Elasticsearch Java API turned out to be a little complicated, that's why I wrote the ``ElasticSearchClient``. 
 
 The ``ElasticSearchClient`` makes it possible to:
 
@@ -141,7 +141,7 @@ Citing the Elasticsearch documentation on [Mapping]:
 
 #### IObjectMapping ####
 
-First of all we are defining an interface ``IObjectMapping``. This interface has two methods for getting the index type and the mapping. The mapping is 
+We are defining an interface ``IObjectMapping``. This interface has two methods for getting the index type and the mapping. The mapping is 
 returned as an ``XContentBuilder``, so you can choose the format to serialize to. By using and ``XContentBuilder`` you can also do further work on the 
 mapping. 
 
@@ -164,7 +164,7 @@ public interface IObjectMapping {
 
 #### AbstractMap ####
 
-First of all we are writing a base class for the mapping, called ``AbstractMap``. This base class handles building JSON mapping from an 
+Next we are writing a base class for the mapping, called ``AbstractMap``. This base class handles building JSON mapping from an 
 ``RootObjectMapper`` (from Elasticsearch) and creating the ``XContentBuilder`` from the defined mapping. Implementations of this abstract 
 class need to implement two methods for configuring the actual mapping and define the settings for the index creation.
 
