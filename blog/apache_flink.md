@@ -100,9 +100,9 @@ Once the Snapshot repository is added, the Flink dependencies can be added to th
 
 Apache Flink can ingest data from almost any source. In this example a custom [SourceFunction] is used to serve the Apache Flink [DataStream] API. 
 
-In the example ``LocalWeatherDataSourceFunction`` the CSV data is read with [JTinyCsvParser] and mapped into the Elasticsearch data representation. Each 
-``LocalWeatherData`` element of the Stream is then emitted to the [SourceContext]. An implementation of the [SourceFunction] must react on the ``cancel`` 
-notification, so the [SourceFunction] is designed accordingly.
+In the example ``LocalWeatherDataSourceFunction`` the CSV data is read with [JTinyCsvParser] and mapped into the Elasticsearch data representation. Each ``LocalWeatherData`` element of the Stream is then emitted to the [SourceContext]. 
+
+An implementation of the [SourceFunction] must react on the ``cancel`` notification, so the [SourceFunction] is designed accordingly.
 
 ```java
 // Copyright (c) Philipp Wagner. All rights reserved.
@@ -206,8 +206,9 @@ public class LocalWeatherDataSourceFunction implements SourceFunction<elastic.mo
 
 The output of a [DataStream] can be consumed with a [RichSinkFunction]. A [RichSinkFunction] is a function, which offers an additional ``open`` and ``close`` method. 
 
-The example ``BaseElasticSearchSink`` wraps the ``ElasticSearchClient`` from the [ElasticUtils] library. Apache Flink serializes and distributes the [RichSinkFunction] to each of its workers. 
-That's why the ``ElasticSearchClient`` is created inside of the [RichSinkFunction], because all of its members need to be Serializable.
+The example ``BaseElasticSearchSink`` wraps the ``ElasticSearchClient`` from the [ElasticUtils] library. 
+
+Apache Flink serializes and distributes the [RichSinkFunction] to each of its workers. That's why the ``ElasticSearchClient`` is created inside of the [RichSinkFunction], because all of its members need to be Serializable.
 
 ```java
 // Copyright (c) Philipp Wagner. All rights reserved.
