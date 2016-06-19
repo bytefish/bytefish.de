@@ -48,7 +48,7 @@ Each ``Person`` has a first name, a last name and a birthdate.
 The table in the PostgreSQL database might look like this:
 
 ```sql
- CREATE TABLE sample.unit_test
+CREATE TABLE sample.person_example
 (
     first_name text,
     last_name text,
