@@ -2,7 +2,7 @@
 date: 2016-06-19 12:43
 tags: java, postgresql, pgbulkinsert
 category: java
-slug: stream_data_processing_example
+slug: pgbulkinsert_bulkprocessor
 author: Philipp Wagner
 summary: This article shows how to work with a BulkProcessor in PgBulkInsert.
 
@@ -16,7 +16,7 @@ for providing highly efficient inserts to a table.
 Now actually integrating bulk inserts into existing applications can be tricky. I know this from my professional 
 work, because you often don't want to deal with batching of entities or you can't obscure existing interfaces.
 
-This is where the BulkProcessor of [PgBulkInsert] fits in.
+This is where the ``BulkProcessor`` of [PgBulkInsert] fits in.
 
 The BulkProcessor provides a simple interface, which flushes bulk operations automatically based on the number 
 of entities or after a given time period. 
@@ -55,7 +55,6 @@ The table in the PostgreSQL database might look like this:
     birth_date date
 );
 ```
-
 
 ### Domain Model ###
 
@@ -108,7 +107,9 @@ public class Person {
 
 ### Bulk Inserter ###
 
-Then the mapping between the database table and the domain model has to defined. This is done by implementing the abstract base class ``PgBulkInsert<TEntity>``.
+Then the mapping between the database table and the domain model has to defined. 
+
+This is done by implementing the abstract base class ``PgBulkInsert<TEntity>``.
 
 ```java
 // Copyright (c) Philipp Wagner. All rights reserved.
@@ -134,12 +135,11 @@ public class PersonBulkInsert extends PgBulkInsert<Person>
 
 ### Connection Pooling (with DBCP2) ###
 
-The ``BulkProcessor`` needs a way to obtain a ``Connection`` for the database access. That's why the ``BulkProcessor`` takes a ``Func1``function for creating connections.  
+The ``BulkProcessor`` needs a way to obtain a ``Connection`` for the database access. That's why the ``BulkProcessor`` takes a factory for creating connections. 
 
 I don't like reinventing the wheel, so in my projects I simply use the great [DBCP2] project for handling database connections.
 
 You can add the following dependencies to your ``pom.xml`` to include [DBCP2] in your project:
-
 
 ```xml
 <dependency>
@@ -253,10 +253,7 @@ public class BulkProcessorApp {
 }
 ```
 
+[COPY command]: http://www.postgresql.org/docs/current/static/sql-copy.html
 [DBCP2]: https://commons.apache.org/proper/commons-dbcp/
 [PgBulkInsert]: https://github.com/bytefish/PgBulkInsert
-[Apache Flink]: https://flink.apache.org/
-[Elasticsearch]: https://www.elastic.co
-[ElasticUtils]: https://github.com/bytefish/ElasticUtils
 [JTinyCsvParser]: https://github.com/bytefish/JTinyCsvParser
-[Quality Controlled Local Climatological Data (QCLCD)]: https://www.ncdc.noaa.gov/data-access/land-based-station-data/land-based-datasets/quality-controlled-local-climatological-data-qclcd
