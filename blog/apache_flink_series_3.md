@@ -2,7 +2,7 @@
 date: 2016-07-03 16:38
 tags: java, flink, elasticsearch, postgresql
 category: java
-slug: apache_flink_example
+slug: apache_flink_series_3
 author: Philipp Wagner
 summary: This article shows how to work with Apache Flink.
 
@@ -129,3 +129,4 @@ The next part of the series shows how to write a custom [SinkFunction] for writi
 [KeyedStream]: https://ci.apache.org/projects/flink/flink-docs-master/apis/streaming/windows.html
 [SourceFunction]: https://ci.apache.org/projects/flink/flink-docs-master/apis/streaming/#data-sources
 [SinkFunction]: https://ci.apache.org/projects/flink/flink-docs-master/apis/streaming/#data-sinks
+[PgBulkInsert]: https://github.com/bytefish/PgBulkInsert

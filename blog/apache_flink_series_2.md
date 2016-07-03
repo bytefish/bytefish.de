@@ -1,8 +1,8 @@
-﻿title: Building Applications with Apache Flink (Part 2): Writing a custom SourceFunction and Using the DataStream API
+﻿title: Building Applications with Apache Flink (Part 2): Writing a custom SourceFunction for the CSV Data
 date: 2016-07-03 15:12
 tags: java, flink, elasticsearch, postgresql
 category: java
-slug: apache_flink_example
+slug: apache_flink_series_2
 author: Philipp Wagner
 summary: This article shows how to work with Apache Flink.
 
@@ -130,3 +130,4 @@ The next part of the series shows how to utilize the [SourceFunction] to serve a
 [KeyedStream]: https://ci.apache.org/projects/flink/flink-docs-master/apis/streaming/windows.html
 [SourceFunction]: https://ci.apache.org/projects/flink/flink-docs-master/apis/streaming/#data-sources
 [SinkFunction]: https://ci.apache.org/projects/flink/flink-docs-master/apis/streaming/#data-sinks
+[PgBulkInsert]: https://github.com/bytefish/PgBulkInsert

@@ -1,8 +1,8 @@
-﻿title: Building Applications with Apache Flink (Part 1): Dataset, Data Preparation and Modelling the Problem
+﻿title: Building Applications with Apache Flink (Part 1): Dataset, Data Preparation and Building a Model
 date: 2016-07-03 14:27
 tags: java, flink, elasticsearch, postgresql
 category: java
-slug: apache_flink_example
+slug: apache_flink_series_1
 author: Philipp Wagner
 summary: This article shows how to work with Apache Flink.
 
@@ -192,7 +192,7 @@ public class GeoLocation {
 
 Each ``Station`` has an assigned ``GeoLocation``. We also keep track of its timezone, so we 
 
-```
+```java
 // Copyright (c) Philipp Wagner. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
@@ -794,3 +794,4 @@ The next part of the series shows how to write a source function for emitting th
 [ElasticUtils]: https://github.com/bytefish/ElasticUtils
 [JTinyCsvParser]: https://github.com/bytefish/JTinyCsvParser
 [Quality Controlled Local Climatological Data (QCLCD)]: https://www.ncdc.noaa.gov/data-access/land-based-station-data/land-based-datasets/quality-controlled-local-climatological-data-qclcd
+[PgBulkInsert]: https://github.com/bytefish/PgBulkInsert

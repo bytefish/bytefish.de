@@ -1,8 +1,8 @@
-﻿title: Building Applications with Apache Flink (Part 4): A custom PostgreSQL SinkFunction and Preparing the Database 
+﻿title: Building Applications with Apache Flink (Part 4): Writing and Using a custom PostgreSQL SinkFunction
 date: 2016-07-03 20:10
 tags: java, flink, postgresql
 category: java
-slug: apache_flink_example
+slug: apache_flink_series_4
 author: Philipp Wagner
 summary: This article shows how to write a custom PostgreSQL SinkFunction for Apache Flink.
 
@@ -539,4 +539,11 @@ writing into an [Elasticsearch] database and visualize the results with [Kibana]
 [Kibana]: https://www.elastic.co/products/kibana
 [ElasticUtils]: https://github.com/bytefish/ElasticUtils
 [JTinyCsvParser]: https://github.com/bytefish/JTinyCsvParser
+[PgBulkInsert]: https://github.com/bytefish/PgBulkInsert
 [Quality Controlled Local Climatological Data (QCLCD)]: https://www.ncdc.noaa.gov/data-access/land-based-station-data/land-based-datasets/quality-controlled-local-climatological-data-qclcd
+[DataStream]: https://ci.apache.org/projects/flink/flink-docs-master/apis/streaming/index.html
+[KeyedStream]: https://ci.apache.org/projects/flink/flink-docs-master/apis/streaming/windows.html
+[SourceFunction]: https://ci.apache.org/projects/flink/flink-docs-master/apis/streaming/#data-sources
+[SinkFunction]: https://ci.apache.org/projects/flink/flink-docs-master/apis/streaming/#data-sinks
+[RichSinkFunction]: https://ci.apache.org/projects/flink/flink-docs-master/api/java/org/apache/flink/streaming/api/functions/sink/RichSinkFunction.html
+[DBCP2]: https://commons.apache.org/proper/commons-dbcp/
