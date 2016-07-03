@@ -1,4 +1,4 @@
-﻿title: Building Applications with Apache Flink (Part 2): Generating Events with a custom SourceFunction
+﻿title: Building Applications with Apache Flink (Part 2): Writing a custom SourceFunction and Using the DataStream API
 date: 2016-06-19 14:27
 tags: java, flink, elasticsearch, postgresql
 category: java
@@ -15,9 +15,6 @@ In the previous article
 [DataStream]: https://ci.apache.org/projects/flink/flink-docs-master/api/java/org/apache/flink/streaming/api/datastream/DataStream.html
 
 Apache Flink can ingest data from almost any source. In this example application a custom [SourceFunction] is used to serve the Apache Flink [DataStream] API.
-
-
-
 
 
 ## Source Code ##
@@ -123,104 +120,6 @@ public class LocalWeatherDataSourceFunction implements SourceFunction<model.Loca
     }
 }
 ```
-
-## DataStream API ##
-
-
-
-```java
-// Copyright (c) Philipp Wagner. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
-
-package app;
-
-import model.LocalWeatherData;
-import org.apache.flink.api.common.functions.FilterFunction;
-import org.apache.flink.api.common.functions.MapFunction;
-import org.apache.flink.api.common.functions.ReduceFunction;
-import org.apache.flink.api.java.functions.KeySelector;
-import org.apache.flink.streaming.api.TimeCharacteristic;
-import org.apache.flink.streaming.api.collector.selector.OutputSelector;
-import org.apache.flink.streaming.api.datastream.DataStream;
-import org.apache.flink.streaming.api.datastream.KeyedStream;
-import org.apache.flink.streaming.api.datastream.SplitStream;
-import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
-import org.apache.flink.streaming.api.functions.AssignerWithPeriodicWatermarks;
-import org.apache.flink.streaming.api.functions.IngestionTimeExtractor;
-import org.apache.flink.streaming.api.functions.timestamps.AscendingTimestampExtractor;
-import org.apache.flink.streaming.api.functions.windowing.AllWindowFunction;
-import org.apache.flink.streaming.api.functions.windowing.WindowFunction;
-import org.apache.flink.streaming.api.watermark.Watermark;
-import org.apache.flink.streaming.api.windowing.assigners.EventTimeSessionWindows;
-import org.apache.flink.streaming.api.windowing.assigners.TumblingEventTimeWindows;
-import org.apache.flink.streaming.api.windowing.time.Time;
-import org.apache.flink.streaming.api.windowing.windows.TimeWindow;
-import org.apache.flink.util.Collector;
-
-import stream.sources.csv.LocalWeatherDataSourceFunction;
-import utils.DateUtilities;
-
-import javax.annotation.Nullable;
-import java.time.ZoneOffset;
-import java.util.Date;
-import java.util.concurrent.TimeUnit;
-
-public class WeatherDataStreamingExample {
-
-    public static void main(String[] args) throws Exception {
-
-        final StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
-
-        // Use the Measurement Timestamp of the Event:
-        env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime);
-
-        // We are sequentially reading the historic data from a CSV file:
-        env.setParallelism(1);
-
-        // Path to read the CSV data from:
-        final String csvStationDataFilePath = "C:\\Users\\philipp\\Downloads\\csv\\201503station.txt";
-        final String csvLocalWeatherDataFilePath = "C:\\Users\\philipp\\Downloads\\csv\\201503hourly_sorted.txt";
-
-        // Add the CSV Data Source and assign the Measurement Timestamp:
-        DataStream<model.LocalWeatherData> localWeatherDataDataStream = env
-                .addSource(new LocalWeatherDataSourceFunction(csvStationDataFilePath, csvLocalWeatherDataFilePath))
-                .assignTimestampsAndWatermarks(new AscendingTimestampExtractor<LocalWeatherData>() {
-                    @Override
-                    public long extractAscendingTimestamp(LocalWeatherData localWeatherData) {
-                        Date measurementTime = DateUtilities.from(localWeatherData.getDate(), localWeatherData.getTime(), ZoneOffset.ofHours(localWeatherData.getStation().getTimeZone()));
-
-                        return measurementTime.getTime();
-                    }
-                });
-
-        // First build a KeyedStream over the Data with LocalWeather:
-        KeyedStream<LocalWeatherData, String> localWeatherDataByStation = localWeatherDataDataStream
-                // Filte for Non-Null Temperature Values, because we might have missing data:
-                .filter(new FilterFunction<LocalWeatherData>() {
-                    @Override
-                    public boolean filter(LocalWeatherData localWeatherData) throws Exception {
-                        return localWeatherData.getTemperature() != null;
-                    }
-                })
-                // Now create the keyed stream by the Station WBAN identifier:
-                .keyBy(new KeySelector<LocalWeatherData, String>() {
-                    @Override
-                    public String getKey(LocalWeatherData localWeatherData) throws Exception {
-                        return localWeatherData.getStation().getWban();
-                    }
-                });
-
-        // Now take the Maximum Temperature per day from the KeyedStream:
-        DataStream<LocalWeatherData> maxTemperaturePerDay =
-                localWeatherDataByStation
-                        // Use non-overlapping tumbling window with 1 day length:
-                        .timeWindow(Time.days(1))
-                        // And use the maximum temperature:
-                        .maxBy("temperature");
-        env.execute("Max Temperature By Day example");
-    }
-}
-```	
 
 ## Conclusion ##
 

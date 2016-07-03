@@ -6,9 +6,16 @@ slug: apache_flink_example
 author: Philipp Wagner
 summary: This article shows how to work with Apache Flink.
 
-In this series of articles we are building an application, that processes the hourly weather measurements of more than 1,600 
-weather stations with Apache Flink. The articles will show how to write custom Source functions for generating data and is 
-going to implement custom Sink functions for PostgreSQL and Elasticsearch.
+In this series of articles I want to show how to build an application with Apache Flink.
+
+> Apache Flink is an open source platform for distributed stream and batch data processing. Flink’s core 
+> is a streaming dataflow engine that provides data distribution, communication, and fault tolerance for 
+> distributed computations over data streams. Flink also builds batch processing on top of the streaming 
+> engine, overlaying native iteration support, managed memory, and program optimization.
+
+We are going to build an application, that processes the hourly weather measurements of more than 1,600 weather stations 
+with Apache Flink. The articles will show how to write custom Source functions for generating data and how to implement custom 
+Sink functions for writing to PostgreSQL and Elasticsearch.
 
 ## Source Code ##
 
@@ -296,15 +303,96 @@ public class LocalWeatherData {
 
 ### Model ###
 
-The CSV data model is different from the application model. The CSV data model is a flat representation of the data.
+Building different data models for the analysis and CSV data might look like a total overkill. But keeping the concerns separated is 
+the only way to not leak persistence details into your application. You really, really need to decouple your application logic from 
+any specific data persistence technology, or it will bite you.
+
+So the CSV data model is slightly different from the domain modell. It is basically a flat representation of the data, with only a 
+``Station`` and ``LocalWeatherData`` class, that map directly to both CSV files. [JTinyCsvParser] creates these objects, so these 
+classes are POJOs (a class with a parameterless constructor, getters and setters).
 
 #### LocalWeatherData ####
 
+```java
+// Copyright (c) Philipp Wagner. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+package csv.model;
+
+import java.time.LocalDate;
+import java.time.LocalTime;
+
+public class LocalWeatherData {
+
+    private String wban;
+
+    private LocalDate date;
+
+    private LocalTime time;
+
+    private String skyCondition;
+
+    private Float dryBulbCelsius;
+
+    private Float windSpeed;
+
+    private Float stationPressure;
+
+    public LocalWeatherData() {
+
+    }
+
+    // Getters and Setters ...
+}
+```
 
 #### Station ####
 
+```java
+// Copyright (c) Philipp Wagner. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+package csv.model;
+
+public class Station {
+
+    private String wban;
+
+    private String wmo;
+
+    private String callSign;
+
+    private String climateDivisionCode;
+
+    private String climateDivisionStateCode;
+
+    private String climateDivisionStationCode;
+
+    private String name;
+
+    private String state;
+
+    private String location;
+
+    private Float latitude;
+
+    private Float longitude;
+
+    private Integer groundHeight;
+
+    private Integer stationHeight;
+
+    private Integer barometer;
+
+    private Integer timeZone;
+
+    public Station() {
+    }
+
+    // Getters and Setters ...
+
+}
+```
 
 ### Mapper ###
 
@@ -323,11 +411,11 @@ instead of trying to parse the data.
 
 package csv.mapping;
 
-import csv.converter.IgnoreMissingValuesConverter;
 import csv.model.LocalWeatherData;
 import de.bytefish.jtinycsvparser.builder.IObjectCreator;
 import de.bytefish.jtinycsvparser.mapping.CsvMapping;
 import de.bytefish.jtinycsvparser.typeconverter.FloatConverter;
+import de.bytefish.jtinycsvparser.typeconverter.IgnoreMissingValuesConverter;
 import de.bytefish.jtinycsvparser.typeconverter.LocalDateConverter;
 import de.bytefish.jtinycsvparser.typeconverter.LocalTimeConverter;
 
@@ -363,11 +451,11 @@ in the data, so we also map them with an ``IgnoreMissingValuesConverter``.
 
 package csv.mapping;
 
-import csv.converter.IgnoreMissingValuesConverter;
 import csv.model.Station;
 import de.bytefish.jtinycsvparser.builder.IObjectCreator;
 import de.bytefish.jtinycsvparser.mapping.CsvMapping;
 import de.bytefish.jtinycsvparser.typeconverter.FloatConverter;
+import de.bytefish.jtinycsvparser.typeconverter.IgnoreMissingValuesConverter;
 import de.bytefish.jtinycsvparser.typeconverter.IntegerConverter;
 
 public class StationMapper extends CsvMapping<Station>
@@ -435,8 +523,7 @@ public class Parsers {
 ## Mapping between CSV model and the Domain model ##
 
 What's left is the mapping between the CSV model and the applications domain model. This is done by writing a simple converter, which takes the 
-CSV representation of the data and returns the application model of the data. Such model mappings might look like a total overkill for this simple 
-example, but it is the only way to not leak persistence details into your application.
+CSV representation of the data and returns the application model of the data.
 
 ```java
 // Copyright (c) Philipp Wagner. All rights reserved.

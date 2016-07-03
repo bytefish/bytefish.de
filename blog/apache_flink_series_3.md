@@ -22,117 +22,112 @@ You can find the full source code for the example in my git repository at:
 
 * [https://github.com/bytefish/FlinkExperiments](https://github.com/bytefish/FlinkExperiments)
 
-## LocalWeatherDataSourceFunction ##
+## DataStream API ##
 
-The ``LocalWeatherDataSourceFunction`` is used to read the weather data measurements from the CSV file and emit it to Apache Flink.
+The [DataStream] API of Apache Flink makes it possible to apply a various operations on a stream of incoming data.
 
+The [Apache Flink] documentation describes a DataStream as:
 
+> DataStream programs in Flink are regular programs that implement transformations on data streams (e.g., filtering, updating state, defining windows, aggregating). 
+> The data streams are initially created from various sources (e.g., message queues, socket streams, files). Results are returned via sinks, which may for example 
+> write the data to files, or to standard output (for example the command line terminal). Flink programs run in a variety of contexts, standalone, or embedded in 
+> other programs. The execution can happen in a local JVM, or on clusters of many machines.
+
+### Example Program: Maximum Air Temperature by station and day ###
+
+In this example we are using the [SourceFunction] from the previous article to serve the [DataStream]. We are first setting the time characteristics of the 
+[DataStream] to the EventTime, because each measurement carries the measurement timestamp. We are then building a [KeyedStream] over the [DataStream], which 
+groups the incoming data by its station. And finally we use a non-overlapping tumbling window with 1 day length, from which the maximum temperature is used.
+
+The results in this example are written to a Console, but in the next article you will learn how to write a custom [SinkFunction] to write the data 
+into a PostgreSQL database for further data analysis.
 
 ```java
 // Copyright (c) Philipp Wagner. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-package stream.sources.csv;
+package app;
 
-import csv.parser.Parsers;
-import org.apache.flink.streaming.api.functions.source.SourceFunction;
-import stream.sources.csv.converter.LocalWeatherDataConverter;
+import model.LocalWeatherData;
+import org.apache.flink.api.common.functions.FilterFunction;
+import org.apache.flink.api.common.functions.MapFunction;
+import org.apache.flink.api.java.functions.KeySelector;
+import org.apache.flink.streaming.api.TimeCharacteristic;
+import org.apache.flink.streaming.api.datastream.DataStream;
+import org.apache.flink.streaming.api.datastream.KeyedStream;
+import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
+import org.apache.flink.streaming.api.functions.timestamps.AscendingTimestampExtractor;
+import org.apache.flink.streaming.api.windowing.time.Time;
+import stream.sources.csv.LocalWeatherDataSourceFunction;
+import utils.DateUtilities;
 
-import java.nio.charset.StandardCharsets;
-import java.nio.file.FileSystems;
-import java.nio.file.Path;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import stream.sources.csv.LocalWeatherDataSourceFunction;
+import utils.DateUtilities;
 
-public class LocalWeatherDataSourceFunction implements SourceFunction<model.LocalWeatherData> {
+public class WeatherDataStreamingExample {
 
-    private volatile boolean isRunning = true;
+    public static void main(String[] args) throws Exception {
 
-    private String stationFilePath;
-    private String localWeatherDataFilePath;
+        final StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
 
-    public LocalWeatherDataSourceFunction(String stationFilePath, String localWeatherDataFilePath) {
-        this.stationFilePath = stationFilePath;
-        this.localWeatherDataFilePath = localWeatherDataFilePath;
-    }
+        // Use the Measurement Timestamp of the Event:
+        env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime);
 
-    @Override
-    public void run(SourceFunction.SourceContext<model.LocalWeatherData> sourceContext) throws Exception {
+        // We are sequentially reading the historic data from a CSV file:
+        env.setParallelism(1);
 
-        // The Source needs to be Serializable, so we have to construct the Paths at this point:
-        final Path csvStationPath = FileSystems.getDefault().getPath(stationFilePath);
-        final Path csvLocalWeatherDataPath = FileSystems.getDefault().getPath(localWeatherDataFilePath);
+        // Path to read the CSV data from:
+        final String csvStationDataFilePath = "C:\\Users\\philipp\\Downloads\\csv\\201503station.txt";
+        final String csvLocalWeatherDataFilePath = "C:\\Users\\philipp\\Downloads\\csv\\201503hourly_sorted.txt";
 
-        // Get the Stream of LocalWeatherData Elements in the CSV File:
-        try(Stream<model.LocalWeatherData> stream = getLocalWeatherData(csvStationPath, csvLocalWeatherDataPath)) {
+        // Add the CSV Data Source and assign the Measurement Timestamp:
+        DataStream<model.LocalWeatherData> localWeatherDataDataStream = env
+                .addSource(new LocalWeatherDataSourceFunction(csvStationDataFilePath, csvLocalWeatherDataFilePath))
+                .assignTimestampsAndWatermarks(new AscendingTimestampExtractor<LocalWeatherData>() {
+                    @Override
+                    public long extractAscendingTimestamp(LocalWeatherData localWeatherData) {
+                        Date measurementTime = DateUtilities.from(localWeatherData.getDate(), localWeatherData.getTime(), ZoneOffset.ofHours(localWeatherData.getStation().getTimeZone()));
 
-            // We need to get an iterator, since the SourceFunction has to break out of its main loop on cancellation:
-            Iterator<model.LocalWeatherData> iterator = stream.iterator();
-
-            // Make sure to cancel, when the Source function is canceled by an external event:
-            while (isRunning && iterator.hasNext()) {
-                sourceContext.collect(iterator.next());
-            }
-        }
-    }
-
-    @Override
-    public void cancel() {
-        isRunning = false;
-    }
-
-    private Stream<model.LocalWeatherData> getLocalWeatherData(Path csvStationPath, Path csvLocalWeatherDataPath) {
-
-        // A map between the WBAN and Station for faster Lookups:
-        final Map<String, csv.model.Station> stationMap = getStationMap(csvStationPath);
-
-        // Turns the Stream of CSV data into the Elasticsearch representation:
-        return getLocalWeatherData(csvLocalWeatherDataPath)
-                // Only use Measurements with a Station:
-                .filter(x -> stationMap.containsKey(x.getWban()))
-                // And turn the Station and LocalWeatherData into the ElasticSearch representation:
-                .map(x -> {
-                    // First get the matching Station:
-                    csv.model.Station station = stationMap.get(x.getWban());
-                    // Convert to the Elastic Representation:
-                    return LocalWeatherDataConverter.convert(x, station);
+                        return measurementTime.getTime();
+                    }
                 });
-    }
 
-    private static Stream<csv.model.LocalWeatherData> getLocalWeatherData(Path path) {
-        return Parsers.LocalWeatherDataParser().readFromFile(path, StandardCharsets.US_ASCII)
-                .filter(x -> x.isValid())
-                .map(x -> x.getResult());
-    }
+        // First build a KeyedStream over the Data with LocalWeather:
+        KeyedStream<LocalWeatherData, String> localWeatherDataByStation = localWeatherDataDataStream
+                // Filte for Non-Null Temperature Values, because we might have missing data:
+                .filter(new FilterFunction<LocalWeatherData>() {
+                    @Override
+                    public boolean filter(LocalWeatherData localWeatherData) throws Exception {
+                        return localWeatherData.getTemperature() != null;
+                    }
+                })
+                // Now create the keyed stream by the Station WBAN identifier:
+                .keyBy(new KeySelector<LocalWeatherData, String>() {
+                    @Override
+                    public String getKey(LocalWeatherData localWeatherData) throws Exception {
+                        return localWeatherData.getStation().getWban();
+                    }
+                });
 
-    private static Stream<csv.model.Station> getStations(Path path) {
-        return Parsers.StationParser().readFromFile(path, StandardCharsets.US_ASCII)
-                .filter(x -> x.isValid())
-                .map(x -> x.getResult());
-    }
-
-    private Map<String, csv.model.Station> getStationMap(Path path) {
-        try (Stream<csv.model.Station> stationStream = getStations(path)) {
-            return stationStream
-                    .collect(Collectors.toMap(csv.model.Station::getWban, x -> x));
-        }
+        // Now take the Maximum Temperature per day from the KeyedStream:
+        DataStream<LocalWeatherData> maxTemperaturePerDay =
+                localWeatherDataByStation
+                        // Use non-overlapping tumbling window with 1 day length:
+                        .timeWindow(Time.days(1))
+                        // And use the maximum temperature:
+                        .maxBy("temperature");
+						
+        env.execute("Max Temperature By Day example");
     }
 }
 ```
 
-
 ## Conclusion ##
 
-In this part of the series we have analyzed the CSV data, wrote the neccessary classes to parse the files and 
-preprocessed it.  We have defined the domain model, that we are going to work with and wrote a converter between 
-the CSV data and the domain model.
+In this part of the series you have seen how to use the [DataStream] API to analyze data from the custom [SourceFunction].
 
-The next part of the series shows how to write a source function for emitting the local weather data events to Apache Flink.
+The next part of the series shows how to write a custom [SinkFunction] for writing the [DataStream] results into a PostgreSQL database.
 
 [Apache Flink]: https://flink.apache.org/
-[Elasticsearch]: https://www.elastic.co
-[ElasticUtils]: https://github.com/bytefish/ElasticUtils
-[JTinyCsvParser]: https://github.com/bytefish/JTinyCsvParser
-[Quality Controlled Local Climatological Data (QCLCD)]: https://www.ncdc.noaa.gov/data-access/land-based-station-data/land-based-datasets/quality-controlled-local-climatological-data-qclcd
+[DataStream]: https://ci.apache.org/projects/flink/flink-docs-master/apis/streaming/index.html
+[KeyedStream]: https://ci.apache.org/projects/flink/flink-docs-master/apis/streaming/windows.html 
