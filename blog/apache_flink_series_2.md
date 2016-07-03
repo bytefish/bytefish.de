@@ -1,21 +1,19 @@
 ﻿title: Building Applications with Apache Flink (Part 2): Writing a custom SourceFunction and Using the DataStream API
-date: 2016-06-19 14:27
+date: 2016-07-03 15:12
 tags: java, flink, elasticsearch, postgresql
 category: java
 slug: apache_flink_example
 author: Philipp Wagner
 summary: This article shows how to work with Apache Flink.
 
-In the previous article 
+In the previous article we have obtained a CSV dataset, analyzed it and built the neccessary tools for parsing it. A domain model 
+was created, which will be used for the Stream processing. What's left is how to feed a [DataStream] with the actual CSV data, 
+and this is where the [SourceFunction] fits in.
 
 ## What we are going to build ##
 
-[SourceFunction]: https://ci.apache.org/projects/flink/flink-docs-master/api/java/org/apache/flink/streaming/api/functions/source/SourceFunction.html
-[SourceContext]: https://ci.apache.org/projects/flink/flink-docs-master/api/java/org/apache/flink/streaming/api/functions/source/SourceFunction.SourceContext.html
-[DataStream]: https://ci.apache.org/projects/flink/flink-docs-master/api/java/org/apache/flink/streaming/api/datastream/DataStream.html
-
-Apache Flink can ingest data from almost any source. In this example application a custom [SourceFunction] is used to serve the Apache Flink [DataStream] API.
-
+We are going to build a [SourceFunction], that uses the parsers from the previous article to read the CSV data. The ``LocalWeatherDataConverter`` is 
+used to transform the CSV objects into the domain model, which is the emitted to the Apache Flink [SourceContext].
 
 ## Source Code ##
 
@@ -25,7 +23,7 @@ You can find the full source code for the example in my git repository at:
 
 ## LocalWeatherDataSourceFunction ##
 
-The ``LocalWeatherDataSourceFunction`` implements the [SourceFunction] interface, parses the CSV data from Part 1 and emits the measurements to the Apache Flink [SourceContext].
+The ``LocalWeatherDataSourceFunction`` implements the [SourceFunction] interface, parses the CSV data from the previous and emits the measurements to the Apache Flink [SourceContext].
 
 ```java
 // Copyright (c) Philipp Wagner. All rights reserved.
@@ -123,12 +121,12 @@ public class LocalWeatherDataSourceFunction implements SourceFunction<model.Loca
 
 ## Conclusion ##
 
-
-
-The next part of the series shows how to write a source function for emitting the local weather data events to Apache Flink.
+The next part of the series shows how to utilize the [SourceFunction] to serve a [DataStream].
 
 [Apache Flink]: https://flink.apache.org/
-[Elasticsearch]: https://www.elastic.co
-[ElasticUtils]: https://github.com/bytefish/ElasticUtils
-[JTinyCsvParser]: https://github.com/bytefish/JTinyCsvParser
-[Quality Controlled Local Climatological Data (QCLCD)]: https://www.ncdc.noaa.gov/data-access/land-based-station-data/land-based-datasets/quality-controlled-local-climatological-data-qclcd
+[SourceFunction]: https://ci.apache.org/projects/flink/flink-docs-master/api/java/org/apache/flink/streaming/api/functions/source/SourceFunction.html
+[SourceContext]: https://ci.apache.org/projects/flink/flink-docs-master/api/java/org/apache/flink/streaming/api/functions/source/SourceFunction.SourceContext.html
+[DataStream]: https://ci.apache.org/projects/flink/flink-docs-master/apis/streaming/index.html
+[KeyedStream]: https://ci.apache.org/projects/flink/flink-docs-master/apis/streaming/windows.html
+[SourceFunction]: https://ci.apache.org/projects/flink/flink-docs-master/apis/streaming/#data-sources
+[SinkFunction]: https://ci.apache.org/projects/flink/flink-docs-master/apis/streaming/#data-sinks

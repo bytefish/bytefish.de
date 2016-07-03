@@ -1,5 +1,5 @@
 ﻿title: Building Applications with Apache Flink (Part 1): Dataset, Data Preparation and Modelling the Problem
-date: 2016-06-19 14:27
+date: 2016-07-03 14:27
 tags: java, flink, elasticsearch, postgresql
 category: java
 slug: apache_flink_example
@@ -22,6 +22,85 @@ Sink functions for writing to PostgreSQL and Elasticsearch.
 You can find the full source code for the example in my git repository at:
 
 * [https://github.com/bytefish/FlinkExperiments](https://github.com/bytefish/FlinkExperiments)
+
+## Dependencies ##
+
+### Apache Flink ###
+
+In the example I am going to use the latest ``1.1-SNAPSHOT`` of [Apache Flink]. 
+
+That's why the Apache Development Snapshot Repository must be added to the projects ``POM`` file. 
+
+```xml
+<properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <flink.version>1.1-SNAPSHOT</flink.version>
+</properties>
+
+<repositories>
+    <repository>
+        <id>apache.snapshots</id>
+        <name>Apache Development Snapshot Repository</name>
+        <url>https://repository.apache.org/content/repositories/snapshots/</url>
+        <releases>
+            <enabled>false</enabled>
+        </releases>
+        <snapshots>
+            <enabled>true</enabled>
+        </snapshots>
+    </repository>
+</repositories>
+```
+
+Once the Snapshot repository is added, the Flink dependencies can be added to the POM file.
+
+```xml
+<dependencies>
+
+    <dependency>
+        <groupId>org.apache.flink</groupId>
+        <artifactId>flink-java</artifactId>
+        <version>${flink.version}</version>
+    </dependency>
+    
+    <dependency>
+        <groupId>org.apache.flink</groupId>
+        <artifactId>flink-streaming-java_2.10</artifactId>
+        <version>${flink.version}</version>
+    </dependency>
+    
+    <dependency>
+        <groupId>org.apache.flink</groupId>
+        <artifactId>flink-clients_2.10</artifactId>
+        <version>${flink.version}</version>
+    </dependency>
+
+</dependencies>
+```
+
+### JTinyCsvParser ###
+
+[JTinyCsvParser] is a library for high-performance CSV parsing in Java.
+
+```xml
+<dependency>
+	<groupId>de.bytefish</groupId>
+	<artifactId>jtinycsvparser</artifactId>
+	<version>1.2</version>
+</dependency>
+```
+
+### PgBulkInsert ###
+
+[PgBulkInsert] is a Java library for bulk inserts to PostgreSQL.
+
+```xml
+<dependency>
+	<groupId>de.bytefish</groupId>
+	<artifactId>pgbulkinsert</artifactId>
+	<version>0.9</version>
+</dependency>
+```
 
 ## Dataset ##
 

@@ -1,20 +1,16 @@
 ﻿title: Building Applications with Apache Flink (Part 3): Stream Processing with the DataStream API
-date: 2016-06-19 14:27
+date: 2016-07-03 16:38
 tags: java, flink, elasticsearch, postgresql
 category: java
 slug: apache_flink_example
 author: Philipp Wagner
 summary: This article shows how to work with Apache Flink.
 
-In the previous article 
+In the previous article we have written a [SourceFunction] to emit measurements from a CSV source file. In this article we are going to use the [SourceFunction] to serve a [DataStream]. 
 
 ## What we are going to build ##
 
-[SourceFunction]: https://ci.apache.org/projects/flink/flink-docs-master/api/java/org/apache/flink/streaming/api/functions/source/SourceFunction.html
-[SourceContext]: https://ci.apache.org/projects/flink/flink-docs-master/api/java/org/apache/flink/streaming/api/functions/source/SourceFunction.SourceContext.html
-[DataStream]: https://ci.apache.org/projects/flink/flink-docs-master/api/java/org/apache/flink/streaming/api/datastream/DataStream.html
-
-Apache Flink can ingest data from almost any source. For the example a custom [SourceFunction] is used to serve the Apache Flink [DataStream] API. 
+You will see how to use the [DataStream] API for applying operators on the stream, so that for each station the maximum temperature for a day is identified.
 
 ## Source Code ##
 
@@ -130,4 +126,6 @@ The next part of the series shows how to write a custom [SinkFunction] for writi
 
 [Apache Flink]: https://flink.apache.org/
 [DataStream]: https://ci.apache.org/projects/flink/flink-docs-master/apis/streaming/index.html
-[KeyedStream]: https://ci.apache.org/projects/flink/flink-docs-master/apis/streaming/windows.html 
+[KeyedStream]: https://ci.apache.org/projects/flink/flink-docs-master/apis/streaming/windows.html
+[SourceFunction]: https://ci.apache.org/projects/flink/flink-docs-master/apis/streaming/#data-sources
+[SinkFunction]: https://ci.apache.org/projects/flink/flink-docs-master/apis/streaming/#data-sinks
