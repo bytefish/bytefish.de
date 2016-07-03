@@ -6,12 +6,6 @@ slug: apache_flink_example
 author: Philipp Wagner
 summary: This article shows how to work with Apache Flink.
 
-In this series of articles I want to show you how to build an application with Apache Flink. 
-
-
-
-## What we are going to build ##
-
 In this series of articles we are building an application, that processes the hourly weather measurements of more than 1,600 
 weather stations with Apache Flink. The articles will show how to write custom Source functions for generating data and is 
 going to implement custom Sink functions for PostgreSQL and Elasticsearch.
