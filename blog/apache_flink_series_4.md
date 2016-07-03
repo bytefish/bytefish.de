@@ -6,12 +6,15 @@ slug: apache_flink_example
 author: Philipp Wagner
 summary: This article shows how to write a custom PostgreSQL SinkFunction for Apache Flink.
 
+In this article I am going to show how to write a custom Apache Flink [SinkFunction], that bulk writes into a PostgreSQL database.
+
 ## What we are going to build ##
 
-You often need to write your data into a relational database, because relational databases offer amazing possibilities to work 
-with data using SQL as a query language. Often enough reports need to be generated 
+Processed data often needs to be written into a relational database, simply because SQL makes it easy to work with data. Often 
+enough you will also need to generate reports for customers or feed an existing application, which uses the relational database. 
 
-Single Inserts to a database are highly inefficient, that's why [PgBulkInsert] is used for Bulk Inserts to a PostgreSQL database. 
+A custom data sink for Apache Flink simply needs to implement the [SinkFunction] interface. If a resource needs to be opened and closed, 
+then a [RichSinkFunction] needs to be implemented.
 
 ## Source Code ##
 
@@ -295,36 +298,16 @@ public class LocalWeatherData {
 }
 ```
 
-## Converter ##
-
-```java
-// Copyright (c) Philipp Wagner. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
-
-package pgsql.converter;
-
-import java.time.LocalDateTime;
-
-public class LocalWeatherDataConverter {
-
-    public static pgsql.model.LocalWeatherData convert(model.LocalWeatherData modelLocalWeatherData) {
-
-        String wban = modelLocalWeatherData.getStation().getWban();
-        LocalDateTime dateTime = modelLocalWeatherData.getDate().atTime(modelLocalWeatherData.getTime());
-        Float temperature = modelLocalWeatherData.getTemperature();
-        Float windSpeed = modelLocalWeatherData.getWindSpeed();
-        Float stationPressure = modelLocalWeatherData.getStationPressure();
-        String skyCondition = modelLocalWeatherData.getSkyCondition();
-
-        return new pgsql.model.LocalWeatherData(wban, dateTime, temperature, windSpeed, stationPressure, skyCondition);
-    }
-}
-```
-
-
-## SinkFunction ##
+## PostgreSQL SinkFunction ##
 
 ### BasePostgresSink ###
+
+We start by implementing the abstract base class ``BasePostgresSink<TEntity>``. It implements the [RichSinkFunction], so it can create 
+a new ``BulkProcessor`` when opening the Sink, and close the ``BulkProcessor`` when closing the Sink. 
+
+You may wonder, why I don't pass the BulkProcessor as a dependency. It's because Apache Flink serializes and distributes the [RichSinkFunction] to 
+each of its workers. That's why the ``BulkProcessor`` is created inside of the [RichSinkFunction], because all members of a [RichSinkFunction] need to 
+be Serializable.
 
 ```java
 // Copyright (c) Philipp Wagner. All rights reserved.
@@ -372,65 +355,22 @@ public abstract class BasePostgresSink<TEntity> extends RichSinkFunction<TEntity
 }
 ```
 
-## LocalWeatherData ##
+#### PooledConnectionFactory ####
 
+The ``BulkProcessor`` of [PgBulkInsert] needs a way to obtain a ``Connection`` for the database access. I don't like reinventing 
+the wheel, so in my projects I simply use the great [DBCP2] project for handling database connections. 
 
-### Mapping ###
+You can add the following dependencies to your ``pom.xml`` to include [DBCP2] in your project:
 
-```java
-// Copyright (c) Philipp Wagner. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
-
-package pgsql.mapping;
-
-import de.bytefish.pgbulkinsert.PgBulkInsert;
-
-public class LocalWeatherDataBulkInsert extends PgBulkInsert<pgsql.model.LocalWeatherData> {
-
-    public LocalWeatherDataBulkInsert(String schemaName, String tableName) {
-
-        super(schemaName, tableName);
-
-        mapString("wban", pgsql.model.LocalWeatherData::getWban);
-        mapTimeStamp("dateTime", pgsql.model.LocalWeatherData::getDateTime);
-        mapReal("temperature", pgsql.model.LocalWeatherData::getTemperature);
-        mapReal("windSpeed", pgsql.model.LocalWeatherData::getWindSpeed);
-        mapReal("stationPressure", pgsql.model.LocalWeatherData::getStationPressure);
-        mapString("skyCondition", pgsql.model.LocalWeatherData::getSkyCondition);
-    }
-
-}
+```xml
+<dependency>
+	<groupId>org.apache.commons</groupId>
+	<artifactId>commons-dbcp2</artifactId>
+	<version>2.0.1</version>
+</dependency>
 ```
 
-##
-
-```java
-// Copyright (c) Philipp Wagner. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
-
-package stream.sinks.pgsql;
-
-import de.bytefish.pgbulkinsert.IPgBulkInsert;
-
-import java.net.URI;
-
-public class LocalWeatherDataPostgresSink extends BasePostgresSink<pgsql.model.LocalWeatherData> {
-
-    public LocalWeatherDataPostgresSink(URI databaseUri, int bulkSize) {
-        super(databaseUri, bulkSize);
-    }
-
-    @Override
-    protected IPgBulkInsert<pgsql.model.LocalWeatherData> getBulkInsert() {
-        return new pgsql.mapping.LocalWeatherDataBulkInsert("sample", "weather_data");
-    }
-
-}
-```
-
-
-
-## PooledConnectionFactory ##
+The Connection Factory for the ``BulkProcessor`` can then be implemented like this.
 
 ```java
 // Copyright (c) Philipp Wagner. All rights reserved.
@@ -469,6 +409,112 @@ public class PooledConnectionFactory implements Func1<Connection> {
     @Override
     public Connection invoke() throws Exception {
         return connectionPool.getConnection();
+    }
+}
+```
+
+### PgBulkInsert Database Mapping ###
+
+A ``PgBulkInsert<TEntity>`` in [PgBulkInsert] defines the mapping between a database table and the domain model.  
+
+```java
+// Copyright (c) Philipp Wagner. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+package pgsql.mapping;
+
+import de.bytefish.pgbulkinsert.PgBulkInsert;
+
+public class LocalWeatherDataBulkInsert extends PgBulkInsert<pgsql.model.LocalWeatherData> {
+
+    public LocalWeatherDataBulkInsert(String schemaName, String tableName) {
+
+        super(schemaName, tableName);
+
+        mapString("wban", pgsql.model.LocalWeatherData::getWban);
+        mapTimeStamp("dateTime", pgsql.model.LocalWeatherData::getDateTime);
+        mapReal("temperature", pgsql.model.LocalWeatherData::getTemperature);
+        mapReal("windSpeed", pgsql.model.LocalWeatherData::getWindSpeed);
+        mapReal("stationPressure", pgsql.model.LocalWeatherData::getStationPressure);
+        mapString("skyCondition", pgsql.model.LocalWeatherData::getSkyCondition);
+    }
+
+}
+```
+
+### LocalWeatherDataPostgresSink ###
+
+With the PostgreSQL domain model defined, the ``BasePostgresSink`` and the ``PgBulkInsert`` mapping, the ``LocalWeatherDataPostgresSink`` 
+for the example can easily be implemented.
+
+```java
+// Copyright (c) Philipp Wagner. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+package stream.sinks.pgsql;
+
+import de.bytefish.pgbulkinsert.IPgBulkInsert;
+
+import java.net.URI;
+
+public class LocalWeatherDataPostgresSink extends BasePostgresSink<pgsql.model.LocalWeatherData> {
+
+    public LocalWeatherDataPostgresSink(URI databaseUri, int bulkSize) {
+        super(databaseUri, bulkSize);
+    }
+
+    @Override
+    protected IPgBulkInsert<pgsql.model.LocalWeatherData> getBulkInsert() {
+        return new pgsql.mapping.LocalWeatherDataBulkInsert("sample", "weather_data");
+    }
+
+}
+```
+
+## Plugging it into the DataStream ##
+
+Once the [SinkFunction] is written, it can be plugged into the existing [DataStream] pipeline. In the example the general ``DataStream<model.LocalWeatherData>`` 
+is first transformed into a DataStream<pgsql.model.LocalWeatherData>``. Then the custom PostgreSQL Sink is added to the DataStream, with a connection factory that 
+ connects to a local database instance and a bulk size of 1000 entities.
+
+```java
+// Converts the general stream into the Postgres-specific representation:
+DataStream<pgsql.model.LocalWeatherData> pgsqlDailyMaxTemperature = maxTemperaturePerDay
+		.map(new MapFunction<model.LocalWeatherData, pgsql.model.LocalWeatherData>() {
+			@Override
+			public pgsql.model.LocalWeatherData map(model.LocalWeatherData localWeatherData) throws Exception {
+				return pgsql.converter.LocalWeatherDataConverter.convert(localWeatherData);
+			}
+		});
+	
+// Add a new Postgres Sink with a Bulk Size of 1000 entities:
+pgsqlDailyMaxTemperature.addSink(new LocalWeatherDataPostgresSink(URI.create("postgres://philipp:test_pwd@127.0.0.1:5432/sampledb"), 1000));
+```
+
+### Converter ###
+
+The ``LocalWeatherDataConverter`` simply takes a ``model.LocalWeatherData`` and converts it into a ``pgsql.model.LocalWeatherData``.
+
+```java
+// Copyright (c) Philipp Wagner. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+package pgsql.converter;
+
+import java.time.LocalDateTime;
+
+public class LocalWeatherDataConverter {
+
+    public static pgsql.model.LocalWeatherData convert(model.LocalWeatherData modelLocalWeatherData) {
+
+        String wban = modelLocalWeatherData.getStation().getWban();
+        LocalDateTime dateTime = modelLocalWeatherData.getDate().atTime(modelLocalWeatherData.getTime());
+        Float temperature = modelLocalWeatherData.getTemperature();
+        Float windSpeed = modelLocalWeatherData.getWindSpeed();
+        Float stationPressure = modelLocalWeatherData.getStationPressure();
+        String skyCondition = modelLocalWeatherData.getSkyCondition();
+
+        return new pgsql.model.LocalWeatherData(wban, dateTime, temperature, windSpeed, stationPressure, skyCondition);
     }
 }
 ```
