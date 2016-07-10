@@ -190,7 +190,7 @@ public class GeoLocation {
 
 ### Station ###
 
-Each ``Station`` has an assigned ``GeoLocation``. We also keep track of its timezone, so we 
+Each ``Station`` has an assigned ``GeoLocation``. We also keep track of its timezone, so we can calculate a coordinated timestamp for each measurement.
 
 ```java
 // Copyright (c) Philipp Wagner. All rights reserved.
