@@ -6,4 +6,19 @@
 pip install pelican==3.2.0
 ```
 
+Depending on your Python installation, you might need to install the following packages to generate the pages:
+
+```
+pip install markdown
+pip install BeautifulSoup4
+```
+
+To build the pages, simply run the following command from the root folder:
+
+```
+pelican -s settings/settings_dev.py .
+```
+
+The output will be written to a folder ``output``.
+
 If you find any problems or dead links, please let me know. I am grateful for hints!
