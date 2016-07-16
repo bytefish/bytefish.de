@@ -1,3 +1,3 @@
 #!/bin/bash
 
-pelican -s settings\settings_prod.py ..
+pelican -s settings/settings_prod.py .
