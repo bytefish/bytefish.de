@@ -27,11 +27,11 @@ DotNetCore.1.0.0-VS2015Tools.Preview2.exe SKIP_VSU_CHECK=1
 ## The .xproj / .project.json Situation ##
 
 One of the key goals of [.NET Core] was to build a platform, which allows to develop applications with Windows, Mac and Linux. 
-MSBuild wasn't Open Source at the time and so Microsoft has developed a new build system. The current build system is based 
-.xproj / project.json files.
+MSBuild wasn't Open Source at the time and so Microsoft has developed a new build system. The current build system is based on 
+project.json files.
 
 So the first step for migrating to the current [.NET Core] version is to migrate the .csproj projects into the new format. I have 
-decided to have projects for both .csproj / MSBuild and .xproj / project.json, so you can still use Visual Studio 2013 and your 
+decided to have projects for both .csproj / MSBuild and project.json, so you can still use Visual Studio 2013 and your 
 existing MSBuild environment to build the library. 
 
 Please keep in mind, that Microsoft has recently decided to step back from .xproj / project.json and intends to move back to a 
@@ -62,8 +62,6 @@ be built, it includes the dependencies and specifies the frameworks it works wit
 ## Migrating the TinyCsvParser Project ##
 
 ### project.json ###
-
-The [project.json] build system has the nice feature, that I can directly build a package.
 
 In the ``frameworks`` section of the file the target .NET frameworks are specified. At the moment I target 
 .NET 4.5 and .NET Core 1.0. See the [.NET Platform Standard] for most recent informations on the .NET platform 
