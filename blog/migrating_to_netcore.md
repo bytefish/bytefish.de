@@ -11,14 +11,14 @@ migrate the existing library [TinyCsvParser] to [.NET Core] and shows the change
 
 ## Visual Studio 2015 RC3, .NET Core Tools ##
 
-The best way to start with .NET Core in Windows is to use [Visual Studio] and the addition [.NET Core 1.0 Tools]:
+The best way to start with .NET Core in Windows is to use [Visual Studio] and the additional [.NET Core 1.0 Tools]:
 
 * [Visual Studio 2015 Update 3*]
 * [.NET Core 1.0 for Visual Studio]
 
-I had the problem, that the Setup [.NET Core 1.0 for Visual Studio] due to an errorneous Visual Studio version check. 
+I had the problem, that the intallation of the [.NET Core 1.0 for Visual Studio] failed due to an errorneous Visual Studio 2015 version check. 
 
-You can skip the version check by running the Setup with the ``SKIP_VSU_CHECK`` parameter:
+You can skip the version check and finish the installation by running the Setup with the ``SKIP_VSU_CHECK`` parameter:
 
 ```
 DotNetCore.1.0.0-VS2015Tools.Preview2.exe SKIP_VSU_CHECK=1
@@ -69,8 +69,8 @@ In the ``frameworks`` section of the file the target .NET frameworks are specifi
 .NET 4.5 and .NET Core 1.0. See the [.NET Platform Standard] for most recent informations on the .NET platform 
 and informations like Target Framework monikers.
 
-[.NET Core] is intended to be a very modular system, so we also need to include dependencies on the [NETStandard.Library] and 
-[System.Linq.Parallel], which will be resolved from NuGet when building the project. 
+[.NET Core] is intended to be a very modular platform, so we also need to include the dependencies on the [NETStandard.Library](https://www.nuget.org/packages/NETStandard.Library/) 
+and [System.Linq.Parallel](https://www.nuget.org/packages/System.Linq.Parallel). The packages will be resolved from NuGet when building the project. 
 
 In the ``scripts`` section, we can define various pre-build and post-build events. In the ``postCompile`` event I have instructed 
 the build system to pack a NuGet Packages and store it in the current Configuration folder (e.g. Debug / Release). This is a great 
@@ -220,6 +220,7 @@ integration in [Visual Studio] is great.
 [NUnit]: http://www.nunit.org
 [Visual Studio]: https://www.visualstudio.com/news/releasenotes/vs2015-update3-vs
 [Visual Studio 2015 Update 3*]: https://www.visualstudio.com/news/releasenotes/vs2015-update3-vs
+[.NET Core 1.0 Tools]: https://go.microsoft.com/fwlink/?LinkId=817245
 [.NET Core 1.0 for Visual Studio]: https://go.microsoft.com/fwlink/?LinkId=817245
-[.NET Core 1.0]: https://go.microsoft.com/fwlink/?LinkId=817245
-[.NET Core]: https://go.microsoft.com/fwlink/?LinkId=817245
+[.NET Core 1.0]: https://www.microsoft.com/net/core
+[.NET Core]: https://www.microsoft.com/net/core
