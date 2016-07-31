@@ -31,22 +31,22 @@ MSBuild wasn't Open Source at the time and so Microsoft has developed a new buil
 project.json files.
 
 So the first step for migrating to the current [.NET Core] version is to migrate the .csproj projects into the new format. I have 
-decided to have projects for both .csproj / MSBuild and project.json, so you can still use Visual Studio 2013 and your 
-existing MSBuild environment to build the library. 
+decided to have projects for both .csproj and project.json, so you can still use Visual Studio 2013 and your existing MSBuild 
+environment to build the library. 
 
-Please keep in mind, that Microsoft has recently decided to step back from .xproj / project.json and intends to move back to a 
-.csproj / MSBuild build system (see the Microsoft announcement on [Changes to Project.json]). I really, really hope, that some 
-of the very nice features of project.json survive the change.
+Please keep in mind, that Microsoft has recently decided to step back from project.json and intends to move back to a .csproj / MSBuild 
+build system (see the Microsoft announcement on [Changes to Project.json]). I really, really hope, that some of the very nice features 
+of project.json survive the change.
 
 ### global.json ###
 
 The [global.json] file specifies what folders the build system should search, when resolving dependencies. 
 
 [TinyCsvParser] currently consists of two projects named ``TinyCsvParser``, which is the library and ``TinyCsvParser.Test``, 
-which is is the test project. Both the projects need to be defined in the [global.json] file, so the [.NET Core] Tooling can 
-correctly resolve both.
+which is is the test project. In the [global.json] file you can either specify the projects explicitly or let the .NET Core 
+tooling try to resolve them automatically.
 
-The final [global.json] looks like this:
+The [global.json] for TinyCsvParser looks like this:
 
 ```json
 {
@@ -63,12 +63,15 @@ be built, it includes the dependencies and specifies the frameworks it works wit
 
 ### project.json ###
 
-In the ``frameworks`` section of the file the target .NET frameworks are specified. At the moment I target 
-.NET 4.5 and .NET Core 1.0. See the [.NET Platform Standard] for most recent informations on the .NET platform 
-and informations like Target Framework monikers.
+In the ``frameworks`` section of the file the target .NET frameworks are specified. I want my library to target .NET 4.5 and .NET Core 1.0. 
 
-[.NET Core] is intended to be a very modular platform, so we also need to include the dependencies on the [NETStandard.Library](https://www.nuget.org/packages/NETStandard.Library/) 
-and [System.Linq.Parallel](https://www.nuget.org/packages/System.Linq.Parallel). The packages will be resolved from NuGet when building the project. 
+See the [.NET Platform Standard] for most recent informations on the .NET platform and informations like Target Framework monikers.
+
+* [.NET Documentation: .NET Standard Library](https://docs.microsoft.com/en-us/dotnet/articles/standard/library)
+* [Andrew Lock: Understanding .NET Core, NETStandard, .NET Standard applications and ASP.NET Core](http://andrewlock.net/understanding-net-core-netstandard-and-asp-net-core/)
+
+[.NET Core] is intended to be a very modular platform, so we also need to include the dependencies necessary to build the project. The packages 
+will be resolved from NuGet.
 
 In the ``scripts`` section, we can define various pre-build and post-build events. In the ``postCompile`` event I have instructed 
 the build system to pack a NuGet Packages and store it in the current Configuration folder (e.g. Debug / Release). This is a great 
@@ -76,7 +79,7 @@ feature and makes it very simple to distribute the library.
 
 ```json
 {
-  "version": "1.4.0",
+  "version": "1.5.0",
   "title": "TinyCsvParser",
   "description": "An easy to use and high-performance library for CSV parsing.",
   "copyright": "Copyright 2016 Philipp Wagner",
@@ -105,12 +108,22 @@ feature and makes it very simple to distribute the library.
 
   "frameworks": {
     "net45": {},
-    "netstandard1.6": {
+    "netstandard1.3": {
       "dependencies": {
-        "NETStandard.Library": "1.6.0",
-        "System.Linq.Parallel": "4.0.0"
-      },
-      "imports": "dnxcore50"
+        "System.Runtime": "4.1.0",
+        "System.Runtime.Extensions": "4.1.0",
+        "System.Runtime.InteropServices": "4.1.0",
+        "System.Runtime.InteropServices.RuntimeInformation": "4.0.0",
+        "System.Globalization": "4.0.11",
+        "System.Linq": "4.1.0",
+        "System.Linq.Expressions": "4.1.0",
+        "System.Linq.Parallel": "4.0.1",
+        "System.Text.RegularExpressions": "4.1.0",
+        "System.IO.FileSystem": "4.0.1",
+        "System.Reflection": "4.1.0",
+        "System.Reflection.Extensions": "4.0.1",
+        "System.Reflection.TypeExtensions": "4.1.0"
+      }
     }
   },
 
@@ -124,17 +137,17 @@ feature and makes it very simple to distribute the library.
 
 ### Conditional Compilation for the Reflection API ###
 
-There were slight changes to the Reflection API in [.NET Core]. An additional call to the ``GetTypeInfo`` method is necessary 
-to access the property informations of a type. I want the library to have a single code base, so I have used a preprocessor 
-directive to allow conditional compilation. 
+There were slight changes to the Reflection API in recent .NET Standard Framework versions. An additional call to the 
+``GetTypeInfo`` method is necessary to access the property informations of a type. I want the library to have a single 
+code base, so I have used a preprocessor directive to allow conditional compilation. 
 
-I target the .NET Standard 1.6 framework with the library, so the ``#if`` directive looks like this:
+I target the .NET Standard 1.3 framework with the library, so the ``#if`` directive looks like this:
 
 ```csharp
 public static bool IsEnum(Type type)
 {
-#if NETSTANDARD1_6
-    return typeof(Enum).GetTypeInfo().IsAssignableFrom(type);
+#if NETSTANDARD1_3
+    return typeof(Enum).GetTypeInfo().IsAssignableFrom(type.GetTypeInfo());
 #else 
     return typeof(Enum).IsAssignableFrom(type);
 #endif
