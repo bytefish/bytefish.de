@@ -8,7 +8,7 @@ summary: This article shows how to create and update GitHub pages.
 
 This is a quick example on how I have created GitHub pages for the [JTinyCsvParser] documentation.
 
-## Create and Push the Initial gh-pages branch ##
+## Create and Push the initial gh-pages branch ##
 
 First create a new branch, which is a subtree of the master repository. From the root directory I create 
 subtree, which points to the html pages:
