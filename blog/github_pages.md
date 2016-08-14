@@ -35,7 +35,7 @@ Now whenever you commit and push something to the master branch you can apply th
 
 ```
 git checkout gh-pages
-git merge -X theirs -X subtree=JTinyCsvParser/documentation/build/html
+git merge -X theirs -X subtree=JTinyCsvParser/documentation/build/html master
 git push -u origin gh-pages
 ```
 
