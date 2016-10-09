@@ -9,62 +9,99 @@ summary: Longest Common Subsequence implementation in C++.
 [Longest Common Subsequence (LCSS)](http://en.wikipedia.org/wiki/Longest_common_subsequence_problem) is another non-euclidean similarity measure for two timeseries, which may be useful on data with gaps. The 
 [Time-Warped Longest Common Subsequence Algorithm For Music Retrieval](http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.101.6392) is included, because the implementation may be useful for others.
 
-## tsutil.h ##
+## TimeSeriesUtils.hpp ##
 
 ```cpp
-#include <vector>
-
 #ifndef TSUTIL_H
 #define TSUTIL_H
 
-namespace TimeSeries {
-	double dtw(const std::vector<double>& t1, const std::vector<double>& t2);
-	int lcs(const std::vector<double>& t1, const std::vector<double>& t2);
-	int twlcs(const std::vector<double>& t1, const std::vector<double>& t2);
+#include <vector>
+#include <cstdint>
+
+namespace TimeSeriesUtils {
+	
+	double CalculateEuclideanDistance(double x, double y);
+
+	double CalculateDynamicTimeWarpedDistance(std::vector<double> t0, std::vector<double> t1);
+	
+	int CalculateLongestCommonSubsequence(std::vector<double> t0, std::vector<double> t1);
+	
+	int CalculateTimeWarpedLongestCommonSubsequence(std::vector<double> t0, std::vector<double> t1);
+
 }
 
 #endif
+
 ```
 
-## tsutil.cpp ##
+## TimeSeriesUtils.cpp ##
 
 ```cpp
 #include <vector>
-#include <utility>
-#include <cmath>
-#include "tsutil.h"
+#include <algorithm>
+#include "../include/TimeSeriesUtils.hpp"
 
-namespace TimeSeries {
+namespace TimeSeriesUtils {
+
+	double CalculateEuclideanDistance(double x, double y) {
+		return std::sqrt(std::pow((x - y), 2));
+	}	
+
+	double CalculateDynamicTimeWarpedDistance(std::vector<double> t0, std::vector<double> t1) {
+		
+		size_t m = t0.size();
+		size_t n = t1.size();
+
+		// Allocate the Matrix to work on:
+		std::vector<std::vector<double>> cost(m, std::vector<double>(n));
+
+		cost[0][0] = CalculateEuclideanDistance(t0[0], t1[0]);
+
+		// Calculate the first row:
+		for (int i = 1; i < m; i++) {
+			cost[i][0] = cost[i - 1][0] + CalculateEuclideanDistance(t0[i], t1[0]);
+		}
+
+		// Calculate the first column:
+		for (int j = 1; j < n; j++) {
+			cost[0][j] = cost[0][j - 1] + CalculateEuclideanDistance(t0[0], t1[j]);
+		}
+
+		// Fill the matrix:
+		for (int i = 1; i < m; i++) {
+			for (int j = 1; j < n; j++) {
+				cost[i][j] = std::min(cost[i - 1][j], std::min(cost[i][j - 1], cost[i - 1][j - 1])) 
+					+ CalculateEuclideanDistance(t0[i], t1[j]);
+			}
+		}
 	
-	double dist(double x, double y) {
-		return sqrt(pow((x - y), 2));
+		return cost[m-1][n-1];
 	}
-	
-	double dtw(const std::vector<double>& t1, const std::vector<double>& t2) {
-		// ... see below.
-	}
 
-	int lcs(const std::vector<double>& t1, const std::vector<double>& t2) {
+	int CalculateLongestCommonSubsequence(std::vector<double> t0, std::vector<double> t1) {
 	
-		int m = t1.size() + 1;
-		int n = t2.size() + 1;
+		size_t m = t0.size() + 1;
+		size_t n = t1.size() + 1;
 
-		// create cost matrix
-		int cost[m][n];
+		// Allocate the Matrix to work on:
+		std::vector<std::vector<int>> cost(m, std::vector<int>(n));
 
 		cost[0][0] = 0;
 
-		// first row
-		for(int i = 1; i < m; i++)
+		// Calculate the first row:
+		for (int i = 1; i < m; i++) {
 			cost[i][0] = 0;
-		// first column
-		for(int j = 1; j < n; j++)
+		}
+
+		// Calculate the first column:
+		for (int j = 1; j < n; j++) {
 			cost[0][j] = 0;
+		}
 
 
 		for(int i = 1; i < m; i++) {
 			for(int j = 1; j < n; j++) {
-				 if(std::abs(t1[i-1] - t2[j-1]) <= 1e-10) {
+				 if(std::abs(t0[i-1] - t1[j-1]) <= 1e-10) {
 					cost[i][j] = 1 + cost[i-1][j-1];
 				} else {
 					cost[i][j] = std::max(cost[i][j-1], cost[i-1][j]);
@@ -75,65 +112,100 @@ namespace TimeSeries {
 		return cost[m-1][n-1];
 	}
 	
-	int twlcs(const std::vector<double>& t1, const std::vector<double>& t2) {
+	int CalculateTimeWarpedLongestCommonSubsequence(std::vector<double> t0, std::vector<double> t1) {
 	
-		int m = t1.size() + 1;
-		int n = t2.size() + 1;
+		size_t m = t0.size() + 1;
+		size_t n = t1.size() + 1;
 
-		// create cost matrix
-		int cost[m][n];
+		// Allocate the Matrix to work on:
+		std::vector<std::vector<int>> cost(m, std::vector<int>(n));
 
 		cost[0][0] = 0;
 
-		// first row
-		for(int i = 1; i < m; i++)
+		// Calculate the first row:
+		for (int i = 1; i < m; i++) {
 			cost[i][0] = 0;
-		// first column
-		for(int j = 1; j < n; j++)
+		}
+
+		// Calculate the first column:
+		for (int j = 1; j < n; j++) {
 			cost[0][j] = 0;
+		}
 
 
 		for(int i = 1; i < m; i++) {
 			for(int j = 1; j < n; j++) {
-				 if(std::abs(t1[i-1] - t2[j-1]) <= 1e-10) {
-					cost[i][j] = 1 + std::max(cost[i][j-1],
-						        std::max(cost[i-1][j], 
-								cost[i-1][j-1]));
+				 if(std::abs(t0[i-1] - t1[j-1]) <= 1e-10) {
+					cost[i][j] = 1 + std::max(cost[i][j-1], std::max(cost[i-1][j],  cost[i-1][j-1]));
 				} else {
-					cost[i][j] = std::max(cost[i][j-1], 
-							cost[i-1][j]);
+					cost[i][j] = std::max(cost[i][j-1], cost[i-1][j]);
 				}
 			}
 		}
 		
 		return cost[m-1][n-1];
 	}
-	
 }
 ```
 
 ## usage ##
 
 ```cpp
+#include "../include/TimeSeriesUtils.hpp"
 #include <vector>
-#include <iostream>
-#include "tsutil.h"
+#include <cstdint>
+#include <catch.hpp>
 
-using namespace std;
+namespace {
 
-int main() {
+	TEST_CASE("DynamicTimeWarpedDistanceTest")
+	{
+		std::vector<double> timeSeries0;
+		std::vector<double> timeSeries1;
 
-	vector<double> t1;
-	vector<double> t2;
+		timeSeries0.push_back(4);
+		timeSeries0.push_back(4);
+		timeSeries0.push_back(5);
+		timeSeries0.push_back(5);
+		timeSeries0.push_back(6);
+		timeSeries0.push_back(6);
+		timeSeries0.push_back(7);
+		timeSeries0.push_back(7);
 
-	/* some data */
-	t1.push_back(4);
-	/* ... */
-	t2.push_back(7);
-	/* ... */
-	
-	cout <<"lcs="<<TimeSeries::lcs(t1,t2) << endl; 
-	cout <<"twlcs="<<TimeSeries::twlcs(t1,t2) << endl; 
+		timeSeries1.push_back(23);
+		timeSeries1.push_back(4);
+		timeSeries1.push_back(5);
+		timeSeries1.push_back(6);
+		timeSeries1.push_back(7);
+
+		double result = TimeSeriesUtils::CalculateDynamicTimeWarpedDistance(timeSeries0, timeSeries1);
+
+		REQUIRE(result == Approx(19).epsilon(0.01));
+	}
+
+	TEST_CASE("LongestCommonSubsequenceTest")
+	{
+		std::vector<double> timeSeries0;
+		std::vector<double> timeSeries1;
+
+		timeSeries0.push_back(4);
+		timeSeries0.push_back(4);
+		timeSeries0.push_back(5);
+		timeSeries0.push_back(5);
+		timeSeries0.push_back(6);
+		timeSeries0.push_back(6);
+		timeSeries0.push_back(7);
+		timeSeries0.push_back(7);
+
+		timeSeries1.push_back(4);
+		timeSeries1.push_back(5);
+		timeSeries1.push_back(6);
+		timeSeries1.push_back(7);
+
+		int result = TimeSeriesUtils::CalculateLongestCommonSubsequence(timeSeries0, timeSeries1);
+
+		REQUIRE(result == 4);
+	}
 }
 ```
 
