@@ -1,2 +1,0 @@
-Updated to:
-  * [[blog:colormaps_in_opencv|blog:using colormaps in opencv]]

@@ -1,4 +1,0 @@
-
-  * [[wiki:opencv:object_detection|Object Detection]]
-  * [[wiki:opencv:code_snippets|Code Snippets]]
-  * [[wiki:opencv:skin_color_thresholding|Skin Color Thresholding]]
