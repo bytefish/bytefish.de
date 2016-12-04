@@ -7,7 +7,11 @@ author: Philipp Wagner
 summary: This article shows how to work with Firebase Cloud Messaging in Java.
 
 Some time ago I needed a simple way to send Push Messages with Firebase Cloud Messaging (FCM), so I 
-wrote [FcmJava]. [FcmJava] implements the entire [Firebase Cloud Messaging HTTP Protocol] and supports:
+wrote [FcmJava]:
+
+* [https://github.com/bytefish/FcmJava](https://github.com/bytefish/FcmJava)
+
+[FcmJava] implements the entire [Firebase Cloud Messaging HTTP Protocol] and supports:
 
 * Downstream HTTP Messages
 * Notification Payloads
