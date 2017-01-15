@@ -6,7 +6,6 @@ template: page
 ## Personal Links ##
 
 * [http://www.github.com/bytefish](http://www.github.com/bytefish)
-* [https://plus.google.com/102725420896943303368](https://plus.google.com/102725420896943303368)
 
 ## Contact Details ##
 
