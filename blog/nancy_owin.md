@@ -65,7 +65,7 @@ about [using claims with the new OWIN security components](http://blogs.msdn.com
 > Under this model, your application makes identity-related decisions based on claims supplied by the system that authenticated your user. This could be anything 
 > from simple application personalization with the users first name, to authorizing the user to access higher valued features and resources in your application.
 
-So what is OWIN? Microsoft has noticed, that [Ruby on Rails](rubyonrails.org) and [Node.js](https://nodejs.org) got a lot of (deserved) attention in web programming. 
+So what is OWIN? Microsoft has noticed, that Ruby on Rails and [Node.js](https://nodejs.org) got a lot of (deserved) attention in web programming. 
 I think Microsoft wants to create an open source community around the .NET stack and specified OWIN to enable writing modular components for the web. Prior to OWIN all 
 ASP.NET application were more or less bound to the IIS and took a hard dependency on System.Web assembly.
 
