@@ -28,13 +28,13 @@ You can add the following dependencies to your pom.xml to include [FcmJava] in y
 <dependency>
   <groupId>de.bytefish.fcmjava</groupId>
   <artifactId>fcmjava-core</artifactId>
-  <version>1.0</version>
+  <version>2.1</version>
 </dependency>
 
 <dependency>
   <groupId>de.bytefish.fcmjava</groupId>
   <artifactId>fcmjava-client</artifactId>
-  <version>1.0</version>
+  <version>2.1</version>
 </dependency>
 ```
 
