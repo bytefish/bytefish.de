@@ -1,8 +1,8 @@
 ﻿title: Firebase Cloud Messaging (FCM) with .NET
 date: 2017-07-24 21:15
 tags: dotnet, csharp, fcmsharp, fcm
-category: java
-slug: fcmjava
+category: csharp
+slug: fcmsharp
 author: Philipp Wagner
 summary: This article shows how to work with FcmSharp for Firebase Cloud Messaging in C#.
 
