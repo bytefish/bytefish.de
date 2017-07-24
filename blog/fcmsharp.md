@@ -17,7 +17,7 @@ For one of my .NET projects I needed a simple way to send Push Messages with Fir
 * Topic Messages
 * Device Group Messages
 
-Firebase Cloud Messaging (FCM) is basically the successor to Google Cloud Messaging. 
+[FcmSharp] supports .NET Core as of Version 1.0.0.
 
 ## Installing FcmSharp ##
 
