@@ -13,7 +13,7 @@ I have used the celebrity dataset from my last post and downloaded images for [E
 So the database has 8 male and 5 female subjects, each with 10 images. All images were chosen to have a frontal face perspective and have been cropped to a size of ``140x140`` pixels, 
 just like [this set of images](/static/images/blog/fisherfaces/clooney_set.png). 
 
-You can easily find some images yourself using [Google Images](http://images.google.com), then locate the eye positions and use a tool like [crop_face.py](http://www.bytefish.de/blog/aligning_face_images) to geometrically normalize it.
+You can easily find some images yourself using [Google Images](http://images.google.com), then locate the eye positions and use a tool like [crop_face.py](https://www.bytefish.de/blog/aligning_face_images) to geometrically normalize it.
 
 ## Experiments ##
 

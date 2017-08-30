@@ -105,7 +105,7 @@ Here is the POM file for my [PgBulkInsert](https://github.com/bytefish/PgBulkIns
         <developer>
             <email>bytefish@gmx.de</email>
             <name>Philipp Wagner</name>
-            <url>http://www.bytefish.de</url>
+            <url>https://www.bytefish.de</url>
             <id>bytefish</id>
         </developer>
     </developers>

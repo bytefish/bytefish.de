@@ -33,7 +33,7 @@ I suggest to use at least ``disqus_shortname`` (required), ``disqus_url`` (optio
 <script type="text/javascript">
     /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
     var disqus_shortname = 'bytefish'; // required: this is your shortname as registered on disqus.com
-    var disqus_url = 'http://bytefish.de/blog/website_update'; // optional: this is a common URL, so disqus knows which comments to show
+    var disqus_url = 'https://bytefish.de/blog/website_update'; // optional: this is a common URL, so disqus knows which comments to show
     var disqus_title = 'Website Update'; // optional: this is a title of the discussion thread, should sound better than the URL
     /* * * DON'T EDIT BELOW THIS LINE * * */
     (function() {

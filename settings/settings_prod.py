@@ -8,10 +8,10 @@ PLUGINS = ['extract_toc']
 # Most important metadata:
 AUTHOR = 'Philipp Wagner'
 EMAIL = 'bytefish AT gmx DOT de'
-SITENAME = 'http://bytefish.de'
+SITENAME = 'https://bytefish.de'
 OUTPUT_PATH = 'output/PROD/'
 # Base URL this page is hosted at:
-SITEURL = 'http://bytefish.de'
+SITEURL = 'https://bytefish.de'
 # Timezone is GMT+1:
 TIMEZONE = 'Europe/Paris'
 # Using a simple date format:

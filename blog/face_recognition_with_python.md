@@ -6,10 +6,10 @@ slug: face_recognition_with_opencv2
 author: Philipp Wagner
 summary: This post presents you the guide I've wished for, when I was working myself into face recognition. The Eigenfaces and Fisherfaces method are explained in detail and implemented with Python and GNU Octave/MATLAB. The code and document is released under a BSD license, so feel free to use it for your commercial and academic projects.
 
-I've recently pushed some code to perform face recognition with OpenCV2 into [my github repository](http://www.github.com/bytefish). If you've ever researched on face recognition I am pretty sure you've noticed: there's a [gigantic number of publications](http://scholar.google.de/scholar?q=face+recognition), but source code is almost always kept like a secret. Since I've got some positive feedback on [Machine Learning with OpenCV2](http://www.bytefish.de/pdf/machinelearning.pdf), I thought I write a document on:
+I've recently pushed some code to perform face recognition with OpenCV2 into [my github repository](http://www.github.com/bytefish). If you've ever researched on face recognition I am pretty sure you've noticed: there's a [gigantic number of publications](http://scholar.google.de/scholar?q=face+recognition), but source code is almost always kept like a secret. Since I've got some positive feedback on [Machine Learning with OpenCV2](https://www.bytefish.de/pdf/machinelearning.pdf), I thought I write a document on:
 
-* [Face Recognition with OpenCV2 (Python version, pdf)](http://www.bytefish.de/pdf/facerec_python.pdf)
-* [Face Recognition with OpenCV2 (GNU Octave/MATLAB version, pdf)](http://www.bytefish.de/pdf/facerec_octave.pdf)
+* [Face Recognition with OpenCV2 (Python version, pdf)](https://www.bytefish.de/pdf/facerec_python.pdf)
+* [Face Recognition with OpenCV2 (GNU Octave/MATLAB version, pdf)](https://www.bytefish.de/pdf/facerec_octave.pdf)
 
 It's the kind of guide I've wished for, when I was working myself into face recognition. The Eigenfaces and Fisherfaces method are explained in detail and implemented with Python and GNU Octave/MATLAB. The code and document is released under a BSD license, so feel free to use it for your commercial and academic projects.
 

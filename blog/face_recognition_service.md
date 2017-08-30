@@ -158,13 +158,13 @@ This is exactely the same API, that has been used for the other examples.
 
 Next we'll define a method to generate us a ``PredictableModel``, which is used to classify incoming images. 
 
-You can read about the concepts of the framework in the documentation at [http://bytefish.de/dev/facerec](http://bytefish.de/dev/facerec/), 
+You can read about the concepts of the framework in the documentation at [https://bytefish.de/dev/facerec](https://bytefish.de/dev/facerec/), 
 so in short: In order to generate predictions, you'll need to define a ``PredictableModel`` which is a combination
 of a feature extraction algorithm (PCA, LDA, LBP, ...) and a classifier (Nearest Neighbor, SVM, ...). With a 
 ``ChainOperator`` you can build your image processing pipeline, and by calling ``compute()`` the model is finally 
 computed.
 
-In this example the images are resized to ``128 x 128`` pixels and the [Fisherfaces](http://bytefish.de/blog/fisherfaces) 
+In this example the images are resized to ``128 x 128`` pixels and the [Fisherfaces](https://bytefish.de/blog/fisherfaces) 
 are computed. Computing the model can take some time, so the method also stores the model, if a filename was given.
 
 ```python
@@ -563,7 +563,7 @@ Now it's time to run the server and client. I don't have a dataset for you to pl
 so you might want to come up with your own. In these examples I am using the Celebrities dataset,
 that I have created years ago.
 
-You might want to read my other articles on preprocessing images: [http://bytefish.de/blog/aligning_face_images](http://bytefish.de/blog/aligning_face_images).
+You might want to read my other articles on preprocessing images: [https://bytefish.de/blog/aligning_face_images](https://bytefish.de/blog/aligning_face_images).
 
 ### Starting the Server ###
 

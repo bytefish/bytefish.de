@@ -22,8 +22,8 @@ I've put all the code under a BSD License, so feel free to use it for your proje
 
 There's also a much simpler implementation in the documents over at:
 
-* [http://bytefish.de/pdf/facerec_python.pdf (Python version)](http://bytefish.de/pdf/facerec_python.pdf)
-* [http://bytefish.de/pdf/facerec_octave.pdf (GNU Octave/MATLAB version)](http://bytefish.de/pdf/facerec_octave.pdf)
+* [https://bytefish.de/pdf/facerec_python.pdf (Python version)](https://bytefish.de/pdf/facerec_python.pdf)
+* [https://bytefish.de/pdf/facerec_octave.pdf (GNU Octave/MATLAB version)](https://bytefish.de/pdf/facerec_octave.pdf)
 
 You'll find all code shown in these documents in the projects github repository:
 

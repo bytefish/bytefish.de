@@ -38,8 +38,9 @@ ErrorDocument 404                   /404.html
 ## We rewrite the URL, so the old /wiki and RSS Feed URLs are located correctly:
 RewriteEngine on
 RewriteBase /
-RewriteRule ^blog/machine_learning_with_opencv      blog/machine_learning_opencv
-RewriteRule ^wiki/kpca                              blog/pca_lda_with_gnu_octave
-RewriteRule ^wiki/(.*)                              blog/$1  [QSA,L]
-RewriteRule ^wiki                                   blog     [QSA,L]
 RewriteRule ^feed.php                               feeds/rss.xml
+## Make sure we redirect all HTTP Traffic to HTTPS with a 301 Redirect,
+## so Disable the Rewrite for HTTPS and rewrite all other incoming 
+## requests:
+RewriteCond %{HTTPS} off
+RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
