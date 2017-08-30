@@ -5,11 +5,11 @@ template: page
 
 ## Personal Links ##
 
-* [http://www.github.com/bytefish](http://www.github.com/bytefish)
+* [https://www.github.com/bytefish](https://www.github.com/bytefish)
 
 ## Contact Details ##
 
-* Email: bytefish *AT* gmx *DOT* de
+* Email: philipp *AT* bytefish *DOT* de
 * Address: Check the WHOIS record.
 
 ## Links ##
