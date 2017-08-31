@@ -12,5 +12,5 @@ Enjoy your stay.
 
 ## Contact ##
 
-* Email: bytefish *AT* gmx *DOT* de
+* Email: philipp *AT* bytefish *DOT* de
 * Address: Check the WHOIS record.
