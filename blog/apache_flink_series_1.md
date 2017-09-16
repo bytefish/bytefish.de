@@ -27,32 +27,18 @@ You can find the full source code for the example in my git repository at:
 
 ### Apache Flink ###
 
-In the example I am going to use the latest ``1.1-SNAPSHOT`` of [Apache Flink]. 
+In the example I am going to use the latest stable version ``1.3.2`` of [Apache Flink]. 
 
-That's why the Apache Development Snapshot Repository must be added to the projects ``POM`` file. 
+In the ``properties`` element of the POM File we add:
 
 ```xml
 <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <flink.version>1.1-SNAPSHOT</flink.version>
+    <flink.version>1.3.2</flink.version>
 </properties>
-
-<repositories>
-    <repository>
-        <id>apache.snapshots</id>
-        <name>Apache Development Snapshot Repository</name>
-        <url>https://repository.apache.org/content/repositories/snapshots/</url>
-        <releases>
-            <enabled>false</enabled>
-        </releases>
-        <snapshots>
-            <enabled>true</enabled>
-        </snapshots>
-    </repository>
-</repositories>
 ```
 
-Once the Snapshot repository is added, the Flink dependencies can be added to the POM file.
+And in the ``dependencies`` element of the POM file we add the [Apache Flink] dependencies:
 
 ```xml
 <dependencies>
@@ -98,7 +84,7 @@ Once the Snapshot repository is added, the Flink dependencies can be added to th
 <dependency>
 	<groupId>de.bytefish</groupId>
 	<artifactId>pgbulkinsert</artifactId>
-	<version>0.9</version>
+	<version>1.4</version>
 </dependency>
 ```
 
