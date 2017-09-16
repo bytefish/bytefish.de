@@ -68,6 +68,7 @@ package app.cep.model;
 import org.apache.flink.cep.pattern.Pattern;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -84,7 +85,7 @@ public interface IWarningPattern<TEventType, TWarningType extends IWarning> exte
      * @param pattern Pattern, which has been matched by Apache Flink.
      * @return The warning created from the given match result.
      */
-    TWarningType create(Map<String, TEventType> pattern);
+    TWarningType create(Map<String, List<TEventType>> pattern);
 
     /**
      * Implementes the Apache Flink CEP Event Pattern which triggers a warning.
@@ -161,6 +162,7 @@ public class ExcessiveHeatWarning implements IWarning {
                 localWeatherData.getDate(), localWeatherData.getTime(), localWeatherData.getTemperature());
     }
 }
+
 ```
 
 #### Warning Pattern ####
@@ -179,18 +181,27 @@ import app.cep.model.IWarningPattern;
 import app.cep.model.warnings.temperature.ExcessiveHeatWarning;
 import model.LocalWeatherData;
 import org.apache.flink.cep.pattern.Pattern;
+import org.apache.flink.cep.pattern.conditions.SimpleCondition;
 import org.apache.flink.streaming.api.windowing.time.Time;
 
+import java.util.List;
 import java.util.Map;
 
+/**
+ * Excessive Heat Warning – Extreme Heat Index (HI) values forecast to meet or exceed locally defined warning criteria for at least two days.
+ * Specific criteria varies among local Weather Forecast Offices, due to climate variability and the effect of excessive heat on the local
+ * population.
+ *
+ * Typical HI values are maximum daytime temperatures above 105 to 110 °F (41 to 43 °C) and minimum nighttime temperatures above 75 °F (24 °C).
+ */
 public class ExcessiveHeatWarningPattern implements IWarningPattern<LocalWeatherData, ExcessiveHeatWarning> {
 
     public ExcessiveHeatWarningPattern() {}
 
     @Override
-    public ExcessiveHeatWarning create(Map<String, LocalWeatherData> pattern) {
-        LocalWeatherData first = pattern.get("First Event");
-        LocalWeatherData second = pattern.get("Second Event");
+    public ExcessiveHeatWarning create(Map<String, List<LocalWeatherData>> pattern) {
+        LocalWeatherData first = pattern.get("First Event").get(0);
+        LocalWeatherData second = pattern.get("Second Event").get(0);
 
         return new ExcessiveHeatWarning(first, second);
     }
@@ -198,12 +209,20 @@ public class ExcessiveHeatWarningPattern implements IWarningPattern<LocalWeather
     @Override
     public Pattern<LocalWeatherData, ?> getEventPattern() {
         return Pattern
-                .<LocalWeatherData>begin("First Event")
-                .subtype(LocalWeatherData.class)
-                .where(evt -> evt.getTemperature() >= 41.0f)
-                .next("Second Event")
-                .subtype(LocalWeatherData.class)
-                .where(evt -> evt.getTemperature() >= 41.0f)
+                .<LocalWeatherData>begin("First Event").where(
+                        new SimpleCondition<LocalWeatherData>() {
+                            @Override
+                            public boolean filter(LocalWeatherData event) throws Exception {
+                                return event.getTemperature() >= 41.0f;
+                            }
+                        })
+                .next("Second Event").where(
+                        new SimpleCondition<LocalWeatherData>() {
+                            @Override
+                            public boolean filter(LocalWeatherData event) throws Exception {
+                                return event.getTemperature() >= 41.0f;
+                            }
+                        })
                 .within(Time.days(2));
     }
 
@@ -249,6 +268,7 @@ import utils.DateUtilities;
 
 import java.time.ZoneOffset;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 public class WeatherDataComplexEventProcessingExample {
@@ -259,9 +279,6 @@ public class WeatherDataComplexEventProcessingExample {
 
         // Use the Measurement Timestamp of the Event:
         env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime);
-
-        // We are sequentially reading the historic data from a CSV file:
-        env.setParallelism(1);
 
         // Path to read the CSV data from:
         final String csvStationDataFilePath = "C:\\Users\\philipp\\Downloads\\csv\\201503station.txt";
@@ -282,7 +299,7 @@ public class WeatherDataComplexEventProcessingExample {
 
         // First build a KeyedStream over the Data with LocalWeather:
         KeyedStream<LocalWeatherData, String> localWeatherDataByStation = localWeatherDataDataStream
-                // Filte for Non-Null Temperature Values, because we might have missing data:
+                // Filter for Non-Null Temperature Values, because we might have missing data:
                 .filter(new FilterFunction<LocalWeatherData>() {
                     @Override
                     public boolean filter(LocalWeatherData localWeatherData) throws Exception {
@@ -327,7 +344,7 @@ public class WeatherDataComplexEventProcessingExample {
 
         DataStream<TWarningType> warnings = tempPatternStream.select(new PatternSelectFunction<LocalWeatherData, TWarningType>() {
             @Override
-            public TWarningType select(Map<String, LocalWeatherData> map) throws Exception {
+            public TWarningType select(Map<String, List<LocalWeatherData>> map) throws Exception {
                 return warningPattern.create(map);
             }
         }, new GenericTypeInfo<TWarningType>(warningPattern.getWarningTargetType()));
