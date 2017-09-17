@@ -30,13 +30,13 @@ A sample resource with a CORS-enabled endpoint could look like this:
 ```java
 @Component
 @Path("/sample")
-public class StationResource extends JerseyBaseResource {
+public class SampleResource extends JerseyBaseResource {
 
     @GET
     @CrossOrigin
     @Path("{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public StationDto get(@PathParam("id") long id) {
+    public SampleEntity get(@PathParam("id") long id) {
         return repository.findOne(id);
     }
 }
