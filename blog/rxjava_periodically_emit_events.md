@@ -13,7 +13,8 @@ summary: This article shows how to emit values periodically with RxJava2.
 [RxCpp]: https://github.com/Reactive-Extensions/RxCpp
 [Reactive Programming]: https://en.wikipedia.org/wiki/Reactive_programming
 
-[Reactive Programming] is an asynchronous programming language paradigm, which makes it astonishingly easy to work with Data Streams.
+[Reactive Programming] is an asynchronous programming language paradigm, which makes it astonishingly easy to work with Data Streams. 
+Once you start with Reactive Programming you are going to see it everywhere, everything is going to look like a data stream. 
 
 I started to work with [Reactive Extensions] in .NET some years ago and by now almost every other programming language has additional 
 libraries for Reactive Programming like [RxJava], [RxJS] or [RxCpp]. Like every other technology reactive programming doesn't come 
