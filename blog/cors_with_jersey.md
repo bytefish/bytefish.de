@@ -422,6 +422,7 @@ public class JerseyConfig extends ResourceConfig {
         // ...
     }       
 }
+```
 
 ## Spring Boot Configuration ##
 
