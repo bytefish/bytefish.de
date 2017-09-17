@@ -470,6 +470,6 @@ public class SampleJerseyApplication extends SpringBootServletInitializer {
 It is really easy to extend the [Jersey] framework. Providing some kind of Aspect Oriented Programming by using Annotations 
 is also a great idea to provide Cross Cutting Concerns, such as Logging or as seen above Cross Origin Resource Sharing. 
 
-The Jersey Plugin psystem feels a little bit like magic. It is hard to guess the inner workings of the request pipelines, I think 
+The Jersey Plugin system feels a little bit like magic. It is hard to guess the inner workings of the request pipelines, I think 
 of priorities or catch-all methods. I am a little bit biased though. I am coming from the [Nancy] Framework in .NET, which makes 
 it really easy to hook into the request or response pipelines and makes use of advanced C# features.
