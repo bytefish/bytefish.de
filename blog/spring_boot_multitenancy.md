@@ -27,11 +27,11 @@ The best introduction to multitenant applications I have found is written by Mic
 There are several models to achieve multitenancy in an application:
 
 1. Database per Tenant 
-** Each Tenant has its own database and is isolated from other tenants. 
+    * Each Tenant has its own database and is isolated from other tenants. 
 2. Shared database, Separate Schema
-** All Tenants share a database, but have their own database schemas and their own tables. 
+    * All Tenants share a database, but have their own database schemas and their own tables. 
 3. Shared Database, Shared Schema
-** All Tenants share a database and tables. Every table has a Column with the Tenant Identifier, that shows the owner of the row.
+    * All Tenants share a database and tables. Every table has a Column with the Tenant Identifier, that shows the owner of the row.
 
 Think about it like this (taken from [StackExchange Software Engineering](https://softwareengineering.stackexchange.com/a/340533)):
 
@@ -134,31 +134,30 @@ It's useful to take a look at the Project structure first:
 The purpose of the various classes: 
 
 * ``core``
-** ``ThreadLocalStorage``
-*** Stores the Tenant Identifier in a ``ThreadLocal``.
+    * ``ThreadLocalStorage``
+        * Stores the Tenant Identifier in a ``ThreadLocal``.
 * ``model``
-** ``Customer``
-*** The ``Customer`` entity, which will be managed in each Tenant Database.
+    * ``Customer``
+        * The ``Customer`` entity, which will be managed in each Tenant Database.
 * ``repositories``
-** ``ICustomerRepository``
-*** A CRUD Repository to persist customers.
+    * ``ICustomerRepository``
+        * A CRUD Repository to persist customers.
 * ``routing``
-** ``TenantAwareRoutingSource``
-*** Uses the Tenant Identifier to identify the database of this tenant.
+    * ``TenantAwareRoutingSource``
+        * Uses the Tenant Identifier to identify the database of this tenant.
 * ``web``
-** ``configuration``
-*** ``JerseyConfiguration``
-**** Configures Jersey Filters and Resources.
-** ``converter``
-*** ``Converters``
-**** Converts between the Domain Model and the Data Transfer Object.
-** ``filters``
-*** ``TenantNameFilter``
-**** Extracts the Tenant Identifier from an incoming request.
-** ``resources``
-*** ``CustomerResource``
-**** Implements a REST Webservice for persisting and deleting Customers.
-
+    * ``configuration``
+        * ``JerseyConfiguration``
+                * Configures Jersey Filters and Resources.
+    * ``converter``
+        * ``Converters``
+            * Converts between the Domain Model and the Data Transfer Object.
+    * ``filters``
+        * ``TenantNameFilter``
+            * Extracts the Tenant Identifier from an incoming request.
+    * ``resources``
+        * ``CustomerResource``
+            * Implements a REST Webservice for persisting and deleting Customers.
 
 ### Infrastructure ###
 
