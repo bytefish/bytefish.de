@@ -8,13 +8,13 @@ summary: This article shows how to provide Versioning and Auditing with Hibernat
 
 [Hibernate Envers]: http://hibernate.org/orm/envers/)
 
-In this post I will show you how to provide Versioning and Auditing with [Hibernate Envers].
+In this post I will show you how to provide versioning and auditing with [Hibernate Envers].
 
 It was quite hard to get everything right with [Hibernate Envers], so I am sharing a sample application at:
 
 * [https://github.com/bytefish/VersioningWithEnvers](https://github.com/bytefish/VersioningWithEnvers)
 
-This article explains the concepts behind the application in detail.
+This article explains the concepts behind the application.
 
 ## Database ##
 
@@ -22,7 +22,7 @@ I am using PostgreSQL for this example.
 
 ### Creating the Database ###
 
-First of all create the user ``philipp`` for connecting to the databases:
+First of all create the user ``philipp`` for connecting to the database:
 
 ```
 PS C:\Users\philipp> psql -U postgres
@@ -31,7 +31,7 @@ postgres=# CREATE USER philipp WITH PASSWORD 'test_pwd';
 CREATE ROLE
 ```
 
-Then we can create the two tenant databases and set the owner to ``philipp``:
+Then we can create the database ``sampledb`` and set the owner to ``philipp``:
 
 ```
 postgres=# CREATE DATABASE sampledb
@@ -47,7 +47,7 @@ The GitHub sample has a Batch Script (Windows users) and a Shell Script (Mac / L
 
 You simply need to exectute the script and enter the database name ``sampledb`` and the user credentials.
 
-If however you prefer to create the database manually, the next sections will show the schema and table definitions.
+If you prefer to create the database manually, then the next sections will show the schema and table definitions.
 
 #### Schema ####
 
@@ -64,7 +64,7 @@ END IF;
 There are three tables in the Schema:
 
 * ``sample.customer``
-    * The Customer Data, which is the most current dataset.
+    * The Customer Data, which is the current data.
 * ``sample.customer_aud``
     * The audited customer table, which includes the log of changes to the data.
 * ``sample.revinfo``
@@ -132,8 +132,8 @@ END IF;
 
 #### Sequences ####
 
-Hibernate Envers needs a ``SEQUENCE`` named ``hibernate_sequence`` to increase the Revision number 
-for the versioned entities. This sequence can be created with the ``CREATE SEQUENCE`` SQL Statement.
+Hibernate Envers needs a ``SEQUENCE`` named ``hibernate_sequence`` to increase the revision number 
+for versioned entities. This sequence can be created with the ``CREATE SEQUENCE`` SQL Statement.
 
 ```sql
 IF NOT EXISTS (
@@ -163,10 +163,10 @@ The purpose of the various classes:
 * ``audit``
     * ``model``
         * ``CustomRevisionEntity``
-            * The Basic Revision Entity with the Revision Number and Revision Timestamp.
+            * The base class for Revision Entities with the revision number and revision timestamp.
         * ``SampleRevisionEntity``
-            * The Revision Entity for the application, which does the mapping to the ``sample.revinfo`` table.
-    * query
+            * The Revision Entity for the application, which defines the mapping to the ``sample.revinfo`` table.
+    * ``query``
         * ``AuditQueryResult``
             * A container for the Results of an Audit Query. It holds the audited entity data, the revision and the revision type.
         * ``AuditQueryResultUtils``
@@ -327,7 +327,7 @@ public class SampleRevisionEntity extends CustomRevisionEntity {
 
 #### AuditQuery Utilities ####
 
-Hibernate Envers uses a so called ``AuditQuery`` to query audited tables. Hibernate Envers is very flexible, so the results of an 
+Hibernate Envers uses an ``AuditQuery`` to query audited tables. Hibernate Envers is very flexible, so the results of an 
 ``AuditQuery`` results have to be quite generic. The Result List of an ``AuditQuery`` simply is an untyped ``List``, which is almost 
 impossible to work with nicely. 
 
@@ -470,9 +470,9 @@ public class AuditQueryUtils {
 
 #### Determining the Current Auditor ####
 
-Somehow Hibernate Envers needs to know which User added, modified or deleted the data. Hibernate Envers requires you to 
-implement the ``AuditorAware`` interface for it. The implementation ``ThreadLocalStorageAuditorAware`` is a little bit 
-complicated.
+Somehow Hibernate Envers needs to know which user has added, modified or deleted data. Hibernate Envers requires you to 
+implement the ``AuditorAware`` interface for providing the username at runtime. The implementation in the sample 
+application is the ``ThreadLocalStorageAuditorAware``.
 
 I am using the ``RequestContextHolder`` to transport the Username information through the application. It is a Web application 
 and all actions happen inside the Request Scope. So I think the ``RequestContextHolder`` is an appropiate place to store the 
@@ -505,38 +505,11 @@ public class ThreadLocalStorageAuditorAware implements AuditorAware<String> {
 }
 ```
 
-### Exceptions ###
-
-The application needs a Username to work. So we need a way to early exit the control flow, if there is no Username. This is done 
-by throwing the ``MissingUsernameException`` in the Web Layer.
-
-```java
-// Copyright (c) Philipp Wagner. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
-
-package de.bytefish.envers.exceptions;
-
-public class MissingUsernameException extends RuntimeException {
-
-    public MissingUsernameException() {
-    }
-
-    public MissingUsernameException(String message) {
-        super(message);
-    }
-
-    public MissingUsernameException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-}
-```
-
 ### Domain ###
 
 #### Domain Model ####
 
-The ``Customer`` entity models the customer the application managed. It only has a few properties to keep the example simple.
+The ``Customer`` entity models the customer managed by the sample application. The entity only has a few properties to keep the example simple.
 
 There are a few things to note here:
 
@@ -762,11 +735,10 @@ public class CustomerHistoryRepository implements ICustomerHistoryRepository {
 #### Reading the Username ####
 
 There are several ways to extract a username from an incoming request (Basic Authentication, Tokens, ...). In the example the 
-consumer of the application will the username with a HTTP Header named ``X-Username``. With Jersey you can implement a 
+Webservice client passes the username with a HTTP Header named ``X-Username``. With Jersey you can implement a 
 ``ContainerRequestFilter`` to intercept an incoming request and extract data from it.
 
-In the ``UserNameFilter`` the ``X-Username`` header is read and the its value is stored in the ``RequestContextHolder`` request 
-scope:
+The ``UserNameFilter`` reads the ``X-Username`` header and stores the name in the ``RequestContextHolder``:
 
 ```java
 // Copyright (c) Philipp Wagner. All rights reserved.
@@ -823,13 +795,35 @@ public class UserNameFilter implements ContainerRequestFilter {
 }
 ```
 
-If there was no Username, a ``MissingUsernameException`` is thrown. This is done, because auditioning the application 
-without a Username is not possible. With the default Spring Boot configuration, throwing an exception like this would 
-return the Exception Stacktrace to the consumer.
+Auditing the application without a Username is not possible. So if a Username is missing, we need to throw an exception.
 
-Returning the entire Stacktrace to the User can leak details, that should be better kept out of sight. That's why we are 
-implementing the Jersey ``ExceptionMapper``, which handles the most generic ``Exception`` and assign the HTTP Status Code 
-400 (Bad Request) to the response:
+```java
+// Copyright (c) Philipp Wagner. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+package de.bytefish.envers.exceptions;
+
+public class MissingUsernameException extends RuntimeException {
+
+    public MissingUsernameException() {
+    }
+
+    public MissingUsernameException(String message) {
+        super(message);
+    }
+
+    public MissingUsernameException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+}
+```
+
+Spring Boot will return the Stacktrace of an Exception by default. But returning the entire Stacktrace to the User is never 
+a good idea. It can leak details, that should be better kept out of sight. That's why we are implementing the Jersey 
+``ExceptionMapper``, which handles the most generic ``Exception``.
+
+It creates a ``ServiceError`` and assigns the HTTP Status Code 400 (Bad Request) to the response:
 
 ```java
 // Copyright (c) Philipp Wagner. All rights reserved.
@@ -854,7 +848,7 @@ public class GeneralExceptionMapper implements ExceptionMapper<Exception> {
 }
 ```
 
-For completeness, the ``ServiceError`` is a simple Data Transfer Object:
+The ``ServiceError`` is a simple Data Transfer Object, which only has a message:
 
 ```java
 // Copyright (c) Philipp Wagner. All rights reserved.
@@ -881,9 +875,9 @@ public class ServiceError {
 
 #### Data Transfer Objects and Converters ####
 
-You should always separate your Web Layer from the Domain Layer early on in an application. The Web layer should only care 
-about receiving and sending Data Transfer Objects to the consumer. It should know how to convert between the Data Transfer 
-Object and the Domain model, so it can use the Domain repositories.
+You should always separate your Web Layer from the Domain Layer. The Web layer should only care about receiving and sending 
+Data Transfer Objects to the consumer. It should know how to convert between the Data Transfer Object and the Domain model, 
+so it can use the Domain repositories.
 
 The ``CustomerDto`` Data Transfer Object uses Jackson annotations to provide the JSON mapping.
 
@@ -998,8 +992,7 @@ public class CustomerHistoryDto {
 }
 ```
 
-
-And the ``Converters`` class provides all methods to convert between the Domain Transfer Objects and the Domain model:
+The ``Converters`` class provides all methods necessary to convert between the Domain Transfer Objects and the Domain model:
 
 ```java
 // Copyright (c) Philipp Wagner. All rights reserved.
@@ -1071,8 +1064,8 @@ public class Converters {
 
 #### Resources ####
 
-Implementing the RESTful Webservice with Jersey now becomes really, really simple. It basically boils down to injecting the 
-correct repository and using the ``Converters`` class to map between entity representations:
+Implementing the RESTful Webservice with Jersey is now easy. It basically boils down to injecting the correct 
+repository and use the ``Converters`` class to map between entity representations:
 
 ```java
 // Copyright (c) Philipp Wagner. All rights reserved.
