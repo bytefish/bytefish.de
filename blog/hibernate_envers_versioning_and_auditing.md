@@ -8,7 +8,7 @@ summary: This article shows how to provide Versioning and Auditing with Hibernat
 
 [Hibernate Envers]: http://hibernate.org/orm/envers/)
 
-In this post I will show you how to provide Database Versioning and Auditing with [Hibernate Envers].
+In this post I will show you how to provide Versioning and Auditing with [Hibernate Envers].
 
 It was quite hard to get everything right with [Hibernate Envers], so I am sharing a sample application at:
 
@@ -1375,6 +1375,6 @@ Then we will see a new revision ``42`` with the type ``del`` in the results:
 
 ## Conclusion ##
 
-Hibernate Envers makes it really easy to auditing tables. It was quite a fight to configure and wire up everything correctly and 
-understanding how the ``AuditReader`` works. But with this sample application it should be easy to add versioning and auditing 
+Hibernate Envers makes it really easy to audit databases tables. It was quite a fight to configure and wire up everything correctly and 
+understanding how the ``AuditReader`` works. But with this sample application it should be easier to add versioning and auditing 
 to your application. 
