@@ -163,7 +163,7 @@ The purpose of the various classes:
 
 #### Storing Tenant Identifier ####
 
-The ``ThreadLocalStorage`` class is a simply wraps a ``ThreadLocal`` for storing and accessing the Tenant data in the current thread.
+The ``ThreadLocalStorage`` class wraps a ``ThreadLocal`` to store the Tenant data in the current thread context.
 
 ```java
 // Copyright (c) Philipp Wagner. All rights reserved.
@@ -188,9 +188,9 @@ public class ThreadLocalStorage {
 
 #### Implement the Routing ####
 
-Spring Boot provides and ``AbstractRoutingDataSource``, which can be used to implement the tenant database routing. We are using 
-the tenant name from the ``ThreadLocalStorage`` as the lookup key for routing to a data source. We will later see how it is used 
-in Spring Boot.
+Spring Boot provides the ``AbstractRoutingDataSource`` for determining a data source at runtime. In the example 
+the tenant name from the ``ThreadLocalStorage`` is used as the lookup key for routing. We will later see how it 
+is used in the Spring Boot application.
 
 ```java
 // Copyright (c) Philipp Wagner. All rights reserved.
@@ -215,9 +215,8 @@ public class TenantAwareRoutingSource extends AbstractRoutingDataSource {
 
 #### The Customer Entity ####
 
-The Customer Entity models the Customer, which should be managed in the Database. We are using the annotations from 
-the ``javax.persistence`` namespace to annotate the domain model and set the database columns. Hibernate plays nicely 
-with the annotations.
+The Customer Entity models the Customer entity.  We are using the annotations from the ``javax.persistence`` namespace to 
+annotate the domain model and set the database columns. Hibernate plays nicely with these annotations.
 
 ```java
 // Copyright (c) Philipp Wagner. All rights reserved.
@@ -288,11 +287,11 @@ I am a fanboy of the Jersey framework (https://jersey.github.io/), which is easy
 
 #### Extracting the Tenant Information ####
 
-There are several ways to extract the tenant identifier from an incoming request. For the example the consumer of the application 
-will send his tenant identifier using a HTTP Header with the name ``X-TenantID``. With Jersey you can implement a 
-``ContainerRequestFilter`` to intercept an incoming request and extract data from it.
+There are several ways to extract the tenant identifier from an incoming request. The Webservice client will send a HTTP Header 
+with the name ``X-TenantID`` in the example. In Jersey you can implement a ``ContainerRequestFilter`` to intercept an incoming 
+request and extract data from it.
 
-In the ``TenantNameFilter`` the ``X-TenantID`` header is read and the its value is stored in the ``ThreadLocalStorage``.
+The ``TenantNameFilter`` reads the ``X-TenantID`` header and stores its value in the ``ThreadLocalStorage``.
 
 ```java
 // Copyright (c) Philipp Wagner. All rights reserved.
@@ -338,9 +337,9 @@ public class TenantNameFilter implements ContainerRequestFilter {
 
 #### Data Transfer Object and Converter ####
 
-You should always separate your Web Layer from the Domain Layer early on in an application. The Web Layer should only care 
-about receiving and sending Data Transfer Objects to the consumer. It should know how to convert between the Data Transfer 
-Object and the Domain model, so it can use the Domain repositories.
+You should always separate your Web Layer from the Domain Layer. In an ideal world Web Layer should only care about receiving and 
+sending Data Transfer Objects to the consumer. It should know how to convert between the Data Transfer Object and the Domain model, 
+so it can use the Domain repositories.
 
 The ``CustomerDto`` Data Transfer Object uses Jackson annotations to provide the JSON mapping.
 
@@ -419,8 +418,8 @@ public class Converters {
 
 #### Resource ####
 
-Implementing the RESTful Webservice with Jersey now basically boils down to using the ``ICustomerRepository`` to query the database 
-and using the ``Converters`` to convert between both representations. 
+Implementing the RESTful Webservice with Jersey now basically boils down to using the ``ICustomerRepository`` for querying 
+the database and using the ``Converters`` to convert between both representations. 
 
 ```java
 // Copyright (c) Philipp Wagner. All rights reserved.
@@ -496,9 +495,9 @@ public class CustomerResource {
 
 #### Configuration ####
 
-Jersey needs to be configured with the Filter and Resource. We do this by extending the ``ResourceConfig`` and registering the 
-``TenantNameFilter`` and ``CustomerResource``. I have also added two properties, which allow you to enable Request tracing. They 
-might be handy for debugging, so activate them if you have problems with your application. 
+Jersey needs to be configured with the Filter and Resource. This is done by extending the ``ResourceConfig`` and registering the 
+``TenantNameFilter`` and ``CustomerResource``. I have also added two properties, which allow you to do Request tracing. They 
+might be handy for debugging, so uncomment them if you need. 
 
 ```java
 // Copyright (c) Philipp Wagner. All rights reserved.
@@ -539,8 +538,8 @@ public class JerseyConfig extends ResourceConfig {
 ### Plugging it together ###
 
 Finally it is time to plug everything together using Spring Boot. All we have to do is to define a ``Bean`` for the ``DataSource``, 
-which uses ``TenantAwareRoutingSource`` to provide the correct ``DataSource`` for the database connection. I have also added some 
-sane properties for Spring JPA, so Spring doesn't try to automatically initialize the database.
+and use the ``TenantAwareRoutingSource`` for routing. I have also added some sane properties for Spring JPA, so Spring doesn't 
+try to automatically detect the database.
 
 All other dependencies are automatically resolved by Spring Boot. 
 
