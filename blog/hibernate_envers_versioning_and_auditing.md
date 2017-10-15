@@ -70,7 +70,7 @@ There are three tables in the Schema:
 * ``sample.revinfo``
     * Holds the current revision number and the revision timestamp.
 
-```
+```sql
 IF NOT EXISTS (
     SELECT 1 
     FROM information_schema.tables 
