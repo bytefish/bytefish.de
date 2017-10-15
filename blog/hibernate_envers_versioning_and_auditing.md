@@ -622,7 +622,7 @@ public class Customer {
 The Auditing Table ``sample.customer_aud`` contains the customer entity data of the revision, the revision entity and 
 the revision type. The ``CustomerHistory`` class models this domain entity, by wrapping all this data. 
 
-```
+```java
 // Copyright (c) Philipp Wagner. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
@@ -1371,6 +1371,7 @@ Then we will see a new revision ``42`` with the type ``del`` in the results:
 > curl -H "X-Username: Philipp" -X GET http://localhost:8080/history/customer/26
 
 [{"customer":{"id":26,"firstName":"Philipp","lastName":"Wagner"},"revision":37,"type":"add"},{"customer":{"id":26,"firstName":"Philipp","lastName":"Mustermann"},"revision":38,"type":"mod"},{"customer":{"id":26,"firstName":"Philipp","lastName":"Mustermann"},"revision":42,"type":"del"}]
+```
 
 ## Conclusion ##
 
