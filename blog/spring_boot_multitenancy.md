@@ -81,7 +81,7 @@ postgres-#   WITH OWNER philipp;
 CREATE DATABASE
 ```
 
-### Creating the Schema and Databases ###
+### Creating the Schema and Tables ###
 
 The GitHub sample has a Batch Script (Windows users) and a Shell Script (Mac / Linux Users) to create the schemas and tables:
 
