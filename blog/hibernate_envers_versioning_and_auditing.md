@@ -6,7 +6,7 @@ slug: hibernate_envers_versioning_and_auditing
 author: Philipp Wagner
 summary: This article shows how to provide Versioning and Auditing with Hibernate Envers.
 
-[Hibernate Envers]: http://hibernate.org/orm/envers/)
+[Hibernate Envers]: http://hibernate.org/orm/envers/
 
 In this post I will show you how to provide versioning and auditing with [Hibernate Envers].
 

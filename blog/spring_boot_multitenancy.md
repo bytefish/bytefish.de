@@ -10,7 +10,7 @@ In this post I will show you how to provide multitenancy in a Spring Boot applic
 
 ## What Is Multitenancy ##
 
-As soon as you application has multiple customers you will need to implement some kind of multitenancy for your application. 
+As soon as your application has multiple customers you will need to implement some kind of multitenancy for your application. 
 
 Microsoft [writes on multitenant applications]():
 
