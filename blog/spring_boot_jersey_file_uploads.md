@@ -16,6 +16,11 @@ The GitHub repository for this post can be found at:
 
 ## Dependencies ##
 
+You need the ``jersey-media-multipart`` package to support HTTP multipart requests with Jersey. I am using 
+Spring Boot for the example, so you will also need the ``spring-boot-starter-jersey`` depdendency. 
+
+In the ``dependencies`` element of the POM file we add both dependencies:
+
 ```xml
 <dependency>
     <groupId>org.springframework.boot</groupId>
@@ -620,7 +625,7 @@ public class JerseyConfig extends ResourceConfig {
 ### Spring Boot Application ###
 
 Finally the ``SpringBootApplication`` can be defined, so the Spring container is configured and the Webserver is booted. So much 
-dependencies, but this looks a simple right? It's because the example only has one implementation for most of the dependencies, so 
+dependencies, but this looks simple right? It's because the example only has one implementation for most of the dependencies, so 
 Spring automatically resolves them.
 
 The only dependency, that needs to be declared explicitly is the ``IRootPathProvider``. I have decided to write to a folder named ``out`` 
