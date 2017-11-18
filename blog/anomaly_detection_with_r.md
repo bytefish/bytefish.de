@@ -9,27 +9,21 @@ summary: This article shows how to do Anomaly Detection with R.
 [Quality Controlled Local Climatological Data (QCLCD)]: https://www.ncdc.noaa.gov/data-access/land-based-station-data/land-based-datasets/quality-controlled-local-climatological-data-qclcd
 [AnomalyDetection]: https://github.com/twitter/AnomalyDetection
 
-I am currently working on a blog post for Column Store Indices with SQL Server 2016. In the upcoming article 
-I will show how to query and evaluate a large datasets with SQL Server and how to use Row Store and Column 
-Store Indices to speed up the performance.
+I am currently writing a blog post on Column Store Indices with SQL Server 2016. In the upcoming article 
+I will show how to query and evaluate a large dataset with SQL Server and how to use Row Store and Column 
+Store Indices for speeding up queries.
 
 You can see the work in progress here:
 
 * [https://github.com/bytefish/WeatherDataColumnStore/](https://github.com/bytefish/WeatherDataColumnStore/)
 
-In this post I want to show how to do Anomaly Detection using SQL and R:
+## About the Dataset ##
 
-> In data mining, anomaly detection (also outlier detection) is the identification of items, events or observations which do not 
-> conform to an expected pattern or other items in a dataset. Typically the anomalous items will translate to some kind of problem 
-> such as bank fraud, a structural defect, medical problems or errors in a text. 
-> 
-> Anomalies are also referred to as outliers, novelties, noise, deviations and exceptions.
+The dataset is the [Quality Controlled Local Climatological Data (QCLCD)] for 2014 and 2015. It contains hourly weather 
+measurements for more than 1,600 US Weather Stations. It is a great dataset to learn about data processing and data 
+visualization:
 
-## Dataset ##
-
-The dataset is the [Quality Controlled Local Climatological Data (QCLCD)] for 2014 and 2015: 
-
-> Quality Controlled Local Climatological Data (QCLCD) consist of hourly, daily, and monthly summaries for approximately 
+> The Quality Controlled Local Climatological Data (QCLCD) consist of hourly, daily, and monthly summaries for approximately 
 > 1,600 U.S. locations. Daily Summary forms are not available for all stations. Data are available beginning January 1, 2005 
 > and continue to the present. Please note, there may be a 48-hour lag in the availability of the most recent data.
 
@@ -37,11 +31,23 @@ The data is available as CSV files at:
 
 * [http://www.ncdc.noaa.gov/orders/qclcd/](http://www.ncdc.noaa.gov/orders/qclcd/)
 
-## Anomaly in the Data ##
+## Anomaly Detection ##
 
-In the process of writing the blog post I wanted to make up interesting queries. So as an example I wanted to determine the 
-coldest place in Texas, which translates to the following SQL Query. I hope it is understandable without knowing the SQL Schema 
-in detail:
+Now real life data is never perfect and the weather data is no exception. Devices can break. Sensors can fail and report wrong 
+values. Networks can be down. So in real datasets you often have to deal with missing measurements and other anomalies. And this 
+is what this post is about: Anomaly Detection.
+
+> In data mining, anomaly detection (also outlier detection) is the identification of items, events or observations which do not 
+> conform to an expected pattern or other items in a dataset. Typically the anomalous items will translate to some kind of problem 
+> such as bank fraud, a structural defect, medical problems or errors in a text. ([Wikipedia](https://en.wikipedia.org/wiki/Anomaly_detection))
+> 
+> Anomalies are also referred to as outliers, novelties, noise, deviations and exceptions.
+
+## The Anomaly: The coldest day in Texas ##
+
+In the process of writing the blog post I wanted to make up some interesting queries. 
+
+As an example I wanted to determine the coldest day in Texas, which translates to the following SQL Query:
 
 ```sql
 DECLARE @StateName NVARCHAR(255)  = 'TX';
@@ -58,33 +64,40 @@ WHERE Temperature IS NOT NULL
 ORDER BY Temperature ASC
 ```
 
-Surprisingly the SQL Query returns ``-43 °C`` on the 15th September of 2015:
+Surprisingly the SQL Query returns ``-43 °C`` for Port Isabel on the 15th September of 2015:
 
 ```
 WBAN   Name           State       Location                      Latitude    Longitude    Timestamp                      Temperature
 12957  PORT ISABEL    TX	      PORT ISABEL-CAMERON CO APT    26.16583    -97.34583    2015-09-15 02:53:00.0000000    -43.3
 ```
 
-``-43 °C`` in Texas in September looks suspiciously like an outlier. It is most probably a measurement error.
+``-43 °C`` on a September day in Texas looks suspiciously like an outlier. This is most probably a measurement error.
 
-## Visualizing the Temperature ##
+## Visualizing the Temperature with R ##
 
 [infuser]: https://github.com/Bart6114/infuser
 [RODBC]: https://cran.r-project.org/web/packages/RODBC/index.html
 [ggplot2]: http://ggplot2.org/
 
-First of all I want to get an overview about the temperature in September 2015 for the Station ``12957``. 
+I have been doing quite a lot of data mining in a previous life. So all this makes a good excuse to work with R again.
 
-The basic idea is to use an SQL query for selecting the relevant data, [RODBC] for connecting to the database, 
-[infuser] for building the query and [ggplot2] for plotting the timeseries.
+> R is an open source programming language and software environment for statistical computing and graphics that is supported 
+> by the R Foundation for Statistical Computing. The R language is widely used among statisticians and data miners for 
+> developing statistical software and data analysis. ([Wikipedia](https://en.wikipedia.org/wiki/R_(programming_language))
+
+And before digging deeper it is useful to get an overview about the temperature in September 2015 for the Station ``12957``. 
+
+### The Plan ###
+
+The basic idea is to write an SQL query for selecting the weather data, use [RODBC] for connecting to the database, 
+[infuser] for building the query and [ggplot2] for plotting the timeseries. The basic plot will show what the data 
+in question looks like.
 
 ### SQL Query Template ###
 
-So first of all I am building an SQL Query with template variables, which will be populated by the [infuser] library:
-
-I am only interested in the average temperature for a given hour, so I am removing the minute part of the timestamp. There 
-are probably multiple measurements in an hour, so in the second Common Table Expression (``DistinctSeries``) I am calculating 
-the average temperature for an hour:
+I am only interested in the temperature for a full hour, so I am removing the minute part of the timestamp. There 
+are probably multiple measurements in an hour, so the second Common Table Expression (``DistinctSeries``) is grouping the 
+measurements by hour and calculates the average temperature for each full hour:
 
 ```sql
 WITH BoundedTimeSeries as (
@@ -105,7 +118,7 @@ ORDER BY Timestamp ASC
 
 ### Plotting the Temperature in September 2015 ###
 
-The SQL query can now be used to query the temperature for a given weather station (``wban``) and time range (``start_date`` and ``end_date``):
+The SQL query can now be used to query the temperature for a given weather station (``wban``) and a time range (``start_date`` and ``end_date``):
 
 ```r
 library(RODBC)
@@ -152,7 +165,9 @@ And looking at the plot, we can see that the temperature really is an outlier (c
 
 [AnomalyDetection]: https://github.com/twitter/AnomalyDetection
 
-So how could we detect such outliers automatically? I decided to use the [AnomalyDetection] library built by Twitter:
+All this is interesting, but how could we detect such outliers automatically? 
+
+I decided to use the [AnomalyDetection] library built by Twitter:
 
 * [https://github.com/twitter/AnomalyDetection](https://github.com/twitter/AnomalyDetection)
 
@@ -163,7 +178,7 @@ It is described as:
 > anomalies in system metrics after a new software release, user engagement post an A/B test, or for problems in econometrics, 
 > financial engineering, political and social sciences.
 
-You can install the [AnomalyDetection] library from the R Console with:
+The [AnomalyDetection] library can be installed from the R Console with:
 
 ```r
 install.packages("devtools")
@@ -173,14 +188,17 @@ library(AnomalyDetection)
 
 ### Using Twitters AnomalyDetection ###
 
-First of all we are gathering all data from the years 2014 and 2015 from the SQL Server using ``RODBC`` again. The data (``ts_bounded``) is bound to 
-hourly measurements, but it still may have some missing data. So the next thing we do is to build a dense series (``ts_dense``) with the timestamps, 
-that we expect a measurement at. Now by left joining the dense series and the bounded series we are getting a dense series (``ts_merged``), where 
-missing timestamps have an ``NA`` value.
+With the SQL Query defined above and [RODBC] it is easy to query all data from 2014 and 2015.
+ 
+Now the data in ``ts_temp`` is bound to the full hour of a measurement, but the timeseries still contains missing values! 
 
-These ``NA`` values are the missing measurements, that have to be interpolated for the anomaly detection. I am using the ``zoo`` library to interpolate those values.
+In order to find the timesteps with missing values, I am defining a dense time series ``ts_dense``. It includes all timestamps, that we expect 
+a measurement at. Then by left joining the dense series and the bounded series on the timestamp, we are creating a new timeseries ``ts_merged``. `
+`ts_merged`` is now a dense series, where the missing values have an ``NA`` value.
 
-Finally the ``AnomalyDetectionVec`` can be executed with the interpolated timeseries and a period of ``8760`` (the hours in a year):
+These measurements need to be interpolated for the anomaly detection. In the example I am simply using the ``zoo`` library for interpolation.
+
+And finally the ``AnomalyDetectionVec`` function can be executed with the interpolated values and a period of ``8760``, which represents the hours in a year:
 
 ```r
 library(RODBC)
@@ -228,7 +246,7 @@ res$plot
 
 ### Results ###
 
-And we can see, that the [AnomalyDetection] library has indeed identified the anomalies.
+We can see, that the [AnomalyDetection] library has indeed identified the anomalies.
 
 From the R Console we run:
 
