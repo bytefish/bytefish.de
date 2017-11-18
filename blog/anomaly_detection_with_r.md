@@ -161,7 +161,7 @@ And looking at the plot, we can see that the temperature really is an outlier (c
 	<img src="/static/images/blog/anomaly_detection_with_r/temperature_september_2015.png" alt="September 2015 Temperature" />
 </a>
 
-## Anomaly Detection with Twitters AnomalyDetection ##
+## Anomaly Detection with the Twitter AnomalyDetection library ##
 
 [AnomalyDetection]: https://github.com/twitter/AnomalyDetection
 
@@ -186,17 +186,17 @@ devtools::install_github("twitter/AnomalyDetection")
 library(AnomalyDetection)
 ```
 
-### Using Twitters AnomalyDetection ###
+### Finding the Anomalies in the Weather Data ###
 
 With the SQL Query defined above and [RODBC] it is easy to query all data from 2014 and 2015.
  
-Now the data in ``ts_temp`` is bound to the full hour of a measurement, but the timeseries still contains missing values! 
+The data in ``ts_temp`` is bound to the full hour of a measurement, but the timeseries still contains missing values! 
 
-In order to find the timesteps with missing values, I am defining a dense time series ``ts_dense``. It includes all timestamps, that we expect 
-a measurement at. Then by left joining the dense series and the bounded series on the timestamp, we are creating a new timeseries ``ts_merged``. `
-`ts_merged`` is now a dense series, where the missing values have an ``NA`` value.
+So in order to find the timestamps with missing values, I am first defining a dense time series ``ts_dense``. It includes all timestamps, 
+that we expect the measurements at. Then by left joining the dense series and the bounded series on the timestamp, we are creating a new 
+timeseries ``ts_merged``. ``ts_merged`` is now a dense timeseries, where timestamps with missing values have an ``NA`` value.
 
-These measurements need to be interpolated for the anomaly detection. In the example I am simply using the ``zoo`` library for interpolation.
+These measurements have to be interpolated for the anomaly detection. In the example I am simply using the ``zoo`` library for interpolation.
 
 And finally the ``AnomalyDetectionVec`` function can be executed with the interpolated values and a period of ``8760``, which represents the hours in a year:
 
