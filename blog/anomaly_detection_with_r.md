@@ -39,9 +39,9 @@ is what this post is about: Anomaly Detection.
 
 > In data mining, anomaly detection (also outlier detection) is the identification of items, events or observations which do not 
 > conform to an expected pattern or other items in a dataset. Typically the anomalous items will translate to some kind of problem 
-> such as bank fraud, a structural defect, medical problems or errors in a text. ([Wikipedia](https://en.wikipedia.org/wiki/Anomaly_detection))
+> such as bank fraud, a structural defect, medical problems or errors in a text. 
 > 
-> Anomalies are also referred to as outliers, novelties, noise, deviations and exceptions.
+> Anomalies are also referred to as outliers, novelties, noise, deviations and exceptions. ([Wikipedia](https://en.wikipedia.org/wiki/Anomaly_detection))
 
 ## The Anomaly: The coldest day in Texas ##
 
