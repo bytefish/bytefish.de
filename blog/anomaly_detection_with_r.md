@@ -34,8 +34,9 @@ The data is available as CSV files at:
 ## Anomaly Detection ##
 
 Now real life data is never perfect and the weather data is no exception. Devices can break. Sensors can fail and report wrong 
-values. Networks can be down. So in real datasets you often have to deal with missing measurements and other anomalies. And this 
-is what this post is about: Anomaly Detection.
+values. Networks can be down. 
+
+So in real datasets you often have to deal with missing measurements and other anomalies. And this is what this post is about: Anomaly Detection.
 
 > In data mining, anomaly detection (also outlier detection) is the identification of items, events or observations which do not 
 > conform to an expected pattern or other items in a dataset. Typically the anomalous items will translate to some kind of problem 
@@ -83,7 +84,7 @@ I have been doing quite a lot of data mining in a previous life. So all this mak
 
 > R is an open source programming language and software environment for statistical computing and graphics that is supported 
 > by the R Foundation for Statistical Computing. The R language is widely used among statisticians and data miners for 
-> developing statistical software and data analysis. ([Wikipedia](https://en.wikipedia.org/wiki/R_(programming_language))
+> developing statistical software and data analysis. ([Wikipedia](https://en.wikipedia.org/wiki/R_(programming_language)))
 
 And before digging deeper it is useful to get an overview about the temperature in September 2015 for the Station ``12957``. 
 
