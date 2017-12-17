@@ -196,3 +196,5 @@ the resources of the GitHub repository.
 [ggplot2]: http://ggplot2.org/
 [albersusa]: https://github.com/hrbrmstr/albersusa
 [sp]: https://cran.r-project.org/web/packages/sp/index.html
+[infuser]: https://github.com/Bart6114/infuser
+[viridis]: https://cran.r-project.org/web/packages/viridis/
