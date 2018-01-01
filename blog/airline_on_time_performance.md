@@ -7,7 +7,7 @@ author: Philipp Wagner
 summary: This Article is an introduction for importing the Airline On-Time Performance Dataset into an SQL Server instance.
 
 At the moment I am working myself into Data Mining, Reporting and Business Intelligence again. I want to learn it at a 
-larger scale to learn about the pitfalls of various solutions. Because something that works on small datasets may fail 
+larger scale so I know about the pitfalls of various solutions. Because something that works on small datasets may fail 
 horribly as soon as your system ingests large amounts of data.
 
 The first step is to gather data to work with and import it into the Microsoft SQL Server. In this repository I am showing 
@@ -31,7 +31,7 @@ The [Airline On-Time Performance Dataset] spans a time range from October 1987 t
 and requires you to download the data month by month. More conveniently the [Revolution Analytics dataset repository] contains 
 a ZIP File with the CSV data from 1987 to 2012.
 
-## Links ##
+## Additional Information ##
 
 * [Airline On-Time Performance Dataset](https://www.transtats.bts.gov/Tables.asp?DB_ID=120&DB_Name=Airline%20On-Time%20Performance%20Data&DB_Short_Name=On-Time)
 * [Revolution Analytics dataset repository](https://packages.revolutionanalytics.com/datasets/AirOnTime87to12/)
