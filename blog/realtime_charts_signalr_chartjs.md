@@ -22,9 +22,10 @@ The GitHub repository for this article can be found at:
 
 ## What we are going to build ##
 
-Something everyone wants on their dashboards are Realtime Charts, which displays incoming measurements. And 
-with the amazing [Chart.js] library it is really easy to provide great looking Realtime Charts. SignalR will 
-be used to send the measurements to the Web application:
+Something everyone wants on their dashboards are Realtime Charts, which displays incoming measurements. 
+
+And with the amazing [Chart.js] library it is really easy to provide great looking Realtime Charts. SignalR will 
+be used to send the measurements to the Web application.
 
 <a href="/static/images/blog/realtime_charts_signalr_chartjs/screenshot.jpg">
 	<img src="/static/images/blog/realtime_charts_signalr_chartjs/screenshot.jpg" alt="Final Application" />
@@ -32,7 +33,7 @@ be used to send the measurements to the Web application:
 
 ## Data Model ##
 
-The final Chart should display measurements, so I am first defining a ``Measurement`` model, which will be used in the application:
+The Chart should display measurements, so I am first defining a ``Measurement`` model, which will be used in the application:
 
 ```csharp
 // Copyright (c) Philipp Wagner. All rights reserved.
@@ -217,9 +218,10 @@ namespace SignalRSample.Web
 
 ### Startup ###
 
-[ASP.NET Core] requires you to write ``Startup`` class, which configures the application and its services. In my ``Startup`` code 
-you can see, that I set a CORS policy and add SignalR to the list of Services. You also have to map the SignalR Hub Routes using 
-``app.UseSignalR(...)`` method.
+[ASP.NET Core] requires you to write ``Startup`` class, which configures the application and its services. 
+
+In my ``Startup`` code you can see, that I set a CORS policy and add SignalR to the list of Services. You also 
+have to map the SignalR Hub Routes using ``app.UseSignalR(...)`` method.
 
 
 ```csharp
@@ -315,8 +317,10 @@ I renamed the files to ``signalr-client.js`` and ``Chart.js``, and put them in t
 
 ### Using SignalR to update Chart.js charts ###
 
-The index.html simply consists of a ``canvas`` element, which is going to be populated by [Chart.js]. With the ``signalr-client`` I am going to 
-first open a connection to the ``SensorHub``, then register on the ``Broadcast`` message and finally update the Chart with the received measurement. 
+The index.html simply consists of a ``canvas`` element, which is going to be populated by [Chart.js]. 
+
+With the ``signalr-client`` I am going to first open a connection to the ``SensorHub``, then register on the ``Broadcast`` message 
+and finally update the Chart with the received measurement. 
 
 The JavaScript [Chart.js] part was originally written by [Simon Brunel](https://github.com/simonbrunel) and is available [here](https://plnkr.co/Imxwl9OQJuaMepLNy6ly).
 
@@ -413,9 +417,12 @@ Amazingly, this is already everything!
 
 ## Conclusion ##
 
-And that's it! Start the Server, start the client and connect to ``http://localhost:5000`` and enjoy the magic. It was really refreshing to work 
-with [ASP.NET Core SignalR]. Although I have no clue about how Websockets work and almost no experience in JavaScript: I got a chart with 
-realtime updates running within minutes!
+And that's it! 
+
+Start the Server, start the client, connect to ``http://localhost:5000`` and enjoy the magic.
+
+It was really refreshing to work with [ASP.NET Core SignalR]. Although I have no clue about how Websockets 
+work and almost no experience in JavaScript: I got a chart with realtime updates running within minutes!
 
 Hats off to the [ASP.NET Core] Team!
 
