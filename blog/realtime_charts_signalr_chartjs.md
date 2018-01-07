@@ -1,4 +1,4 @@
-﻿title: Realtime Charts with ASP.NET Core SignalR and Chart.js
+﻿title: Real-time Charts with ASP.NET Core SignalR and Chart.js
 date: 2018-01-07 20:14
 tags: csharp, signalr, javascript
 category: csharp
@@ -22,9 +22,9 @@ The GitHub repository for this article can be found at:
 
 ## What we are going to build ##
 
-Something everyone wants on their dashboards are Realtime Charts, which displays incoming measurements. 
+Something everyone wants on their dashboards are Real-time Charts, which display incoming values. 
 
-And with the amazing [Chart.js] library it is really easy to provide great looking Realtime Charts. SignalR will 
+And with the amazing [Chart.js] library it is really easy to provide great looking Real-time Charts. SignalR will 
 be used to send the measurements to the Web application.
 
 <a href="/static/images/blog/realtime_charts_signalr_chartjs/screenshot.jpg">
@@ -175,7 +175,7 @@ On the Server-side I am adding the following NuGet References:
 ### Program ###
 
 ASP.NET Core allows you to self-host your Web application using the Kestrel Server. The Webserver should serve 
-the ``index.html`` with the Realtime Charts, so I am also setting the Content Root of the host. The Content Root 
+the ``index.html`` with the Real-time Charts, so I am also setting the Content Root of the host. The Content Root 
 name defaults to ``wwwroot``:
 
 ```csharp
@@ -297,7 +297,7 @@ namespace SignalRSample.Web.Hubs
 }
 ```
 
-## The Website: Providing Realtime Charts with SignalR and Chart.js ##
+## The Website: Providing Real-time Charts with SignalR and Chart.js ##
 
 ### JavaScript libraries: signalr-client and Chart.js ###
 
@@ -331,12 +331,12 @@ The JavaScript [Chart.js] part was originally written by [Simon Brunel](https://
 
 <head>
     <meta charset="utf-8" />
-    <title>SignalR Realtime Chart Example</title>
+    <title>SignalR Real-time Chart Example</title>
     <script src="js/Chart.js"></script>
     <script src="js/signalr-client.js"></script>
     <script type="text/javascript">
         document.addEventListener('DOMContentLoaded', function() {
-            // Realtime Chart Example written by Simon Brunel (Plunker: https://plnkr.co/edit/Imxwl9OQJuaMepLNy6ly?p=info)
+            // Real-time Chart Example written by Simon Brunel (Plunker: https://plnkr.co/edit/Imxwl9OQJuaMepLNy6ly?p=info)
             var samples = 100;
             var speed = 250;
             var values = [];
@@ -422,7 +422,7 @@ And that's it!
 Start the Server, start the client, connect to ``http://localhost:5000`` and enjoy the magic.
 
 It was really refreshing to work with [ASP.NET Core SignalR]. Although I have no clue about how Websockets 
-work and almost no experience in JavaScript: I got a chart with realtime updates running within minutes!
+work and almost no experience in JavaScript: I got a chart with real-time updates running within minutes!
 
 Hats off to the [ASP.NET Core] Team!
 
