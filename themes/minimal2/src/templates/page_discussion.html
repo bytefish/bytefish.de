@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block title %}{{ SITEURL }}/{{ page.url }}{% endblock %}
+
+{% block content_title %}{{ page.url }}{%endblock%}
+
+{% block content %}
+  {{ page.content }}
+  <div id="comments">
+  {% include 'disqus_page.html' %}
+  </div>  
+{% endblock %}

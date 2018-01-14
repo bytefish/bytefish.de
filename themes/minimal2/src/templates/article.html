@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %}{{ article.title }}{% endblock %}
+
+{% block content_title %}{{ article.url }}{% endblock %}
+
+{% block content %}
+  <header>
+    <h1 class="title">{{ article.title }}</h1>
+    <p class="byline">By <a href="{{ SITEURL }}/{{ article.author.url }}">{{ article.author }}</a> | {{ article.date.strftime('%B %d, %Y') }}</p>
+  </header>
+  {% if article.toc %}
+    <h2>Table of Contents</h2>
+    <nav>
+    {{ article.toc }}
+    </nav>
+  {% endif %}
+  <section class="content">
+    {{ article.content }}
+  </section>
+  <div id="comments">
+    {% include 'disqus.html' %}
+  </div>  
+  
+{% endblock %}
