@@ -255,15 +255,15 @@ namespace SignalRSample.Web
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            app.UseFileServer();
-
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseCors("Everything");
+            app.UseFileServer();
 
+            app.UseCors("Everything");
+            
             app.UseSignalR(routes =>
             {
                 routes.MapHub<SensorHub>("sensor");
@@ -291,7 +291,11 @@ namespace SignalRSample.Web.Hubs
     {
         public Task Broadcast(string sender, Measurement measurement)
         {
-            return Clients.All.InvokeAsync("Broadcast", sender, measurement);
+            return Clients
+                // Do not Broadcast to Caller:
+                .AllExcept(new [] { Context.ConnectionId })
+                // Broadcast to all connected clients:
+                .InvokeAsync("Broadcast", sender, measurement);
         }
     }
 }
