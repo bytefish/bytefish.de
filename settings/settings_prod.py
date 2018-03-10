@@ -77,9 +77,20 @@ LINKS = [
 DEFAULT_CATEGORY = 'uncategorized'
 # Folders to copy to <output>/static/...:
 STATIC_PATHS = ['images' ]
+# Github Base Path:
+GITHUB_ISSUE_PATH='https://github.com/bytefish/bytefish.de/issues'
+GITHUB_SOURCE_PATH='https://github.com/bytefish/bytefish.de/blob/master/blog'
 
 # Custom functions available to all templates:
 import calendar
+import ntpath
+
+def getGitHubPage(source_file):
+    filename = getBasename(source_file)
+    return '{0}/{1}'.format(GITHUB_SOURCE_PATH, filename)
+
+def getBasename(path):
+    return ntpath.basename(path)
 
 def month_name(month_number):
     return calendar.month_name[month_number]
@@ -98,5 +109,7 @@ def sortDictByKey(items, key, reverse=True, default=None):
 JINJA_FILTERS = {
     'month_name' : month_name,
     'sortTupleByIndex': sortTupleByIndex,
-    'sortDictByKey': sortDictByKey   
+    'sortDictByKey': sortDictByKey,
+    'basename' : getBasename,
+    'asGitHubPage' : getGitHubPage
 }

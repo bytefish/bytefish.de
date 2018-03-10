@@ -53,9 +53,8 @@ body {
 #links a {
   color: #a6a6a6;
   text-decoration: none;
-
 }
-
+ 
 
 /*----------------------------*/
 /* Page Title                 */
@@ -114,13 +113,7 @@ body {
   padding: 0;
 }
 
-.footer {
-  margin: 0;
-  padding: 0;
-  color: #638c9c;
-}
-
-.footer-item, .navigation-item {
+.navigation-item {
   display: inline-block;
 }
 
@@ -479,8 +472,6 @@ table {
 	margin-bottom: 29px;
 }  
 
-	
-	
 /*----------------------------*/
 /* Media Queries              */
 /*----------------------------*/
@@ -663,16 +654,6 @@ table {
     text-align: center;
   }
 
-  /*
-    Displaying tables on small screens is a problem, so I take the 
-    approach described in:
-      
-      http://blog.apps.npr.org/2014/05/09/responsive-data-tables.html
-      
-    It turns a table into a flat list and appends the title of each 
-    cell before it. You could achieve something better with Java-
-    script, but I don't want to use it.
-  */
   table,
   tbody {
     display: block;
@@ -720,6 +701,10 @@ table {
   */
   #comments, #header, #links {
     display: none !important;
+  }
+  
+  .footer {
+      display: none !important;
   }
   
   #container {

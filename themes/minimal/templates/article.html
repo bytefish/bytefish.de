@@ -18,5 +18,11 @@
   <section class="content">
     {{ article.content }}
   </section>
-  
+  <footer class="footer">
+    <h2>Contributing</h2>
+    <ul> 
+        <li>Something is missing? <a href="{{ article.source_path | asGitHubPage }}">Feel free make a Pull Request to this file on GitHub</a>.</li>
+        <li>Something is wrong? Questions? <a href="{{GITHUB_ISSUE_PATH}}">Feel free to file an issue on GitHub</a>.</li>
+    </ul>
+  </footer>
 {% endblock %}
