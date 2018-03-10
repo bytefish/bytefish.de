@@ -19,10 +19,11 @@
     {{ article.content }}
   </section>
   <footer class="footer">
-    <h2>Contributing</h2>
-    <ul> 
-        <li>Something is missing? <a href="{{ article.source_path | asGitHubPage }}">Feel free make a Pull Request to this file on GitHub</a>.</li>
-        <li>Something is wrong? Questions? <a href="{{GITHUB_ISSUE_PATH}}">Feel free to file an issue on GitHub</a>.</li>
-    </ul>
+    <h2>How to contribute</h2>
+    <p>One of the easiest ways to contribute is to participate in discussions and discuss issues. You can also contribute by submitting pull requests.</p>
+    <h3>General feedback and discussions?</h3>
+    <p>Do you have a questions or feedback on this article? <a href="{{GITHUB_ISSUE_PATH}}">Please file an issue on the GitHub issue tracker</a>.</p>
+    <h3>Something is wrong or missing?</h3>
+    <p>There may be something wrong or missing in this article. If you want to help fixing it, then please make a <a href="{{ article.source_path | asGitHubPage }}">Pull Request to this file on GitHub</a>.</p>
   </footer>
 {% endblock %}
