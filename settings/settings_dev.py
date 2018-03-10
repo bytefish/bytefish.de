@@ -73,8 +73,6 @@ LINKS = [
   ('xhtml', 'http://validator.w3.org/check/referer'),
   ('css3', 'http://jigsaw.w3.org/css-validator/check/referer?profile=css'),
   ('pelican', 'https://github.com/getpelican'),]
-# Set this to your Disqus account:
-DISQUS_SITENAME = 'bytefish'
 # Set some default category:
 DEFAULT_CATEGORY = 'uncategorized'
 # Folders to copy to <output>/static/...:
