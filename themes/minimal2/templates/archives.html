@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %}{{ SITEURL }}/pages{% endblock %}
+{% block content_title %}pages{%endblock%}
+
+{% block content %}
+<h1>Pages, Drafts, Tutorials, ...</h1>
+<p>This page contains tutorials, rough drafts I work on. The articles in here aren't necessarily finished and some of them aren't open to discussion, because they are work in progress (or chaos). Some of them <em>might</em> be turned into self-contained blog posts, some of them will never get out of this dungeon.</p>
+<ul>
+{% for page in pages | sort(attribute='title') %}
+  <li><a href="{{ SITEURL }}/{{ page.url }}">{{ page.title }}</a></li>
+{% endfor %}
+</ul>
+{% endblock %}

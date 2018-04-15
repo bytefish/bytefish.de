@@ -1,0 +1,25 @@
+@charset "utf-8";
+
+@import "reset";
+@import "variables";
+@import "generic";
+@import "mixins";
+@import "pygments";
+
+html {
+    overflow-y: scroll;
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+}
+
+.container {
+    
+    width: 700px;
+    margin: 0 auto;
+
+    @include mobile {
+        width: 95%;
+    }
+}
+
+@import "content";

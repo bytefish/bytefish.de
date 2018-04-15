@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block title %}Articles for Tag &quot;{{ tag }}&quot;{% endblock %}
+{% block content_title %}tag/{{ tag }}{%endblock%}
+
+{% block content %}
+  {% if articles %}
+  <h1>Articles for Tag &quot;{{ tag }}&quot;</h1>
+  <dl>
+  {% for year, date_year in dates | groupby('date.year') | sort(reverse=True) %}
+      {% for article in date_year | sort(attribute='date', reverse=True) %}
+      <dt class="article-date">{{ article.date.strftime('%B %d, %Y') }}</dt>
+      <dd class="article-title"><a href="/{{ article.url }}">{{ article.title }}</a></dd>
+      {% endfor %}
+  {% endfor %}
+  </dl>
+  {% endif %}
+{% endblock %}
