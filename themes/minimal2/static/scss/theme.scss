@@ -1,15 +1,431 @@
 @charset "utf-8";
 
 @import "reset";
-@import "variables";
 @import "generic";
 @import "mixins";
 @import "pygments";
 
+
+// Colors:
+
+$black:        hsl(0, 0%, 4%) !default;
+$black-bis:    hsl(0, 0%, 7%) !default;
+$black-ter:    hsl(0, 0%, 14%) !default;
+
+$grey-darker:  hsl(0, 0%, 21%) !default;
+$grey-dark:    hsl(0, 0%, 29%) !default;
+$grey:         hsl(0, 0%, 48%) !default;
+$grey-light:   hsl(0, 0%, 71%) !default;
+$grey-lighter: hsl(0, 0%, 86%) !default;
+
+$white-ter:    hsl(0, 0%, 96%) !default;
+$white-bis:    hsl(0, 0%, 98%) !default;
+$white:        hsl(0, 0%, 100%) !default;
+
+$orange:       hsl(14,  100%, 53%) !default;
+$yellow:       hsl(48,  100%, 67%) !default;
+$green:        hsl(141, 71%,  48%) !default;
+$turquoise:    hsl(171, 100%, 41%) !default;
+$cyan:         hsl(204, 86%,  53%) !default;
+$blue:         hsl(217, 71%,  53%) !default;
+$purple:       hsl(271, 100%, 71%) !default;
+$red:          hsl(348, 100%, 61%) !default;
+
+// Typography:
+
+$family-serif: Lora, Georgia, serif;
+$family-monospace: Consolas, "Liberation Mono", Menlo, monospace !default;
+$render-mode: optimizeLegibility !default;
+
+// Sizes:
+$size-1: 3rem !default;
+$size-2: 2.5rem !default;
+$size-3: 2rem !default;
+$size-4: 1.5rem !default;
+$size-5: 1.25rem !default;
+$size-6: 1rem !default;
+$size-7: 0.75rem !default;
+
+$weight-light: 300 !default;
+$weight-normal: 400 !default;
+$weight-medium: 500 !default;
+$weight-semibold: 600 !default;
+$weight-bold: 700 !default;
+
+// Typography
+$family-primary: $family-serif !default;
+$family-code: $family-monospace !default;
+
+$size-small: $size-7 !default;
+$size-normal: $size-6 !default;
+$size-medium: $size-5 !default;
+
+// Code:
+$code-family: $family-code !default;
+$code-padding: 0.25em 0.5em 0.25em !default;
+$code-weight: normal !default;
+$code-size: 0.875em !default;
+
+// General colors
+$background: $white-ter !default;
+$border: $grey-lighter !default;
+$border-hover: $grey-light !default;
+
+// Text colors
+
+$text: $grey-dark !default;
+$text-light: $grey !default;
+$text-strong: $grey-darker !default;
+
+// Code colors
+
+$code: $red !default;
+$code-background: $background !default;
+
+$pre: $text !default;
+$pre-background: $background !default;
+
+// Link Colors:
+$link: $blue !default;
+$link-visited: $purple !default;
+
+$link-hover: $grey-darker !default;
+$link-hover-border: $grey-light !default;
+
+$link-focus: $grey-darker !default;
+$link-focus-border: $blue !default;
+
+$link-active: $grey-darker !default;
+$link-active-border: $grey-dark !default;
+
+
 html {
-    overflow-y: scroll;
-    -webkit-text-size-adjust: 100%;
-    -ms-text-size-adjust: 100%;
+  background-color: $body-background-color;
+  font-size: $body-size;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  min-width: 300px;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  text-rendering: $body-rendering;
+}
+
+article,
+aside,
+figure,
+footer,
+header,
+hgroup,
+section {
+  display: block;
+}
+
+body,
+button,
+input,
+select,
+textarea {
+  font-family: $body-family;
+}
+
+code,
+pre {
+  -moz-osx-font-smoothing: auto;
+  -webkit-font-smoothing: auto;
+  font-family: $code-family;
+}
+
+body {
+  color: $body-color;
+  font-size: 1rem;
+  font-weight: $body-weight;
+  line-height: $body-line-height;
+}
+
+// Inline
+a {
+  color: $link;
+  cursor: pointer;
+  text-decoration: none;
+
+  strong {
+    color: currentColor
+  }
+
+  &:visited {
+    color: $link-visited;
+  }
+
+  &:hover {
+    color: $link-hover;
+  }
+}
+
+code {
+  background-color: $code-background;
+  color: $code;
+  font-size: $code-size;
+  font-weight: $code-weight;
+  padding: $code-padding;
+}
+
+hr {
+  background-color: $hr-background-color;
+  border: none;
+  display: block;
+  height: $hr-height;
+  margin: $hr-margin;
+}
+
+img {
+  height: auto;
+  max-width: 100%;
+}
+
+small {
+  font-size: smaller;
+}
+
+span {
+  font-style: inherit;
+  font-weight: inherit;
+}
+
+strong {
+  color: $strong-color;
+  font-weight: $strong-weight;
+}
+
+// Block
+
+pre {
+  background-color: $pre-background;
+  color: $pre;
+  font-size: 0.875em;
+  overflow-x: auto;
+  padding: 1.25rem 1.5rem;
+  white-space: pre;
+  word-wrap: normal;
+
+  code {
+    background-color: transparent;
+    color: currentColor;
+    font-size: 1em;
+    padding: 0;
+  }
+}
+
+table {
+  td,
+  th {
+    text-align: left;
+    vertical-align: top;
+  }
+  th {
+    color: $text-strong;
+  }
+}
+
+   // Inline
+   li + li { 
+    margin-top: 0.25em;
+}
+
+// Block
+p,
+dl,
+ol,
+ul,
+blockquote,
+pre,
+table {
+    &:not(:last-child) {
+    margin-bottom: 1em;
+    }
+}
+
+// Paragraph
+p {
+    line-height: 1.62;
+}
+
+// Heading
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: $content-heading-family;
+    color: $content-heading-color;
+    font-weight: $content-heading-weight;
+    line-height: $content-heading-line-height;
+}
+
+h1 {
+    font-size: 2em;
+    margin-bottom: 0.5em;
+    &:not(:first-child) {
+        margin-top: 1em;
+    }
+}
+
+h2 {
+    font-size: 1.75em;
+    margin-bottom: 0.5714em;
+    &:not(:first-child) {
+        margin-top: 1.1428em;
+    }
+}
+
+h3 {
+    font-size: 1.5em;
+    margin-bottom: 0.6666em;
+    &:not(:first-child) {
+        margin-top: 1.3333em;
+    }
+}
+
+h4 {
+    font-size: 1.25em;
+    margin-bottom: 0.8em;
+}
+
+h5 {
+    font-size: 1.125em;
+    margin-bottom: 0.8888em;
+}
+
+h6 {
+    font-size: 1em;
+    margin-bottom: 1em;
+}
+
+blockquote {
+    background-color: $content-blockquote-background-color;
+    border-left: $content-blockquote-border-left;
+    padding: $content-blockquote-padding;
+}
+
+ol {
+    list-style: decimal outside;
+    margin-left: 2em;
+    margin-top: 1em;
+}
+
+ul {
+
+    list-style: disc outside;
+    margin-left: 2em;
+    margin-top: 1em;
+    
+    ul {
+
+        list-style-type: circle;
+        margin-top: 0.5em;
+
+        ul {
+            list-style-type: square;
+        }
+    }
+}
+
+dd {
+    margin-left: 2em;
+}
+
+figure {
+    margin-left: 2em;
+    margin-right: 2em;
+    text-align: center;
+
+    &:not(:first-child) {
+        margin-top: 2em;
+    }
+
+    &:not(:last-child) {
+        margin-bottom: 2em;
+    }
+
+    img {
+        display: inline-block;
+    }
+
+    figcaption {
+        font-style: italic;
+    }
+}
+
+pre {
+    overflow-x: auto;
+    padding: $content-pre-padding;
+    white-space: pre;
+    word-wrap: normal;
+}
+
+sup,
+sub {
+    font-size: 75%
+}
+
+table {
+
+    width: 100%;
+    
+    td,
+    th {
+        border: $content-table-cell-border;
+        border-width: $content-table-cell-border-width;
+        padding: $content-table-cell-padding;
+        vertical-align: top;
+    }
+
+    th {
+        color: $content-table-cell-heading-color;
+        text-align: left;
+    }
+
+    thead {
+        td,
+        th {
+            border-width: $content-table-head-cell-border-width;
+            color: $content-table-head-cell-color;
+        }
+    }
+
+    tfoot {
+        td,
+        th {
+            border-width: $content-table-foot-cell-border-width;
+            color: $content-table-foot-cell-color;
+        }
+    }
+
+    tbody {
+        tr {
+            &:last-child {
+                td,
+                th {
+                    border-bottom-width: 0;
+                }
+            }
+        }
+    }
+}
+
+
+.mediafile {
+    background: transparent url(../images/fileicons/file.png) 0px 1px no-repeat; 
+    padding-left: 18px; 
+    padding-bottom: 1px;
+}
+
+.gz { 
+    background-image: url(../images/fileicons/gz.png);
+}
+
+.pdf { 
+    background-image: url(../images/fileicons/pdf.png);
 }
 
 .container {
@@ -20,6 +436,72 @@ html {
     @include mobile {
         width: 95%;
     }
+}
+
+
+@include mobile {
+
+  /* 
+      The blog archive looks bad on small devices, so let's
+      display the information centered without floating.
+  */
+  h2.article-year {
+      text-align: center;
+  }
+  
+  dt.article-date {
+      text-align: center;
+  }
+
+  dd.article-title {
+      margin-left: 0;
+      text-align: center;
+  }
+  
+  /* 
+      The Table should be responsive, so for a mobile breakpoint
+      we break the table structure and display the table as a flat
+      list. 
+  */
+  table {
+
+      tbody {
+          display: block;
+          width: 100%;
+      }
+      
+      thead { display: none; }
+  
+      tr,
+      th,
+      td {
+          display: block;
+          padding: 0;
+          text-align: left;
+          white-space: normal;
+      }
+
+      tr {
+          border-bottom: 1px solid #eee;
+          padding-bottom: 11px;
+          margin-bottom: 11px;
+      }
+  
+      td {
+          border: none;
+          margin-bottom: 6px;
+      }
+  
+      td:empty { 
+          display: none; 
+      }
+      
+      th[data-title]:before,
+      td[data-title]:before {
+          content: attr(data-title) ":\00A0";
+          font-weight: bold;
+      }
+  }
 }
 
 @import "content";

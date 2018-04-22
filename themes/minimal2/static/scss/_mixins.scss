@@ -1,5 +1,12 @@
-@import "./variables";
+// Devices:
+$tablet: 769px !default;
+$desktop: 960px !default;
+$widescreen: 1152px !default;
+$widescreen-enabled: true !default;
+$fullhd: 1344px !default;
+$fullhd-enabled: true !default;
 
+// Breakpoint Mixins:
 @mixin from($device) {
   @media screen and (min-width: $device) {
     @content;
