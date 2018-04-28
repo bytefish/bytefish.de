@@ -12,7 +12,7 @@ For one of my .NET projects I needed a simple way to send Push Messages with Fir
 
 [FcmSharp] implements the Firebase Cloud Messaging HTTP v1 API:
 
-* https://firebase.google.com/docs/reference/fcm/rest/v1/projects.messages
+* [https://firebase.google.com/docs/reference/fcm/rest/v1/projects.messages](https://firebase.google.com/docs/reference/fcm/rest/v1/projects.messages)
 
 [FcmSharp] supports .NET Core as of Version 1.0.0.
 
