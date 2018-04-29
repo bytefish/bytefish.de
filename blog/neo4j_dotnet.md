@@ -92,8 +92,9 @@ So your database might already include Graph database capabilities!
 [DB-Engines Ranking of Graph DBMS]: https://db-engines.com/en/ranking/graph+dbms
 
 So what Graph database should I use? The SQL Server 2017 Graph Database would be interesting, but it is at an early stage of development, and it comes with 
-limited [Cypher Query Language] support. I don't have a SAP HANA License and no Oracle License at hand. So I decided to base this Graph database example on 
-[Neo4j], which is the most popular Open Source Graph Database (according to the [DB-Engines Ranking of Graph DBMS]).
+limited [Cypher Query Language] support. I don't have a SAP HANA License and no Oracle License at hand. 
+
+So I decided to base this Graph database example on [Neo4j], which is the most popular Open Source Graph Database (according to the [DB-Engines Ranking of Graph DBMS]):
 
 > [Neo4j] is a graph database management system developed by Neo4j, Inc. Described by its developers as an ACID-compliant transactional database 
 > with native graph storage and processing, Neo4j is the most popular graph database according to DB-Engines ranking.
