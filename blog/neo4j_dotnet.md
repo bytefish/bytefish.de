@@ -21,16 +21,14 @@ Well. Sometimes no matter how hard you try, no matter how often you iterate over
 queries are hell. A product of sweat, tears and 23 Joins stuck inside a chain of [Common Table Expressions], 
 that only a query planner could make sense of. It's hard to admit, but sometimes SQL doesn't fit.
 
-That's the reason why I have taught myself how to work with [Elasticsearch in .NET] [and Java], how to do 
-[Stream Data Processing with Apache Flink] and [Complex Event Processing] for detecting complex patterns in 
+That's the reason why I have taught myself how to work with [Elasticsearch in .NET](https://bytefish.de/blog/elasticsearch_net/) [and Java](https://bytefish.de/blog/elasticsearch_java/), 
+how to do [Stream Data Processing with Apache Flink] and [Complex Event Processing] for detecting complex patterns in 
 temporal data.
 
 I still advertise using a Relational Database as your Primary Datastore, but I also advertise to complement 
 your relational data model with the best tools and data representations for the job at hand.
 
 [Common Table Expressions]: https://en.wikipedia.org/wiki/Hierarchical_and_recursive_queries_in_SQL#Common_table_expression
-[Elasticsearch in .NET]: https://bytefish.de/blog/elasticsearch_net/
-[and Java]: https://bytefish.de/blog/elasticsearch_java/
 [Stream Data Processing with Apache Flink]: https://bytefish.de/blog/stream_data_processing_flink/
 [Complex Event Processing]: https://bytefish.de/blog/apache_flink_series_5/
 [SQL Server Column Store]: https://github.com/bytefish/WeatherDataColumnStore
