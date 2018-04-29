@@ -161,15 +161,14 @@ dfn, cite, em, i {
 blockquote {
 	padding: 28px 0 1px 45px;
 	quotes: "\201C" "\201D" "\2018" "\2019";
-	float: left;
 	clear: both;
 	color: #777;
 }
 
 blockquote:before {
   content: open-quote;
-  float: left;
   font-size: 4em;
+  float: left;
   margin-left: -45px;
   font-family: "times new roman";
   color: #faa;

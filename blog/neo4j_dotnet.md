@@ -142,7 +142,9 @@ The Graph data model is straightforward:
 
 Using the Neo4j Browser the Graph can be nicely visualized as a Graph and exported as SVG:
 
-<img src="graph.svg">
+<div style="display:flex; align-items:center; justify-content:center;">
+    <img style="width: 50%;" src="/static/images/blog/neo4j_dotnet/graph.svg">
+</div>
 
 [Neo4j Browser]: https://neo4j.com/developer/guide-neo4j-browser/
 
@@ -253,7 +255,8 @@ namespace Neo4JSample.Settings
 
 ### Parameter Serialization ###
 
-[Neo4j .NET driver source code](https://github.com/neo4j/neo4j-dotnet-driver/blob/1.6/Neo4j.Driver/Neo4j.Driver/V1/Extensions/ValueExtensions.cs)
+[JSON.NET]: https://www.newtonsoft.com/json
+[Neo4j .NET driver source code]: https://github.com/neo4j/neo4j-dotnet-driver/blob/1.6/Neo4j.Driver/Neo4j.Driver/V1/Extensions/ValueExtensions.cs
 
 There is a catch with the official Neo4j .NET Driver: It doesn't support user-defined types. In the [Neo4j .NET driver source code] this is 
 explicitly mentioned ([here](https://github.com/neo4j/neo4j-dotnet-driver/blob/c58e56f88a90cf579296e6e7c306f721b7e6c2de/Neo4j.Driver/Neo4j.Driver/V1/Extensions/ValueExtensions.cs#L55)): 
