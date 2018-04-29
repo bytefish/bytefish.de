@@ -1,5 +1,5 @@
 ﻿title: Neo4j with .NET
-date: 2018-04-28 21:15
+date: 2018-04-29 10:08
 tags: dotnet, csharp, neo4j, graph
 category: csharp
 slug: neo4j_dotnet
@@ -430,7 +430,7 @@ the Neo4j .NET Driver.
 You don't see any transaction handling in here, it's because the ``RunAsync`` automatically commits a transaction, if the Query was successful. For Bulk Inserts I 
 have used the ``UNWIND`` operator for all the inserts, and the ``ParameterSerializer`` is used to prepare the user-defined types for the Neo4j .NET Driver.
 
-```
+```csharp
 // Copyright (c) Philipp Wagner. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
@@ -734,7 +734,9 @@ http://localhost:7474/browser/
 
 It will show you the data we have just inserted:
 
-<img src="/static/images/blog/neo4j_dotnet/neo4j_browser_movie_database.jpg">
+<a href="/static/images/blog/neo4j_dotnet/neo4j_browser_movie_database.jpg">
+    <img src="/static/images/blog/neo4j_dotnet/neo4j_browser_movie_database.jpg">
+</a>
 
 So let's go ahead and query the graph!
 
