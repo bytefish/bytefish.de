@@ -391,7 +391,7 @@ namespace Neo4JSample.Serializer.Converters
 }
 ```
 
-And finally we can write a ``ParameterSerializer``, which turns given list of uder-defined types into a list of Dictionaries (with nested Dictionaries):
+And finally we can write a ``ParameterSerializer``, which turns given list of user-defined types into a list of Dictionaries (with nested Dictionaries):
 
 ```csharp
 // Copyright (c) Philipp Wagner. All rights reserved.
