@@ -8,32 +8,28 @@ summary: This article shows how to work with Neo4J at Scale.
 
 [Neo4j]: https://neo4j.com
 
-In the last article I have shown how to work with [Neo4j] in .NET. The article was based on a tiny dataset, which makes 
-it impossible to draw any conclusions about the performance of Neo4j at a larger scale. In this article I want to see how 
-to import larger datasets to Neo4j databases using .NET, and then see how the database performs on complex queries.
+In the last article I have shown how to work with [Neo4j] in .NET. The article was based on a tiny dataset, 
+which makes it impossible to draw any conclusions about the performance of Neo4j at a larger scale. 
+
+In this article I want to see how to import larger datasets to Neo4j and see how the database performs on complex queries.
+
+The source code for this article can be found in my GitHub repository at:
+
+* [https://github.com/bytefish/LearningNeo4jAtScale](https://github.com/bytefish/LearningNeo4jAtScale)
 
 ## The Plan: Analyzing the Airline On Time Performance ##
 
-In this article I want to analyze the Airline On Time Performance dataset. It is a dataset, that is interesting to work with 
-and has a reasonable size. It should give me some confidence on the Neo4j performance in a realistic setting. And after all it 
-is a dataset, that is well suited to be analyzed with a Graph database.
-
-The [Airline On-Time Performance Dataset] contains:
+The plan is to analyze the Airline On Time Performance dataset, which contains:
 
 > [...] on-time arrival data for non-stop domestic flights by major air carriers, and provides such additional 
 > items as departure and arrival delays, origin and destination airports, flight numbers, scheduled and actual departure 
 > and arrival times, cancelled or diverted flights, taxi-out and taxi-in times, air time, and non-stop distance.
 
-The [Airline On-Time Performance Dataset] spans a time range from October 1987 to present, and it contains more than 
-150 million rows of flight informations. It can be obtained as CSV files from the Bureau of Transportation Statistics 
-Database, and requires you to download the data month by month. 
+The data spans a time range from October 1987 to present, and it contains more than 150 million rows of flight informations. 
+It can be obtained as CSV files from the Bureau of Transportation Statistics Database, and requires you to download the data 
+month by month. 
 
 More conveniently the [Revolution Analytics dataset repository] contains a ZIP File with the CSV data from 1987 to 2012.
-
-The Airline On Time Performance datset is provided by the United States Department of Transportation. You can learn more 
-about the dataset on the official pages of the National Bureau of Transportation Statistics:
-
-* [https://www.bts.gov/explore-topics-and-geography/topics/airline-time-performance-and-causes-flight-delays](https://www.bts.gov/explore-topics-and-geography/topics/airline-time-performance-and-causes-flight-delays)
 
 ### About the Graph Model ###
 
@@ -165,17 +161,23 @@ $ MATCH (f:Flight) RETURN count(*)
 
 ### Benchmark Configuration ###
 
-Take all these figures with a grain of salt. The machine I am working on doesn't have a SSD, I did not 
-parallelize the writes to Neo4j and I didn't change the Neo4j configuration. Also keep in mind, that I 
-am not an expert with the Cypher Query Language, so I am sure the queries can be written differently to 
-improve the throughput.
+Take all these figures with a grain of salt. 
+
+1. The machine I am working on doesn't have a SSD. 
+2. I did not parallelize the writes to Neo4j.
+3. I didn't change the Neo4j configuration. 
+4. Keep in mind, that I am not an expert with the Cypher Query Language, so the queries can be rewritten to improve the throughput.
 
 #### Neo4j ####
+
+The following Neo4j Version was used:
 
 * Neo4j Community 3.3.4
 * Neo4j.Driver 1.6.0-rc1
 
 #### Hardware ####
+
+The following hardware was used:
 
 * Intel (R) Core (TM) i5-3450 
 * Hitachi HDS721010CLA330 (1 TB Capacity, 32 MB Cache, 7200 RPM)
@@ -246,16 +248,12 @@ If you have ideas for improving the performance, please drop a note on GitHub.
 ### Cypher Query Language ###
 
 The Cypher Query Language is being adopted by many Graph database vendors, including the SQL Server 2017 Graph database. So it is worth 
-to learn it. The language itself is pretty intuitive for querying data and makes it easy to express ``MERGE`` and ``CREATE`` operations 
-on the data.
+to learn it. The language itself is pretty intuitive for querying data and makes it easy to express ``MERGE`` and ``CREATE`` operations.
 
 #### UNWIND ####
 
-I am not an expert in the Cypher Query Language and I didn't expect to be one, after using it for two days. Starting with Cypher 
-is actually very easy for querying. But for writing data (especially as batches), there are some workaround necessary. Some of them 
-took me a long time to understand and fix (and a lot of Stackoverflow help).
-
-Or maybe I am not preparing my data in a way, that is a Neo4j Best practice? 
+I am not an expert in the Cypher Query Language and I didn't expect to be one, after using it for two days. But for writing the flight data to Neo4j 
+was complicated and involved some workarounds. Or maybe I am not preparing my data in a way, that is a Neo4j best practice? 
 
 For example an ``UNWIND`` on an empty list of items caused my query to cancel, so that I needed this workaround:
 
@@ -270,9 +268,11 @@ FOREACH (o IN CASE WHEN r IS NOT NULL THEN [r] ELSE [] END |
 
 #### Creating Optional Relationships ####
 
-Another problem I had: Optional relationships. I really understand, that a query quits when you do a ``MATCH`` without a result. There 
-is an ``OPTIONAL MATCH`` operation, which either returns the result or ``null`` if no matching node was found. But here comes the problem: 
-If I do a ``CREATE`` with a ``null`` value, then my query throws an error and there is nothing like an ``OPTIONAL CREATE``.
+Another problem I had: Optional relationships. 
+
+I understand, that a query quits when you do a ``MATCH`` without a result. There is an ``OPTIONAL MATCH`` operation, which either returns the 
+result or ``null`` if no matching node was found. But here comes the problem: If I do a ``CREATE`` with a ``null`` value, then my query throws 
+an error and there is nothing like an ``OPTIONAL CREATE``.
 
 To fix this I needed to do a ``FOREACH`` with a ``CASE``. The ``CASE`` basically yields an empty list, when the ``OPTIONAL MATCH`` yields ``null``. 
 So the ``CREATE`` part will never be executed. Only when a node is found, we will iterate over a list with the matching node. This wasn't really 
