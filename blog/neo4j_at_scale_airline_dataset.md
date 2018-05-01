@@ -147,7 +147,7 @@ private static readonly string[] csvFlightStatisticsFiles = new[]
 };
 ```
 
-After inserting we can use a Capher query to see how many Flights have been inserted:
+After running the ``Neo4jExample.ConsoleApp`` the following Cypher Query returns the number of flights in the database:
 
 ```
 $ MATCH (f:Flight) RETURN count(*)
