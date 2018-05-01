@@ -73,9 +73,11 @@ She also posted a great [Introduction To Cypher] video on YouTube, which explain
 
 On a high-level the Project looks like this:
 
-<a href="/static/images/blog/neo4j_at_scale_airline_dataset/project_structure.jpg">
-    <img src="/static/images/blog/neo4j_at_scale_airline_dataset/project_structure.jpg">
-</a>
+<div style="display:flex; align-items:center; justify-content:center;">
+    <a href="/static/images/blog/neo4j_at_scale_airline_dataset/project_structure.jpg">
+        <img src="/static/images/blog/neo4j_at_scale_airline_dataset/project_structure.jpg">
+    </a>
+</div>
 
 #### Neo4jExample ####
 
@@ -163,9 +165,10 @@ $ MATCH (f:Flight) RETURN count(*)
 
 ### Benchmark Configuration ###
 
-Take all these figures with a grain of salt. The machine I am working on doesn't have a SSD, nor did I parallelize 
-writes to Neo4j or did I do Neo4j performance tuning. Also keep in mind, that I am not an expert with the Cypher 
-Query Language, so I am sure the queries can be written differently to improve the throughput.
+Take all these figures with a grain of salt. The machine I am working on doesn't have a SSD, I did not 
+parallelize the writes to Neo4j and I didn't change the Neo4j configuration. Also keep in mind, that I 
+am not an expert with the Cypher Query Language, so I am sure the queries can be written differently to 
+improve the throughput.
 
 #### Neo4j ####
 
@@ -194,9 +197,11 @@ complete functionality, so it is quite easy to explore the data.
 
 I was able to insert something around ``3.000`` nodes and ``15.000`` relationships per second: 
 
-<a href="/static/images/blog/neo4j_at_scale_airline_dataset/neo4j_import.png">
-    <img src="/static/images/blog/neo4j_at_scale_airline_dataset/neo4j_import.png">
-</a>
+<div style="display:flex; align-items:center; justify-content:center;">
+    <a href="/static/images/blog/neo4j_at_scale_airline_dataset/neo4j_import.png">
+        <img src="/static/images/blog/neo4j_at_scale_airline_dataset/neo4j_import.png">
+    </a>
+</div>
 
 I know, that the ``LOAD CSV`` import of Neo4j is a lot faster, but it is mainly due to its complete bypassing of transactions (when 
 I read the Batch Importer source code) correctly. In real life we need the ACID guarantees of Neo4j, nothing is as cruel as inconsistent 
@@ -230,9 +235,11 @@ LIMIT 10
 Again I am pretty sure the figures can be improved by using the correct indices and tuning the Neo4j configuration. But this would be a follow-up 
 post on its own:
 
-<a href="/static/images/blog/neo4j_at_scale_airline_dataset/top_airports_delayed_by_weather.jpg">
-    <img src="/static/images/blog/neo4j_at_scale_airline_dataset/top_airports_delayed_by_weather.jpg">
-</a>
+<div style="display:flex; align-items:center; justify-content:center;">
+    <a href="/static/images/blog/neo4j_at_scale_airline_dataset/top_airports_delayed_by_weather.jpg">
+        <img src="/static/images/blog/neo4j_at_scale_airline_dataset/top_airports_delayed_by_weather.jpg">
+    </a>
+</div>
 
 If you have ideas for improving the performance, please drop a note on GitHub.
 
