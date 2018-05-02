@@ -322,7 +322,7 @@ Ford                              18               679         2.650957290132
 
 ### Performance ###
 
-It takes only **531 Milliseconds** to execute the Query and 
+It takes only **531 Milliseconds** to execute the Query:
 
 <div style="display:flex; align-items:center; justify-content:center;">
     <a href="/static/images/blog/sql_server_2017_graph_database/WeatherDelayQuery.jpg">
