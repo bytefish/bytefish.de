@@ -1,5 +1,5 @@
 ﻿title: Analyzing Flight Data with the SQL Server 2017 Graph Database
-date: 2018-04-29 10:08
+date: 2018-05-02 16:56
 tags: dotnet, csharp, sqlserver, graph
 category: csharp
 slug: sql_server_2017_graph_database
@@ -9,9 +9,10 @@ summary: This article shows how to work with the SQL Server 2017 Graph Database 
 [procrastinating]: https://en.wikipedia.org/wiki/Procrastination
 
 In my last post I have evaluated Neo4j on the Airline On Time Performance dataset. It would be a waste to not expand this example 
-to the SQL Server 2017 Graph Database and see how it compares to Neo4j. So in this article I want to show you how to efficiently 
-insert the Airline On Time Performance Dataset into the SQL Server 2017 and query the Graph Database using the SQL Server 2017 
-``MATCH`` operation.
+to the SQL Server 2017 Graph Database and see how it compares to Neo4j. 
+
+So in this article I want to show you how to efficiently insert the Airline On Time Performance Dataset into the SQL Server 2017 and 
+query the Graph Database using the SQL Server 2017 ``MATCH`` operation.
 
 ## The Plan: Analyzing the Airline On Time Performance ##
 
