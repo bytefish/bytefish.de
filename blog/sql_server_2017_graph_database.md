@@ -6,13 +6,15 @@ slug: sql_server_2017_graph_database
 author: Philipp Wagner
 summary: This article shows how to work with the SQL Server 2017 Graph Database and evaluates the Performance on the Airline On Time Performance Dataset.
 
-[procrastinating]: https://en.wikipedia.org/wiki/Procrastination
-
 In my last post I have evaluated Neo4j on the Airline On Time Performance dataset. It would be a waste to not expand this example 
 to the SQL Server 2017 Graph Database and see how it compares to Neo4j. 
 
 So in this article I want to show you how to efficiently insert the Airline On Time Performance Dataset into the SQL Server 2017 and 
 query the Graph Database using the SQL Server 2017 ``MATCH`` operation.
+
+The source code for this article can be found in my GitHub repository at:
+
+* [https://github.com/bytefish/SqlServer2017GraphDatabase](https://github.com/bytefish/SqlServer2017GraphDatabase)
 
 ## The Plan: Analyzing the Airline On Time Performance ##
 
@@ -349,9 +351,14 @@ Table 'Worktable'. Scan count 0, logical reads 0, physical reads 0, read-ahead r
    CPU time = 1549 ms,  elapsed time = 531 ms.
 </pre>
 
-
 ## Conclusion ##
 
 I am very impressed how fast the SQL Server 2017 Graph Database is! Querying for the Percentage of Flights delayed by Weather 
 took **530 Milliseconds** with the SQL Server 2017, while it took almost 30 Seconds with Neo4j. This makes me think, that something 
 in my Neo4j Cypher Queries is horribly wrong. I am open for any feedback or help with the Neo4j queries!
+
+[Nicole White]: https://nicolewhite.github.io/
+[Revolution Analytics dataset repository]: https://packages.revolutionanalytics.com/datasets/AirOnTime87to12/
+[TinyCsvParser]: https://github.com/bytefish/TinyCsvParser
+[Reactive Extensions]: https://github.com/Reactive-Extensions/Rx.NET
+[Airline On-Time Performance Dataset]: https://www.transtats.bts.gov/Tables.asp?DB_ID=120&DB_Name=Airline%20On-Time%20Performance%20Data&DB_Short_Name=On-Time
