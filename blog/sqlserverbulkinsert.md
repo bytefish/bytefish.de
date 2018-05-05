@@ -220,7 +220,7 @@ You may have noticed, that I also updated [FcmSharp] to the new Firebase HTTP v1
 feasible side projects to do. I worked on the recent Graph Database articles too long. 
 
 The original plan for the Graph Database articles was to also do some data mining on the datasets. The plan was to use the 
-[Airline On Time Performance Dataset] to identify the flights delayed by weather first. Then I wanted to use the 
+[Airline On-Time Performance Dataset] to identify the flights delayed by weather first. Then I wanted to use the 
 [Quality Controlled Local Climatological Data] to see, if I can build a statistical model for predicting delayed flights.
 
 This turned out to be a way too big side project, so I am scaling my plans a little down for future projects.
