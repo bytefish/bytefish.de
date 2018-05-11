@@ -205,10 +205,6 @@ I was able to insert something around ``3.000`` nodes and ``15.000`` relationshi
     </a>
 </div>
 
-I know, that the ``LOAD CSV`` import of Neo4j is a lot faster, but it is mainly due to its complete bypassing of transactions (when 
-I read the Batch Importer source code) correctly. In real life we need the ACID guarantees of Neo4j, nothing is as cruel as inconsistent 
-data.
-
 I am OK with the performance, it is in the range of what I have expected. 
 
 I am sure these figures can be improved by:
