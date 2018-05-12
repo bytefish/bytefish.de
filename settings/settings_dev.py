@@ -3,12 +3,11 @@
 # This is a simple configuration for the Pelican (http://getpelican.com) 
 # project and it is probably closely tied to the 'minimal' theme I am 
 # using.
-PLUGIN_PATH = "./plugins/"
-PLUGINS = ['extract_toc']
+PLUGIN_PATHS = [ 'plugins' ]
 # Most important metadata:
 AUTHOR = 'Philipp Wagner'
-EMAIL = 'bytefish AT gmx DOT de'
-SITENAME = 'http://bytefish.de'
+EMAIL = 'philipp AT bytefish DOT de'
+SITENAME = 'https://bytefish.de'
 OUTPUT_PATH = 'output/DEV/'
 # Base URL this page is hosted at:
 SITEURL = 'http://localhost:8000'
@@ -20,8 +19,16 @@ DEFAULT_DATE_FORMAT = ('%d %b %Y')
 THEME = './themes/minimal/'
 # Probably add rst here:
 MARKUP = ('md',)
-# Turn language guessing off!
-MD_EXTENSIONS = ['codehilite(css_class=highlight, guess_lang=False)', 'extra', 'toc(permalink=false)']
+# Markdown Configuration:
+MARKDOWN = {
+    'extension_configs': {
+        'markdown.extensions.codehilite': {'css_class': 'highlight'},
+        'markdown.extensions.toc' : {},
+        'markdown.extensions.extra': {},
+        'markdown.extensions.meta': {},
+    },
+    'output_format': 'html5',
+}
 # We don't use relative URLs:
 RELATIVE_URLS = False
 # Edit predefined pathes:
@@ -52,13 +59,13 @@ FEED_ALL_ATOM = None
 TAG_FEED_ATOM = None
 CATEGORY_FEED_ATOM = None
 # Separate page directory and articles directory:
-PAGE_DIR = ('pages')
-ARTICLE_DIR = ('blog')
+PAGE_PATHS = [ 'pages' ]
+ARTICLE_PATHS = [ 'blog' ]
 # A list of files to copy from the source to the destination
-FILES_TO_COPY = (
-  ('extra/.htaccess', '.htaccess'),
-  ('extra/robots.txt', 'robots.txt'),
-  )
+EXTRA_PATH_METADATA = {
+  'extra/.htaccess' : { 'path' : '.htaccess'},
+  'extra/robots.txt' : { 'path' : 'robots.txt' },
+}
 # Save index as blog/index.html instead of index.html:
 INDEX_SAVE_AS = 'blog/index.html'
 # Navigation menu:
@@ -76,7 +83,10 @@ LINKS = [
 # Set some default category:
 DEFAULT_CATEGORY = 'uncategorized'
 # Folders to copy to <output>/static/...:
-STATIC_PATHS = ['images' ]
+STATIC_PATHS = [
+    'images',
+    'extra'
+]
 # Github Base Path:
 GITHUB_ISSUE_PATH='https://github.com/bytefish/bytefish.de/issues'
 GITHUB_SOURCE_PATH='https://github.com/bytefish/bytefish.de/blob/master/blog'
