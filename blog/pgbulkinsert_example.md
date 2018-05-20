@@ -107,6 +107,16 @@ public class LocalWeatherDataMapper extends CsvMapping<LocalWeatherData>
 
 ## PgBulkInsert ##
 
+Add the following dependencies to your ``pom.xml`` to include [PgBulkInsert] in your project:
+
+```xml
+<dependency>
+	<groupId>de.bytefish</groupId>
+	<artifactId>pgbulkinsert</artifactId>
+	<version>1.4</version>
+</dependency>
+```
+
 For the bulk inserts to PostgreSQL the mapping between the database table and the domain model needs to be defined. This is done by implementing 
 the abstract base class ``PgBulkInsert<TEntity>``. 
 

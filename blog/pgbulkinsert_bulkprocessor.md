@@ -33,7 +33,7 @@ You can add the following dependencies to your ``pom.xml`` to include [PgBulkIns
 <dependency>
 	<groupId>de.bytefish</groupId>
 	<artifactId>pgbulkinsert</artifactId>
-	<version>0.9</version>
+	<version>2.1</version>
 </dependency>
 ```
 

@@ -23,6 +23,18 @@ It provides a wrapper around the PostgreSQL [Copy command]:
 
 * [https://github.com/bytefish/PgBulkInsert](https://github.com/bytefish/PgBulkInsert)
 
+## PgBulkInsert ##
+
+You can add the following dependencies to your ``pom.xml`` to include [PgBulkInsert] in your project:
+
+```xml
+<dependency>
+	<groupId>de.bytefish</groupId>
+	<artifactId>pgbulkinsert</artifactId>
+	<version>2.1</version>
+</dependency>
+```
+
 ## Basic Usage ##
 
 Imagine we want to bulk insert a large amount of persons into a PostgreSQL database. Each ``Person`` has a first name, a last name and a birthdate.
