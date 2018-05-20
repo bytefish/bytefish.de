@@ -17,32 +17,13 @@ summary: This article shows how to use a custom JSON serializer and JSON deseria
 [ISerializer]: https://github.com/restsharp/RestSharp/blob/master/RestSharp/Serializers/ISerializer.cs
 [IDeserializer]: https://github.com/restsharp/RestSharp/blob/master/RestSharp/Deserializers/IDeserializer.cs
 
-### ISerializer and IDeserializer ###
-
-A custom serializer and deserializer for RestSharp simply needs to implement the [ISerializer] and [IDeserializer] interfaces. So it is useful 
-to define an interface that is implementing both, the ``ISerializer`` and ``IDeserializer``.
-
-```csharp
-// Copyright (c) Philipp Wagner. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
-
-using RestSharp.Deserializers;
-using RestSharp.Serializers;
-
-namespace GcmSharp.Serialization
-{
-    public interface IJsonSerializer : ISerializer, IDeserializer {
-
-    }
-}
-```
-
 ### NewtonsoftJsonSerializer ###
 
+A custom serializer and deserializer for RestSharp simply needs to implement the [ISerializer] and [IDeserializer] interfaces.
 
 The example ``NewtonsoftJsonSerializer`` is using [Json.NET], which is a popular library for JSON serialization in the .NET world. We do this 
-by writing a class, that implements the above ``IJsonSerializer`` interface and wraps a ``Newtonsoft.Json.JsonSerializer``. We are also providing 
-a default getter (``Default``), which returns a new ``NewtonsoftJsonSerializer`` with sane default values.
+by writing a class, that implements RestSharps ``ISerializer`` and ``IDeserializer`` interfaces and wraps a ``Newtonsoft.Json.JsonSerializer``. 
+We are also providing a default getter (``Default``), which returns a new ``NewtonsoftJsonSerializer`` with sane default values.
 
 If the default ``Newtonsoft.Json.JsonSerializer`` doesn't fit your needs, you simply instantiate the correct serializer by using the constructor.
 
@@ -51,13 +32,13 @@ If the default ``Newtonsoft.Json.JsonSerializer`` doesn't fit your needs, you si
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using Newtonsoft.Json;
-using RestSharp.Serializers;
 using System.IO;
+using RestSharp.Serializers;
 using RestSharp.Deserializers;
 
 namespace GcmSharp.Serialization
 {
-    public class NewtonsoftJsonSerializer : IJsonSerializer
+    public class NewtonsoftJsonSerializer : ISerializer, IDeserializer
     {
         private Newtonsoft.Json.JsonSerializer serializer;
 
