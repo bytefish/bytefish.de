@@ -98,7 +98,6 @@ namespace GcmSharp.Serialization
 }
 ```
 
-
 ### Using the Custom Serializer for Requests ###
 
 [RestRequest]: https://github.com/restsharp/RestSharp/blob/master/RestSharp/RestRequest.cs
