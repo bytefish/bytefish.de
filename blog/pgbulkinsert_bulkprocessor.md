@@ -107,9 +107,7 @@ public class Person {
 
 ### Bulk Inserter ###
 
-Then the mapping between the database table and the domain model has to defined. 
-
-This is done by implementing the abstract base class ``PgBulkInsert<TEntity>``.
+Then the mapping between the database table and the domain model has to defined. This is done by implementing the abstract base class ``AbstractMapping<TEntity>``.
 
 ```java
 // Copyright (c) Philipp Wagner. All rights reserved.
@@ -119,18 +117,19 @@ package mapping;
 
 import model.Person;
 
-import de.bytefish.pgbulkinsert.PgBulkInsert;
+import de.bytefish.pgbulkinsert.mapping.AbstractMapping;
 
-public class PersonBulkInsert extends PgBulkInsert<Person>
+public class PersonMapping extends AbstractMapping<Person>
 {
-    public PersonBulkInsert() {
-        super("sample", "person_example");
+    public PersonMapping() {
+        super("sample", "unit_test");
 
         mapString("first_name", Person::getFirstName);
         mapString("last_name", Person::getLastName);
         mapDate("birth_date", Person::getBirthDate);
     }
 }
+
 ```
 
 ### Connection Pooling (with DBCP2) ###
@@ -206,9 +205,10 @@ The example writes ``1000`` Person entities to the database, using a Bulk Size o
 package app;
 
 import connection.PooledConnectionFactory;
+import de.bytefish.pgbulkinsert.PgBulkInsert;
 import de.bytefish.pgbulkinsert.pgsql.processor.BulkProcessor;
 import de.bytefish.pgbulkinsert.pgsql.processor.handler.BulkWriteHandler;
-import mapping.PersonBulkInsert;
+import mapping.PersonMapping;
 import model.Person;
 
 import java.net.URI;
@@ -219,12 +219,14 @@ import java.util.List;
 public class BulkProcessorApp {
 
     public static void main(String[] args) throws Exception {
+        // Create the Bulk Insert:
+        PgBulkInsert<Person> bulkInsert = new PgBulkInsert<Person>(new PersonMapping());
         // Database to connect to:
         URI databaseUri = URI.create("postgres://philipp:test_pwd@127.0.0.1:5432/sampledb");
         // Bulk Actions after which the batched entities are written:
         final int bulkSize = 100;
         // Create a new BulkProcessor:
-        try(BulkProcessor<Person> bulkProcessor = new BulkProcessor<>(new BulkWriteHandler<>(new PersonBulkInsert(), new PooledConnectionFactory(databaseUri)), bulkSize)) {
+        try(BulkProcessor<Person> bulkProcessor = new BulkProcessor<>(new BulkWriteHandler<>(bulkInsert, new PooledConnectionFactory(databaseUri)), bulkSize)) {
             // Create some Test data:
             List<Person> thousandPersons = getPersonList(1000);
             // Now process them with the BulkProcessor:
