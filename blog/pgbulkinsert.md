@@ -82,14 +82,14 @@ private class Person {
 }
 ```
 
-### Bulk Inserter ###
+### Implementing the Mapping ###
 
-Then you have to implement the ``PgBulkInsert<Person>``, which defines the mapping between the table and the domain model.
+Then you have to implement the ``AbstractMapping<Person>``, which defines the mapping between the table and the domain model.
 
 ```java
-public class PersonBulkInserter extends PgBulkInsert<Person>
+public class PersonMapping extends AbstractMapping<Person>
 {
-    public PersonBulkInserter() {
+    public PersonMapping() {
         super("sample", "unit_test");
 
         mapString("first_name", Person::getFirstName);
@@ -110,10 +110,10 @@ public void bulkInsertPersonDataTest() throws SQLException {
     List<Person> persons = getPersonList(100000);
     
     // Create the BulkInserter:
-    PersonBulkInserter personBulkInserter = new PersonBulkInserter();
+    PgBulkInsert<Person> bulkInsert = new PgBulkInsert<Person>(new PersonMapping());
     
     // Now save all entities of a given stream:
-    personBulkInserter.saveAll(PostgreSqlUtils.getPGConnection(connection), persons.stream());
+    bulkInsert.saveAll(PostgreSqlUtils.getPGConnection(connection), persons.stream());
     
     // And assert all have been written to the database:
     Assert.assertEquals(100000, getRowCount());
