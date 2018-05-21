@@ -61,8 +61,10 @@ If you still have problems adding Firebase to your Android application, then ple
 ### Downloading the Service Account Key ###
 
 All messages to the Firebase Cloud Messaging API need to be signed. This requires you to first download the Service Account Key for 
-you project. Open again the **Project Settings** and then go to the **Service Accounts** Tab. On this page click on 
-**Generate New Private Key** for generating the required credentials.
+you project. 
+
+Open the **Project Settings** and then go to the **Service Accounts** Tab. On this page click on **Generate New Private Key** for generating 
+the required credentials.
 
 <a href="/static/images/blog/fcmsharp_getting_started/firebase_console_private_key.jpg">
     <img src="/static/images/blog/fcmsharp_getting_started/firebase_console_private_key.jpg" alt="Private Key for Message Signing" class="mediacenter" />
