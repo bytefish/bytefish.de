@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from emojiextension import EmojiExtension
+
 # This is a simple configuration for the Pelican (http://getpelican.com) 
 # project and it is probably closely tied to the 'minimal' theme I am 
 # using.
@@ -21,6 +23,7 @@ THEME = './themes/minimal/'
 MARKUP = ('md',)
 # Markdown Configuration:
 MARKDOWN = {
+    'extensions' : [EmojiExtension()],
     'extension_configs': {
         'markdown.extensions.codehilite': {'css_class': 'highlight'},
         'markdown.extensions.toc' : {},
