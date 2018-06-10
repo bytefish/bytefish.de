@@ -9,8 +9,9 @@ summary: This article shows how to write a custom Markdown Extension.
 [EmojiCodeSheet]: https://github.com/shanraisshan/EmojiCodeSheet
 
 I didn't have much time this weekend, but I wanted to write a little code for keeping my brain active. So 
-I ego-googled my website and noticed: I can't use emojis! ::face_with_open_mouth:: Supporting emojis sounds 
-like a nice little task, so let's take a look how to do it.
+I ego-googled my website and noticed: I can't use emojis! ::face_with_open_mouth:: 
+
+Supporting emojis sounds like a nice little task, so let's take a look how to do it.
 
 You can find the final extensions on the GitHub repository at:
 
