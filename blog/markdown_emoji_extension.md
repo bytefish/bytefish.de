@@ -58,10 +58,8 @@ the definition is saved to a file ``emojis.json``.
 
 ## Implementing the Markdown Extension ##
 
-First of all I implemented the Markdown extension. I commented it thoroughly so there is no need to describe it 
-in detail. The basic idea is to read the ``emoji.json`` list of key / value pairs and turn them into a ``dict`` 
-for faster lookups, these will be passed into a ``Pattern`` implementation, that handles matches for the Emoji 
-Regexp (``::emoji_name::``).
+The basic idea for the Markdown Extension is to read the ``emoji.json`` list and turn it into a ``dict``. The dictionary will then 
+be passed into a Markdown ``Pattern`` implementation, that handles matches for the Emoji Regexp (``::emoji_name::``).
 
 ```python
 from markdown.extensions import Extension
