@@ -23,7 +23,7 @@ THEME = './themes/minimal/'
 MARKUP = ('md',)
 # Markdown Configuration:
 MARKDOWN = {
-    'extensions' : [EmojiExtension()],
+    'extensions' : [EmojiExtension.create_from_json('./resources/emojis.json')],
     'extension_configs': {
         'markdown.extensions.codehilite': {'css_class': 'highlight'},
         'markdown.extensions.toc' : {},
