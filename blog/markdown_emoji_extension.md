@@ -39,7 +39,7 @@ Then I got a list of Emojis from the [EmojiCodeSheet] project:
 There are several JSON files, with the emojis as Unicode characters:
 
 ```
-{
+[
   "peoples": {
     "people": [
       {
