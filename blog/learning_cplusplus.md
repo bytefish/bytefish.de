@@ -6,7 +6,9 @@ slug: learning_cplusplus
 author: Philipp Wagner
 summary: This article described my journey with C++ .
 
-Whenever I hit a compiler message I can't make sense of I have to laugh out loud. I really do.
+Whenever I hit a compiler message I can't make sense of I have to laugh out loud. 
+
+I really do.
 
 When I started programming I knew some Java, Delphi and Visual Basic. But trustful sources told me, that you have 
 to know C++ for being *a real programmer*! And without any hesitation I bought magazines showing how to build 
@@ -71,9 +73,9 @@ of [Imposter Syndrome]. They hired me as a C++ programmer! And there is a JIRA B
 should estimate! People said it is a dead simple task and I even fail to compile a Hello World?
 
 These days I know the most important thing in programming: Ask for help early on and communicate problems openly. 
-No one is perfect. No one knows everything. And by no means I am judging the code. I still regard my colleague as 
-one of the best programmers I ever met. And there is often a good reason for company-internal C++ libraries: C++ Code 
-should often work on multiple Operating Systems and the C++ Standard Library only has a limited amount of features.
+No one is perfect. No one knows everything. And by no means I am judging the code. I still regard my colleagues as some of 
+the best programmers I ever met. And there is often a good reason for company-internal C++ libraries: C++ Code should often 
+work on multiple Operating Systems and the C++ Standard Library only has a limited set of features.
 
 But back then I got more and more frustrated about everything. So frustrated, that I... gave up. 
 
