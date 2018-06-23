@@ -25,16 +25,16 @@ and paste the code and know what? It simply worked.
 And then I tried to learn C++. What to build first? Of course a GUI! But maybe let's learn how to print stuff to the 
 Command Line first. So I clicked through the Wizard. And oh! So many project templates for later joy: 
 
-...
+<a href="/static/images/blog/learning_cplusplus/projects.jpg">
+    <img src="/static/images/blog/learning_cplusplus/projects.jpg">
+</a>
 
 But Philipp, hold on! Let's not get too excited for now. Let us build this "Win32 Console Application" first and get a feel 
 for this mysterious and amazing language:
 
-...
-
-**"A "Hello, World!" application.** is what I want for now.
-
-...
+<a href="/static/images/blog/learning_cplusplus/console.jpg">
+    <img src="/static/images/blog/learning_cplusplus/console.jpg">
+</a>
 
 And uh. What is this ``stdafx.h``? The C++ literature here does not mention it. What does this ``return 0`` do? Can I also 
 ``return 1``? What is this ``\n``? Well. I am young. I don't care. I will understand it later. Let's execute it. And... 
@@ -71,9 +71,9 @@ of [Imposter Syndrome]. They hired me as a C++ programmer! And there is a JIRA B
 should estimate! People said it is a dead simple task and I even fail to compile a Hello World?
 
 These days I know the most important thing in programming: Ask for help early on and communicate problems openly. 
-No one is perfect. No one knows everything. And by no means I am judging about code. There is often a good reason for 
-company-internal C++ libraries: C++ Code should often work on multiple Operating Systems and the C++ Standard Library 
-only has a limited amount of features.
+No one is perfect. No one knows everything. And by no means I am judging the code. I still regard my colleague as 
+one of the best programmers I ever met. And there is often a good reason for company-internal C++ libraries: C++ Code 
+should often work on multiple Operating Systems and the C++ Standard Library only has a limited amount of features.
 
 But back then I got more and more frustrated about everything. So frustrated, that I... gave up. 
 
