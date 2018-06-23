@@ -41,13 +41,13 @@ And uh. What is this ``stdafx.h``? The C++ literature here does not mention it. 
 
 > Fatal error C1083: Cannot open precompiled header file: ‘Debug\project.pch’: No such file or directory
 
-What on earth is a PCH file? What did I wrong? I just clicked Execute and now I get all kind of error messages. 
+What on earth is a PCH file? What's wrong? I just clicked Execute and now I get all kind of error messages. 
 
 Help!
 
 Eventually some Lycos Search result pointed me to a page, that explained how to enable "Precompiled Headers" for my 
-Console application. I didn't really understand it, but OK. After trying to build UIs with Microsoft Foundation Classes 
-(MFC) for a good month and failing to write a simple TCP Listener... my frustration level was reached. 
+Console application. I didn't really understand it. After trying to build UIs with Microsoft Foundation Classes 
+(MFC) for a good month, and failing to write a simple TCP Listener... my frustration level was reached. 
 
 I gave up. 
 
