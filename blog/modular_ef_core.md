@@ -6,30 +6,51 @@ slug: modular_ef_core
 author: Philipp Wagner
 summary: This article shows how to build modular applications with EF Core 2.1.
 
-In this post I want to show you how to build modular applications with Entity Framework 2.1. It's something I have been playing 
-around for quite some time. And it would be a waste to leave it unnoticed in a private GitHub repository, so I thought I share it over at:
+In this post I want to show you how to build modular applications with Entity Framework 2.1. 
+
+It's something I have been playing around for quite some time and it would be a waste to leave it unnoticed in a private GitHub repository. 
+
+So I thought I share it over at:
 
 * [https://github.com/bytefish/ModularEfCore](https://github.com/bytefish/ModularEfCore)
 
 ## What is this whole post about? ##
 
-### Software Architecture ###
+### How I design Software ###
 
 [it's all the same]: http://blog.ploeh.dk/2013/12/03/layers-onions-ports-adapters-its-all-the-same/
 
-I spent countless hours of my life in endless meetings on software architecture. To me the whole aspect of software architecture and designing a systems based on uncertain requirements (Hello Agile Development!) is a source of very emotional and useless discussions.
+See, I spent countless hours of my life in endless meetings on software architecture. 
 
-And to be honest with you. Layered Architecture, Onion Architecture, Hexagonal Architecture, Ports and Adapters... to me [it's all the same]. And every sufficiently large project is going to turn into hell anyway. No matter what architecture you are going to use. The only difference is, if your company is giving you time to fix the the most hellish parts of it or not.
+To me the whole aspect of software architecture and designing a systems based on uncertain requirements 
+(Hello Agile Development!) is a source of very emotional and useless discussions.
 
-By now I always start my projects with a dead simple Layered Architecture. Business Objects, Data Abstraction Layer, Data Transfer Objects. The whole thing. Often enough the Database model directly is my Applications Domain model. These days I am not even building Data Abstraction Layers, the Entity Framework ``DbContext`` **is the repository**. 
+And to be honest: Every sufficiently large project turns into hell anyway. No matter what architecture you 
+are going to use. The only difference is, if your company is giving you time to fix the most hellish 
+parts or not.
 
-And these days whenever I see a "``IUnitOfWork``" or "``GenericRepository``" in a project, then something inside of me dies. The Entity Framework Context **already is a Repository itself** and it **already implements a Unit Of Work**. All I want is to keep my applications modules well separated, well layered, easy to understand and be productive.
+A Layered Architecture, Onion Architecture, Hexagonal Architecture, Ports and Adapters... 
+to me [it's all the same]. I noticed, that if you understand the domain you work in and you 
+keep your concerns separated, then everything is going to work out anyway.
+
+By now I always start my projects with a dead simple Layered Architecture. Business Objects, Data Abstraction Layer, 
+Data Transfer Objects. The whole thing. 
+
+Often enough the Database model directly is my Applications Domain model. These 
+days I am not even building Data Abstraction Layers, the Entity Framework ``DbContext`` **is the repository**. 
+
+I extensively use OR-Mappers in the design process, because every other abstraction you try to "invent" leads to an 
+OR-Mapper anyway. And believe me: You really, really don't want to maintain your own OR-Mapper. Just give yourself in!
+
+I want to enjoy writing software. I want to be productive.
 
 ### The Goal ###
 
-All Entity Framework projects I have been in often tend to implement a huge ``DbContext``, which holds at least 40 ``DbSet`` properties. For most projects this works good enough and I am also not a friend of over-designing stuff (anymore). But for my personal Entity Framework Core projects I want to build more modular applications. 
+All Entity Framework projects I have been in implement a huge ``DbContext``, which holds at least 40 ``DbSet`` properties. 
 
-Basically I want to be able to define mappings in their own assemblies, while still making use of all Query, Migration and Seeding capabilities of Entity Framework Core 2.1.
+For most projects this works good enough and I am also not a friend of over-designing stuff (anymore). But for my personal Entity Framework Core projects I want to build more modular applications. 
+
+Basically I want to be able to define mappings in their own assemblies, while still making use of all query, migration and seeding capabilities of Entity Framework Core 2.1.
 
 ## From the Idea to the Implementation ##
 
@@ -134,7 +155,9 @@ This allows us to later inject the Seeding strategy into the DbContext.
 
 ### Implementing the DbContext ###
 
-Now what's left is creating the actual ``DbContext`` and have our abstractions injected to it. I have defined a class ``ApplicationDbContextOptions``, that takes the DbContextOptions (Connection Strings, Migration Configuration, ...), the ``IDbContextSeed`` and the Mappings. In the ``OnModelCreating`` override all those dependencies are used to configure the ``ModelBuilder``. 
+Now what's left is creating the actual ``DbContext`` and have our abstractions injected to it. 
+
+I have defined a class ``ApplicationDbContextOptions``, that takes the DbContextOptions (Connection Strings, Migration Configuration, ...), the ``IDbContextSeed`` and the Mappings. In the ``OnModelCreating`` override of the ``DbContext`` all those dependencies are used to configure the ``ModelBuilder``. 
 
 There is also a ``ApplicationDbContextExtensions`` class, which adds an Extension method to dynamically access a ``DbSet<TEntityType>`` without having it to define in the ``DbContext`` class.
 
@@ -199,7 +222,13 @@ namespace ModularEfCore.Context
 
 ### DbContextFactory ###
 
-And how do you instantiate this ``ApplicationDbContext`` from your Business Logic? You cannot write ``new ApplicationDbContext()`` anymore! But do not fear: In Software Architecture, every problem can be solved with yet another layer of indirection. So we use a Factory method, that creates the ``ApplicationDbContext`` for us:
+And how do you instantiate this ``ApplicationDbContext`` from your Business Logic? 
+
+You cannot write ``new ApplicationDbContext()`` anymore! But have no fear: 
+
+> In Software Architecture, every problem can be solved with yet another layer of indirection. 
+
+So we use a factory method instead, that creates an ``ApplicationDbContext`` for us:
 
 ```csharp
 // Copyright (c) Philipp Wagner. All rights reserved.
@@ -337,7 +366,9 @@ namespace ModularEfCore.Example.Database.Map
 
 #### Data Transfer Object ####
 
-I always keep the concerns in applications separated, and that's why I am always using Data Transfer Objects (DTO) for Web Services. Even though it sometimes looks like the Domain Model and the Data Transfer Object are the same thing, in a sufficiently complex application they are totally different beasts.
+I always keep the concerns in applications separated, and that's why I am always using Data Transfer Objects (DTO) for Web Services. 
+
+Even though it sometimes looks like the Domain Model and the Data Transfer Object are the same thing, in a sufficiently complex application they are totally different beasts.
 
 See how the ``CustomerDto`` is using the JSON.NET attributes for the JSON Serialization. I really don't want to have this leaking into my domain model:
 
@@ -363,7 +394,11 @@ namespace ModularEfCore.Example.Web.DTO
 }
 ```
 
-And how do we convert between the two representations? A lot of folks use the AutoMapper library to do it, but to me **explicit is better, than implicit**. So I always write a simple ``Converter`` class, that does the mapping. Why? If there is a bug, I don't have to debug into ``AutoMapper`` Reflection Voodoo and I can do a simple *Find Usages* to see where the properties have been used:
+And how do we convert between the two representations? 
+
+A lot of .NET folks use the AutoMapper library to do it, but to me **explicit is better, than implicit**. So I always write a simple ``Converter`` class, that does the mapping. 
+
+If there is a bug, I don't have to debug into ``AutoMapper`` Reflection Voodoo and I can do a simple *Find Usages* to see where properties have been used:
 
 ```csharp
 // Copyright (c) Philipp Wagner. All rights reserved.
