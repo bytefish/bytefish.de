@@ -111,10 +111,7 @@ The Microsoft Entity Framework Core Documentation writes:
 >
 > As an example, you can use this to configure seed data for a Blog in OnModelCreating:
 >
->
-> ```csharp
-> modelBuilder.Entity<Blog>().HasData(new Blog {BlogId = 1, Url = "http://sample.com"});
-> ```
+> ``modelBuilder.Entity<Blog>().HasData(new Blog {BlogId = 1, Url = "http://sample.com"});``
 
 Again the ``ModelBuilder`` is used to define the Seed Data. Do you see where this leads to? We define an interface ``IDbContextSeed`` again, which takes an ``ModelBuilder``:
 
@@ -632,7 +629,7 @@ namespace ModularEfCore.Example.Web
 
 What's left to do is to use the ``IWebHostBuilder`` to define the Startup class, create the Web Host and run it:
 
-```
+```csharp
 // Copyright (c) Philipp Wagner. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
