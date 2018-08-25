@@ -16,37 +16,7 @@ So I thought I share it over at:
 
 ## What is this whole post about? ##
 
-### How I design Software ###
-
-[it's all the same]: http://blog.ploeh.dk/2013/12/03/layers-onions-ports-adapters-its-all-the-same/
-
-See, I spent countless hours of my life in endless meetings on software architecture. 
-
-To me the whole aspect of software architecture and designing a systems based on uncertain requirements 
-(Hello Agile Development!) is a source of very emotional and useless discussions.
-
-And to be honest: Every sufficiently large project turns into hell anyway. No matter what architecture you 
-are going to use. The only difference is, if your company is giving you time to fix the most hellish 
-parts or not.
-
-A Layered Architecture, Onion Architecture, Hexagonal Architecture, Ports and Adapters... 
-to me [it's all the same]. I noticed, that if you understand the domain you work in and you 
-keep your concerns separated, then everything is going to work out anyway.
-
-By now I always start my projects with a dead simple Layered Architecture. Business Objects, Data Abstraction Layer, 
-Data Transfer Objects. The whole thing. 
-
-Often enough the Database model directly is my Applications Domain model. These 
-days I am not even building Data Abstraction Layers, the Entity Framework ``DbContext`` **is the repository**. 
-
-I extensively use OR-Mappers in the design process, because every other abstraction you try to "invent" leads to an 
-OR-Mapper anyway. And believe me: You really, really don't want to maintain your own OR-Mapper. Just give yourself in!
-
-I want to enjoy writing software. I want to be productive.
-
-### The Goal ###
-
-All Entity Framework projects I have been in implement a huge ``DbContext``, which holds at least 40 ``DbSet`` properties. 
+Most Entity Framework projects I have been in implement a huge ``DbContext``, which holds at least 40 ``DbSet`` properties. 
 
 For most projects this works good enough and I am also not a friend of over-designing stuff (anymore). But for my personal Entity Framework Core projects I want to build more modular applications. 
 
@@ -77,7 +47,7 @@ public class ApplicationDbContext : DbContext
 }
 ``` 
 
-In order to extract the mappings I define an interface first, which has a single method ``Map(ModelBuilder builder)``. This way we can inject a list of ``IEntityMap`` into to ``DbContext`` and have each of those configuring the ``ModelBuilder``:
+In order to extract the mappings I define an interface first, which has a single method ``Map(ModelBuilder builder)``. This way we can inject a list of ``IEntityMap`` into the ``DbContext`` and have each of those configuring the ``ModelBuilder``:
 
 ```csharp
 // Copyright (c) Philipp Wagner. All rights reserved.
@@ -276,7 +246,7 @@ That's it!
 
 ## A Sample Module: Customers ##
 
-Imagine I want to add a new module to manager Customers to the application. The idea is, that all we need to do is to reference the ``ModularEfCore`` package to participate in the EF Core 2.1 Mapping, Seeding and Querying.
+Imagine I want to add a module for managing customers to the application. The idea is, that all we need to do is to reference the ``ModularEfCore`` package to participate in the EF Core 2.1 Mapping, Seeding and Querying.
 
 Let's take a look at the project structure first:
 
