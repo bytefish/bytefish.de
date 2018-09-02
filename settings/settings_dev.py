@@ -64,11 +64,6 @@ CATEGORY_FEED_ATOM = None
 # Separate page directory and articles directory:
 PAGE_PATHS = [ 'pages' ]
 ARTICLE_PATHS = [ 'blog' ]
-# A list of files to copy from the source to the destination
-EXTRA_PATH_METADATA = {
-  'extra/.htaccess' : { 'path' : '.htaccess'},
-  'extra/robots.txt' : { 'path' : 'robots.txt' },
-}
 # Save index as blog/index.html instead of index.html:
 INDEX_SAVE_AS = 'blog/index.html'
 # Navigation menu:
@@ -85,11 +80,14 @@ LINKS = [
   ('pelican', 'https://github.com/getpelican'),]
 # Set some default category:
 DEFAULT_CATEGORY = 'uncategorized'
+# A list of files to copy from the source to the destination
+EXTRA_PATH_METADATA = {
+  'extra/.htaccess' : { 'path' : '../.htaccess'},
+  'extra/robots.txt' : { 'path' : '../robots.txt' }
+}
 # Folders to copy to <output>/static/...:
-STATIC_PATHS = [
-    'images',
-    'extra'
-]
+STATIC_SAVE_AS = 'static/{path}'
+STATIC_PATHS = ['images', 'extra/.htaccess', 'extra/robots.txt']
 # Github Base Path:
 GITHUB_ISSUE_PATH='https://github.com/bytefish/bytefish.de/issues'
 GITHUB_SOURCE_PATH='https://github.com/bytefish/bytefish.de/blob/master/blog'
