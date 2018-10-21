@@ -32,7 +32,11 @@ The Graph model is heavily based on the Neo4j Flight Database example by [Nicole
 
 We will we writing a small Web application, that uses [vis.js] for rendering a Graph in SQL Server 2019:
 
-<img>
+<div style="display:flex; align-items:center; justify-content:center;">
+    <a href="/static/images/blog/sql_server_2019_graph_database/Graph.jpg">
+        <img src="/static/images/blog/sql_server_2019_graph_database/Graph.jpg">
+    </a>
+</div>
 
 ## From the Idea to the Implementation ##
 
