@@ -1,4 +1,4 @@
-title: Visualizing Graphs with the Edge Constraints of the SQL Server 2019 CTP 2.0 Graph Database
+title: Visualizing Graphs with Edge Constraints of the SQL Server 2019 Graph Database (SQL Server 2019 CTP 2.0)
 date: 2018-10-21 10:11
 tags: dotnet, csharp, sqlserver, graph
 category: csharp
@@ -6,7 +6,9 @@ slug: sql_server_2019_graph_database
 author: Philipp Wagner
 summary: This article shows how to visualize Graphs using the Edge Constraints Feature of the SQL Server 2019 CTP 2.0 Graph Database.
 
-The SQL Server 2019 Preview has an interesting feature for its Graph Database Engine: Edge Constraints. The [Public Preview of the Graph Edge Constraints] explains:
+The SQL Server 2019 Preview has an interesting feature for its Graph Database Engine: Edge Constraints. 
+
+The [Public Preview of Graph Edge Constraints] explains:
 
 > In the first release of SQL Graph, an edge could connect any node to any other node in the 
 > database. With Edge Constraints users can enforce specific semantics on the edge tables. The 
@@ -20,7 +22,7 @@ The source code for this article can be found in my GitHub repository at:
 
 ## What we are going to build ##
 
-The plan is to display the Graph model for the Airline On Time Performance dataset, which contains:
+The plan is to display the Graph model for the [Airline On-Time Performance Dataset], which contains:
 
 > [...] on-time arrival data for non-stop domestic flights by major air carriers, and provides such additional 
 > items as departure and arrival delays, origin and destination airports, flight numbers, scheduled and actual departure 
@@ -33,8 +35,8 @@ The Graph model is heavily based on the Neo4j Flight Database example by [Nicole
 We will we writing a small Web application, that uses [vis.js] for rendering a Graph in SQL Server 2019:
 
 <div style="display:flex; align-items:center; justify-content:center;">
-    <a href="/static/images/blog/sql_server_2019_graph_database/Graph.jpg">
-        <img src="/static/images/blog/sql_server_2019_graph_database/Graph.jpg">
+    <a href="/static/images/blog/sql_server_2019_graph_database/graph.jpg">
+        <img src="/static/images/blog/sql_server_2019_graph_database/graph.jpg">
     </a>
 </div>
 
@@ -1005,3 +1007,6 @@ I hope you had fun reading this article and participating in my though process.
 [Json.NET]: https://www.newtonsoft.com/json
 [d3.js]: https://d3js.org/
 [HTML5 Fetch API]: https://developers.google.com/web/updates/2015/03/introduction-to-fetch
+[my previous post on the SQL Server Graph Database]: https://bytefish.de/blog/sql_server_2017_graph_database/
+[Nicole White]: https://nicolewhite.github.io/
+[Airline On-Time Performance Dataset]: https://www.transtats.bts.gov/Tables.asp?DB_ID=120&DB_Name=Airline%20On-Time%20Performance%20Data&DB_Short_Name=On-Time
