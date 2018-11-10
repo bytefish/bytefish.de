@@ -8,12 +8,9 @@ summary: Short snippet on how to perform face detection with the OpenCV2 binding
 
 *Please Note: This Post refers to OpenCV 2.x!*
 
-The following sample uses the classes ``video`` ([samples/python2/video.py](http://code.opencv.org/projects/opencv/repository/revisions/master/changes/samples/python2/video.py)) 
-and ``common`` ([samples/python2/common.py](http://code.opencv.org/projects/opencv/repository/revisions/master/changes/samples/python2/common.py)), which are helper classes from 
-the [samples/python2](http://code.opencv.org/projects/opencv/repository/revisions/master/show/samples/python2) folder. 
+The following sample uses the classes ``video``and ``common``, which are helper classes from the ``samples/python2`` folder. 
 
-The cascades used in this sample are located in the [data folder](http://code.opencv.org/projects/opencv/repository/revisions/master/show/data) of your OpenCV download, so you'll 
-probably need to adjust the filename parameter ``cascade_fn`` to make this example work:
+The cascades used in this sample are located in the ``data`` folder of your OpenCV download, so you'll probably need to adjust the filename parameter ``cascade_fn`` to make this example work:
 
 ```python
 import cv2
@@ -42,6 +39,3 @@ while True:
   if cv2.waitKey(20) == 27:
     break
 ```
-
-If you have any problems let me know.
-
