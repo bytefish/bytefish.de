@@ -6,6 +6,8 @@ slug: opencv/object_detection
 author: Philipp Wagner
 summary: Short snippet on how to perform face detection with the OpenCV2 bindings.
 
+*Please Note: This Post refers to OpenCV 2.x!*
+
 The following sample uses the classes ``video`` ([samples/python2/video.py](http://code.opencv.org/projects/opencv/repository/revisions/master/changes/samples/python2/video.py)) 
 and ``common`` ([samples/python2/common.py](http://code.opencv.org/projects/opencv/repository/revisions/master/changes/samples/python2/common.py)), which are helper classes from 
 the [samples/python2](http://code.opencv.org/projects/opencv/repository/revisions/master/show/samples/python2) folder. 
