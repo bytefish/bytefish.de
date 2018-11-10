@@ -30,9 +30,9 @@ The plan is to display the Graph model for the [Airline On-Time Performance Data
 
 The Graph model is heavily based on the Neo4j Flight Database example by [Nicole White].
 
-### The final application ###
+### The Final Application ###
 
-We will we writing a small Web application, that uses [vis.js] for rendering a Graph in SQL Server 2019:
+We will be writing a small Web application, that uses [vis.js] for rendering a Graph Schema stored in the SQL Server 2019:
 
 <div style="display:flex; align-items:center; justify-content:center;">
     <a href="/static/images/blog/sql_server_2019_graph_database/graph.jpg">
