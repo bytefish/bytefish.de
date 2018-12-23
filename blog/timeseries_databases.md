@@ -1,4 +1,4 @@
-title: Benchmarking Timeseries Databases
+title: Timeseries Databases
 date: 2018-12-23 09:30
 tags: timescaledb, sqlserver, elasticsearch, database, sql
 category: databases
@@ -10,7 +10,9 @@ These days it's all about Artificial Intelligence (AI), Big Data, Business Intel
 ... "[The world’s most valuable resource is no longer oil, but data]" they say, so why not store everything 
 first and make sense of it sometime later?
 
-Well. I often had to deal with large amounts time series data in my career. And I have never been able to give 
+Well. 
+
+I often had to deal with large amounts time series data in my career. And I have never been able to give 
 qualified answers or recommendations for one database or another. Simply because I don't know how the available 
 databases behave under realistic loads.
 
@@ -53,7 +55,7 @@ Let's start by looking at the CSV data for the Weather stations:
 
 #### Domain Model ####
 
-A row in the CSV station data can be translated into the following C\# class ``Station``:
+The data can be easily translated into the following C\# class ``Station``:
 
 ```csharp
 // Copyright (c) Philipp Wagner. All rights reserved.
@@ -86,9 +88,9 @@ namespace Experiments.Common.Csv.Model
 
 #### Split the Line: Writing a Tokenizer ####
 
-In the CSV we can see, that it is a fixed-width file and we could use the [FixedLengthTokenizer] to read the data. There should 
-be no leading and trailing whitespaces for the data, which is something [TinyCsvParser] doesn't apply by default. But it can be 
-easily done by wrapping the ``FixedLengthTokenizer`` and trim the whitespace for the tokens:
+In the CSV we can see, that it is a fixed-width file and we could use the [FixedLengthTokenizer] to read the data. There should be 
+no leading and trailing whitespaces for the data, which is something [TinyCsvParser] doesn't apply by default. But it can be easily 
+done by wrapping the ``FixedLengthTokenizer`` and trim the whitespace for the tokens:
 
 ```csharp
 // Copyright (c) Philipp Wagner. All rights reserved.
@@ -230,7 +232,6 @@ namespace Experiments.Common.Csv.Parser
     }
 }
 ```
-
 
 ### Parsing the CSV Weather Data ###
 
@@ -800,8 +801,6 @@ namespace InfluxExperiment.Converters
 The Import Pipeline now simply reads the CSV data, batches the valid records, converts each batch into a ``LineProtocolPayload`` and 
 then writes the payload to InfluxDB using the ``LocalWeatherDataBatchProcessor``.
 
-
-
 ```csharp
 private static void ProcessLocalWeatherData(string csvFilePath)
 {
@@ -1181,7 +1180,7 @@ namespace TimescaleExperiment.Converters
 The ``LocalWeatherDataBatchProcessor`` defines the mapping between the C\# class and the SQL table, using 
 the fluent mapping of [PostgreSQLCopyHelper] and provides a function to write a batch of measurements: 
 
-```
+```csharp
 / Copyright (c) Philipp Wagner. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
@@ -1717,28 +1716,30 @@ More information on Heap Sizing and Swapping can be found at:
     <tr>
       <td>InfluxDB 1.7.1</td>
       <td>147</td>
+      <td>398,704,931</td>
       <td>45,112</td>
-      <td>7.91</td>
+      <td class="bg-light-green"><b>7.91</b></td>
     </tr>
     <tr>
-        <td>TimescaleDB 1.0</td>
-        <td>247</td>
-        <td>27,560</td>
-        <td>37</td>
+      <td>TimescaleDB 1.0</td>
+      <td>247</td>
+      <td>406,241,469</td>
+      <td>27,560</td>
+      <td>37</td>
     </tr>
     <tr>
       <td>SQL Server 2017</td>
-      <td>81.25</td>
+      <td class="bg-light-green"><b>81.25</b></td>
       <td>406,242,465</td>
-      <td>83,059</td>
+      <td class="bg-light-green"><b>83,059</b></td>
       <td>12.6</td>
     </tr>
     <tr>
-        <td>Elasticsearch 6.5.1</td>
-        <td>718.9</td>
-        <td>406,548,765</td>
-        <td>9,425</td>
-        <td>52.9</td>
+      <td>Elasticsearch 6.5.1</td>
+      <td class="bg-light-red">718.9</td>
+      <td>406,548,765</td>
+      <td class="bg-light-red">9,425</td>
+      <td class="bg-light-red">52.9</td>
   </tbody>
 </table>
 
@@ -1752,6 +1753,7 @@ But what's all the worlds data worth, if we cannot read it efficiently?
 
 In the next part of the series I will investigate how efficient queries on the databases are and how to optimize it.
 
+[TinyCsvParser]: https://github.com/bytefish/TinyCsvParser
 [Columnstore indexes]: https://docs.microsoft.com/en-us/sql/relational-databases/indexes/columnstore-indexes-overview
 [timescaledb-tune]: https://github.com/timescale/timescaledb-tune
 [The world’s most valuable resource is no longer oil, but data]: https://www.economist.com/leaders/2017/05/06/the-worlds-most-valuable-resource-is-no-longer-oil-but-data
