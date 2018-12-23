@@ -20,7 +20,9 @@ So how well do databases work when we actually throw realistic data at them? Wha
 make the databases scale? How far does **a single machine** take us?
 
 In this project I want to benchmark [TimescaleDB], [Elasticsearch], [SQL Server] and [InfluxDB] on the 10 Minute 
-Weather Data for Germany. All code to recreate the results can be found at:
+Weather Data for Germany. 
+
+All code to recreate the results can be found at:
 
 * [https://github.com/bytefish/GermanWeatherDataExample](https://github.com/bytefish/GermanWeatherDataExample)
 
@@ -30,16 +32,28 @@ This post is the first in a series I am planning and it focuses on the write thr
 
 The [DWD Open Data] portal of the [Deutscher Wetterdienst (DWD)] gives access to the historical weather data in Germany. I decided 
 to analyze the available historical Air Temperature data for Germany given in a 10 minute resolution ([FTP Link]). If you want to 
-recreate the example, you can find the list of file in the GitHub repository at: [GermanWeatherDataExample/Resources/files.md].
+recreate the example, you can find the list of CSV files in the GitHub repository at: [GermanWeatherDataExample/Resources/files.md].
 
 The DWD dataset is given as CSV files and has a size of approximately 25.5 GB.
 
 ## The Setup ##
 
-* Windows 10
+### Hardware ###
+
 * Intel® Core™ i5-3450 CPU
 * 16 GB RAM
 * Samsung SSD 860 EVO ([Specifications](https://www.samsung.com/semiconductor/minisite/ssd/product/consumer/860evo/))
+
+### Software ###
+
+I am using Microsoft Windows 10 as Operating System.
+
+C\# is used for the experiments and all libraries support efficient Bulk Inserts to the databases:
+
+* [TinyCsvParser] is used for parsing the CSV data
+* [influxdb-csharp] is used for writing data to [InfluxDB]
+* [Nest] is used for writing data to Elasticsearch
+* [PostgreSQLCopyHelper] is used to write data to PostgreSQL
 
 ## Parsing the CSV Data ##
 
@@ -88,9 +102,9 @@ namespace Experiments.Common.Csv.Model
 
 #### Split the Line: Writing a Tokenizer ####
 
-In the CSV we can see, that it is a fixed-width file and we could use the [FixedLengthTokenizer] to read the data. There should be 
-no leading and trailing whitespaces for the data, which is something [TinyCsvParser] doesn't apply by default. But it can be easily 
-done by wrapping the ``FixedLengthTokenizer`` and trim the whitespace for the tokens:
+In the CSV we can see, that it is a fixed-width file and we could use the [FixedLengthTokenizer] to read the data. There should 
+be no leading and trailing whitespaces for the column data, which is something [TinyCsvParser] doesn't apply by default. But it 
+can be easily added by wrapping the ``FixedLengthTokenizer``:
 
 ```csharp
 // Copyright (c) Philipp Wagner. All rights reserved.
