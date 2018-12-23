@@ -39,9 +39,605 @@ The DWD dataset is given as CSV files and has a size of approximately 25.5 GB.
 * 16 GB RAM
 * Samsung SSD 860 EVO ([Specifications](https://www.samsung.com/semiconductor/minisite/ssd/product/consumer/860evo/))
 
-### Software ###
+## Parsing the CSV Data ##
+
+### Parsing the CSV Station Data ###
+
+[FixedLengthTokenizer]: http://bytefish.github.io/TinyCsvParser/sections/userguide/tokenizer.html#fixedlengthtokenizer
+
+Let's start by looking at the CSV data for the Weather stations:
+
+<a href="/static/images/blog/timeseries_databases/csv_stations.png">
+	<img class="mediacenter" src="/static/images/blog/timeseries_databases/csv_stations.png" alt="CSV Stations Data Sample" />
+</a>
+
+#### Domain Model ####
+
+A row in the CSV station data can be translated into the following C\# class ``Station``:
+
+```csharp
+// Copyright (c) Philipp Wagner. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+using System;
+
+namespace Experiments.Common.Csv.Model
+{
+    public class Station
+    {
+        public string Identifier { get; set; }
+
+        public string Name { get; set; }
+
+        public DateTime StartDate { get; set; }
+
+        public DateTime? EndDate { get; set; }
+
+        public short StationHeight { get; set; }
+
+        public string State { get; set; }
+
+        public float Latitude { get; set; }
+
+        public float Longitude { get; set; }
+    }
+}
+```
+
+#### Split the Line: Writing a Tokenizer ####
+
+In the CSV we can see, that it is a fixed-width file and we could use the [FixedLengthTokenizer] to read the data. There should 
+be no leading and trailing whitespaces for the data, which is something [TinyCsvParser] doesn't apply by default. But it can be 
+easily done by wrapping the ``FixedLengthTokenizer`` and trim the whitespace for the tokens:
+
+```csharp
+// Copyright (c) Philipp Wagner. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+using System.Linq;
+using TinyCsvParser.Tokenizer;
+using ColumnDefinition = TinyCsvParser.Tokenizer.FixedLengthTokenizer.ColumnDefinition;
+
+namespace Experiments.Common.Csv.Tokenizer
+{
+    public class CustomFixedLengthTokenizer : ITokenizer
+    {
+        private readonly bool trim;
+        private readonly ITokenizer tokenizer;
+
+        public CustomFixedLengthTokenizer(ColumnDefinition[] columns, bool trim = true)
+        {
+            this.tokenizer = new FixedLengthTokenizer(columns);
+            this.trim = trim;
+        }
+
+        public string[] Tokenize(string input)
+        {
+            var tokens = tokenizer.Tokenize(input);
+
+            if (trim)
+            {
+                return tokens
+                    .Select(x => x.Trim())
+                    .ToArray();
+            }
+
+            return tokens;
+        }
+    }
+}
+```
+
+To build a ``CustomFixedLengthTokenizer`` instance we need to pass the list of ``ColumnDefinition``, that define the 
+start and end index of each column in the record. I always do this in a class ``Tokenizers``, which returns the 
+Tokenizers:
+
+```csharp
+// Copyright (c) Philipp Wagner. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+using TinyCsvParser.Tokenizer;
+
+namespace Experiments.Common.Csv.Tokenizer
+{
+    public static class Tokenizers
+    {
+        public static ITokenizer StationsTokenizer
+        {
+            get
+            {
+                var columnDefinitions = new[]
+                {
+                    new FixedLengthTokenizer.ColumnDefinition(0, 6),
+                    new FixedLengthTokenizer.ColumnDefinition(6, 14),
+                    new FixedLengthTokenizer.ColumnDefinition(15, 23),
+                    new FixedLengthTokenizer.ColumnDefinition(32, 39),
+                    new FixedLengthTokenizer.ColumnDefinition(43, 51),
+                    new FixedLengthTokenizer.ColumnDefinition(52, 61),
+                    new FixedLengthTokenizer.ColumnDefinition(61, 102),
+                    new FixedLengthTokenizer.ColumnDefinition(102, 125),
+                };
+
+                return new CustomFixedLengthTokenizer(columnDefinitions, true);
+            }
+        }
+        
+        // More Tokenizers ...
+    }
+}
+```
+
+#### Mapping the Data: StationMapper ####
+
+The ``StationMapper`` defines how to map between the columns in the CSV data and the C\# ``Station`` class. In the CSV data dates are 
+given in a ``yyyyMMdd`` format, so we can apply the ``DateTimeConverter`` for the date:
+
+```csharp
+// Copyright (c) Philipp Wagner. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+using Experiments.Common.Csv.Model;
+using TinyCsvParser.Mapping;
+using TinyCsvParser.TypeConverter;
+
+namespace Experiments.Common.Csv.Mapper
+{
+    public class StationMapper : CsvMapping<Station>
+    {
+        public StationMapper()
+        {
+            MapProperty(0, x => x.Identifier);
+            MapProperty(1, x => x.StartDate, new DateTimeConverter("yyyyMMdd", System.Globalization.CultureInfo.InvariantCulture));
+            MapProperty(2, x => x.EndDate, new NullableDateTimeConverter("yyyyMMdd", System.Globalization.CultureInfo.InvariantCulture));
+            MapProperty(3, x => x.StationHeight);
+            MapProperty(4, x => x.Latitude);
+            MapProperty(5, x => x.Longitude);
+            MapProperty(6, x => x.Name);
+            MapProperty(7, x => x.State);
+        }
+    }
+}
+```
+
+#### Connecting the Parts: Building a CsvParser ####
+
+And what's left for reading the weather stations is constructing the ``CsvParser<Station>``, which connects all the parts:
+
+```csharp
+// Copyright (c) Philipp Wagner. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+using Experiments.Common.Csv.Mapper;
+using Experiments.Common.Csv.Model;
+using Experiments.Common.Csv.Tokenizer;
+using TinyCsvParser;
+
+namespace Experiments.Common.Csv.Parser
+{
+    public static class Parsers
+    {
+        public static CsvParser<Station> StationParser
+        {
+            get
+            {
+                CsvParserOptions csvParserOptions = new CsvParserOptions(false, string.Empty, Tokenizers.StationsTokenizer, 1, false);
+
+                return new CsvParser<Station>(csvParserOptions, new StationMapper());
+            }
+        }
+        
+        // More Parsers here ...
+    }
+}
+```
 
 
+### Parsing the CSV Weather Data ###
+
+Next on the list is parsing the weather data. Let's start again by looking at the CSV Data:
+
+<a href="/static/images/blog/timeseries_databases/csv_weather_data.png">
+	<img class="mediacenter" src="/static/images/blog/timeseries_databases/csv_weather_data.png" alt="CSV Stations Data Sample" />
+</a>
+
+#### Domain Model ####
+
+The ``LocalWeatherData`` C\# class contains all available informations about a weather measurement:
+
+```csharp
+// Copyright (c) Philipp Wagner. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+using System;
+
+namespace Experiments.Common.Csv.Model
+{
+    public class LocalWeatherData
+    {
+        public string StationIdentifier { get; set; }
+
+        public DateTime TimeStamp { get; set; }
+
+        public byte QualityCode { get; set; }
+
+        public float? StationPressure { get; set; }
+
+        public float? AirTemperatureAt2m { get; set; }
+
+        public float? AirTemperatureAt5cm { get; set; }
+
+        public float? RelativeHumidity { get; set; }
+
+        public float? DewPointTemperatureAt2m { get; set; }
+    }
+}
+```
+
+#### Additional DateTime Converter ####
+
+According the CSV documentation all dates are measured on a UTC timescale. When I wrote the experiments I noticed, that the existing [TinyCsvParser] 
+don't have a functionality to specify the ``DateTime`` kind. That's why I added a ``CustomDateTimeConverter``, that specifies the kind of a 
+``DateTime`` after parsing it:
+
+```csharp
+// Copyright (c) Philipp Wagner. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+using System;
+using System.Globalization;
+using TinyCsvParser.TypeConverter;
+
+namespace Experiments.Common.Csv.Converter
+{
+    public class CustomDateTimeConverter : ITypeConverter<DateTime>
+    {
+        private readonly DateTimeKind dateTimeKind;
+
+        private readonly DateTimeConverter dateTimeConverter;
+
+        public CustomDateTimeConverter(DateTimeKind dateTimeKind)
+            : this(string.Empty, dateTimeKind)
+        {
+        }
+
+        public CustomDateTimeConverter(string dateTimeFormat, DateTimeKind dateTimeKind)
+            : this(dateTimeFormat, CultureInfo.InvariantCulture, dateTimeKind)
+        {
+        }
+
+        public CustomDateTimeConverter(string dateTimeFormat, IFormatProvider formatProvider, DateTimeKind dateTimeKind)
+            : this(dateTimeFormat, formatProvider, DateTimeStyles.None, dateTimeKind)
+        {
+        }
+
+        public CustomDateTimeConverter(string dateTimeFormat, IFormatProvider formatProvider, DateTimeStyles dateTimeStyles, DateTimeKind dateTimeKind)
+        {
+            this.dateTimeConverter = new DateTimeConverter(dateTimeFormat, formatProvider, dateTimeStyles);
+            this.dateTimeKind = dateTimeKind;
+        }
+
+        public bool TryConvert(string value, out DateTime result)
+        {
+            if (dateTimeConverter.TryConvert(value, out result))
+            {
+                result = DateTime.SpecifyKind(result, dateTimeKind);
+
+                return true;
+            }
+
+            return false;
+        }
+
+        public Type TargetType
+        {
+            get { return typeof(DateTime); }
+        }
+    }
+}
+```
+
+#### Ignoring Missing Values ####
+
+In the CSV weather data missing values are denoted by the value ``-999``. So I reused the ``IgnoreMissingValuesConverter``, that I wrote 
+for a previous project. We can pass the ``-999`` as missing value representation into the class and it will return null for matching 
+values:
+
+```csharp
+// Copyright (c) Philipp Wagner. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+using System;
+using System.Globalization;
+using TinyCsvParser.TypeConverter;
+
+namespace Experiments.Common.Csv.Converter
+{
+    public class IgnoreMissingValuesConverter : ITypeConverter<Single?>
+    {
+        private readonly string missingValueRepresentation;
+
+        private readonly NullableSingleConverter nullableSingleConverter;
+        
+        public IgnoreMissingValuesConverter(string missingValueRepresentation)
+        {
+            this.missingValueRepresentation = missingValueRepresentation;
+            this.nullableSingleConverter = new NullableSingleConverter();
+        }
+
+        public IgnoreMissingValuesConverter(string missingValueRepresentation, IFormatProvider formatProvider)
+        {
+            this.missingValueRepresentation = missingValueRepresentation;
+            this.nullableSingleConverter = new NullableSingleConverter(formatProvider);
+        }
+
+        public IgnoreMissingValuesConverter(string missingValueRepresentation, IFormatProvider formatProvider, NumberStyles numberStyles)
+        {
+            this.missingValueRepresentation = missingValueRepresentation;
+            this.nullableSingleConverter = new NullableSingleConverter(formatProvider, numberStyles);
+        }
+
+
+        public bool TryConvert(string value, out float? result)
+        {
+            if(string.Equals(missingValueRepresentation, value.Trim(), StringComparison.InvariantCultureIgnoreCase))
+            {
+                result = default(float?);
+
+                return true;
+            }
+
+            return nullableSingleConverter.TryConvert(value, out result);
+        }
+
+        public Type TargetType
+        {
+            get { return typeof(Single?); }
+        }
+    }
+}
+```
+
+#### Padding Station Identifiers ####
+
+In the Station data the Stations are always 5 characters long and are left-padded with zeros. In the weather data the leading 
+zeros are trimmed, which can lead to problems when we try to match the data. That's why I added a ``StringPadLeftConverter`` that 
+can be configured to left pad a string value:
+
+```csharp
+// Copyright (c) Philipp Wagner. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+using System;
+using TinyCsvParser.TypeConverter;
+
+namespace Experiments.Common.Csv.Converter
+{
+    public class StringPadLeftConverter : ITypeConverter<string>
+    {
+        private readonly int totalWidth;
+        private readonly char paddingChar;
+
+        public StringPadLeftConverter(int totalWidth, char paddingChar)
+        {
+            this.totalWidth = totalWidth;
+            this.paddingChar = paddingChar;
+        }
+
+        public bool TryConvert(string value, out string result)
+        {
+            result = null;
+
+            if (value == null)
+            {
+                return true;
+            }
+
+            result = value.PadLeft(totalWidth, paddingChar);
+
+            return true;
+        }
+
+        public Type TargetType
+        {
+            get { return typeof(string); }
+        }
+    }
+}
+```
+
+#### Mapping the Data: LocalWeatherDataMapper ####
+
+The custom converters can now be used to define the mapping between the mapping between the CSV column data 
+and the C\# domain model. You can see how the ``StringPadLeftConverter``, the ``CustomDateTimeConverter`` and 
+``IgnoreMissingValuesConverter`` are used to preprocess the column fields:
+
+```csharp
+// Copyright (c) Philipp Wagner. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+using System;
+using Experiments.Common.Csv.Converter;
+using Experiments.Common.Csv.Model;
+using TinyCsvParser.Mapping;
+
+namespace Experiments.Common.Csv.Mapper
+{
+    public class LocalWeatherDataMapper : CsvMapping<LocalWeatherData>
+    {
+        public LocalWeatherDataMapper()
+        {
+            MapProperty(0, x => x.StationIdentifier, new StringPadLeftConverter(5, '0'));
+            MapProperty(1, x => x.TimeStamp, new CustomDateTimeConverter("yyyyMMddHHmm", DateTimeKind.Utc));
+            MapProperty(2, x => x.QualityCode);
+            MapProperty(3, x => x.StationPressure, new IgnoreMissingValuesConverter("-999"));
+            MapProperty(4, x => x.AirTemperatureAt2m, new IgnoreMissingValuesConverter("-999"));
+            MapProperty(5, x => x.AirTemperatureAt5cm, new IgnoreMissingValuesConverter("-999"));
+            MapProperty(6, x => x.RelativeHumidity, new IgnoreMissingValuesConverter("-999"));
+            MapProperty(7, x => x.DewPointTemperatureAt2m, new IgnoreMissingValuesConverter("-999"));
+        }
+    }
+}
+```
+
+#### Split the Line: Using a SplitStringTokenizer ####
+
+[StringSplitTokenizer]: http://bytefish.github.io/TinyCsvParser/sections/userguide/tokenizer.html#stringsplittokenizer
+
+The CSV data does not contain quoted data and uses a ``;`` as column delimiter. So we can use the [StringSplitTokenizer] to 
+split each row into column data. I am again defining a static property it in the ``Tokenizers`` class:
+
+```csharp
+// Copyright (c) Philipp Wagner. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+using TinyCsvParser.Tokenizer;
+
+namespace Experiments.Common.Csv.Tokenizer
+{
+    public static class Tokenizers
+    {
+    
+        // Additional Tokenizers here ...
+
+        public static ITokenizer LocalWeatherDataTokenizer
+        {
+            get
+            {
+                return new StringSplitTokenizer(new [] {';' }, true);
+            }
+        }
+    }
+}
+```
+
+#### Connecting the Parts: Building a CsvParser ####
+
+And the last step is to define the ``CsvParser<LocalWeatherData>`` for the Weather data:
+
+```csharp
+// Copyright (c) Philipp Wagner. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+using Experiments.Common.Csv.Mapper;
+using Experiments.Common.Csv.Model;
+using Experiments.Common.Csv.Tokenizer;
+using TinyCsvParser;
+
+namespace Experiments.Common.Csv.Parser
+{
+    public static class Parsers
+    {
+        
+        // Additional Parsers here ...
+        
+        public static CsvParser<LocalWeatherData> LocalWeatherDataParser
+        {
+            get
+            {
+                CsvParserOptions csvParserOptions = new CsvParserOptions(false, string.Empty, Tokenizers.LocalWeatherDataTokenizer, 1, false);
+
+                return new CsvParser<LocalWeatherData>(csvParserOptions, new LocalWeatherDataMapper());
+            }
+        }
+    }
+}
+```
+
+### Adding a CsvParser Extension: Skipping Lines ###
+
+If you look closely into the CSV data you will notice, that the Station CSV data has two lines for the header. I didn't take this into account 
+when writing [TinyCsvParser], but the library is very flexible... so as the library developer I can add an additional ``ReadFromFile<TEntity>`` 
+method, that skips a given amount of lines when parsing the data:
+
+```csharp
+// Copyright (c) Philipp Wagner. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+using System;
+using System.IO;
+using System.Linq;
+using System.Text;
+using TinyCsvParser;
+using TinyCsvParser.Mapping;
+using TinyCsvParser.Model;
+
+namespace Experiments.Common.Csv.Extensions
+{
+    public static class CsvParserExtensions
+    {
+        public static ParallelQuery<CsvMappingResult<TEntity>> ReadFromFile<TEntity>(this CsvParser<TEntity> csvParser, string fileName, Encoding encoding, int skip)
+            where TEntity : class, new()
+        {
+            if (fileName == null)
+            {
+                throw new ArgumentNullException("fileName");
+            }
+
+            var lines = File
+                .ReadLines(fileName, encoding)
+                .Select((line, index) => new Row(index, line))
+                .Skip(skip);
+
+            return csvParser.Parse(lines);
+        }
+    }
+}
+``` 
+
+### Batching Data: LINQ Extension ###
+
+Batching data often improves the performance of writes to a database. I want my import pipeline to be simple and 
+expressed with LINQ, so I am adding an extension method ``Batch<T>`` on an ``IEnumerable<T>``. It also allows to 
+modify the batch size:
+
+```csharp
+// Copyright (c) Philipp Wagner. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace Experiments.Common.Extensions
+{
+    public static class EnumerableExtensions
+    {
+        public static IEnumerable<IEnumerable<T>> Batch<T>(this IEnumerable<T> source, int size)
+        {
+            T[] bucket = null;
+            var count = 0;
+
+            foreach (var item in source)
+            {
+                if (bucket == null)
+                {
+                    bucket = new T[size];
+                }
+
+                bucket[count++] = item;
+
+                if (count != size)
+                {
+                    continue;
+                }
+
+                yield return bucket.Select(x => x);
+
+                bucket = null;
+                count = 0;
+            }
+
+            if (bucket != null && count > 0)
+            {
+                yield return bucket.Take(count);
+            }
+        }
+    }
+}
+```
+
+And that's it! Now everything is prepared to parse the CSV data and write it to the databases.
 
 ## InfluxDB ##
 
@@ -52,6 +648,224 @@ The [influxdata] website writes on [InfluxDB]:
 > InfluxDB is a high-performance data store written specifically for time series data. It allows for high throughput 
 > ingest, compression and real-time querying of that same data. InfluxDB is written entirely in Go and it compiles 
 > into a single binary with no external dependencies.
+
+### C\# Implementation ###
+
+[Line Protocol]: https://docs.influxdata.com/influxdb/v1.7/write_protocols/line_protocol_reference/
+
+The data points are written using the InfluxDB [Line Protocol], which has the following syntax:
+
+```
+<measurement>[,<tag_key>=<tag_value>[,<tag_key>=<tag_value>]] <field_key>=<field_value>[,<field_key>=<field_value>] [<timestamp>]
+```
+
+The protocol has already been implemented for C\# by the very good [influxdb-csharp] library:
+
+* https://github.com/influxdata/influxdb-csharp
+
+[influxdb-csharp]: https://github.com/influxdata/influxdb-csharp
+
+#### LocalWeatherDataBatchProcessor ####
+
+The ``LocalWeatherDataBatchProcessor`` is just a wrapper around the [influxdb-csharp] ``LineProtocolClient``, which opens up a 
+new connection to the database for each batch to write:
+
+```csharp
+// Copyright (c) Philipp Wagner. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+using System;
+using System.Threading;
+using System.Threading.Tasks;
+using InfluxDB.LineProtocol.Client;
+using InfluxDB.LineProtocol.Payload;
+
+namespace InfluxExperiment.Influx.Client
+{
+    public class LocalWeatherDataBatchProcessor
+    {
+        private readonly string database;
+        private readonly string connectionString;
+
+        public LocalWeatherDataBatchProcessor(string connectionString, string database)
+        {
+            this.database = database;
+            this.connectionString = connectionString;
+        }
+
+        public Task<LineProtocolWriteResult> WriteAsync(LineProtocolPayload source, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if(source == null)
+            {
+                return Task.FromResult(new LineProtocolWriteResult(true, string.Empty));
+            }
+
+            var client = new LineProtocolClient(new Uri(connectionString), database);
+
+            return client.WriteAsync(source, cancellationToken);
+        }
+    }
+}
+```
+
+#### LocalWeatherDataConverter ####
+
+What's left is converting from a list of ``LocalWeatherData`` items to the ``LineProtocolPayload``. This is done by first 
+converting each ``LocalWeatherData`` item to a ``LineProtocolPoint`` and then adding them to the ``LineProtocolPayload``: 
+
+```csharp
+// Copyright (c) Philipp Wagner. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Globalization;
+using System.Threading.Tasks;
+using InfluxDB.LineProtocol.Payload;
+using Experiments.Common.Csv.Model;
+using CsvLocalWeatherDataType = Experiments.Common.Csv.Model.LocalWeatherData;
+
+namespace InfluxExperiment.Converters
+{
+    public static class LocalWeatherDataConverter
+    {
+        public static LineProtocolPayload Convert(IEnumerable<CsvLocalWeatherDataType> source)
+        {
+            if (source == null)
+            {
+                return null;
+            }
+
+            LineProtocolPayload payload = new LineProtocolPayload();
+
+            foreach (var item in source)
+            {
+                var point = Convert(item);
+
+                if (point != null)
+                {
+                    payload.Add(point);
+                }
+            }
+
+            return payload;
+        }
+
+        public static LineProtocolPoint Convert(LocalWeatherData source)
+        {
+            if (source == null)
+            {
+                return null;
+            }
+
+            var fields = new Dictionary<string, object>();
+
+            fields.AddFieldValue("air_temperature_at_2m", source.AirTemperatureAt2m);
+            fields.AddFieldValue("air_temperature_at_5cm", source.AirTemperatureAt5cm);
+            fields.AddFieldValue("dew_point_temperature_at_2m", source.DewPointTemperatureAt2m);
+            fields.AddFieldValue("relative_humidity", source.RelativeHumidity);
+
+            // No Measurements to be inserted:
+            if (fields.Count == 0)
+            {
+                return null;
+            }
+
+            var tags = new Dictionary<string, string>
+                {
+                    {"station_identifier", source.StationIdentifier},
+                    {"quality_code", source.QualityCode.ToString(CultureInfo.InvariantCulture)}
+                };
+
+            return new LineProtocolPoint("weather_measurement", new ReadOnlyDictionary<string, object>(fields), tags, source.TimeStamp);
+        }
+
+        private static void AddFieldValue(this IDictionary<string, object> dictionary, string key, object value)
+        {
+            if (value == null)
+            {
+                return;
+            }
+
+            dictionary.Add(key, value);
+        }
+    }
+
+}
+```
+
+#### Import Pipeline ####
+
+The Import Pipeline now simply reads the CSV data, batches the valid records, converts each batch into a ``LineProtocolPayload`` and 
+then writes the payload to InfluxDB using the ``LocalWeatherDataBatchProcessor``.
+
+
+
+```csharp
+private static void ProcessLocalWeatherData(string csvFilePath)
+{
+    if (log.IsInfoEnabled)
+    {
+        log.Info($"Processing File: {csvFilePath}");
+    }
+
+    // Construct the Batch Processor:
+    var processor = new LocalWeatherDataBatchProcessor(ConnectionString, Database);
+
+    // Access to the List of Parsers:
+    var batches = Parsers
+        // Use the LocalWeatherData Parser:
+        .LocalWeatherDataParser
+        // Read the File:
+        .ReadFromFile(csvFilePath, Encoding.UTF8, 1)
+        // Get the Valid Results:
+        .Where(x => x.IsValid)
+        // And get the populated Entities:
+        .Select(x => x.Result)
+        // Let's stay safe! Stop parallelism here:
+        .AsEnumerable()
+        // Evaluate:
+        .Batch(10000)
+        // Convert each Batch into a LineProtocolPayload:
+        .Select(measurements => LocalWeatherDataConverter.Convert(measurements));
+
+    foreach (var batch in batches)
+    {
+        try
+        {
+            var result = processor.WriteAsync(batch).GetAwaiter().GetResult();
+
+            // Log all unsuccessful writes, but do not quit execution:
+            if (!result.Success)
+            {
+                if (log.IsErrorEnabled)
+                {
+                    log.Error(result.ErrorMessage);
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            // Some Pokemon Exception Handling here. I am seeing TaskCanceledExceptions with the 
+            // InfluxDB .NET Client. At the same time I do not want to quit execution, because 
+            // some batches fail:
+            if (log.IsErrorEnabled)
+            {
+                log.Error(e, "Error occured writing InfluxDB Payload");
+            }
+        }
+    }
+}
+```
+
+I caught all exceptions here and simply log them, instead of rethrowing. I saw some non-reproducible ``TaskCanceledExceptions`` for the 
+[influxdb-csharp] client, which may be due to my implementation. And I didn't want to quit the whole import because there is a problem 
+writing one batch out of 400 million recods. In a real setup this should be handeled with greater care instead of just dropping the data!
+
+I chose a batch size of 10,000, because the [InfluxDB Documentation states](https://docs.influxdata.com/influxdb/v1.7/tools/api#request-body-1):
+
+> We recommend writing points in batches of 5,000 to 10,000 points. Smaller batches, and more HTTP requests, will result in sub-optimal performance.
 
 ### Configuration ###
 
@@ -98,6 +912,393 @@ The [TimescaleDB] docs describe TimescaleDB as:
 > [...] an open-source time-series database optimized for fast ingest and complex queries. It speaks "full SQL" and 
 > is correspondingly easy to use like a traditional relational database, yet scales in ways previously reserved for NoSQL 
 > databases.
+
+TimescaleDB comes as a PostgreSQL Extension and can be installed for Windows using an official Installer at:
+
+* [https://docs.timescale.com/v1.0/getting-started/installation/windows/installation-windows](https://docs.timescale.com/v1.0/getting-started/installation/windows/installation-windows)
+
+After the installation you have to modify the ``postgresql.config`` and add the ``timescaledb`` extension:
+
+```
+shared_preload_libraries = 'timescaledb'		# (change requires restart)
+```
+
+### Implementation SQL-side ###
+
+First of all create the user ``philipp`` for connecting to the databases:
+
+```
+postgres=# CREATE USER philipp WITH PASSWORD 'test_pwd';
+CREATE ROLE
+```
+
+Then we can create the two tenant databases and set the owner to ``philipp``:
+
+```
+postgres=# CREATE DATABASE sampledb WITH OWNER philipp; 
+```
+
+For creating the TimescaleDB Hypertable the user needs ``SUPERUSER`` permissions, so for creating the 
+database the user ``philipp`` is given the permissions:
+
+```
+postgres=# ALTER USER philipp WITH SUPERUSER;
+```
+
+#### SQL Scripts ####
+
+In the [TimescaleDB/Sql] folder you can find the following ``create_database.bat`` script, which is used to 
+simplify creating the database:
+
+```bat
+@echo off
+
+:: Copyright (c) Philipp Wagner. All rights reserved.
+:: Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+set PGSQL_EXECUTABLE="psql.exe"
+set STDOUT=stdout.log
+set STDERR=stderr.log
+set LOGFILE=query_output.log
+
+set HostName=localhost
+set PortNumber=5432
+set DatabaseName=sampledb
+set UserName=philipp
+set Password=
+
+call :AskQuestionWithYdefault "Use Host (%HostName%) Port (%PortNumber%) [Y,n]?" reply_
+if /i [%reply_%] NEQ [y] (
+	set /p HostName="Enter HostName: "
+	set /p PortNumber="Enter Port: "
+)
+
+call :AskQuestionWithYdefault "Use Database (%DatabaseName%) [Y,n]?" reply_
+if /i [%reply_%] NEQ [y]  (
+	set /p ServerName="Enter Database: "
+)
+
+call :AskQuestionWithYdefault "Use User (%UserName%) [Y,n]?" reply_
+if /i [%reply_%] NEQ [y]  (
+	set /p UserName="Enter User: "
+)
+
+set /p PGPASSWORD="Password: "
+
+1>%STDOUT% 2>%STDERR% (
+
+    %PGSQL_EXECUTABLE% -h %HostName% -p %PortNumber% -d %DatabaseName% -U %UserName% < create_database.sql -L %LOGFILE%
+    %PGSQL_EXECUTABLE% -h %HostName% -p %PortNumber% -d %DatabaseName% -U %UserName% < create_hypertable.sql -L %LOGFILE%
+)
+
+goto :end
+
+:: The question as a subroutine
+:AskQuestionWithYdefault
+    setlocal enableextensions
+    :_asktheyquestionagain
+    set return_=
+    set ask_=
+    set /p ask_="%~1"
+    if "%ask_%"=="" set return_=y
+    if /i "%ask_%"=="Y" set return_=y
+    if /i "%ask_%"=="n" set return_=n
+    if not defined return_ goto _asktheyquestionagain
+    endlocal & set "%2=%return_%" & goto :EOF
+    
+:end
+pause
+```
+
+[TimescaleDB/Sql]: https://github.com/bytefish/GermanWeatherDataExample/tree/master/GermanWeatherData/TimescaleDB/Sql
+
+The ``create_database.sql`` script is used to create the schema and tables for the database:
+
+```sql
+DO $$
+--
+-- Schema
+--
+BEGIN
+
+
+IF NOT EXISTS (SELECT 1 FROM information_schema.schemata WHERE schema_name = 'sample') THEN
+
+    CREATE SCHEMA sample;
+
+END IF;
+
+--
+-- Tables
+--
+IF NOT EXISTS (
+	SELECT 1 
+	FROM information_schema.tables 
+	WHERE  table_schema = 'sample' 
+	AND table_name = 'station'
+) THEN
+
+CREATE TABLE sample.station
+(
+    identifier VARCHAR(5) NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    start_date TIMESTAMPTZ,
+    end_date TIMESTAMPTZ,
+    station_height SMALLINT,
+    state VARCHAR(255),
+    latitude REAL,
+    longitude REAL
+
+);
+
+END IF;
+
+IF NOT EXISTS (
+	SELECT 1 
+	FROM information_schema.tables 
+	WHERE  table_schema = 'sample' 
+	AND table_name = 'weather_data'
+) THEN
+
+CREATE TABLE sample.weather_data
+(
+    station_identifier VARCHAR(5) NOT NULL,
+    timestamp TIMESTAMPTZ NOT NULL,
+    quality_code SMALLINT,
+    station_pressure REAL NULL,
+    air_temperature_at_2m REAL NULL,
+    air_temperature_at_5cm REAL NULL,
+    relative_humidity REAL NULL,
+    dew_point_temperature_at_2m REAL NULL        
+);
+
+END IF;
+
+
+END;
+$$
+```
+
+And the second script ``create_hypertable.sql`` is used to create the TimescaleDB Hypertable on the ``timestamp`` column of the ``sample.weather_data`` table:
+
+```sql
+DO $$
+
+BEGIN
+
+--
+-- The user needs to be SUPERUSER to create extensions. So before executing the Script run 
+-- something along the lines:
+--
+--      postgres=# ALTER USER philipp WITH SUPERUSER;
+-- 
+-- And after executing, you can revoke the SUPERUSER Role again:
+--
+--      postgres=# ALTER USER philipp WITH NOSUPERUSER;
+--
+CREATE EXTENSION IF NOT EXISTS timescaledb CASCADE;
+
+--
+-- Make sure to create the timescaledb Extension in the Schema:
+--
+PERFORM create_hypertable('sample.weather_data', 'timestamp');
+
+END
+
+$$
+```
+
+#### Implementation C\#-side ####
+
+TimescaleDB is a Postgres extension, so the Binary COPY protocol of Postgres can be used to bulk import the data. I have used 
+[PostgreSQLCopyHelper] for it, which is a library I wrote. It's basically a wrapper around the the great [Npgsql] library.
+
+We start by defining the SQL model for the Weather Data:
+
+```csharp
+// Copyright (c) Philipp Wagner. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+using System;
+
+namespace TimescaleExperiment.Sql.Model
+{
+    public class LocalWeatherData
+    {
+        public string StationIdentifier { get; set; }
+
+        public DateTime TimeStamp { get; set; }
+
+        public byte QualityCode { get; set; }
+
+        public float? StationPressure { get; set; }
+
+        public float? AirTemperatureAt2m { get; set; }
+
+        public float? AirTemperatureAt5cm { get; set; }
+
+        public float? RelativeHumidity { get; set; }
+
+        public float? DewPointTemperatureAt2m { get; set; }
+    }
+}
+```
+
+Next up is the Converter for converting between the CSV and SQL model:
+
+```csharp
+// Copyright (c) Philipp Wagner. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+using CsvLocalWeatherDataType = Experiments.Common.Csv.Model.LocalWeatherData;
+using SqlLocalWeatherDataType = TimescaleExperiment.Sql.Model.LocalWeatherData;
+
+using CsvStationDataType = Experiments.Common.Csv.Model.Station;
+using SqlStationDataType = TimescaleExperiment.Sql.Model.Station;
+
+namespace TimescaleExperiment.Converters
+{
+    public static class Converters
+    {
+        public static SqlLocalWeatherDataType Convert(CsvLocalWeatherDataType source)
+        {
+            return new SqlLocalWeatherDataType
+            {
+                StationIdentifier = source.StationIdentifier,
+                AirTemperatureAt2m = source.AirTemperatureAt2m,
+                StationPressure = source.StationPressure,
+                TimeStamp = source.TimeStamp,
+                RelativeHumidity = source.RelativeHumidity,
+                DewPointTemperatureAt2m = source.DewPointTemperatureAt2m,
+                AirTemperatureAt5cm = source.AirTemperatureAt5cm,
+                QualityCode = source.QualityCode
+            };
+        }
+    }
+}
+```
+
+The ``LocalWeatherDataBatchProcessor`` defines the mapping between the C\# class and the SQL table, using 
+the fluent mapping of [PostgreSQLCopyHelper] and provides a function to write a batch of measurements: 
+
+```
+/ Copyright (c) Philipp Wagner. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+using System;
+using System.Collections.Generic;
+using NLog;
+using Npgsql;
+using NpgsqlTypes;
+using PostgreSQLCopyHelper;
+using TimescaleExperiment.Sql.Model;
+
+namespace TimescaleExperiment.Sql.Client
+{
+    public class LocalWeatherDataBatchProcessor : IBatchProcessor<LocalWeatherData>
+    {
+        private static readonly ILogger log = LogManager.GetCurrentClassLogger();
+
+        private class LocalWeatherCopyHelper : PostgreSQLCopyHelper<LocalWeatherData>
+        {
+            public LocalWeatherCopyHelper()
+                : base("sample", "weather_data")
+            {
+                Map("station_identifier", x => x.StationIdentifier, NpgsqlDbType.Varchar);
+                Map("timestamp", x => x.TimeStamp, NpgsqlDbType.TimestampTz);
+                Map("quality_code", x => x.QualityCode, NpgsqlDbType.Smallint);
+                MapNullable("station_pressure", x => x.StationPressure, NpgsqlDbType.Real);
+                MapNullable("air_temperature_at_2m", x => x.AirTemperatureAt2m, NpgsqlDbType.Real);
+                MapNullable("air_temperature_at_5cm", x => x.AirTemperatureAt5cm, NpgsqlDbType.Real);
+                MapNullable("relative_humidity", x => x.RelativeHumidity, NpgsqlDbType.Real);
+                MapNullable("dew_point_temperature_at_2m", x => x.RelativeHumidity, NpgsqlDbType.Real);
+            }
+        }
+
+        private readonly string connectionString;
+
+        private readonly IPostgreSQLCopyHelper<LocalWeatherData> processor;
+
+        public LocalWeatherDataBatchProcessor(string connectionString)
+            : this(connectionString, new LocalWeatherCopyHelper())
+        {
+        }
+
+        public LocalWeatherDataBatchProcessor(string connectionString, IPostgreSQLCopyHelper<LocalWeatherData> processor)
+        {
+            this.processor = processor;
+            this.connectionString = connectionString;
+        }
+
+        public void Write(IEnumerable<LocalWeatherData> measurements)
+        {
+            try
+            {
+                InternalWrite(measurements);
+            }
+            catch (Exception e)
+            {
+                if (log.IsErrorEnabled)
+                {
+                    log.Error(e, "An Error occured while writing measurements");
+                }
+            }
+        }
+
+        private void InternalWrite(IEnumerable<LocalWeatherData> measurements)
+        {
+            if(measurements == null)
+            {
+                return;
+            }
+            
+            using (var connection = new NpgsqlConnection(connectionString))
+            {
+                // Open the Connection:
+                connection.Open();
+
+                processor.SaveAll(connection, measurements);
+            }
+        }
+    }
+}
+```
+
+The import pipeline now reads the CSV Data and converts it into the SQL model, then it is batched to 80,000 entities per 
+batch and written to PostgreSQL using the ``LocalWeatherDataBatchProcessor``:
+
+```
+private static void ProcessLocalWeatherData(string csvFilePath)
+{
+    log.Info($"Processing File: {csvFilePath}");
+
+    // Access to the List of Parsers:
+    var batches = Parsers
+        // Use the LocalWeatherData Parser:
+        .LocalWeatherDataParser
+        // Read the File:
+        .ReadFromFile(csvFilePath, Encoding.UTF8, 1)
+        // Get the Valid Results:
+        .Where(x => x.IsValid)
+        // And get the populated Entities:
+        .Select(x => x.Result)
+        // Convert into the Sql Data Model:
+        .Select(x => Converters.Converters.Convert(x))
+        // Sequential:
+        .AsEnumerable()
+        // Batch:
+        .Batch(80000);
+    
+    // Construct the Batch Processor:
+    var processor = new LocalWeatherDataBatchProcessor(ConnectionString);
+
+    foreach (var batch in batches)
+    {
+        // Finally write them with the Batch Writer:
+        processor.Write(batch);
+    }
+}
+```
 
 ### Results #1 ###
 
@@ -198,10 +1399,240 @@ The import took 81.25 minutes, so the SQL Server was able to write 83,059 record
 
 ## Elasticsearch ##
 
+[elastic]: https://www.elastic.co
+[Document-oriented database]: https://en.wikipedia.org/wiki/Document-oriented_database
 
-There is a great article written by [Felix Barnsteiner](https://www.elastic.co/blog/author/felix-barnsteiner) on using Elasticsearch as a :
+The [elastic] product page describes Elasticsearch as:
+
+> [...] a distributed, RESTful search and analytics engine capable of solving a growing number of use 
+> cases. As the heart of the Elastic Stack, it centrally stores your data so you can discover the expected and 
+> uncover the unexpected.
+
+Why did I include Elasticsearch? At its heart Elasticsearch is a [Document-oriented database], that's not obviously suited 
+for storing time series data. But as a NoSQL database it's quite easy to scale and with [Kibana] it's simple to quickly 
+generate visualizations for the data.
+
+There is a great article written by [Felix Barnsteiner](https://www.elastic.co/blog/author/felix-barnsteiner) on using 
+Elasticsearch as a Time series database:
 
 * https://www.elastic.co/blog/elasticsearch-as-a-time-series-data-store
+
+### Implementation ###
+
+[Nest]: https://github.com/elastic/elasticsearch-net
+
+The Elasticsearch implementation uses [Nest] for interfacing with Elasticsearch. The Elasticsearch Mapping can be easily expressed 
+in [Nest] using Attributes. These Attributes will be used by [Nest] to generate and create the Elasticsearch mapping:
+
+```csharp
+// Copyright (c) Philipp Wagner. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+using System;
+using Nest;
+
+namespace ElasticExperiment.Elastic.Model
+{
+    public class LocalWeatherData
+    {
+        [Text]
+        public string Station { get; set; }
+
+        [Date]
+        public DateTime TimeStamp { get; set; }
+
+        [Number(NumberType.Byte)]
+        public byte QualityCode { get; set; }
+
+        [Number(NumberType.Float)]
+        public float? StationPressure { get; set; }
+
+        [Number(NumberType.Float)]
+        public float? AirTemperatureAt2m { get; set; }
+
+        [Number(NumberType.Float)]
+        public float? AirTemperatureAt5cm { get; set; }
+
+        [Number(NumberType.Float)]
+        public float? RelativeHumidity { get; set; }
+
+        [Number(NumberType.Float)]
+        public float? DewPointTemperatureAt2m { get; set; }
+    }
+}
+```
+
+The ``LocalWeatherDataConverter`` is used to convert between the CSV and Elasticsearch representation:
+
+```csharp
+// Copyright (c) Philipp Wagner. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+using Nest;
+using CsvStationType = Experiments.Common.Csv.Model.Station;
+using CsvLocalWeatherDataType = Experiments.Common.Csv.Model.LocalWeatherData;
+
+using ElasticStationType = ElasticExperiment.Elastic.Model.Station;
+using ElasticLocalWeatherDataType = ElasticExperiment.Elastic.Model.LocalWeatherData;
+
+namespace ElasticExperiment.Converters
+{
+
+    public static class LocalWeatherDataConverter
+    {
+         public static ElasticLocalWeatherDataType Convert(CsvLocalWeatherDataType source)
+        {
+            if (source == null)
+            {
+                return null;
+            }
+
+            return new ElasticLocalWeatherDataType
+            {
+                Station = source.StationIdentifier,
+                AirTemperatureAt2m = source.AirTemperatureAt2m,
+                AirTemperatureAt5cm = source.AirTemperatureAt5cm,
+                DewPointTemperatureAt2m = source.DewPointTemperatureAt2m,
+                QualityCode = source.QualityCode,
+                RelativeHumidity = source.RelativeHumidity,
+                StationPressure = source.StationPressure,
+                TimeStamp = source.TimeStamp
+            };
+        }
+    }
+}
+```
+
+[Nest] supports the Elasticsearch Bulk API, but I decided to simplify it by wrapping the [Nest] ``IElasicClient`` in the 
+``ElasticSearchClient<TEntity>`` class, which nicely abstracts the [Nest] implementation details away and can be reused 
+for all entities:
+
+```csharp
+// Copyright (c) Philipp Wagner. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+using System;
+using System.Collections.Generic;
+using Elasticsearch.Net;
+using Nest;
+
+namespace ElasticExperiment.Elastic.Client
+{
+    public class ElasticSearchClient<TEntity>
+        where TEntity : class
+    {
+        public readonly string IndexName;
+
+        protected readonly IElasticClient Client;
+
+        public ElasticSearchClient(IElasticClient client, string indexName)
+        {
+            IndexName = indexName;
+            Client = client;
+        }
+
+        public ElasticSearchClient(Uri connectionString, string indexName)
+            : this(CreateClient(connectionString), indexName)
+        {
+        }
+
+        public ICreateIndexResponse CreateIndex(Func<IndexSettingsDescriptor, IPromise<IndexSettings>> indexSettings)
+        {
+            var response = Client.IndexExists(IndexName);
+
+            if (response.Exists)
+            {
+                return null;
+
+            }
+
+            return Client
+                .CreateIndex(IndexName, index => index
+                    .Settings(settings => indexSettings(settings))
+                    .Mappings(mappings => mappings.Map<TEntity>(x => x.AutoMap())));
+        }
+
+        public IBulkResponse BulkInsert(IEnumerable<TEntity> entities)
+        {
+            var request = new BulkDescriptor();
+
+            foreach (var entity in entities)
+            {
+                request
+                    .Index<TEntity>(op => op
+                        .Id(Guid.NewGuid().ToString())
+                        .Index(IndexName)
+                        .Document(entity));
+            }
+
+            return Client.Bulk(request);
+        }
+
+        private static IElasticClient CreateClient(Uri connectionString)
+        {
+            var connectionPool = new SingleNodeConnectionPool(connectionString);
+            var connectionSettings = new ConnectionSettings(connectionPool);
+
+            return new ElasticClient(connectionSettings);
+        }
+    }
+}
+```
+
+The import pipeline first creates the Index with custom settings, please read below for the details why I am disabling 
+the Refresh Interval and set the Number Of Replicas to 0. The import pipeline then reads the CSV data, converts the 
+entities and batches it into 30,000 entities. Each batch is then written using the ``ElasticSearchClient``, which handles 
+the bulk indexing:
+
+```csharp
+private static void ProcessLocalWeatherData(string csvFilePath)
+{
+    if (log.IsInfoEnabled)
+    {
+        log.Info($"Processing File: {csvFilePath}");
+    }
+
+    // Construct the Batch Processor:
+    var client = new ElasticSearchClient<Elastic.Model.LocalWeatherData>(ConnectionString, "weather_data");
+
+    // We are creating the Index with special indexing options for initial load, 
+    // as suggested in the Elasticsearch documentation at [1].
+    //
+    // We disable the performance-heavy indexing during the initial load and also 
+    // disable any replicas of the data. This comes at a price of not being able 
+    // to query the data in realtime, but it will enhance the import speed.
+    //
+    // After the initial load I will revert to the standard settings for the Index
+    // and set the default values for Shards and Refresh Interval.
+    //
+    // [1]: https://www.elastic.co/guide/en/elasticsearch/reference/master/tune-for-indexing-speed.html
+    //
+    client.CreateIndex(settings => settings
+        .NumberOfReplicas(0)
+        .RefreshInterval(-1));
+    
+    // Access to the List of Parsers:
+    var batches = Parsers
+        // Use the LocalWeatherData Parser:
+        .LocalWeatherDataParser
+        // Read the File, Skip first row:
+        .ReadFromFile(csvFilePath, Encoding.UTF8, 1)
+        // Get the Valid Results:
+        .Where(x => x.IsValid)
+        // And get the populated Entities:
+        .Select(x => x.Result)
+        // Convert to ElasticSearch Entity:
+        .Select(x => LocalWeatherDataConverter.Convert(x))
+        // Batch Entities:
+        .Batch(30000);
+
+
+    foreach (var batch in batches)
+    {
+        client.BulkInsert(batch);
+    }
+}
+```
 
 ### Results ###
 
@@ -313,12 +1744,13 @@ More information on Heap Sizing and Swapping can be found at:
 
 ## Conclusion ##
 
-It was interesting to see, that the SQL Server 2017 was the fastest database to write the data. Without any changes to its default configuration! This is 
-probably a highly biased benchmark result, because I am using a Windows 10 machine in these tests. But I needed these figures to see, what I can recommend 
-for Windows environments, that need a high throughput for Time series-based workloads.
+It was interesting to see, that the SQL Server 2017 was the fastest database to write the historic time series data. Without any changes to its default 
+configuration! This is probably a highly biased benchmark result, because I am using a Windows 10 machine in these tests. But I needed these figures to 
+see what database I can recommend for Windows Servers, that need to digest a high influx of Time series data.
 
-But what's all the worlds data worth, if we cannot read it efficiently? In the next part of the series, I will investigate how efficient queries on the 
-databases are and how to optimize it.
+But what's all the worlds data worth, if we cannot read it efficiently? 
+
+In the next part of the series I will investigate how efficient queries on the databases are and how to optimize it.
 
 [Columnstore indexes]: https://docs.microsoft.com/en-us/sql/relational-databases/indexes/columnstore-indexes-overview
 [timescaledb-tune]: https://github.com/timescale/timescaledb-tune
