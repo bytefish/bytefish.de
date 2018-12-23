@@ -872,8 +872,8 @@ InfluxDB 1.7.1 with the default configuration was unable to import the entire da
 load and could not write the batches anymore. After reading through documentation I am quite confident, that the default 
 shard duration and retention policy has to be adjusted, so that the shards do not stay in memory forever:
 
-* https://www.influxdata.com/blog/tldr-influxdb-tech-tips-march-16-2017/
-* https://docs.influxdata.com/influxdb/v1.7/guides/hardware_sizing/
+* [https://www.influxdata.com/blog/tldr-influxdb-tech-tips-march-16-2017/](https://www.influxdata.com/blog/tldr-influxdb-tech-tips-march-16-2017/)
+* [https://docs.influxdata.com/influxdb/v1.7/guides/hardware_sizing/](https://docs.influxdata.com/influxdb/v1.7/guides/hardware_sizing/)
 
 The default configuration of InfluxDB is optimized for realtime data with a short [retention duration] and a short [shard duration]. 
 This makes InfluxDB chewing up the entire RAM, just because for the historic data too many shards are created and the cached data 
@@ -1697,8 +1697,8 @@ bootstrap.memory_lock: true
 
 More information on Heap Sizing and Swapping can be found at:
 
-* https://www.elastic.co/guide/en/elasticsearch/guide/current/heap-sizing.html (Guide to Heap Sizing)
-* https://www.elastic.co/blog/a-heap-of-trouble (Detailed article on the maximum JVM Heap Size)
+* [https://www.elastic.co/guide/en/elasticsearch/guide/current/heap-sizing.html (Guide to Heap Sizing)](https://www.elastic.co/guide/en/elasticsearch/guide/current/heap-sizing.html)
+* [https://www.elastic.co/blog/a-heap-of-trouble (Detailed article on the maximum JVM Heap Size)](https://www.elastic.co/blog/a-heap-of-trouble)
 
 ## Summary ##
 
@@ -1753,6 +1753,8 @@ But what's all the worlds data worth, if we cannot read it efficiently?
 
 In the next part of the series I will investigate how efficient queries on the databases are and how to optimize it.
 
+[PostgreSQLCopyHelper]: https://github.com/bytefish/PostgreSQLCopyHelper
+[Npgsql]: https://github.com/npgsql/npgsql
 [TinyCsvParser]: https://github.com/bytefish/TinyCsvParser
 [Columnstore indexes]: https://docs.microsoft.com/en-us/sql/relational-databases/indexes/columnstore-indexes-overview
 [timescaledb-tune]: https://github.com/timescale/timescaledb-tune
