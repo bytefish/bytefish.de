@@ -1716,46 +1716,48 @@ More information on Heap Sizing and Swapping can be found at:
 
 ## Summary ##
 
-<table>
-  <thead>
-    <tr>
-      <th>Database</th>
-      <th>Elapsed Time (Minutes)</th>
-      <th># Records</th>
-      <th>Throughput (records/s)</th>
-      <th>Database Size (GB)</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>InfluxDB 1.7.1</td>
-      <td>147</td>
-      <td>398,704,931</td>
-      <td>45,112</td>
-      <td class="bg-light-green"><b>7.91</b></td>
-    </tr>
-    <tr>
-      <td>TimescaleDB 1.0</td>
-      <td>247</td>
-      <td>406,241,469</td>
-      <td>27,560</td>
-      <td>37</td>
-    </tr>
-    <tr>
-      <td>SQL Server 2017</td>
-      <td class="bg-light-green"><b>81.25</b></td>
-      <td>406,242,465</td>
-      <td class="bg-light-green"><b>83,059</b></td>
-      <td>12.6</td>
-    </tr>
-    <tr>
-      <td>Elasticsearch 6.5.1</td>
-      <td class="bg-light-red">718.9</td>
-      <td>406,548,765</td>
-      <td class="bg-light-red">9,425</td>
-      <td class="bg-light-red">52.9</td>
-  </tbody>
-</table>
+<div style="overflow-x:auto;">
+    <table>
+      <thead>
+        <tr>
+          <th>Database</th>
+          <th>Elapsed Time (Minutes)</th>
+          <th># Records</th>
+          <th>Throughput (records/s)</th>
+          <th>Database Size (GB)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>InfluxDB 1.7.1</td>
+          <td>147</td>
+          <td>398,704,931</td>
+          <td>45,112</td>
+          <td class="bg-light-green"><b>7.91</b></td>
+        </tr>
+        <tr>
+          <td>TimescaleDB 1.0</td>
+          <td>247</td>
+          <td>406,241,469</td>
+          <td>27,560</td>
+          <td>37</td>
+        </tr>
+        <tr>
+          <td>SQL Server 2017</td>
+          <td class="bg-light-green"><b>81.25</b></td>
+          <td>406,242,465</td>
+          <td class="bg-light-green"><b>83,059</b></td>
+          <td>12.6</td>
+        </tr>
+        <tr>
+          <td>Elasticsearch 6.5.1</td>
+          <td class="bg-light-red">718.9</td>
+          <td>406,548,765</td>
+          <td class="bg-light-red">9,425</td>
+          <td class="bg-light-red">52.9</td>
+      </tbody>
+    </table>
+</div>
 
 ## Conclusion ##
 
