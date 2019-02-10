@@ -25,8 +25,9 @@ All code to reproduce the article can be found in my GitHub repository at:
 ## The Dataset ##
 
 The [DWD Open Data] portal of the [Deutscher Wetterdienst (DWD)] gives access to the historical weather data in Germany. I decided 
-to use all available historical air temperature data for Germany given in a 10 minute resolution ([FTP Link]). If you want to recreate 
-the example, you can find the list of CSV files in the GitHub repository at: [GermanWeatherDataExample/Resources/files.md].
+to use all available historical air temperature data for Germany given in a 10 minute resolution ([FTP Link]). 
+
+If you want to recreate the example, you can find the list of CSV files in the GitHub repository at: [GermanWeatherDataExample/Resources/files.md].
 
 The DWD dataset is given as CSV files and has a size of approximately 25.5 GB.
 
