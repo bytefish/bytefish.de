@@ -1,4 +1,4 @@
-title: Timeseries Databases Part 1: The Dataset
+title: Timeseries Databases Part 1: Parsing a Dataset with .NET
 date: 2019-02-10 14:00
 tags: timeseries, databases, dotnet, csharp
 category: timeseries
@@ -10,7 +10,8 @@ I often had to deal with large amounts time series data in my career and I have 
 to give qualified answers or recommendations for one database or another. So in a series of articles 
 I want to learn more about [TimescaleDB] and [InfluxDB].
 
-In this article I will start with parsing a CSV dataset, that is going to be used in the upcoming articles. 
+In this article I will start with parsing a CSV dataset using .NET. The Dataset is going to be used in the 
+upcoming articles. 
 
 All code to reproduce the article can be found in my GitHub repository at:
 
