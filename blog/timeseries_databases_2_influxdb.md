@@ -35,6 +35,7 @@ The DWD dataset is given as CSV files and has a size of approximately 25.5 GB.
 
 ### The InfluxDB Line Protocol ###
 
+[influxdb-csharp]: https://github.com/influxdata/influxdb-csharp
 [Line Protocol]: https://docs.influxdata.com/influxdb/v1.7/write_protocols/line_protocol_reference/
 
 The data points are written using the InfluxDB [Line Protocol], which has the following syntax:
@@ -45,9 +46,7 @@ The data points are written using the InfluxDB [Line Protocol], which has the fo
 
 The protocol has already been implemented for C\# by the very good [influxdb-csharp] library:
 
-* https://github.com/influxdata/influxdb-csharp
-
-[influxdb-csharp]: https://github.com/influxdata/influxdb-csharp
+* [https://github.com/influxdata/influxdb-csharp](https://github.com/influxdata/influxdb-csharp)
 
 ### Writing to InfluxDB: The LocalWeatherDataBatchProcessor ###
 
