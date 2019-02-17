@@ -23,8 +23,8 @@ to reproduce this post can be found in my GitHub repository at:
 The best way to explain a solution is to look at the project structure first and then break it down:
 
 <div style="display:flex; align-items:center; justify-content:center;">
-    <a href="/static/images/blog/scheduling_with_quartz_net/ProjectStructure.png">
-        <img src="/static/images/blog/scheduling_with_quartz_net/ProjectStructure.png">
+    <a href="/static/images/blog/scheduling_with_quartz_net/project.png">
+        <img src="/static/images/blog/scheduling_with_quartz_net/project.png">
     </a>
 </div>
 
