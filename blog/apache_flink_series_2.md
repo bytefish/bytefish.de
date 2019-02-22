@@ -70,7 +70,9 @@ public class LocalWeatherDataSourceFunction implements SourceFunction<model.Loca
 
             // Make sure to cancel, when the Source function is canceled by an external event:
             while (isRunning && iterator.hasNext()) {
-                sourceContext.collect(iterator.next());
+                synchronized (sourceContext.getCheckpointLock()) {
+                    sourceContext.collect(iterator.next());
+                }
             }
         }
     }
