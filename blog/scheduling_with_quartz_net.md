@@ -490,12 +490,12 @@ now deals with writing the message into the database and scheduling it with [Qua
 
 There are very few key concepts to understand, when working with [Quartz.NET]:
 
-> IScheduler: The main API for interacting with the scheduler.
-> IJob: An interface to be implemented by components that you wish to have executed by the scheduler.
-> IJobDetail: Used to define instances of Jobs.
-> ITrigger: A component that defines the schedule upon which a given Job will be executed.
-> JobBuilder: Used to define/build JobDetail instances, which define instances of Jobs.
-> TriggerBuilder: Used to define/build Trigger instances.
+* ``IScheduler``: The main API for interacting with the scheduler.
+* ``IJob``: An interface to be implemented by components that you wish to have executed by the scheduler.
+* ``IJobDetail``: Used to define instances of Jobs.
+* ``ITrigger``: A component that defines the schedule upon which a given Job will be executed.
+* ``JobBuilder``: Used to define/build JobDetail instances, which define instances of Jobs.
+* ``TriggerBuilder``: Used to define/build Trigger instances.
 
 ### Processing Scheduled Messages ###
 
