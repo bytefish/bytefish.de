@@ -390,7 +390,7 @@ The import pipeline for TimescaleDB is parallelized, because PostgreSQL creates 
 write 4 batches in parallel, then TimescaleDB will have 4 worker processes for the incoming data. The batch size is 
 set to 80,000 entities, because I didn't see any speedup with smaller / larger batches.
 
-```
+```csharp
 private static void ProcessLocalWeatherData(string[] csvFiles)
 {
     var processor = new LocalWeatherDataBatchProcessor(ConnectionString);
