@@ -18,8 +18,10 @@ And that's exactely the problem with so many Big Data projects.
 ## Correlation and Causal Relation ##
 
 While it's nowadays quite easy to store large amounts of data, actually making sense of it is a tough problem. And it's 
-even harder to draw *useful* conclusions. I am saying this, because many failed Data Mining experiments have taught me, 
-that a high correlation in data does not imply a causal relation:
+even harder to draw *useful* conclusions. 
+
+I am saying this, because many failed Data Mining experiments have taught me, that a high correlation in data does not 
+imply a causal relation:
 
 > A high correlation between increased ice cream sales and murder rate, does not imply deadly ice cream.
 > 
@@ -35,13 +37,14 @@ That brings me to my next point...
 
 ## The Plan ##
 
-The past articles I have planned have been way too ambitious. Sometimes I spent months reading papers, articles, blogs 
-and studying code in GitHub repositories. Sometimes I deleted all drafts in sheer frustration, because I didn't see any 
-progress. 
+My past articles on Big Data and Data Mining projects have been *way too ambitious*. 
 
-So future articles will be much shorter and focus on smaller scale problems I have tackled. Instead of directly starting with 
-data mining models I want to show how to visualize data first. Because for me working with data always starts with *getting a feel* 
-for it.
+Sometimes I spent months reading papers, articles, blogs and studying code in GitHub repositories. And in the end I 
+deleted most of the code in sheer frustration, because I didn't see any progress. Future articles will be much shorter 
+and focus on smaller problems. 
+
+Instead of directly starting with data mining models and timeseries analysis I want to show how to visualize data first. 
+Because for me working with data always starts with *getting a feel* for it.
 
 I love making spatial data more accessible by creating choropleth maps:
 
@@ -49,7 +52,9 @@ I love making spatial data more accessible by creating choropleth maps:
 > are shaded or patterned in proportion to the measurement of the statistical variable being displayed on the 
 > map, such as population density or per-capita income.
 
-So this article will show you how to create choropleth maps using [R], open data [Shapefiles] and [TimescaleDB].
+So this article will show you how to create choropleth maps using [R], open data [Shapefiles] and [TimescaleDB]. 
+
+I want to show you how to create visualizations of the air temperature in Germany in 2017.
 
 As usual all code to reproduce the article can be found in my GitHub repository at:
 
@@ -153,12 +158,13 @@ And what we need to display average temperatures is the name of the 16 federal s
 
 ## Plotting the Data ##
 
-### Weather Stations in Germany ###
+### Distribution of the Weather Stations in Germany ###
 
 [RPostgres]: https://github.com/r-dbi/RPostgres
 
-Now the idea if the following: Use [RPostgres] to connect to [TimescaleDB], read the SQL query from an external file and bind 
-the start date to the query. At time of writing [RPostgres] only supports positional parameters for prepared statements:
+Now the idea is the following: Use [RPostgres] to connect to [TimescaleDB], read the SQL query from an external file and 
+bind the start date to the query. At time of writing [RPostgres] only supports positional parameters for prepared 
+statements:
 
 ```sql
 SELECT identifier, name, start_date, end_date, station_height, state, latitude, longitude
@@ -166,7 +172,7 @@ FROM sample.station
 WHERE end_date >= $1
 ```
 
-And the following query plots the position of the weather stations in Germany:
+And the following [R] script is used to plot the position of German weather stations:
 
 ```r
 # Copyright (c) Philipp Wagner. All rights reserved.
@@ -229,8 +235,8 @@ It shows, that every federal state has one weather station active in 2017:
 
 ### Plotting the Average Temperature 2017 ###
 
-To plot the average templerature of the federal states in Germany, we need to join the Station table and the Weather data. I am 
-going to rely on the SQL ``avg`` operator to calculate the average temperature:
+To plot the average templerature of the federal states in Germany, we need to join the ``station`` table and the ``weather_data`` table. I am 
+going to rely on the ANSI SQL ``avg`` operator to calculate the average temperature:
 
 ```sql
 SELECT s.state "state", avg(w.air_temperature_at_2m) "avg_temp"
@@ -240,8 +246,8 @@ WHERE w.timestamp >= $1 AND w.timestamp < $2
 GROUP BY "state"
 ```
 
-By binding the Parameter ``$1`` and ``$2`` we can calculate the average temperature for a specific timespan. To calculate 
-the average temperature for the year 2017 just bind the ``dbGetQuery`` to ``2017-01-01`` and ``2018-01-01``:
+By binding the positional parameters ``$1`` and ``$2`` of the SQL query, we can calculate the average temperature for a specific timespan. So to 
+calculate the average temperature for the year 2017, you just need to bind the ``dbGetQuery`` to ``2017-01-01`` and ``2018-01-01``:
 
 ```r
 # Copyright (c) Philipp Wagner. All rights reserved.
@@ -300,21 +306,20 @@ ggplot(germany_shp.df) +
 
 [viridis]: https://cran.r-project.org/web/packages/viridis/vignettes/intro-to-viridis.html
 
-I am using the [viridis] color palette, because it is easier to read by those with colorblindnes and prints well in grey scale.
-
-The plot shows, that Bavaria had the lowest average temperature in Germany for 2017:
+The plot shows, that Bavaria had the lowest average temperature in Germany for 2017. I am using the [viridis] color palette, because it is 
+easier to read by those with colorblindnes and prints well in grey scale:
 
 <div style="display:flex; align-items:center; justify-content:center;">
-    <a href="/static/images/blog/timeseries_databases_4_mapping_data/germany_average_temperature_07_2017.png">
-        <img src="/static/images/blog/timeseries_databases_4_mapping_data/germany_average_temperature_07_2017.png">
+    <a href="/static/images/blog/timeseries_databases_4_mapping_data/germany_average_temperature_2017.png">
+        <img src="/static/images/blog/timeseries_databases_4_mapping_data/germany_average_temperature_2017.png">
     </a>
 </div>
 
 ### Average Temperature in July 2017 ###
 
-The above query enables us to easily plug in different values to draw conclusions about the data and answer questions.
+The above query and script enable us to easily plug in different values for drawing conclusions about the data.
 
-To ask for the warmest federal states in Germany you just bind the ``dbGetQuery`` to ``2017-07-01`` and ``2017-08-01``:
+To ask for the warmest federal states in Germany you just need to bind the ``dbGetQuery`` to ``2017-07-01`` and ``2017-08-01``:
 
 ```r
 # Query the Database: 
@@ -331,7 +336,7 @@ And it shows, that tiny Saarland was the warmest federal state in 2017:
 
 ### Average Temperature in December 2018 ###
 
-To ask for the average temperature of the federal states in December 2017 you bind the ``dbGetQuery`` to ``2017-12-01`` and ``2018-01-01``:
+To ask for the average temperature of the federal states in December 2017 you need to bind the ``dbGetQuery`` to ``2017-12-01`` and ``2018-01-01``:
 
 ```r
 # Query the Database: 
@@ -350,6 +355,8 @@ And it shows, that Bavaria was the coldest federal state in 2017:
 ## Conclusion ##
 
 And that's it for now!
+
+I hope this article gives you a good start for using [Shapefiles] with [R], and using [RPostgres].
 
 [Directive 2003/98/EC on the re-use of public sector information]: https://en.wikipedia.org/wiki/Directive_on_the_re-use_of_public_sector_information
 [Shapefiles]: https://en.wikipedia.org/wiki/Shapefile
