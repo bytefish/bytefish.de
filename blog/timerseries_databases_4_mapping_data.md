@@ -235,8 +235,10 @@ It shows, that every federal state has one weather station active in 2017:
 
 ### Plotting the Average Temperature 2017 ###
 
-To plot the average templerature of the federal states in Germany, we need to join the ``station`` table and the ``weather_data`` table. I am 
-going to rely on the ANSI SQL ``avg`` operator to calculate the average temperature:
+To plot the average templerature of the federal states in Germany, we first need to join the ``station`` table and 
+the ``weather_data`` table. 
+
+I am going to use the ANSI SQL ``avg`` operator to calculate the average temperature:
 
 ```sql
 SELECT s.state "state", avg(w.air_temperature_at_2m) "avg_temp"
@@ -246,8 +248,9 @@ WHERE w.timestamp >= $1 AND w.timestamp < $2
 GROUP BY "state"
 ```
 
-By binding the positional parameters ``$1`` and ``$2`` of the SQL query, we can calculate the average temperature for a specific timespan. So to 
-calculate the average temperature for the year 2017, you just need to bind the ``dbGetQuery`` to ``2017-01-01`` and ``2018-01-01``:
+By binding the positional parameters ``$1`` and ``$2`` of the SQL query, we can calculate the average temperature for a specific timespan. 
+
+So to calculate the average temperature for the year 2017, you just need to bind the ``dbGetQuery`` to ``2017-01-01`` and ``2018-01-01``:
 
 ```r
 # Copyright (c) Philipp Wagner. All rights reserved.
