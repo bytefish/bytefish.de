@@ -323,7 +323,7 @@ I am using the [viridis] color palette, because it is easier to read by those wi
 
 The above query and script enable us to easily plug in different values for drawing conclusions about the data.
 
-To ask for the warmest federal states in Germany you just need to bind the ``dbGetQuery`` to ``2017-07-01`` and ``2017-08-01``:
+To ask for the warmest federal states in July 2017 you just need to bind the ``dbGetQuery`` to ``2017-07-01`` and ``2017-08-01``:
 
 ```r
 # Query the Database: 
