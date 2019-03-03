@@ -330,7 +330,7 @@ To ask for the warmest federal states in July 2017 you just need to bind the ``d
 temperatures <- dbGetQuery(connection, query, param = list('2017-07-01', '2017-08-01'))
 ```
 
-And it shows, that tiny Saarland was the warmest federal state in 2017:
+And it shows, that tiny Saarland was the warmest federal state in July 2017:
 
 <div style="display:flex; align-items:center; justify-content:center;">
     <a href="/static/images/blog/timeseries_databases_4_mapping_data/germany_average_temperature_07_2017.png">
@@ -338,7 +338,7 @@ And it shows, that tiny Saarland was the warmest federal state in 2017:
     </a>
 </div>
 
-### Average Temperature in December 2018 ###
+### Average Temperature in December 2017 ###
 
 To ask for the average temperature of the federal states in December 2017 you need to bind the ``dbGetQuery`` to ``2017-12-01`` and ``2018-01-01``:
 
@@ -347,7 +347,7 @@ To ask for the average temperature of the federal states in December 2017 you ne
 temperatures <- dbGetQuery(connection, query, param = list('2017-12-01', '2018-01-01'))
 ```
 
-And it shows, that Bavaria was the coldest federal state in 2017:
+And it shows, that Bavaria was the coldest federal state in December 2017:
 
 <div style="display:flex; align-items:center; justify-content:center;">
     <a href="/static/images/blog/timeseries_databases_4_mapping_data/germany_average_temperature_12_2017.png">
