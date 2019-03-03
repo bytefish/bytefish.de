@@ -309,8 +309,9 @@ ggplot(germany_shp.df) +
 
 [viridis]: https://cran.r-project.org/web/packages/viridis/vignettes/intro-to-viridis.html
 
-The plot shows, that Bavaria had the lowest average temperature in Germany for 2017. I am using the [viridis] color palette, because it is 
-easier to read by those with colorblindnes and prints well in grey scale:
+The plot shows, that Bavaria had the lowest average temperature in Germany for 2017. 
+
+I am using the [viridis] color palette, because it is easier to read by those with colorblindnes and prints well in grey scale:
 
 <div style="display:flex; align-items:center; justify-content:center;">
     <a href="/static/images/blog/timeseries_databases_4_mapping_data/germany_average_temperature_2017.png">
