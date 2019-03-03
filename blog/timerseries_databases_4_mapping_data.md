@@ -82,7 +82,7 @@ The [Esri Open Data Portal] provides access to Open Data shapefiles, that can be
 
 For this post I am going to use the [Zensus 2011] shapefile, which contains the federal states of Germany:
 
-* [https://opendata-esri-de.opendata.arcgis.com/datasets/esri-de-content::zensus2011bundesländer](https://opendata-esri-de.opendata.arcgis.com/datasets/esri-de-content::zensus2011bundesländer)
+* [https://github.com/bytefish/GermanWeatherDataExample/tree/master/GermanWeatherData/TimescaleDB/R/shapes](https://github.com/bytefish/GermanWeatherDataExample/tree/master/GermanWeatherData/TimescaleDB/R/shapes)
 
 ## Generating Maps with R ##
 
