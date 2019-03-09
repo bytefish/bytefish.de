@@ -377,3 +377,4 @@ I hope this article gives you a good start for using [Shapefiles] with [R], and 
 [Python Metaprogramming]: https://python-3-patterns-idioms-test.readthedocs.io/en/latest/Metaprogramming.html
 [TimescaleDB]: https://www.timescale.com/
 [R]: https://www.r-project.org/
+[FTP Link]: https://opendata.dwd.de/climate_environment/CDC/observations_germany/climate/10_minutes/air_temperature/historical/
