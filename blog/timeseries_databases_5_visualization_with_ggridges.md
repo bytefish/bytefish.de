@@ -10,7 +10,7 @@ In [Part 4] of my series on Timeseries databases I have shown how to read the ti
 seen how to create choropleth maps using open data [Shapefiles]. 
 
 Now choropleth maps are an excellent tool to show changes over space, but we are not able to visualize 
-subtle changes distributions over time. 
+subtle changes in distributions over time. 
 
 So while I was browsing for interesting ways to visualize time series data I found [Ridgeline plots].
 
@@ -118,9 +118,9 @@ And the result shows the temperature distribution per months:
 
 ## Conclusion ##
 
-This was a short post again! I am currently teaching myself some data visualization again and I think it's best 
-to share some code along the way... instead of writing huge blog articles. I hope this articles gives a good start 
-for using [ggridges] to display time series data in [Postgres].
+This was a short post again! 
+
+I hope this articles gives a good start for using [ggridges] to display time series data in [Postgres].
 
 [Postgres]: https://www.postgresql.org/
 [RPostgres]: https://github.com/r-dbi/RPostgres
