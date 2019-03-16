@@ -10,9 +10,8 @@ In [Part 4] of my series on Timeseries databases I have shown how to read the ti
 seen how to create choropleth maps using open data [Shapefiles]. 
 
 Now choropleth maps are an excellent tool to show changes over space, but we are not able to visualize 
-subtle changes in distributions over time. 
-
-So while I was browsing for interesting ways to visualize time series data I found [Ridgeline plots].
+subtle changes in distributions over time. So while I was browsing for interesting ways to visualize time 
+series data I found [Ridgeline plots].
 
 According to the [ggridges] documentation;
 
