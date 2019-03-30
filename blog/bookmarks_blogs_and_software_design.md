@@ -36,8 +36,9 @@ After reading the post I wrote [PgBulkInsert] and [PostgreSQLCopyHelper] to unde
 [TimescaleDB]: https://www.timescale.com
 [Time-series data: Why (and how) to use a relational database instead of NoSQL]: https://blog.timescale.com/time-series-data-why-and-how-to-use-a-relational-database-instead-of-nosql-d0cd6975e87c/
 
-In 2017 a new Time series database also hit the scene: [TimescaleDB]. The blog post showed me, that you do not neccessiraly have to leave your SQL comfort 
-zone for processing large amounts of Timeseries data. But my priorities at work shifted and I wasn't able to go much further:
+In 2017 a new Time series database also hit the scene: [TimescaleDB]. The blog post showed me, that you do not necessarily have 
+to leave your SQL comfort zone for processing large amounts of Timeseries data. But my priorities at work shifted and I wasn't 
+able to go much further:
 
 * [Time-series data: Why (and how) to use a relational database instead of NoSQL]
 
@@ -56,18 +57,17 @@ zone for processing large amounts of Timeseries data. But my priorities at work 
 [Frank Chimero]: https://frankchimero.com
 [webpack]: https://webpack.js.org/
 
-In late 2017 I got into Web Development again and my bookmarks suddenly saw a lot of good articles on Frontend 
-development:
+In late 2017 I got into Web Development again and my bookmarks suddenly saw a lot of good articles on Frontend development:
 
 * [TypeScript Documentation](https://www.typescriptlang.org/docs/home.html)
 * [Vue + Vuex — Getting started](https://medium.com/wdstack/vue-vuex-getting-started-f78c03d9f65)
 * [Angular - Tour of Heroes](https://angular.io/tutorial)
 
-Honestly. As a developer being proficient in various programming languages it was quite a frustrating fight to get 
+But honestly. As a developer being proficient in various programming languages it was quite a frustrating fight to get 
 "comfortable" with the JavaScript ecosystem and the modern Frontend stack in general: [webpack], [npm], [CSS], 
 [SCSS], [JavaScript] and [TypeScript]. 
 
-Every. Simple. Thing... felt overly complex.
+Every simple thing felt overly complex.
 
 Position two elements next to each other? Oh dear. ::loudly_crying_face:: 
 
@@ -99,9 +99,10 @@ This is put nicely in in a quote shared by [Eric Clemmons]:
 > Me: "No, Javascript."
 
 So after a month of struggling with [JavaScript] frameworks professionally, I needed some small side projects to 
-turn frustration into code. ::flexed_biceps:: Around this time I stumbled upon a Youtube Video by [Nicole White]. 
+turn frustration into code. ::flexed_biceps:: 
 
-It's a great introduction to [neo4j] and the [Cypher] query language:
+Around this time I stumbled upon a Youtube Video by [Nicole White]. It's a great introduction to [neo4j] and 
+the [Cypher] query language:
 
 * [Intro to Cypher] (Youtube)
 
