@@ -200,7 +200,9 @@ And if you ask me if I'd rather maintain a DDD or a CRUD version of a Catalog Se
 * [Catalog Service (DDD)](https://github.com/dotnet-architecture/eShopOnContainers/tree/dev/src/Services/Catalog)
 * [Catalog Service (Monolith)](https://github.com/dotnet-architecture/eShopOnContainers/tree/dev/src/Web/WebMonolithic/eShopWeb)
 
-Oh Boy... Then I am a 1000% in the CRUD camp!
+Oh Boy... 
+
+Then I am a 1000% in the CRUD camp!
 
 ### On Layered Architectures ###
 
