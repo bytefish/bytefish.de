@@ -235,7 +235,9 @@ strong consistency guarantees?
 > time. That’s a huge restriction and workarounds at the application layer are painful, complex, and often [buggy]. 
 > ([Google Cloud Platform] Blog)
 
-Does a Layered Architecture scale? Probably not. But know what?
+Does a Layered Architecture scale? Probably not. 
+
+But know what?
 
 I will handle the problem, when the problem is real.
 
