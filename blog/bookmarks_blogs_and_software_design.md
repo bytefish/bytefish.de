@@ -258,3 +258,7 @@ But you know what made me a happier programmer? I stopped overthinking things.
 * I started writing small libraries like [FcmSharp] or [TinyCsvParser], that make my life a little easier and hopefully yours.
 * When designing software I make sure everyone in a team understands the design and knows where to put things.
 * I try to get *something* done and not aim for the perfect abstraction. I stopped worrying about future, non-existing problems.
+
+Finally ...
+
+> Stop **talking** about code and start **writing** code!
