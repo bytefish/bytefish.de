@@ -179,7 +179,7 @@ But it's like this ...
 
 > Developers talk too much about architecture. ([Pokémon Architecture])
 
-### Domain Driven Development ###
+### Domain-Driven Design ###
 
 There has been a lot of talk in the industry about [Domain-Driven Design (DDD)] for years. And over the past years I read most 
 of the blogs and articles I could find in the internet on DDD. 
