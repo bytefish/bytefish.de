@@ -221,13 +221,13 @@ Why?
 3. Everyone understands ER-Diagrams and I am able to explain the domain. 
 4. Everyone can learn a little SQL to play around & make sense of data.
 
-And giving up on *A*tomicity, *C*onsistency, *I*solation, *D*urability guarantees of a Relational Database early in a project is outright dangerous.
+And giving up on **A**tomicity, **C**onsistency, **I**solation, **D**urability guarantees of a Relational Database early in a project is outright dangerous.
 
 There is a reason, why the [Google Cloud Platform] blog says:
 
 * [Why you should pick strong consistency, whenever possible](https://cloud.google.com/blog/products/gcp/why-you-should-pick-strong-consistency-whenever-possible)
 
-Because what happens when you introduce Eventual Consistency in a CQRS/ES application? What happens whn using a NoSQL database, that doesn't have 
+Because what happens when you introduce Eventual Consistency in a CQRS/ES application? What happens when using a NoSQL database, that doesn't have 
 strong consistency guarantees?
 
 > To take advantage of "transactions" in database systems that have limited or no strong consistency across documents/objects/rows, 
