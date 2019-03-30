@@ -64,8 +64,8 @@ In late 2017 I got into Web Development again and my bookmarks suddenly saw a lo
 * [Angular - Tour of Heroes](https://angular.io/tutorial)
 
 But honestly. As a developer being proficient in various programming languages it was quite a frustrating fight to get 
-"comfortable" with the JavaScript ecosystem and the modern Frontend stack in general: [webpack], [npm], [CSS], 
-[SCSS], [JavaScript] and [TypeScript]. 
+"comfortable" with the JavaScript ecosystem. And not only the [JavaScript] ecosystem, but the modern Frontend stack in 
+general: [webpack], [npm], [CSS], [SCSS], [JavaScript], [TypeScript], ... 
 
 Every simple thing felt overly complex.
 
