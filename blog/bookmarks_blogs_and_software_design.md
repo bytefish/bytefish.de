@@ -6,9 +6,8 @@ slug: bookmarks_blogs_and_software_design
 author: Philipp Wagner
 summary: Sharing Blog posts and thoughts on Software design.
 
-I am finally cleaning my bookmarks. And this gives me a chance to re-read and share some of my favorite posts. 
-
-At the same time I also want to share some thoughts on programming and software design.
+I am finally cleaning my bookmarks. And this gives me a chance to re-read and share some of my favorite posts. At the 
+same time I also want to share some thoughts on programming and software design.
 
 ## Time Series Analysis: Resampling and Interpolation ##
 
@@ -64,13 +63,11 @@ In late 2017 I got into Web Development again and my bookmarks suddenly saw a lo
 * [Angular - Tour of Heroes](https://angular.io/tutorial)
 
 Honestly, as a developer being proficient in various programming languages it was quite a frustrating fight to get 
-"comfortable" with the JavaScript ecosystem.
+"comfortable" with the JavaScript ecosystem. But it's not only the [JavaScript] ecosystem, but the modern Frontend 
+stack in general: [webpack], [npm], [SCSS], [JavaScript], ...
 
-But it's not only the [JavaScript] ecosystem, but the modern Frontend stack in general: [webpack], [npm], [CSS], [SCSS], 
-[JavaScript], [TypeScript], ... 
-
-Position two elements next to each other? Do I use ``display: flex``? ``display: grid``? Does Edge support it? IE? Firefox? 
-Chrome? Oh dear... ::loudly_crying_face:: 
+Position two elements next to each other? Do I use ``display: flex``? ``display: grid``? Does Edge 
+support it? IE? Firefox? Chrome? Why do I have 1794 dependencies for a Hello World sample? Oh dear... ::loudly_crying_face:: 
 
 At the time an article by [Frank Chimero] restored a little faith in humanity:
 
@@ -104,9 +101,8 @@ This is put nicely in in a quote shared by [Eric Clemmons]:
 > Me: "No, Javascript."
 
 So after a month of struggling with [JavaScript] frameworks professionally, I needed a small side project to turn 
-frustration into code. ::flexed_biceps:: 
-
-Around this time I stumbled upon a Youtube Video by [Nicole White]. It's a great introduction to [neo4j] and the [Cypher] query language:
+frustration into code. ::flexed_biceps:: Around this time I stumbled upon a Youtube Video by [Nicole White]. It's 
+a great introduction to [neo4j] and the [Cypher] query language:
 
 * [Intro to Cypher] (Youtube)
 
@@ -183,8 +179,8 @@ But it's like this ...
 
 ### Domain-Driven Design ###
 
-There has been a lot of talk in the industry about [Domain-Driven Design (DDD)]. And over the past years I read most 
-of the blogs and articles I could find in the internet on DDD. But at the bottom of my heart I am still a programmer.
+There has been a lot of talk in the industry about [Domain-Driven Design (DDD)]. And over the years I have read most 
+of the blogs and articles I could find on DDD. But at the bottom of my heart I am still a programmer.
 
 I want to see code. I want to see the elegance in the architectures using the sacred Domain-Driven Design methodology. And 
 once you start digging a little deeper you will notice, that real DDD examples are a scarce good. ::thinking_face::
