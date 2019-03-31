@@ -206,7 +206,7 @@ Then I am a 1000% in the CRUD camp!
 
 After reading about and experimenting with software architecture and being in various teams I came to the following two conclusions: 
 
-1. 99% of the projects should start with a dead-simple [Layered Architecture].
+1. 99% of the projects should start with a dead simple [Layered Architecture].
 2. 99% of the projects should start with a Relational Database.
 
 Why? 
