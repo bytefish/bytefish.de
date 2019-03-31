@@ -22,12 +22,12 @@ The first bookmark is a post by [Caleb Welton]. It shows how to perform Timeseri
 
 * [Time Series Analysis Part 3: Resampling and Interpolation]
 
-In early 2017 I had to deal with a lot timeseries data and tried to convince people to not leave SQL. 
+In early 2017 I had to deal with a lot timeseries data and tried to convince people to not leave 
+SQL. And the post showed me how to work with SQL [lag] and [lead] operators and how to use Common 
+Table Expressions (CTE) to make queries simpler. 
 
-The post showed me how to work with SQL [lag] and [lead] operators and how to use Common Table Expressions (CTE) to make queries simpler. 
-I have to credit the post with getting me started with PostgreSQL again!
-
-After reading the post I wrote [PgBulkInsert] and [PostgreSQLCopyHelper] to understand how the Postgres ``COPY`` Protocol works.
+I have to credit the post with getting me started with PostgreSQL again, because after reading the post 
+I wrote [PgBulkInsert] and [PostgreSQLCopyHelper] to understand how the Postgres COPY Protocol works.
 
 ## Time-series data: Why (and how) to use a relational database instead of NoSQL ##
 
@@ -67,7 +67,8 @@ Honestly, as a developer being proficient in various programming languages it wa
 stack in general: [webpack], [npm], [SCSS], [JavaScript], ...
 
 Position two elements next to each other? Do I use ``display: flex``? ``display: grid``? Does Edge 
-support it? IE? Firefox? Chrome? Why do I have 1794 dependencies for a Hello World sample? Oh dear... ::loudly_crying_face:: 
+support it? IE? Firefox? Chrome? ::loudly_crying_face:: ``npm install``? Why do I have 1794 dependencies 
+for a Hello World? Oh dear... ::loudly_crying_face:: 
 
 At the time an article by [Frank Chimero] restored a little faith in humanity:
 
@@ -86,7 +87,7 @@ On the bright side, Visual Studio Code makes Frontend development a little less 
 [Intro to Cypher]: https://www.youtube.com/watch?v=VdivJqlPzCI
 [A Neo4j database of flights]: https://github.com/nicolewhite/neo4j-flights
 
-It's hard to not get frustrated when doing modern Frontend development for weeks. [Javascript Fatigue] anyone? 
+It's hard to not get tired when doing modern Frontend development for weeks. [Javascript Fatigue] anyone? 
 
 * [Javascript Fatigue]
 
