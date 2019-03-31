@@ -64,7 +64,7 @@ In late 2017 I got into Web Development again and my bookmarks suddenly saw a lo
 * [Angular - Tour of Heroes](https://angular.io/tutorial)
 
 Honestly, as a developer being proficient in various programming languages it was quite a frustrating fight to get 
-"comfortable" with the JavaScript ecosystem. Visual Studio Code makes it a little less painful though.
+"comfortable" with the JavaScript ecosystem.
 
 But it's not only the [JavaScript] ecosystem, but the modern Frontend stack in general: [webpack], [npm], [CSS], [SCSS], 
 [JavaScript], [TypeScript], ... 
@@ -75,6 +75,8 @@ Chrome? Oh dear... ::loudly_crying_face::
 At the time an article by [Frank Chimero] restored a little faith in humanity:
 
 * [Everything Easy is Hard Again]
+
+On the bright side, Visual Studio Code makes Frontend development a little less painful though.
 
 ## From JavaScript Fatigue to Graph Databases ##
 
