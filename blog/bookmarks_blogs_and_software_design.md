@@ -6,7 +6,7 @@ slug: bookmarks_blogs_and_software_design
 author: Philipp Wagner
 summary: Sharing Blog posts and thoughts on Software design.
 
-I am finally cleaning my bookmarks. And this gives me a chance to share some of my favorite posts. 
+I am finally cleaning my bookmarks. And this gives me a chance to re-read and share some of my favorite posts. 
 
 At the same time I also want to share some thoughts on programming and software design.
 
@@ -37,16 +37,16 @@ After reading the post I wrote [PgBulkInsert] and [PostgreSQLCopyHelper] to unde
 [Time-series data: Why (and how) to use a relational database instead of NoSQL]: https://blog.timescale.com/time-series-data-why-and-how-to-use-a-relational-database-instead-of-nosql-d0cd6975e87c/
 
 In 2017 a new Time series database also hit the scene: [TimescaleDB]. The blog post showed me, that you do not necessarily have 
-to leave your SQL comfort zone for processing large amounts of Timeseries data. But my priorities at work shifted and I wasn't 
-able to go much further:
+to leave your SQL comfort zone for processing large amounts of Timeseries data:
 
 * [Time-series data: Why (and how) to use a relational database instead of NoSQL]
 
-[TimescaleDB] always stuck in my mind until 2019 when I finally found time to evaluate various Time series databases:
+My priorities at work shifted and I wasn't able to go much further. But [TimescaleDB] always stuck in my mind until 2019 when I finally 
+found time to evaluate various Time series databases:
 
 * [https://github.com/bytefish/GermanWeatherDataExample](https://github.com/bytefish/GermanWeatherDataExample)
 
-## Everything Easy is Hard Again ##
+## Frontend Development or... Everything Easy is Hard Again ##
 
 [npm]: https://www.npmjs.com/
 [CSS]: https://developer.mozilla.org/en-US/docs/Learn/CSS/Introduction_to_CSS
@@ -63,13 +63,14 @@ In late 2017 I got into Web Development again and my bookmarks suddenly saw a lo
 * [Vue + Vuex — Getting started](https://medium.com/wdstack/vue-vuex-getting-started-f78c03d9f65)
 * [Angular - Tour of Heroes](https://angular.io/tutorial)
 
-But honestly. As a developer being proficient in various programming languages it was quite a frustrating fight to get 
-"comfortable" with the JavaScript ecosystem. And not only the [JavaScript] ecosystem, but the modern Frontend stack in 
-general: [webpack], [npm], [CSS], [SCSS], [JavaScript], [TypeScript], ... 
+Honestly, as a developer being proficient in various programming languages it was quite a frustrating fight to get 
+"comfortable" with the JavaScript ecosystem. Visual Studio Code makes it a little less painful though.
 
-Every simple thing felt overly complex.
+But it's not only the [JavaScript] ecosystem, but the modern Frontend stack in general: [webpack], [npm], [CSS], [SCSS], 
+[JavaScript], [TypeScript], ... 
 
-Position two elements next to each other? Oh dear. ::loudly_crying_face:: 
+Position two elements next to each other? Do I use ``display: flex``? ``display: grid``? Does Edge support it? IE? Firefox? 
+Chrome? Oh dear... ::loudly_crying_face:: 
 
 At the time an article by [Frank Chimero] restored a little faith in humanity:
 
@@ -88,6 +89,8 @@ At the time an article by [Frank Chimero] restored a little faith in humanity:
 
 It's hard to not get frustrated when doing modern Frontend development for weeks. [Javascript Fatigue] anyone? 
 
+* [Javascript Fatigue]
+
 This is put nicely in in a quote shared by [Eric Clemmons]:
 
 > Saul: "How's it going?"
@@ -98,19 +101,18 @@ This is put nicely in in a quote shared by [Eric Clemmons]:
 >
 > Me: "No, Javascript."
 
-So after a month of struggling with [JavaScript] frameworks professionally, I needed some small side projects to 
-turn frustration into code. ::flexed_biceps:: 
+So after a month of struggling with [JavaScript] frameworks professionally, I needed a small side project to turn 
+frustration into code. ::flexed_biceps:: 
 
-Around this time I stumbled upon a Youtube Video by [Nicole White]. It's a great introduction to [neo4j] and 
-the [Cypher] query language:
+Around this time I stumbled upon a Youtube Video by [Nicole White]. It's a great introduction to [neo4j] and the [Cypher] query language:
 
 * [Intro to Cypher] (Youtube)
 
-In  the video [Nicole] explains how to model a Graph with [neo4j] and designs a Graph schema for querying Flight data:
+In  the video [Nicole] explains how to model a Graph with [neo4j] and designs a schema for querying flight data:
 
 * [A Neo4j database of flights] (Github)
 
-This got me interested in [neo4j] and as a C\# programmer I evaluated how to use it with .NET:
+The video got me interested in [neo4j] and as a C\# programmer I evaluated how to use it with .NET:
 
 * [https://bytefish.de/blog/neo4j_dotnet/](https://bytefish.de/blog/neo4j_dotnet/)
 * [https://bytefish.de/blog/neo4j_at_scale_airline_dataset/](https://bytefish.de/blog/neo4j_at_scale_airline_dataset/)
@@ -136,15 +138,13 @@ Professionally I deal with the Microsoft SQL Server a lot, so it also got me int
 
 > We replaced our monolith with micro services, so that every outage could be more like a murder mystery. ([Honest Status Page])
 
-I live in an Anti-Microservices [Filter Bubble]. So most of my bookmarks have been in favor monoliths of course:
+I live in an Anti-Microservices [Filter Bubble]. Please don't jugde! ::relieved_face:: 
+
+So most of my bookmarks have been in favor monoliths of course:
 
 * [Give Me Back My Monolith](http://www.craigkerstiens.com/2019/03/13/give-me-back-my-monolith/) (Craig Kerstiens)
 * [Developers Are The Problem, Not Monoliths](https://codeboje.de/developers-problem-not-monoliths/) (Jens Boje)
 * [Goodbye Microservices: From 100s of problem children to 1 superstar](https://segment.com/blog/goodbye-microservices/) (Alexandra Noonan)
-
-I try to avoid *everything*, that comes with Microservices: [Docker], [Kubernetes], [etcd], [Helm], [RabbitMQ], [rkt]... the list is long. 
-
-Please don't jugde! ::relieved_face::
 
 ## Software Architecture ##
 
@@ -181,15 +181,11 @@ But it's like this ...
 
 ### Domain-Driven Design ###
 
-There has been a lot of talk in the industry about [Domain-Driven Design (DDD)] for years. And over the past years I read most 
-of the blogs and articles I could find in the internet on DDD. 
+There has been a lot of talk in the industry about [Domain-Driven Design (DDD)]. And over the past years I read most 
+of the blogs and articles I could find in the internet on DDD. But at the bottom of my heart I am still a programmer.
 
-But at the bottom of my heart I am a programmer. I want to see code. I want to see the elegance in the architectures using the 
-sacred Domain-Driven Design methodology.
-
-Once you start digging a little deeper you will notice, that real DDD examples are a scarce good. ::thinking_face::
-
-Especially in .NET.
+I want to see code. I want to see the elegance in the architectures using the sacred Domain-Driven Design methodology. And 
+once you start digging a little deeper you will notice, that real DDD examples are a scarce good. ::thinking_face::
 
 The only somewhat larger .NET application I know of, that employs DDD / CQRS pattern is Microsofts [eShopOnContainers] project:
 
@@ -209,7 +205,7 @@ Then I am a 1000% in the CRUD camp!
 [buggy]: http://www.bailis.org/papers/acidrain-sigmod2017.pdf
 [Google Cloud Platform]: https://cloud.google.com/blog/products/gcp/why-you-should-pick-strong-consistency-whenever-possible
 
-So after years of reading and experimenting with Software architecture and being in various teams I came to the following two conclusions: 
+After reading about and experimenting with software architecture and being in various teams I came to the following two conclusions: 
 
 1. 99% of the projects should start with a dead-simple [Layered Architecture].
 2. 99% of the projects should start with a Relational Database.
@@ -217,11 +213,11 @@ So after years of reading and experimenting with Software architecture and being
 Why? 
 
 1. Everyone in a project understands [Layered Architectures].
-2. Everyone knows where to put things in a [Layered Architecture], even if it's a huge *Service* or *Manager* anti-pattern class using [Anemic Domain Model] anti-pattern classes. 
-3. Everyone understands ER-Diagrams and I am able to explain the domain. 
+2. Everyone knows where to put things in a [Layered Architecture], even if it's a huge *Service* or *Manager* "anti-pattern" class using [Anemic Domain Model] "anti-pattern" classes. 
+3. Everyone understands ER-Diagrams and I am able to explain the domain.
 4. Everyone can learn a little SQL to play around & make sense of data.
 
-And giving up on **A**tomicity, **C**onsistency, **I**solation, **D**urability guarantees of a Relational Database early in a project is outright dangerous.
+And giving up on **A**tomicity, **C**onsistency, **I**solation, **D**urability guarantees of a Relational Database early in a project is **outright dangerous**.
 
 There is a reason, why the [Google Cloud Platform] blog says:
 
@@ -237,7 +233,7 @@ strong consistency guarantees?
 
 Does a Layered Architecture scale? Probably not. 
 
-But know what?
+But know what? 
 
 I will handle the problem, when the problem is real.
 
@@ -250,13 +246,15 @@ I will handle the problem, when the problem is real.
 
 Full Stop.
 
-In the past years I have read a lot articles on Software Development, Software Architecture and Project Management. I was constantly thinking about 
+In the past I have read a lot articles on Software Development, Software Architecture and Project Management. I was constantly thinking about 
 how to improve. Improve the code. Improve myself. I have spent countless hours reading discussions on [Hacker News] and [/r/programming].
 
-But you know what made me a happier programmer? I stopped overthinking things.
+You know what made me a happier programmer after all? 
+
+I stopped overthinking things:
 
 * I started writing small libraries like [FcmSharp] or [TinyCsvParser], that make my life a little easier and hopefully yours.
-* When designing software I make sure everyone in a team understands the design and knows where to put things.
+* When designing software I make sure **everyone** in a team understands the design and knows where to put things.
 * I try to get *something* done and not aim for the perfect abstraction. I stopped worrying about future, non-existing problems.
 
 Finally ...
