@@ -181,10 +181,11 @@ But it's like this ...
 ### Domain-Driven Design ###
 
 There has been a lot of talk in the industry about [Domain-Driven Design (DDD)]. And over the years I have read most 
-of the blogs and articles I could find on DDD. But at the bottom of my heart I am still a programmer.
+of the blogs and articles I could find on DDD. 
 
-I want to see code. I want to see the elegance in the architectures using the sacred Domain-Driven Design methodology. And 
-once you start digging a little deeper you will notice, that real DDD examples are a scarce good. ::thinking_face::
+But at the bottom of my heart I am still a programmer. I want to see code. I want to see the elegance in the architectures 
+using the sacred Domain-Driven Design methodology. And once you start digging a little deeper you will notice, that real 
+DDD examples are a scarce good. ::thinking_face::
 
 The only somewhat larger .NET application I know of, that employs DDD / CQRS pattern is Microsofts [eShopOnContainers] project:
 
