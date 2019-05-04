@@ -11,8 +11,9 @@ There was an interesting article by the [jOOQ] team on how to fill gaps in data 
 * [Using IGNORE NULLS With SQL Window Functions to Fill Gaps]
 
 This reminded me of a project I had in a private repository for two years, which deals with how 
-to do a linear interpolation of values with PostgreSQL. It is heavily based on a great article by 
-[Caleb Welton]:
+to do a linear interpolation of values with PostgreSQL. 
+
+It is heavily based on a great article by [Caleb Welton](https://github.com/cwelton):
 
 * [Time Series Analysis Part 3: Resampling and Interpolation]
 
@@ -42,13 +43,17 @@ Download the file ``QCLCD201503.zip`` from:
 
 * [http://www.ncdc.noaa.gov/orders/qclcd/](http://www.ncdc.noaa.gov/orders/qclcd/)
 
+[Quality Controlled Local Climatological Data (QCLCD)]: 
+
 ## Are there missing values? ##
 
-The data has the hourly weather measurements of weather stations. So to find missing data we will look 
-for gaps in data greater than 1 hour. How can we do this? [Window Functions]!
+Devices might break. Networks can be down. Disks still run full in 2019. The sky is the limit, when it comes to invalid or missing measurements in data.
 
-[Window Functions] can be hard to grasp and I won't go into all details here. The best introduction 
-to [Windows Functions] was written by [Dimitri Fontaine] and I highly recommend reading it:
+The [Quality Controlled Local Climatological Data (QCLCD)] has hourly measurements of weather stations. So to find missing data we will look for gaps in data greater than 1 hour. 
+
+How can we do this? [Window Functions]! 
+
+[Window Functions] can be hard to grasp and I can't go into all details here. The best introduction to [Window Functions] was written by [Dimitri Fontaine] and I highly recommend reading it:
 
 * [Understanding Window Functions] ([Dimitri Fontaine])
 
@@ -387,7 +392,6 @@ Once executed the application parses the CSV files and writes the data into the 
 [WeatherDataStreamingExample.java]: https://github.com/bytefish/PostgresTimeseriesAnalysis/blob/master/PostgresTimeseriesAnalysis/src/main/java/app/WeatherDataStreamingExample.java
 [jOOQ]: https://www.jooq.org/
 [Using IGNORE NULLS With SQL Window Functions to Fill Gaps]: https://blog.jooq.org/2019/04/24/using-ignore-nulls-with-sql-window-functions-to-fill-gaps/
-[Caleb Welton]: https://github.com/cwelton
 [Time Series Analysis Part 3: Resampling and Interpolation]: https://content.pivotal.io/blog/time-series-analysis-part-3-resampling-and-interpolation
 [Machine Learning Reproducibility crisis]: https://towardsdatascience.com/why-git-and-git-lfs-is-not-enough-to-solve-the-machine-learning-reproducibility-crisis-f733b49e96e8
 [generate_series]: https://www.postgresql.org/docs/current/functions-srf.html
@@ -396,3 +400,4 @@ Once executed the application parses the CSV files and writes the data into the 
 [Understanding Window Functions]: https://tapoueh.org/blog/2013/08/understanding-window-functions/
 [Dimitri Fontaine]: https://tapoueh.org
 [LAG]: https://docs.microsoft.com/en-us/sql/t-sql/functions/lag-transact-sql
+[Quality Controlled Local Climatological Data (QCLCD)]: https://www.ncdc.noaa.gov/data-access/land-based-station-data/land-based-datasets/quality-controlled-local-climatological-data-qclcd
