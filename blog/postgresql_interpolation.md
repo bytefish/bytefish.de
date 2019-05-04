@@ -11,17 +11,16 @@ There was an interesting article by the [jOOQ] team on how to fill gaps in data 
 * [Using IGNORE NULLS With SQL Window Functions to Fill Gaps]
 
 This reminded me of a project I had in a private repository for two years, which deals with how 
-to do a linear interpolation of values with PostgreSQL. 
-
-It is heavily based on a great article by [Caleb Welton](https://github.com/cwelton):
-
-* [Time Series Analysis Part 3: Resampling and Interpolation]
-
-It would be a waste to silo it in a private repository, so I will share it. 
+to do a linear interpolation of values with PostgreSQL. It would be a waste to silo it in a 
+private repository, so I decided to share it. 
 
 The whole project can be found at:
 
 * [https://github.com/bytefish/PostgresTimeseriesAnalysis](https://github.com/bytefish/PostgresTimeseriesAnalysis)
+
+The code is heavily based on a great article by [Caleb Welton](https://github.com/cwelton):
+
+* [Time Series Analysis Part 3: Resampling and Interpolation]
 
 To reproduce the example, please see the section [How to Reproduce this Experiment](#how-to-reproduce-this-experiment).
 
