@@ -25,6 +25,16 @@ You can find the full source code example in my git repository at:
 
 * [https://github.com/bytefish/ElasticSearchExperiment](https://github.com/bytefish/ElasticSearchExperiment)
 
+This post was based on Elasticsearch 2, but the example is available for:
+
+* Elasticsearch 2
+* Elasticsearch 6
+* Elasticsearch 7
+
+Please see the Releases at: 
+
+* [https://github.com/bytefish/ElasticSearchExperiment/releases](https://github.com/bytefish/ElasticSearchExperiment/releases)
+
 ## What we are going to build ##
 
 The idea is to store the hourly weather data of 1,600 U.S. locations in an [Elasticsearch] database and visualize it with [Kibana].
