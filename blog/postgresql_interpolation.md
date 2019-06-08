@@ -5,21 +5,21 @@ category: sql
 slug: postgresql_interpolation
 author: Philipp Wagner
 summary: This article shows how to interpolate values with Postgres.
-
 There was an interesting article by the [jOOQ] team on how to fill gaps in data using SQL:
 
 * [Using IGNORE NULLS With SQL Window Functions to Fill Gaps]
 
-I have been experimenting with using SQL for Linear Interpolation two years ago. It would be a waste 
-to silo all this in a private repository, so I decided to share it. 
+This reminded me of a project I had in a private repository for two years, which deals with how 
+to do a linear interpolation of values with PostgreSQL. It would be a waste to silo it in a 
+private repository, so I decided to share it. 
+
+The whole project can be found at:
+
+* [https://github.com/bytefish/PostgresTimeseriesAnalysis](https://github.com/bytefish/PostgresTimeseriesAnalysis)
 
 The code is heavily based on a great article by [Caleb Welton](https://github.com/cwelton):
 
 * [Time Series Analysis Part 3: Resampling and Interpolation]
-
-This article can also be found on my personal website:
-
-* [https://bytefish.de/blog/postgresql_interpolation/](https://bytefish.de/blog/postgresql_interpolation/)
 
 To reproduce the example, please see the section [How to Reproduce this Experiment](#how-to-reproduce-this-experiment).
 
@@ -40,8 +40,6 @@ The data is available as CSV files at:
 Download the file ``QCLCD201503.zip`` from:
 
 * [http://www.ncdc.noaa.gov/orders/qclcd/](http://www.ncdc.noaa.gov/orders/qclcd/)
-
-[Quality Controlled Local Climatological Data (QCLCD)]: 
 
 ## Are there missing values? ##
 
