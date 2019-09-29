@@ -9,19 +9,30 @@ summary: This article introduces TinyDgraphClient, which is a library for workin
 [MIT License]: https://opensource.org/licenses/MIT
 [DGraph Dart Client]: https://github.com/marceloneppel/dgraph
 [TinyDgraphClient]: https://github.com/bytefish/TinyDgraphClient
+[Dgraph]: https://dgraph.io/
+[Protobuf Schema provided by the Dgraph Team]: https://github.com/dgraph-io/dgo/blob/master/protos/api.proto
 
-I am currently working on a project using Dgraph:
+I am currently working on a project using [Dgraph]:
 
-> Dgraph is a horizontally scalable and distributed graph database, providing ACID transactions, 
+> [Dgraph] is a horizontally scalable and distributed graph database, providing ACID transactions, 
 > consistent replication and linearizable reads. It's built from ground up to perform for a rich 
 > set of queries. Being a native graph database, it tightly controls how the data is arranged on 
 > disk to optimize for query performance and throughput, reducing disk seeks and network 
 > calls in a cluster.
 
+For the project I want to have a [Dgraph] .NET client implementation, that is as close as possible 
+to the [Protobuf Schema provided by the Dgraph Team]. The idea is to learn more about Dgraph and 
+more importantly have a client, that is easy to update on changes to the Protobuf API.
 
+[TinyDgraphClient] is a thin wrapper for the Dgraph API. It is based on the great Dgraph Dart 
+and JavaScript implementations:
 
-* https://github.com/dgraph-io/dgraph-js
-* https://github.com/marceloneppel/dgraph
+* [https://github.com/dgraph-io/dgraph-js](https://github.com/dgraph-io/dgraph-js)
+* [https://github.com/marceloneppel/dgraph](https://github.com/marceloneppel/dgraph)
+
+You can find more information about [Dgraph] here:
+
+* [https://dgraph.io/](https://dgraph.io/)
 
 ## Installing TinyDgraphClient ##
 
