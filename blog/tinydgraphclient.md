@@ -21,8 +21,10 @@ I am currently working on a project using [Dgraph]:
 > calls in a cluster.
 
 For the project I want to have a [Dgraph] .NET client implementation, that is as close as possible 
-to the [Protobuf Schema provided by the Dgraph Team]. The idea is to learn more about Dgraph and 
-more importantly have a client, that is easy to update on changes to the Protobuf API.
+to the [Protobuf Schema provided by the Dgraph Team]. 
+
+The idea is to learn more about Dgraph. And I want to have a .NET client, that is easy to update when 
+the Protobuf API is updated.
 
 [TinyDgraphClient] is a thin wrapper for the Dgraph API. It is based on the great Dgraph Dart 
 and JavaScript implementations:
