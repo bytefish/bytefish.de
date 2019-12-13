@@ -65,10 +65,10 @@ Technologies in the internet.
 * [https://programminghistorian.org/en/lessons/intro-to-linked-data](https://programminghistorian.org/en/lessons/intro-to-linked-data)
 * [https://programminghistorian.org/en/lessons/retired/graph-databases-and-SPARQL](https://programminghistorian.org/en/lessons/retired/graph-databases-and-SPARQL)
 
-### Ontologies ####
+It's not about Ontologies.
 
 This project doesn't implement onotologies, so there is no inference and reasoning. This is maybe an interesting area 
-for later articles on Semantic Web Technologies. 
+for later articles on Semantic Web Technologies.
 
 If you are interested in a complete Air Traffic Onotology I recommend researching the 
 [The NASA Air Traffic Management Ontology (atmonto)] to get an idea, what an onotology 
@@ -76,7 +76,7 @@ for the domain might look like:
 
 * [https://data.nasa.gov/ontologies/atmonto/ATM](https://data.nasa.gov/ontologies/atmonto/ATM)
 
-#### Benchmarks ####
+It's not about benchmarking.
 
 My past articles on Graph Databases focused on the performance of the database systems (see articles on [SQL Server 2017] and [Neo4j]). 
 These comparisms are often unfair and very misleading. Why was the SQL Server 2017 Graph Database so fast? Because its 
