@@ -826,7 +826,7 @@ and then builds the indexes:
 
 > It uses multiple threads for both the initial loading (3 worker threads) and then 2 threads in parallel for building the other indexes.
 
-## Querying the Data ##
+## Queries ##
 
 ### Apache Fuseki Web Interface ###
 
@@ -840,9 +840,7 @@ and then builds the indexes:
 
 The web application has a nice editor to query the ``/aviation`` endpoint, which we will use for the following SPARQL queries. 
 
-### Get all Nodes for a Flight ###
-
-
+### CONSTRUCT Queries: Get all reachable Nodes for a Flight ###
 
 ```sparql
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
@@ -950,23 +948,27 @@ ap:airport_BOS  ap:airport_id   "10721" ;
         ge:node_type            "airport" .
 ```
 
-### Get Cancelled Flights per Airport ###
-
-
-### Get Cancelled Flights ###
+### Get Flights cancelled due to Weather ###
 
 ```sparql
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX airport: <http://www.bytefish.de/aviation/Airport#>
 PREFIX general: <http://www.bytefish.de/aviation/General#>
 PREFIX flight: <http://www.bytefish.de/aviation/Flight#>
 PREFIX weather: <http://www.bytefish.de/aviation/Weather#>
 PREFIX : <.>
 
-SELECT ?tail_number ?flight_number ?flight_date ?scheduled_departure ?origin ?destination ?cancellation_code
+SELECT ?origin_iata ?destination_iata ?tail_number ?flight_number ?flight_date ?scheduled_departure ?cancellation_code
 WHERE {
   
   # Bind query variables:
   BIND("B" AS ?cancellation_code) .
+  
+  ?origin airport:name ?origin_name ;
+          airport:iata ?origin_iata .
+  
+  ?destination airport:name ?destination_name ;
+               airport:iata ?destination_iata .
   
   # Select the flight(s) with the bound variables:
   ?flight flight:cancellation_code ?cancellation_code ;
@@ -979,18 +981,40 @@ WHERE {
 
 }
 ORDER BY ASC(?flight_date) ASC(?scheduled_departure)
-LIMIT 1000
+LIMIT 10
 ```
 
-The query shows something interesting in the NTSB Data. For some of the cancelled flights, the tail number is missing. So for a 
-certain percentage of flights, we cannot say for sure which aircraft was grounded. An example is a United Airlines flight on 
-2014-01-01:
+This SPARQL query gives the following results:
+
+<pre>
+"origin_iata" , "destination_iata" , "tail_number" , "flight_number" , "flight_date" , "scheduled_departure" , "cancellation_code" ,
+"ORD" , "EWR" ,  , "1050" , "2014-01-01T00:00:00" , "PT5H" , "B" ,
+"SEA" , "SFO" , "918SW" , "5639" , "2014-01-01T00:00:00" , "PT5H21M" , "B" ,
+"CEC" , "SFO" , "223SW" , "5335" , "2014-01-01T00:00:00" , "PT5H29M" , "B" ,
+"ORD" , "MIA" , "3KXAA" , "1270" , "2014-01-01T00:00:00" , "PT5H30M" , "B" ,
+"ACV" , "SFO" , "290SW" , "5604" , "2014-01-01T00:00:00" , "PT5H31M" , "B" ,
+"ORD" , "DEN" ,  , "1043" , "2014-01-01T00:00:00" , "PT5H40M" , "B" ,
+"COD" , "DEN" , "705SK" , "5550" , "2014-01-01T00:00:00" , "PT5H45M" , "B" ,
+"LNK" , "ORD" ,  , "6276" , "2014-01-01T00:00:00" , "PT5H48M" , "B" ,
+"ORD" , "DFW" , "475AA" , "2301" , "2014-01-01T00:00:00" , "PT5H55M" , "B" ,
+"SPI" , "ORD" ,  , "5462" , "2014-01-01T00:00:00" , "PT6H" , "B" ,
+</pre>
+
+The query uncovers something interesting in the NTSB Data. For some of the cancelled flights, the tail number is missing. So 
+for a certain percentage of flights, we cannot say for sure which aircraft was grounded. An example is a United Airlines flight 
+on ``2014-01-01``:
 
 <pre>
 2014,1,1,3,2014-01-01,"UA","","1050",13930,"ORD","IL",11618,"EWR","NJ","0500","",,,,,,"","",,"0804","",,,,,1.00,"B",0.00,124.00,,,1.00,719.00,3,,,,,,
 </pre>
 
 ## Get the Weather Data for day of Flight ## 
+
+If a flight was grounded due to weather according to NAS, it will be interesting what the weather was at the 
+time of flight. Have there been strong winds? Or what may have been the reason? The following query shows how 
+to get the weather at the flights airport at time of day.
+
+I am binding the ``?flight_date``, ``?tail_number`` and the ``?flight_number``:
 
 ```sparql
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
@@ -1027,21 +1051,90 @@ WHERE {
     && day(?weather_timestamp) = day(?flight_date))
 }
 ORDER BY ASC(?weather_timestamp)
-LIMIT 1000
+LIMIT 50
 ```
 
+This query gives us all weather measurements for the day of a specific flight:
+
+<pre>
+"weather_timestamp" , "predicate" , "object" ,
+"2014-03-18T00:54:00" , "http://www.bytefish.de/aviation/General#has_station" , "http://www.bytefish.de/aviation/WeatherStation#weather_station_PHL_KPHL" ,
+"2014-03-18T00:54:00" , "http://www.bytefish.de/aviation/Weather#tmpc" , "-0.6" ,
+"2014-03-18T00:54:00" , "http://www.bytefish.de/aviation/Weather#dwpc" , "-10.6" ,
+"2014-03-18T00:54:00" , "http://www.bytefish.de/aviation/Weather#feelc" , "-5.122222" ,
+"2014-03-18T00:54:00" , "http://www.bytefish.de/aviation/Weather#lon" , "-75.2311" ,
+"2014-03-18T00:54:00" , "http://www.bytefish.de/aviation/Weather#p01i" , "0.0" ,
+"2014-03-18T00:54:00" , "http://www.bytefish.de/aviation/Weather#vsby_mi" , "10.0" ,
+"2014-03-18T00:54:00" , "http://www.bytefish.de/aviation/Weather#mslp" , "1019.4" ,
+"2014-03-18T00:54:00" , "http://www.bytefish.de/aviation/Weather#dwpf" , "12.92" ,
+"2014-03-18T00:54:00" , "http://www.bytefish.de/aviation/Weather#vsby_km" , "16.09344" ,
+"2014-03-18T00:54:00" , "http://www.bytefish.de/aviation/Weather#timestamp" , "2014-03-18T00:54:00" ,
+"2014-03-18T00:54:00" , "http://www.bytefish.de/aviation/Weather#feelf" , "22.78" ,
+"2014-03-18T00:54:00" , "http://www.bytefish.de/aviation/Weather#alti" , "30.11" ,
+"2014-03-18T00:54:00" , "http://www.bytefish.de/aviation/Weather#tmpf" , "30.92" ,
+"2014-03-18T00:54:00" , "http://www.bytefish.de/aviation/Weather#lat" , "39.8683" ,
+"2014-03-18T00:54:00" , "http://www.bytefish.de/aviation/Weather#relh" , "46.74" ,
+"2014-03-18T00:54:00" , "http://www.bytefish.de/aviation/Weather#drct" , "70.0" ,
+"2014-03-18T00:54:00" , "http://www.bytefish.de/aviation/Weather#skyl1" , "7000.0" ,
+"2014-03-18T00:54:00" , "http://www.bytefish.de/aviation/Weather#sknt" , "8.0" ,
+"2014-03-18T00:54:00" , "http://www.bytefish.de/aviation/Weather#metar" , "KPHL 180054Z 07008KT 10SM OVC070 M01/M11 A3011 RMK AO2 SLP194 T10061106" ,
+"2014-03-18T00:54:00" , "http://www.bytefish.de/aviation/Weather#skyc1" , "OVC" ,
+"2014-03-18T00:54:00" , "http://www.bytefish.de/aviation/Weather#station" , "PHL" ,
+"2014-03-18T00:54:00" , "http://www.bytefish.de/aviation/General#node_type" , "weather_data" ,
+"2014-03-18T01:54:00" , "http://www.bytefish.de/aviation/General#has_station" , "http://www.bytefish.de/aviation/WeatherStation#weather_station_PHL_KPHL" ,
+"2014-03-18T01:54:00" , "http://www.bytefish.de/aviation/Weather#tmpc" , "-0.6" ,
+"2014-03-18T01:54:00" , "http://www.bytefish.de/aviation/Weather#dwpc" , "-10.0" ,
+"2014-03-18T01:54:00" , "http://www.bytefish.de/aviation/Weather#feelc" , "-3.244445" ,
+"2014-03-18T01:54:00" , "http://www.bytefish.de/aviation/Weather#lon" , "-75.2311" ,
+"2014-03-18T01:54:00" , "http://www.bytefish.de/aviation/Weather#p01i" , "0.0" ,
+"2014-03-18T01:54:00" , "http://www.bytefish.de/aviation/Weather#vsby_mi" , "10.0" ,
+"2014-03-18T01:54:00" , "http://www.bytefish.de/aviation/Weather#mslp" , "1020.1" ,
+"2014-03-18T01:54:00" , "http://www.bytefish.de/aviation/Weather#dwpf" , "14.0" ,
+"2014-03-18T01:54:00" , "http://www.bytefish.de/aviation/Weather#vsby_km" , "16.09344" ,
+"2014-03-18T01:54:00" , "http://www.bytefish.de/aviation/Weather#timestamp" , "2014-03-18T01:54:00" ,
+"2014-03-18T01:54:00" , "http://www.bytefish.de/aviation/Weather#feelf" , "26.16" ,
+"2014-03-18T01:54:00" , "http://www.bytefish.de/aviation/Weather#alti" , "30.13" ,
+"2014-03-18T01:54:00" , "http://www.bytefish.de/aviation/Weather#tmpf" , "30.92" ,
+"2014-03-18T01:54:00" , "http://www.bytefish.de/aviation/Weather#lat" , "39.8683" ,
+"2014-03-18T01:54:00" , "http://www.bytefish.de/aviation/Weather#sknt" , "4.0" ,
+"2014-03-18T01:54:00" , "http://www.bytefish.de/aviation/Weather#relh" , "49.01" ,
+"2014-03-18T01:54:00" , "http://www.bytefish.de/aviation/Weather#drct" , "70.0" ,
+"2014-03-18T01:54:00" , "http://www.bytefish.de/aviation/Weather#skyl1" , "7000.0" ,
+"2014-03-18T01:54:00" , "http://www.bytefish.de/aviation/Weather#metar" , "KPHL 180154Z 07004KT 10SM OVC070 M01/M10 A3013 RMK AO2 SLP201 T10061100" ,
+"2014-03-18T01:54:00" , "http://www.bytefish.de/aviation/Weather#skyc1" , "OVC" ,
+"2014-03-18T01:54:00" , "http://www.bytefish.de/aviation/Weather#station" , "PHL" ,
+"2014-03-18T01:54:00" , "http://www.bytefish.de/aviation/General#node_type" , "weather_data" ,
+"2014-03-18T02:54:00" , "http://www.bytefish.de/aviation/General#has_station" , "http://www.bytefish.de/aviation/WeatherStation#weather_station_PHL_KPHL" ,
+"2014-03-18T02:54:00" , "http://www.bytefish.de/aviation/Weather#tmpc" , "-0.6" ,
+"2014-03-18T02:54:00" , "http://www.bytefish.de/aviation/Weather#dwpc" , "-10.0" ,
+"2014-03-18T02:54:00" , "http://www.bytefish.de/aviation/Weather#feelc" , "-4.316667" ,
+</pre>
+
 ## Percent of Flights Cancelled by Cancellation Code ##
+
+How many flights have been cancelled for my airport due to Security Delays or Weather issues? The following 
+SPARQL query gets the percentage of flights cancelled for an airport. The example Query binds "B" (Reason: Weather) 
+to ``?cancellation_code``.
+
+To not have every tiny airport skewing the results, we will only use airports with more than 
+``50,000`` departures. This is done using the ``HAVING`` keyword in SPARQL.
 
 ```sparql
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 PREFIX general: <http://www.bytefish.de/aviation/General#>
+PREFIX airport: <http://www.bytefish.de/aviation/Airport#>
 PREFIX flight: <http://www.bytefish.de/aviation/Flight#>
 PREFIX weather: <http://www.bytefish.de/aviation/Weather#>
 PREFIX : <.>
 
-SELECT ?origin ?cancellation_code ?num_flights_total (round(?num_cancelled_flights/?num_flights_total * 100) as ?cancelledPercent)
+SELECT  ?airport_name ?airport_iata ?cancellation_code ((?num_cancelled_flights/?num_flights_total) * 100.0 as ?cancelledPercent)
 WHERE
 {
+  BIND("B" AS ?cancellation_code) .
+  
+  ?origin airport:name ?airport_name ;
+          airport:iata ?airport_iata .
+
   # Number of flights at airport ?origin cancelled by ?cancellation_code:
   {
     SELECT ?origin ?cancellation_code (count(?cancellation_code) as ?num_cancelled_flights)
@@ -1061,23 +1154,48 @@ WHERE
     GROUP BY ?origin
   } 
 }
-ORDER BY ?origin ?cancellation_code
+HAVING (?num_flights_total > 50000)
+ORDER BY DESC(?cancelledPercent)
+LIMIT 10
 ```
 
-## Percent of Flights Cancelled for larger airports ##
+And the results:
 
-We only take the airports with more than ``50,000`` departures in 2014.
+<pre>
+"airport_name" , "airport_iata" , "cancellation_code" , "cancelledPercent" ,
+"Chicago O'Hare International" , "ORD" , "B" , "2.1802143285162836717345" ,
+"LaGuardia" , "LGA" , "B" , "1.8585344875941888076585" ,
+"Ronald Reagan Washington National" , "DCA" , "B" , "1.5704929334712168217855" ,
+"Dallas/Fort Worth International" , "DFW" , "B" , "1.5213306073465105332562" ,
+"Chicago Midway International" , "MDW" , "B" , "1.3525270900893775211579" ,
+"Newark Liberty International" , "EWR" , "B" , "1.3411142121860161658632" ,
+"Washington Dulles International" , "IAD" , "B" , "1.2565192694975644181283" ,
+"Hartsfield-Jackson Atlanta International" , "ATL" , "B" , "1.2063962528970006409233" ,
+"George Bush Intercontinental/Houston" , "IAH" , "B" , "1.1819068939785316571953" ,
+"San Francisco International" , "SFO" , "B" , "1.1600246864757659098943" ,
+</pre>
+
+## TOP 10 Airports of Flights Cancelled ##
+
+So what airport has the most cancelled flights? We can answer this question by taking the above query and modifying it a 
+little using the ``VALUES`` keyword. To have not every tiny airport skewing the results, we will only use airports with 
+more than ``50,000`` departures.
 
 ```sparql
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 PREFIX general: <http://www.bytefish.de/aviation/General#>
 PREFIX flight: <http://www.bytefish.de/aviation/Flight#>
+PREFIX airport: <http://www.bytefish.de/aviation/Airport#>
 PREFIX weather: <http://www.bytefish.de/aviation/Weather#>
 PREFIX : <.>
 
-SELECT ?origin ?cancellation_code ?num_flights_total ?num_cancelled_flights ((?num_cancelled_flights/?num_flights_total * 100.0) as ?cancelledPercent)
+
+SELECT ?airport_name ?airport_iata ?num_flights_total ?num_cancelled_flights ((?num_cancelled_flights/?num_flights_total * 100.0) as ?cancelledPercent)
 WHERE
 {
+  ?origin airport:name ?airport_name ;
+          airport:iata ?airport_iata .
+  
   # Number of flights at airport ?origin cancelled by ?cancellation_code:
   {
     SELECT ?origin (count(?origin) as ?num_cancelled_flights)
@@ -1103,12 +1221,26 @@ WHERE
 }
 HAVING (?num_flights_total > 50000)
 ORDER BY DESC(?cancelledPercent)
+LIMIT 10
 ```
 
-## Visualizing Graphs ##
+And it shows, that Chicago O'Hare International (ORD) is on Number #1 spot with around 4.7% of the 
+flights cancelled:
+
+<pre>
+"Chicago O'Hare International" , "ORD" , "287036" , "13454" , "4.6872169344611825694337" ,
+"LaGuardia" , "LGA" , "106966" , "4672" , "4.3677430211469064936521" ,
+"Newark Liberty International" , "EWR" , "110356" , "4814" , "4.362245822610460690855" ,
+"Washington Dulles International" , "IAD" , "58097" , "2032" , "3.497598843313768352927" ,
+"Ronald Reagan Washington National" , "DCA" , "72525" , "2269" , "3.12857635298173043778" ,
+"Chicago Midway International" , "MDW" , "88501" , "2521" , "2.8485553835549880792307" ,
+"San Francisco International" , "SFO" , "166893" , "4257" , "2.5507361003756898132336" ,
+"Dallas/Fort Worth International" , "DFW" , "278309" , "6830" , "2.4541067662202803358856" ,
+"John F. Kennedy International" , "JFK" , "100560" , "2319" , "2.306085918854415274463" ,
+"Nashville International" , "BNA" , "55670" , "1266" , "2.2741153224357822884857" ,
+</pre>
 
 ## Conclusion ##
-
 
 I only scratched the surface of Semantic Web and Linked Data. Learning a little about SPARQL has been a great experience.
 
