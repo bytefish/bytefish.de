@@ -1,5 +1,5 @@
 ﻿title: Using Apache Jena for Aviation Data: Create, Import and Query a Dataset
-date: 2019-11-18 14:58
+date: 2019-12-13 13:32
 tags: jena, dotnet, graph, aviation
 category: graph
 slug: apache_jena
@@ -233,9 +233,9 @@ W3C [RDF Primer] explains:
 The takeaway (for me) is: RDF represents information as a series of subject - predicate - object statements, called 
 [Triples]. So looking at our dataset a statement about the origin of a flight might look like this:
 
-<pre>
+```
 <Flight N965UW> <has origin airport> <Airport LAX>
-</pre>
+```
 
 Here the subject is ``<Flight N965UW>``, the object is ``<Airport LAX>`` and ``<has origin airport>`` is the predicate, 
 that defines the relationship between the two nodes. These [Triples] can be stored in so called [Triplestores] optimized 
@@ -363,20 +363,20 @@ Basically I structure the CSV parsing for every dataset in its own project, like
 This leads to a nice separation of concerns:
 
 * Converter
-** Provides Converters to parse Dataset-specific values / formats
+    * Provides Converters to parse Dataset-specific values / formats
 * Mapper
-** Defines the Mapping between the CSV File and the C\# Domain Model
+    * Defines the Mapping between the CSV File and the C\# Domain Model
 * Model
-** Contains the C\# Domain Model
+    * Contains the C\# Domain Model
 * Parser
-** Provides the Parsers with information about:
-*** Should the header be skipped? 
-*** Which Column Delimiter should be used?
-*** Which Mapping should be used?
+    * Provides the Parsers with information about:
+        * Should the header be skipped? 
+        * Which Column Delimiter should be used?
+        * Which Mapping should be used?
 * Tokenizer
-** Defines how to tokenize the CSV data:
-*** Is a ``string.Split(...)`` sufficient for the data (saves CPU cycles)?
-*** Is it a fixed-width format? 
+    * Defines how to tokenize the CSV data:
+        * Is a ``string.Split(...)`` sufficient for the data (saves CPU cycles)?
+        * Is it a fixed-width format? 
 
 [TinyCsvParser]: https://github.com/bytefish/TinyCsvParser
 [eat your own dogfood]: https://en.wikipedia.org/wiki/Eating_your_own_dog_food
@@ -559,16 +559,16 @@ public class TripleBuilder
 
 Previously I said a Triple might look like this:
 
-<pre>
+```
 <Flight N965UW> <has origin airport> <Airport LAX>
-</pre>
+```
 
 But in reality it looks more like this:
 
-<pre>
+```
 <http://www.bytefish.de/aviation/Flight#N965UW> <http://www.bytefish.de/aviation/Flight#flight_date> "2014-03-18T00:54:00"^^<http://www.w3.org/2001/XMLSchema#dateTime>
 <http://www.bytefish.de/aviation/Flight#N965UW> <http://www.bytefish.de/aviation/Flight#origin>      <http://www.bytefish.de/aviation/Airports#LAX>
-</pre>
+```
 
 Uh. We can see some things here. 
 
@@ -582,13 +582,13 @@ that blows up the intermediate RDF file we are going to write.
 
 To fix this issue RDF introduces "Prefixes". Using Prefixes we could write the above snippet as:
 
-<pre>
+```turtle
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 PREFIX f: <http://www.bytefish.de/aviation/Flight#>
 
 f:N965UW    f:flight_date   "2014-03-18T00:54:00"^^xsd:dateTime
 f:N965UW    f:origin        f:LAX
-</pre>
+```
 
 [dotNetRDF] has a ``NamespaceMapper`` to provide this functionality. 
 
@@ -680,7 +680,7 @@ The ``Csv.Faa.Model.Aircraft`` is converted into a ``AircraftDto``. Why? Because
 the Graph. It can be referenced by other nodes and so every aircraft needs a URI that can be referenced. What I did here is to 
 simply duplicate the CSV Model and add a Property ``Uri`` to each entity, that returns an URI:
 
-```
+```csharp
 // Copyright (c) Philipp Wagner. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
@@ -996,7 +996,7 @@ LIMIT 10
 
 This SPARQL query gives the following results:
 
-<pre>
+```
 "origin_iata" , "destination_iata" , "tail_number" , "flight_number" , "flight_date" , "scheduled_departure" , "cancellation_code" ,
 "ORD" , "EWR" ,  , "1050" , "2014-01-01T00:00:00" , "PT5H" , "B" ,
 "SEA" , "SFO" , "918SW" , "5639" , "2014-01-01T00:00:00" , "PT5H21M" , "B" ,
@@ -1008,7 +1008,7 @@ This SPARQL query gives the following results:
 "LNK" , "ORD" ,  , "6276" , "2014-01-01T00:00:00" , "PT5H48M" , "B" ,
 "ORD" , "DFW" , "475AA" , "2301" , "2014-01-01T00:00:00" , "PT5H55M" , "B" ,
 "SPI" , "ORD" ,  , "5462" , "2014-01-01T00:00:00" , "PT6H" , "B" ,
-</pre>
+```
 
 The query uncovers something interesting in the NTSB Data. For some of the cancelled flights, the tail number is missing. So 
 for a certain percentage of flights, we cannot say for sure which aircraft was grounded. An example is a United Airlines flight 
@@ -1066,7 +1066,7 @@ LIMIT 50
 
 This query gives us all weather measurements for the day of a specific flight:
 
-<pre>
+```
 "weather_timestamp" , "predicate" , "object" ,
 "2014-03-18T00:54:00" , "http://www.bytefish.de/aviation/General#has_station" , "http://www.bytefish.de/aviation/WeatherStation#weather_station_PHL_KPHL" ,
 "2014-03-18T00:54:00" , "http://www.bytefish.de/aviation/Weather#tmpc" , "-0.6" ,
@@ -1118,7 +1118,7 @@ This query gives us all weather measurements for the day of a specific flight:
 "2014-03-18T02:54:00" , "http://www.bytefish.de/aviation/Weather#tmpc" , "-0.6" ,
 "2014-03-18T02:54:00" , "http://www.bytefish.de/aviation/Weather#dwpc" , "-10.0" ,
 "2014-03-18T02:54:00" , "http://www.bytefish.de/aviation/Weather#feelc" , "-4.316667" ,
-</pre>
+```
 
 ## Percent of Flights Cancelled by Cancellation Code ##
 
@@ -1171,7 +1171,7 @@ LIMIT 10
 
 And the results:
 
-<pre>
+```
 "airport_name" , "airport_iata" , "cancellation_code" , "cancelledPercent" ,
 "Chicago O'Hare International" , "ORD" , "B" , "2.1802143285162836717345" ,
 "LaGuardia" , "LGA" , "B" , "1.8585344875941888076585" ,
@@ -1183,7 +1183,7 @@ And the results:
 "Hartsfield-Jackson Atlanta International" , "ATL" , "B" , "1.2063962528970006409233" ,
 "George Bush Intercontinental/Houston" , "IAH" , "B" , "1.1819068939785316571953" ,
 "San Francisco International" , "SFO" , "B" , "1.1600246864757659098943" ,
-</pre>
+```
 
 ## TOP 10 Airports of Flights Cancelled ##
 
@@ -1237,7 +1237,7 @@ LIMIT 10
 And it shows, that Chicago O'Hare International (ORD) is on Number #1 spot with around 4.7% of the 
 flights cancelled:
 
-<pre>
+```
 "Chicago O'Hare International" , "ORD" , "287036" , "13454" , "4.6872169344611825694337" ,
 "LaGuardia" , "LGA" , "106966" , "4672" , "4.3677430211469064936521" ,
 "Newark Liberty International" , "EWR" , "110356" , "4814" , "4.362245822610460690855" ,
@@ -1248,7 +1248,7 @@ flights cancelled:
 "Dallas/Fort Worth International" , "DFW" , "278309" , "6830" , "2.4541067662202803358856" ,
 "John F. Kennedy International" , "JFK" , "100560" , "2319" , "2.306085918854415274463" ,
 "Nashville International" , "BNA" , "55670" , "1266" , "2.2741153224357822884857" ,
-</pre>
+```
 
 ## Conclusion ##
 
@@ -1258,14 +1258,9 @@ I think I only scratched the surface of Semantic Web and Linked Data technologie
 a little about SPARQL as a query language. Getting started with [Apache Jena] turned out to be surprisingly easy, and 
 [dotNetRDF] was easy to use.
 
-At the moment this post doesn't hold up to its promises to correlate the various datasets. Instead it merely recreates 
-the queries of the last Graph Database articles:
+But instead of burying this project for good, I decided to share some of my ideas.
 
-* []()
-* []()
-
-But instead of burying this project for good, I decided to share some ideas.
-
+[Apache Fuseki]: https://jena.apache.org/documentation/fuseki2/
 [Apache Jena]: https://jena.apache.org/
 [Triplestore]: https://en.wikipedia.org/wiki/Triplestore
 [dotNetRDF]: https://www.dotnetrdf.org/
