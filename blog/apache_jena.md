@@ -54,16 +54,6 @@ This article will focus on:
 * Efficiently importing the RDF dataset to Apache Jena TDB2
 * Use the SPARQL language to query the dataset
 
-Past articles on Graph Databases focused on the performance of the database systems (see articles on [SQL Server 2017] and [Neo4j]). 
-These comparisms are often unfair and very misleading. Why was the SQL Server 2017 Graph Database so fast? Because its 
-Columnstore compression algorithms make it possible to fit the entire dataset into RAM. Once the datasets get bigger and 
-systems hit the SSD / HDD, we will see very different results.
-
-Fair benchmarks are hard to create and this article intentionally doesn't compare systems anymore.
-
-[SQL Server 2017]: https://bytefish.de/blog/sql_server_2017_graph_database/
-[Neo4j]: https://bytefish.de/blog/neo4j_at_scale_airline_dataset/
-
 ### What this Project is not about ###
 
 The article and the project are not a formal introduction to the Semantic Web and Linked Data. It won't go 
@@ -75,6 +65,8 @@ Technologies in the internet.
 * [https://programminghistorian.org/en/lessons/intro-to-linked-data](https://programminghistorian.org/en/lessons/intro-to-linked-data)
 * [https://programminghistorian.org/en/lessons/retired/graph-databases-and-SPARQL](https://programminghistorian.org/en/lessons/retired/graph-databases-and-SPARQL)
 
+### Ontologies ####
+
 This project doesn't implement onotologies, so there is no inference and reasoning. This is maybe an interesting area 
 for later articles on Semantic Web Technologies. 
 
@@ -83,6 +75,19 @@ If you are interested in a complete Air Traffic Onotology I recommend researchin
 for the domain might look like:
 
 * [https://data.nasa.gov/ontologies/atmonto/ATM](https://data.nasa.gov/ontologies/atmonto/ATM)
+
+#### Benchmarks ####
+
+My past articles on Graph Databases focused on the performance of the database systems (see articles on [SQL Server 2017] and [Neo4j]). 
+These comparisms are often unfair and very misleading. Why was the SQL Server 2017 Graph Database so fast? Because its 
+Columnstore compression algorithms make it possible to fit the entire dataset into RAM. Once the datasets get bigger and 
+systems hit the SSD / HDD, we will see very different results.
+
+Fair benchmarks are hard to create and this article intentionally doesn't compare systems anymore.
+
+[SQL Server 2017]: https://bytefish.de/blog/sql_server_2017_graph_database/
+[Neo4j]: https://bytefish.de/blog/neo4j_at_scale_airline_dataset/
+
 
 [The NASA Air Traffic Management Ontology (atmonto)]: https://data.nasa.gov/ontologies/atmonto/ATM
 
@@ -181,8 +186,9 @@ my GitHub repository, because I needed to make very minor modifications to the o
 
 Which aircraft was the flight on? Which engines have been used? 
 
-Every airplane in the world has a so called [N-Number], that is issued by the [Federal Aviation Administration ([FAA])]. 
-The [FAA] maintains the [Aircraft Registry Releasable Aircraft Database], that contains:
+Every airplane in the world has a so called [N-Number], that is issued by the Federal Aviation Administration ([FAA]). 
+
+The [FAA] maintains the [Aircraft Registry Releasable Aircraft Database]:
 
 > [...]
 >
@@ -850,7 +856,9 @@ and then builds the indexes:
 
 The web application has a nice editor to query the ``/aviation`` endpoint, which we will use for the following SPARQL queries. 
 
-### CONSTRUCT Queries: Get all reachable Nodes for a Flight ###
+### Get all reachable Nodes for a given Flight ###
+
+The following query returns all nodes reachable for a given flight. This is a great way to initially explore a dataset:
 
 ```sparql
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
@@ -859,10 +867,10 @@ PREFIX : <.>
 
 CONSTRUCT { ?s ?p ?o }
 WHERE {
-  ?flight flight:tail_number "965UW" .
-  ?flight flight:flight_number "1981" .
-  ?flight flight:flight_date "2014-03-18T00:00:00"^^xsd:dateTime .
-  ?flight (<>|!<>)* ?s . 
+  ?flight flight:tail_number "965UW" ;
+	      flight:flight_number "1981" ;
+          flight:flight_date "2014-03-18T00:00:00"^^xsd:dateTime ;
+  		  (<>|!<>)* ?s . 
   ?s ?p ?o 
 }
 ```
@@ -958,7 +966,7 @@ ap:airport_BOS  ap:airport_id   "10721" ;
         ge:node_type            "airport" .
 ```
 
-### Get Flights cancelled due to Weather ###
+### Get the Flights cancelled due to Weather ###
 
 ```sparql
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
@@ -1018,7 +1026,7 @@ on ``2014-01-01``:
 2014,1,1,3,2014-01-01,"UA","","1050",13930,"ORD","IL",11618,"EWR","NJ","0500","",,,,,,"","",,"0804","",,,,,1.00,"B",0.00,124.00,,,1.00,719.00,3,,,,,,
 </pre>
 
-## Get the Weather Data for day of Flight ## 
+### Get the Weather Data for day of Flight ###
 
 If a flight was grounded due to weather according to NAS, it will be interesting what the weather was at the 
 time of flight. Have there been strong winds? Or what may have been the reason? The following query shows how 
@@ -1258,6 +1266,8 @@ I think I only scratched the surface of Semantic Web and Linked Data technologie
 a little about SPARQL as a query language. Getting started with [Apache Jena] turned out to be surprisingly easy, and 
 [dotNetRDF] was easy to use.
 
+[RFC 4180]: https://tools.ietf.org/html/rfc4180
+[RDF]: https://www.w3.org/TR/rdf11-concepts/
 [Apache Fuseki]: https://jena.apache.org/documentation/fuseki2/
 [Apache Jena]: https://jena.apache.org/
 [Triplestore]: https://en.wikipedia.org/wiki/Triplestore
@@ -1267,6 +1277,7 @@ a little about SPARQL as a query language. Getting started with [Apache Jena] tu
 [RDF Primer]: https://www.w3.org/TR/rdf11-concepts/
 [Triples]: https://www.w3.org/TR/rdf-concepts/#section-triples
 [Triple stores]:  https://en.wikipedia.org/wiki/Triplestore
+[Triplestores]:  https://en.wikipedia.org/wiki/Triplestore
 [TDB2]: https://jena.apache.org/documentation/tdb2/index.html
 [Dgraph]: https://dgraph.io
 [TDB FAQ]: https://jena.apache.org/documentation/tdb/faqs.html#tdbloader-vs-tdbloader2
