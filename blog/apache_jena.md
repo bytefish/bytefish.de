@@ -1,4 +1,4 @@
-﻿title: Apache Jena
+﻿title: Using Apache Jena for Aviation Data: Create, Import and Query a Dataset
 date: 2019-11-18 14:58
 tags: jena, dotnet, graph, aviation
 category: graph
@@ -28,7 +28,7 @@ is to use a [Triplestore] to infer knowledge about Aviation data, using informat
 * Weather Stations
 * ASOS / METAR Weather Data
 
-[Apache Jena] will be used as [Triplestore] implementation:
+[Apache Jena] will be used as the [Triplestore] implementation:
 
 > Apache Jena (or Jena in short) is a free and open source Java framework for building 
 > semantic web and Linked Data applications. The framework is composed of different APIs 
@@ -54,28 +54,33 @@ This article will focus on:
 * Efficiently importing the RDF dataset to Apache Jena TDB2
 * Use the SPARQL language to query the dataset
 
-Past articles on Graph Databases and Time Series databases focused on the performance of the database systems. These 
-comparisms are often unfair and very misleading. Why for example was the SQL Server 2017 Graph Database so fast? Because 
-its ColumnStore compression algorithms make it possible to fit the entire dataset into RAM. Once datasets get bigger and 
+Past articles on Graph Databases focused on the performance of the database systems (see articles on [SQL Server 2017] and [Neo4j]). 
+These comparisms are often unfair and very misleading. Why was the SQL Server 2017 Graph Database so fast? Because its 
+Columnstore compression algorithms make it possible to fit the entire dataset into RAM. Once the datasets get bigger and 
 systems hit the SSD / HDD, we will see very different results.
 
-Fair benchmarks are hard to create and this article intentionally doesn't compare systems.
+Fair benchmarks are hard to create and this article intentionally doesn't compare systems anymore.
+
+[SQL Server 2017]: https://bytefish.de/blog/sql_server_2017_graph_database/
+[Neo4j]: https://bytefish.de/blog/neo4j_at_scale_airline_dataset/
 
 ### What this Project is not about ###
 
-The article and the project are not a formal introduction to the Semantic Web and Linked Data and it 
-won't go into all details. There are many, many, many great articles to RDF, OWL and Semantic Web 
+The article and the project are not a formal introduction to the Semantic Web and Linked Data. It won't go 
+into all details, because there are already many, many, many great articles to RDF, OWL and Semantic Web 
 Technologies in the internet. 
 
-As a introduction there are two great articles on [https://programminghistorian.org] I recommend reading:
+[https://programminghistorian.org] has two articles I highly recommend reading:
 
 * [https://programminghistorian.org/en/lessons/intro-to-linked-data](https://programminghistorian.org/en/lessons/intro-to-linked-data)
 * [https://programminghistorian.org/en/lessons/retired/graph-databases-and-SPARQL](https://programminghistorian.org/en/lessons/retired/graph-databases-and-SPARQL)
 
-While it would be a highly interesting path to go to reason about the dataset, I did not work with Ontologies yet.
+This project doesn't implement onotologies, so there is no inference and reasoning. This is maybe an interesting area 
+for later articles on Semantic Web Technologies. 
 
-If you are interested in a complete Air Traffic Onotology I recommend researching the [The NASA Air Traffic Management Ontology (atmonto)] 
-to get an idea, what an onotology for the domain might look like:
+If you are interested in a complete Air Traffic Onotology I recommend researching the 
+[The NASA Air Traffic Management Ontology (atmonto)] to get an idea, what an onotology 
+for the domain might look like:
 
 * [https://data.nasa.gov/ontologies/atmonto/ATM](https://data.nasa.gov/ontologies/atmonto/ATM)
 
@@ -88,6 +93,11 @@ unable to share the entire dataset, but I have described all steps neccessary to
 subfolders of:
 
 * [https://github.com/bytefish/ApacheJenaSample/tree/master/Dataset/Data](https://github.com/bytefish/ApacheJenaSample/tree/master/Dataset/Data) 
+
+I am using data from 2014, because this allows me to draw conclusions against the following previous Graph Database articles:
+
+* [Learning Neo4j at Scale: The Airline On Time Performance Dataset](https://bytefish.de/blog/neo4j_at_scale_airline_dataset/)
+* [Analyzing Flight Data with the SQL Server 2017 Graph Database](https://bytefish.de/blog/sql_server_2017_graph_database/)
 
 ### Airline On Time Performance (AOTP) ###
 
@@ -228,7 +238,7 @@ The takeaway (for me) is: RDF represents information as a series of subject - pr
 </pre>
 
 Here the subject is ``<Flight N965UW>``, the object is ``<Airport LAX>`` and ``<has origin airport>`` is the predicate, 
-that defines the relationship between the two nodes. These [Triples] can be stored in so called [Triple stores] optimized 
+that defines the relationship between the two nodes. These [Triples] can be stored in so called [Triplestores] optimized 
 for storage and retrieval of [Triples]. 
 
 ### Apache Jena ###
@@ -1242,11 +1252,22 @@ flights cancelled:
 
 ## Conclusion ##
 
-I only scratched the surface of Semantic Web and Linked Data. Learning a little about SPARQL has been a great experience.
+That's it for now.
 
-Most of my queries have been full-table scans, that's why the performance looks slow. Ramping up the machine and use a 
-full blown server might improve performance. 
+I think I only scratched the surface of Semantic Web and Linked Data technologies. It was a great experience to learn 
+a little about SPARQL as a query language. Getting started with [Apache Jena] turned out to be surprisingly easy, and 
+[dotNetRDF] was easy to use.
 
+At the moment this post doesn't hold up to its promises to correlate the various datasets. Instead it merely recreates 
+the queries of the last Graph Database articles:
+
+* []()
+* []()
+
+But instead of burying this project for good, I decided to share some ideas.
+
+[Apache Jena]: https://jena.apache.org/
+[Triplestore]: https://en.wikipedia.org/wiki/Triplestore
 [dotNetRDF]: https://www.dotnetrdf.org/
 [Structured Data]: https://developers.google.com/search/docs/guides/intro-structured-data
 [Semantic Web]: https://en.wikipedia.org/wiki/Semantic_Web
