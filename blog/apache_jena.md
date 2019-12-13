@@ -38,20 +38,52 @@ You can find all code and a guide on how to build the datasets in my GitHub Repo
 
 * [https://github.com/bytefish/ApacheJenaSample/](https://github.com/bytefish/ApacheJenaSample/)
 
-**Please Note:** This is not a formal introduction to the Semantic Web and Linked Data and it won't go 
-into details. I want this article to focus on how to read, transform, import and query a dataset.
+[German Kinderlieder]: https://de.wikipedia.org/wiki/Fuchs,_du_hast_die_Gans_gestohlen
+[https://programminghistorian.org]: https://programminghistorian.org/
 
-There are two great articles on [https://programminghistorian.org] I recommend reading:
+### What this Project is about ###
+
+In the internet you seldomly get an *idea* how to really read, transform, import and query a dataset. Most scientific 
+papers you find in the area of Semantic Web don't share their data, don't share their queries and they often do not 
+explain how to recreate the results.
+
+This article will focus on:
+
+* Building a RDF dataset using .NET and libraries
+* Creating an Apache Jena TDB2 database
+* Efficiently importing the RDF dataset to Apache Jena TDB2
+* Use the SPARQL language to query the dataset
+
+Past articles on Graph Databases and Time Series databases focused on the performance of the database systems. These 
+comparisms are often unfair and very misleading. Why for example was the SQL Server 2017 Graph Database so fast? Because 
+its ColumnStore compression algorithms make it possible to fit the entire dataset into RAM. Once datasets get bigger and 
+systems hit the SSD / HDD, we will see very different results.
+
+Fair benchmarks are hard to create and this article intentionally doesn't compare systems.
+
+### What this Project is not about ###
+
+The article and the project are not a formal introduction to the Semantic Web and Linked Data and it 
+won't go into all details. There are many, many, many great articles to RDF, OWL and Semantic Web 
+Technologies in the internet. 
+
+As a introduction there are two great articles on [https://programminghistorian.org] I recommend reading:
 
 * [https://programminghistorian.org/en/lessons/intro-to-linked-data](https://programminghistorian.org/en/lessons/intro-to-linked-data)
 * [https://programminghistorian.org/en/lessons/retired/graph-databases-and-SPARQL](https://programminghistorian.org/en/lessons/retired/graph-databases-and-SPARQL)
 
-[German Kinderlieder]: https://de.wikipedia.org/wiki/Fuchs,_du_hast_die_Gans_gestohlen
-[https://programminghistorian.org]: https://programminghistorian.org/
+While it would be a highly interesting path to go to reason about the dataset, I did not work with Ontologies yet.
+
+If you are interested in a complete Air Traffic Onotology I recommend researching the [The NASA Air Traffic Management Ontology (atmonto)] 
+to get an idea, what an onotology for the domain might look like:
+
+* [https://data.nasa.gov/ontologies/atmonto/ATM](https://data.nasa.gov/ontologies/atmonto/ATM)
+
+[The NASA Air Traffic Management Ontology (atmonto)]: https://data.nasa.gov/ontologies/atmonto/ATM
 
 ## Datasets ##
 
-There are several datasets in the project, that will be parsed and imported to an [Apache Jena] database. I am 
+In this article I will use several open datasets and show how to parse and import them to an [Apache Jena] database. I am 
 unable to share the entire dataset, but I have described all steps neccessary to reproduce the article in the 
 subfolders of:
 
@@ -998,7 +1030,7 @@ ORDER BY ASC(?weather_timestamp)
 LIMIT 1000
 ```
 
-## Number of Flights Cancelled ##
+## Percent of Flights Cancelled by Cancellation Code ##
 
 ```sparql
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
@@ -1030,6 +1062,47 @@ WHERE
   } 
 }
 ORDER BY ?origin ?cancellation_code
+```
+
+## Percent of Flights Cancelled for larger airports ##
+
+We only take the airports with more than ``50,000`` departures in 2014.
+
+```sparql
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX general: <http://www.bytefish.de/aviation/General#>
+PREFIX flight: <http://www.bytefish.de/aviation/Flight#>
+PREFIX weather: <http://www.bytefish.de/aviation/Weather#>
+PREFIX : <.>
+
+SELECT ?origin ?cancellation_code ?num_flights_total ?num_cancelled_flights ((?num_cancelled_flights/?num_flights_total * 100.0) as ?cancelledPercent)
+WHERE
+{
+  # Number of flights at airport ?origin cancelled by ?cancellation_code:
+  {
+    SELECT ?origin (count(?origin) as ?num_cancelled_flights)
+    WHERE 
+    {
+      ?flight general:has_origin_airport ?origin .
+      
+      # Restrict to A, B, C, D as Cancellation Code:
+      VALUES ?cancellation_code {"A" "B" "C" "D"} .
+        ?flight flight:cancellation_code ?cancellation_code . 
+    }
+    GROUP BY ?origin
+  }
+  # Total Number of flights at airport ?origin:
+  {
+    SELECT ?origin (count(?origin) as ?num_flights_total)
+    WHERE 
+    {
+      ?flight general:has_origin_airport ?origin .
+    }
+    GROUP BY ?origin
+  } 
+}
+HAVING (?num_flights_total > 50000)
+ORDER BY DESC(?cancelledPercent)
 ```
 
 ## Visualizing Graphs ##
