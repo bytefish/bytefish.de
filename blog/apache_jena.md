@@ -809,7 +809,7 @@ data into the [TDB2] database. We could use SPARQL ``INSERT DATA`` statements to
 
 But there is a much faster and easier way using the Apache Jena [tdb2.tdbloader]:
 
-[https://jena.apache.org/documentation/tdb2/tdb2_cmds.html#tdb2tdbloader](https://jena.apache.org/documentation/tdb2/tdb2_cmds.html#tdb2tdbloader)
+* [https://jena.apache.org/documentation/tdb2/tdb2_cmds.html#tdb2tdbloader](https://jena.apache.org/documentation/tdb2/tdb2_cmds.html#tdb2tdbloader)
 
 The Apache Jena [TDB FAQ] writes:
 
