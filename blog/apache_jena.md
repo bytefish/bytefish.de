@@ -1258,8 +1258,6 @@ I think I only scratched the surface of Semantic Web and Linked Data technologie
 a little about SPARQL as a query language. Getting started with [Apache Jena] turned out to be surprisingly easy, and 
 [dotNetRDF] was easy to use.
 
-But instead of burying this project for good, I decided to share some of my ideas.
-
 [Apache Fuseki]: https://jena.apache.org/documentation/fuseki2/
 [Apache Jena]: https://jena.apache.org/
 [Triplestore]: https://en.wikipedia.org/wiki/Triplestore
