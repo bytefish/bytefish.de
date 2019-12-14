@@ -69,11 +69,11 @@ Technologies in the internet.
 
 **It's not about Ontologies.**
 
-This project doesn't implement onotologies, so there is no inference and reasoning. This is maybe an interesting area 
+This project doesn't implement ontologies, so there is no inference and reasoning. This is maybe an interesting area 
 for later articles on Semantic Web Technologies.
 
-If you are interested in a complete Air Traffic Onotology I recommend researching the 
-[The NASA Air Traffic Management Ontology (atmonto)] to get an idea, what an onotology 
+If you are interested in a complete Air Traffic Ontology I recommend researching the 
+[The NASA Air Traffic Management Ontology (atmonto)] to get an idea, what an ontology 
 for the domain might look like:
 
 * [https://data.nasa.gov/ontologies/atmonto/ATM](https://data.nasa.gov/ontologies/atmonto/ATM)
