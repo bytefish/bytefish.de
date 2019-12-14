@@ -56,7 +56,7 @@ This article will focus on:
 
 ### What this Project is not about ###
 
-**It's not an introduction**
+**It's not an introduction.**
 
 The article and the project are not a formal introduction to the Semantic Web and Linked Data. It won't go 
 into all details, because there are already many, many, many great articles to RDF, OWL and Semantic Web 
