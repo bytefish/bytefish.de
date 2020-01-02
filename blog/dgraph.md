@@ -7,19 +7,25 @@ author: Philipp Wagner
 summary: An introduction to Dgraph.
 
 In late September I started a project on [Dgraph], that I planned to finish on 
-parental leave. Fast-Forward... 2019 and my parental leave are almost over. 
+parental leave. Fast-Forward to today: 2019 and my parental leave are almost over. 
+
+In November I noticed, that I am not making any progress with the Dgraph project. The 
+problem of building an interesting dataset and at the same time learning about Dgraph 
+turned out to be a little too ambitious.
 
 Software Estimations are easy!
 
-In late October I noticed, that I am not making any progress with the Dgraph project. The 
-problem of building an interesting dataset and at the same time learning about Dgraph turned 
-out to be a little too ambitious, given the constraints (👶👶).
+So I started to learn about "classic" Triplestores and Semantic Web Technologies first:
 
-So I started to learn about "classic" Triplestores and Semantic Web Technologies first. My idea 
-was to build the dataset by implementing parsers one by one, whenever I had some time (🍼🍼). More 
-importantly I also wanted to get a feeling how RDF and SPARQL works.
+* [Using Apache Jena for Aviation Data: Create, Import and Query a Dataset](https://bytefish.de/blog/apache_jena/)
 
-I have learned a lot along the way and best of it all: I now have a new dataset to play with.
+My idea was to build the dataset by implementing the parsers one by one and more importantly 
+I wanted to get a feeling how RDF and SPARQL works. I have learned a lot along the way and best 
+of it all, I now have a RDF dataset for Dgraph.
+
+You can find all code and a guide on how to build the datasets in my GitHub Repository at:
+
+* [https://github.com/bytefish/DGraphSample/](https://github.com/bytefish/DGraphSample/)
 
 ## So what is DGraph? ##
 
@@ -50,11 +56,11 @@ In the internet you seldomly get an *idea* how to really read, transform, import
 data. Often enough the datasets are prepared for you and it's hard to get an idea how to 
 merge datasets and build import pipelines.
 
-This project shows how to use .NET to:
+This project shows how to:
 
 * Create an RDF dataset from multiple data sources
 * Bulk Import an RDF Dataset to [Dgraph]
-* Query the Data using [Dgraph] GraphQL dialect
+* Query the Data using the [Dgraph] GraphQL query language
 
 ### What this Project is not about ###
 
@@ -280,17 +286,17 @@ The [dotNetRDF] website writes:
 > * A suite of command-line and GUI tools for working with RDF under Windows
 > * Free (as in beer) and Open Source (as in freedom) under a permissive MIT license
 
-While very advanced and complete, I need [dotNetRDF] primarly for writing RDF data. 
+While very advanced and complete, I need [dotNetRDF] primarly for writing RDF data. In my article on 
+Apache Jena I have already created a RDF dataset for Aviation data. The idea was to use the same RDF 
+dataset.
 
-In my article on Apache Jena I have already created a RDF dataset for Aviation data. The idea was to simply use this 
-RDF dataset for my Dgraph experiments (as is). But getting the data into a shape I am happy with... turned out to be a 
-bit of a fight with [dotNetRDF].
+#### RDF Types ####
 
 Dgraph supports the following set of RDF types:
 
 * [https://docs.dgraph.io/mutations/#language-and-rdf-types](https://docs.dgraph.io/mutations/#language-and-rdf-types)
 
-So for the RDF data I removed all occurences of ``xs:durations``, and turned them into ``xs:dateTime``.
+So for the RDF data I removed all occurences of ``xs:durations``, and turned the values into ``xs:dateTime``.
 
 #### Predicates and URIs ####
 
@@ -301,11 +307,12 @@ The original dataset represented the serial number of an Aircraft like this:
 ```
 
 In RDF all predicates are given as IRI (an extension of a URI), but I don't want full URIs as predicate 
-names in Dgraph. Why? It would lead to ugly & hard to read queries. So I opted to write the above RDF 
-statement:
+names in Dgraph. Why? It would lead to ugly & hard to read GraphQL queries with fully qualified URIs. 
 
-1. Using a Blank Node instead of an explicit ID, so Dgraph assigns the internal ``uid`` by itself
-2. Replacing the full URI ``http://www.bytefish.de/aviation/Aircraft#serial_number`` with ``aircraft.serial_number`` as the predicate name
+So I rewrote the RDF statement to:
+
+1. Use a Blank Node instead of an explicit URI for the subject, so Dgraph assigns the internal ``uid`` by itself.
+2. Replace the full URI ``http://www.bytefish.de/aviation/Aircraft#serial_number`` with ``aircraft.serial_number`` as the predicate name.
 
 So the Triple we are writing looks like this:
 
@@ -314,12 +321,11 @@ _:aircraft_NW8172 <aircraft.serial_number> "123"^^<xs:string>
 ```
 
 Since [dotNetRDF] expects a valid URI as a predicate, it fails internally to parse ``aircraft.serial_number`` as a URI. That's 
-why the sample application overrides some of the Nodes and Formatters of the [dotNetRDF] library, something I would have loved 
-to avoid.
+why the sample application overrides some of the Nodes and Formatters of the [dotNetRDF] library.
 
-There are much easier ways to generate these simple Dgraph RDF statements and you should also be able to write the N-Quads without a library.
+Granted there are much easier ways to generate these simple Dgraph RDF statements. You should be able to write the N-Quads without a library.
 
-Well... Hindsight is 20/20!
+I thought it speeds up my development. Hindsight is 20/20!
 
 ## Starting Dgraph ##
 
@@ -352,11 +358,11 @@ dgraph.exe alpha --lru_mb 4096 --wal <DGRAPH_WAL_DIRECTORY> --postings <DGRAPH_P
 
 ## Importing the Aviation Dataset ##
 
-I started this project with writing the [TinyDgraphClient] library, which is a thin client for the Dgraph 
-Protobuf API. My assumption was, that the batched mutations are fast enough to perform the import of large 
-datasets in a reasonable amount of time. 
+I started the project by writing the [TinyDgraphClient] library, which is a thin client 
+for the Dgraph Protobuf API. 
 
-This turned out to be wrong, I should have read the documentation and the blog post with technical details:
+My assumption was, that batched mutations are fast enough to perform the import of large 
+datasets. This turned out to be wrong:
 
 * [https://blog.dgraph.io/post/bulkloader/](https://blog.dgraph.io/post/bulkloader/)
 
@@ -366,10 +372,12 @@ So the Bulk Loader is the way to go for importing large datasets:
 
 The Bulk Loader creates an ``out`` directory for each shard, which can be copied to the machines in the cluster.
 
-### Running the Dgraph Bulk Loader ### 
+### Running the Dgraph Bulk Loader ###
 
-Writing RDF data to Dgraph is done using the ``dgraph bulk`` command. There are various filenames and directories 
-I am setting up, so I wrote a small Batch script to not write the entire statement for each import I am testing: 
+Writing RDF data to Dgraph is done using the ``dgraph bulk`` command. 
+
+There are various filenames and directories I am setting up, so I wrote a small Batch script to not write 
+the entire statement for each import I am testing: 
 
 ```batch
 @echo off
@@ -418,11 +426,12 @@ The Aviation Schema for this sample is available here:
 
 #### About Predicates ####
 
-Most examples in the Dgraph documentation share predicates. What do I mean with sharing predicates? Imagine 
-you have a predicate called ``name``. This ``name`` could be used as an actor name, a director name, a movie 
-title, a company name, ...
+Most examples in the Dgraph documentation share predicates. What do I mean with sharing predicates? 
 
-The "A Tour of Dgraph" tutorial for example uses a name for ``Person`` and ``Company``: 
+Imagine you have a predicate called ``name``. This ``name`` could be used as an actor name, a director name, 
+a movie title, a company name, ...
+
+The "A Tour of Dgraph" tutorial for example uses a ``name`` for ``Person`` and ``Company``: 
 
 * [https://tour.dgraph.io/schema/1/](https://tour.dgraph.io/schema/1/)
 
@@ -434,16 +443,17 @@ My **feeling** is, that sharing predicates requires a careful analysis. When I l
 * Are the concepts and semantics similar? 
 * If concepts slightly differ, then what will the queries look like? Will they be readable?
 
-So I have used names like ``aircraft.serial_number`` for the predicates. I think queries won't be as 
-good looking as in the Dgraph documentation, but this avoids too much preliminary analysis.
+So I have used names like ``aircraft.serial_number`` for the predicates. 
+
+I think queries won't be as good looking as in the Dgraph documentation, but avoids too much preliminary analysis.
 
 #### About Indexes ####
 
 Another interesting point in Schemas are the indexes. 
 
-You can only ``filter`` and ``order`` for predicates, that have an ``index`` 
-applied. This makes a lot of sense to reduce the impact on upserts, for example to avoid rebuilding of indexes. Initially 
-I had problems when writing the queries for the flight data, so I indexed all of the predicates.
+You can only ``filter`` and ``order`` predicates, that have an ``index`` applied. This makes a lot of sense to reduce 
+the impact on upserts... to avoid rebuilding of indexes for example. Initially I had problems when writing the queries 
+for the flight data, so I indexed all of the predicates.
 
 #### Aviation Schema: Predicates & Types ####
 
@@ -1476,13 +1486,14 @@ example we check, if a Node of type ``Airport`` has a predicate ``has_weather_st
 
 That's it for now!
 
-It was fun to play around with a new technology, which takes different approaches to data management. I initially 
-had problems to grasp GraphQL as a query language for [Dgraph] and it took quite some time to come up with the 
-queries. It was actually easier for me to get started with SPARQL, which might be due to being close to SQL.
+It was fun to play around with a new technology, which takes different approaches to data management. 
 
-Actually running a local Dgraph database and importing the RDF data was a no-brainer, once I had prepared the RDF 
-data correctly. The Bulk Import was very fast, although I didn't tune a thing and imported close to a billion RDF 
-statements to Dgraph.
+I initially had problems to grasp GraphQL as a query language for [Dgraph] and it took quite some time 
+to come up with the queries. It was actually easier for me to get started with SPARQL, which might be 
+due to it being close to SQL.
+
+Actually running a local Dgraph database and importing the RDF data was a no-brainer. The Bulk Import was 
+very fast, although I didn't tune a thing and imported close to a billion RDF statements to Dgraph.
 
 There is so much more to explore with Dgraph, but time is so limited.
 
@@ -1491,3 +1502,6 @@ There is so much more to explore with Dgraph, but time is so limited.
 [Power Query]: https://docs.microsoft.com/en-us/power-query/
 [Aircraft Registry Releasable Aircraft Database]: https://www.faa.gov/licenses_certificates/aircraft_certification/aircraft_registry/releasable_aircraft_download/
 [Power Query M formula language]: https://docs.microsoft.com/en-us/powerquery-m/power-query-m-reference
+[Dgraph]: https://dgraph.io/
+[dotNetRDF]: https://www.dotnetrdf.org/
+[TinyDgraphClient]: https://github.com/bytefish/TinyDgraphClient/
