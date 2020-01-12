@@ -7,13 +7,13 @@ author: Philipp Wagner
 summary: An introduction to Dgraph.
 
 In late September I started a project on [Dgraph], that I planned to finish on 
-parental leave. Fast-Forward to today: 2019 and my parental leave are almost over. 
-
-In November I noticed, that I am not making any progress with the Dgraph project. The 
-problem of building an interesting dataset and at the same time learning about Dgraph 
-turned out to be a little too ambitious.
+parental leave. Fast-Forward to today: 2019 and my parental leave are almost over.
 
 Software Estimations are easy!
+
+I noticed, that I am not making any progress with the Dgraph project. The problem of 
+building an interesting dataset and at the same time learning about Dgraph 
+turned out to be a little too ambitious.
 
 So I started to learn about "classic" Triplestores and Semantic Web Technologies first:
 
