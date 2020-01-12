@@ -1301,7 +1301,7 @@ dataset we extend the filter to include all possible causes (A, B, C, D):
 }
 ```
 
-#### Result #### 
+#### Result ####
 
 Again the results are consistent with the Apache Jena query, which indicates the figures are correct for the dataset:
 
