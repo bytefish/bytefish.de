@@ -45,9 +45,9 @@ Imagine we have the following Excel Sheet with a list of people:
     </a>
 </div>
 
-We have a list of people with a First Name, Last Name, a Birth Date and an Income.
+Each person has a first name, a last name, a birth date and an income.
 
-I start by defining a XSD Schema describing what the exported XML data looks like. 
+So I start by defining a XSD Schema describing what the exported XML data looks like. 
 
 ```xml
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
