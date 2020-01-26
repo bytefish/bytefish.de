@@ -6,10 +6,8 @@ slug: excel_xml_export
 author: Philipp Wagner
 summary: Using XML Maps for exporting XML Data from Excel.
 
-Something I need to do on a regular basis is reading data from Excel sheets in C\# 
-applications. Well... a large part of the world is built on Microsoft Excel and CSV 
-files. And knowing how to extract and parse these formats probably saves you a lot of 
-time and headaches. 
+A large part of the world is built on Microsoft Excel and CSV files. And knowing how to 
+extract and parse these formats probably saves you a lot of time and headaches.
 
 In this post I will show how to use the XML Mapping functionality to export data from Microsoft Excel.
 
@@ -33,11 +31,11 @@ specific formats in Excel? What about encodings gone wrong? What about systems w
 delimiters? What about newlines in the header row? How can we make sure cells have the correct data 
 type? Is anything validated? Oh dear.
 
-I find XML Maps a simple way to avoid most of this and it's something I seldomly see examples for it.
+I think XML Maps are a simple way to avoid most of this and it's something I seldomly see examples for.
 
 Let's change this.
 
-## Defining XML Maps and Exporting XML ##
+## Defining XML Maps ##
 
 Imagine we have the following Excel Sheet with a list of people:
 
@@ -76,25 +74,6 @@ I start by defining a XSD Schema describing what the exported XML data looks lik
 </xsd:schema>
 ```
 
-Having the XSD makes it easy to generate the C\# classes using ``xsd.exe``. I always tend to write small Batch 
-scripts for this kind of jobs, so it's you can change the path to the executable:
-
-```batch
-@echo off
-
-SET XSD_EXECUTABLE="C:\Program Files (x86)\Microsoft SDKs\Windows\v8.1A\bin\NETFX 4.5.1 Tools\xsd.exe"
-
-%XSD_EXECUTABLE% "Schemas/ExcelInteropSample.xsd" /classes /namespace:ExcelInteropSample.Contracts.Generated /o:"Generated" 
-```
-
-Executing this script leaves you with the generated contracts:
-
-<div style="display:flex; align-items:center; justify-content:center;">
-    <a href="/static/images/blog/excel_xml_export/generated_contracts.png">
-        <img src="/static/images/blog/excel_xml_export/generated_contracts.png">
-    </a>
-</div>
-
 Next I open the **Developer** Tab in Excel, click **Source** to show the XML Mappings and click 
 on *Add ...* to add the above Schema. You can see, that the Elements of the Schema appear in the 
 XML Source pane.
@@ -111,9 +90,30 @@ like in the Excel Sheet?
 
 And that's it for the Excel-side! Let's go to the C\# application.
 
+## .NET ##
+
+Having an XSD makes it easy to generate matching C\# classes using ``xsd.exe``. I always tend to write 
+small Batch scripts for this kind of jobs, so it's you can change the path to the executable:
+
+```batch
+@echo off
+
+SET XSD_EXECUTABLE="C:\Program Files (x86)\Microsoft SDKs\Windows\v8.1A\bin\NETFX 4.5.1 Tools\xsd.exe"
+
+%XSD_EXECUTABLE% "Schemas/ExcelInteropSample.xsd" /classes /namespace:ExcelInteropSample.Contracts.Generated /o:"Generated" 
+```
+
+Executing this script leaves us with the generated contracts:
+
+<div style="display:flex; align-items:center; justify-content:center;">
+    <a href="/static/images/blog/excel_xml_export/generated_contracts.png">
+        <img src="/static/images/blog/excel_xml_export/generated_contracts.png">
+    </a>
+</div>
+
 Using the Excel Interop functionality from the ``Microsoft.Office.Interop.Excel`` namespace, we can easily 
-write a C\# method to extract the XML data using the XML Map. In real life the method should be extended 
-like... passing the ``XmlMap`` index, the Sheet Name and so on:
+write a C\# method to extract the XML data using the XML Map. The method should be probably be extended with 
+passing the ``XmlMap`` index, the Sheet Name and so on:
 
 ```csharp
 // Copyright (c) Philipp Wagner. All rights reserved.
@@ -168,7 +168,6 @@ namespace ExcelInteropSample.Utils
 
             return true;
         }
-
     }
 }
 ```
@@ -207,7 +206,7 @@ namespace ExcelInteropSample.Utils
 }
 ```
 
-And finally we can connect all things to read the XML data, deserialize the it and operate on the entities: 
+And finally we can connect all things to read the XML data, deserialize it and operate on the strongly-typed entities: 
 
 ```csharp
 // Copyright (c) Philipp Wagner. All rights reserved.
@@ -262,7 +261,7 @@ And that's it!
 
 Does this method have its shortcomings? Oh yes, of course! What about repeating fields? Nested elements? What if 
 I do not have Microsoft Excel on the server? What if I have no control over the incoming Excel sheets and can 
-not apply an XML map? What if my data is huge and the XML string blows up?
+not apply an XML mapping? What if my data is huge and the XML string blows up?
 
 But anyway.
 
