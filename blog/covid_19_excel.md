@@ -21,7 +21,7 @@ So it all starts with getting the data into an Excel Sheet. From the Ribbon Bar 
 
 ... like this.
 
-<div style="display:flex; align-items:center; justify-content:center;">
+<div style="display:flex; align-items:center; justify-content:center;margin-bottom:15px;">
     <a href="/static/images/blog/covid_19_excel/01_Excel_Get_SqlServer_Data.png">
         <img src="/static/images/blog/covid_19_excel/01_Excel_Get_SqlServer_Data.png">
     </a>
@@ -30,7 +30,7 @@ So it all starts with getting the data into an Excel Sheet. From the Ribbon Bar 
 In the Dialog Box you then enter the Server and Database. We have used the database name 
 **SampleDatabase** in my article on writing the dataset to the SQL Server.
 
-<div style="display:flex; align-items:center; justify-content:center;">
+<div style="display:flex; align-items:center; justify-content:center;margin-bottom:15px;">
     <a href="/static/images/blog/covid_19_excel/02_Enter_SqlServer_Connection_Details.png">
         <img src="/static/images/blog/covid_19_excel/02_Enter_SqlServer_Connection_Details.png">
     </a>
@@ -39,7 +39,7 @@ In the Dialog Box you then enter the Server and Database. We have used the datab
 If you have successfully entered the connection details, then select the ``sample.Observation`` 
 table and click the **Load** Button.
 
-<div style="display:flex; align-items:center; justify-content:center;">
+<div style="display:flex; align-items:center; justify-content:center;margin-bottom:15px;">
     <a href="/static/images/blog/covid_19_excel/03_Select_And_Load_Table.png">
         <img src="/static/images/blog/covid_19_excel/03_Select_And_Load_Table.png">
     </a>
@@ -48,7 +48,7 @@ table and click the **Load** Button.
 Excel will then load the dataset into a new Sheet it calls **Sheet2** initially. The right hand 
 pane will show you the number of rows loaded, and errors if any.
 
-<div style="display:flex; align-items:center; justify-content:center;">
+<div style="display:flex; align-items:center; justify-content:center;margin-bottom:15px;">
     <a href="/static/images/blog/covid_19_excel/04_Loaded_Data_In_Sheet2.png">
         <img src="/static/images/blog/covid_19_excel/04_Loaded_Data_In_Sheet2.png">
     </a>
@@ -60,7 +60,7 @@ Now from the Ribbon Bar you create a 3D Map by navigating to ...
 
 ... like this.
 
-<div style="display:flex; align-items:center; justify-content:center;">
+<div style="display:flex; align-items:center; justify-content:center;margin-bottom:15px;">
     <a href="/static/images/blog/covid_19_excel/05_Create_3D_Map.png">
         <img src="/static/images/blog/covid_19_excel/05_Create_3D_Map.png">
     </a>
@@ -70,7 +70,7 @@ Microsoft Excel will now automatically load the data from the Sheet into the 3D 
 right pane you can see, that it already correctly mapped the columns **Country**, **Lat**, 
 **Lon** and **Province**. And some data points are already displayed in the map.
 
-<div style="display:flex; align-items:center; justify-content:center;">
+<div style="display:flex; align-items:center; justify-content:center;margin-bottom:15px;">
     <a href="/static/images/blog/covid_19_excel/06_Initial_3D_Map.png">
         <img src="/static/images/blog/covid_19_excel/06_Initial_3D_Map.png">
     </a>
@@ -86,7 +86,7 @@ Now let's configure the 3D Map to make use of the data!
 
 Once I am done, I am finally configuring the Tooltip to show useful data.
 
-<div style="display:flex; align-items:center; justify-content:center;">
+<div style="display:flex; align-items:center; justify-content:center;margin-bottom:15px;">
     <a href="/static/images/blog/covid_19_excel/07_Configured_Map.png">
         <img src="/static/images/blog/covid_19_excel/07_Configured_Map.png">
     </a>
@@ -100,7 +100,7 @@ In the final example, I am changing the visualization to a Heat Map. Using the f
 Hubei province, else it will dominate the visualization. As Value for the Heat Map I have selected the Number of 
 Confirmed Cases.
 
-<div style="display:flex; align-items:center; justify-content:center;">
+<div style="display:flex; align-items:center; justify-content:center;margin-bottom:15px;">
     <a href="/static/images/blog/covid_19_excel/08_Heatmap_Confirmed_Excluding_Hubei.png">
         <img src="/static/images/blog/covid_19_excel/08_Heatmap_Confirmed_Excluding_Hubei.png">
     </a>
