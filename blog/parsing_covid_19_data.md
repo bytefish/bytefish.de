@@ -76,7 +76,7 @@ Hopkins University has a variable number of columns and using a library would on
 
 The parser code isn't hard to understand. I first download the three files from Github, run some basic checks 
 and extract the observation timestamps. For each of the CSV files I am creating a dictionary, that holds the 
-Province /Country as the Key and the tokenized CSV data of the whole line.
+Province / Country as the Key and the tokenized CSV data of the whole line.
 
 I then iterate over the Province / Countries, and for each one I am zipping all three tokenized lines and create the 
 ``Observation`` based on it.
