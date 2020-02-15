@@ -1,14 +1,17 @@
-title: Using the JHU COVID-19 Dataset in Excel
+title: Visualizing the COVID-19 dataset using Microsoft Excel 3D Maps
 date: 2020-02-15 14:29
 tags: csv, dotnet, csharp, datamining
 category: covid-19
 slug: covid_19_excel
 author: Philipp Wagner
-summary: Telling Stories with Excel.
+summary: Visualizing the COVID-19 dataset using Microsoft Excel 3D Maps
 
 In my last post on [COVID-19] I have shown how to write the [John Hopkins University] dataset 
-to a SQL Server database. This post shows how map the data using the 3D Map feature of 
-Microsoft Excel.
+to a SQL Server database:
+
+* [https://bytefish.de/blog/parsing_covid_19_data/](https://bytefish.de/blog/parsing_covid_19_data/)
+
+This post shows how visualize the data using the 3D Map feature of Microsoft Excel.
 
 ## Visualizing the COVID-19 data using Excel ##
 
