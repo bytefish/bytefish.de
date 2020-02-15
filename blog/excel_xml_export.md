@@ -15,8 +15,6 @@ All code is available in a GitHub repository at:
 
 * [https://github.com/bytefish/ExcelInteropSample](https://github.com/bytefish/ExcelInteropSample)
 
-Most of my recent posts have been long, so this will be a short one. 👍
-
 ## Why XML Maps? ##
 
 Now there are many, many ways to extract data from Microsoft Excel.
@@ -265,9 +263,9 @@ not apply an XML mapping? What if my data is huge and the XML string blows up?
 
 But anyway.
 
-I find XML Maps to be a very simple way to not deal with Excel guessing the types. And I am not getting headaches 
-about encodings, culture, delimiters and all this. Generating the contracts and deserialization is a big plus for 
-me, so I do not have to hand roll anything.
+I find XML Maps are a simple way to not deal with Excel guessing the types. And I am not getting headaches about 
+encodings, culture, delimiters and all this. Generating the contracts and deserialization is a big plus for me, 
+so I do not have to hand roll anything.
 
 And on the bright side, I get some data validation for free.
 
