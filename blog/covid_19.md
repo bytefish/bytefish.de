@@ -15,7 +15,7 @@ everything about basic reproduction numbers, exponential growth, respirators
 and surgical masks... there is something simple we should all raise awareness 
 for: 
 
-* **Personal Hygiene**
+<p style="font-size: 24px;text-align:center;font-weight: 700;">Personal Hygiene</p>
 
 The World Health Organization (WHO) has a list of advices all of us should follow:
 
