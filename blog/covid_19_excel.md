@@ -94,20 +94,6 @@ Once I am done, I am finally configuring the Tooltip to show useful data.
 
 If you now press **Play Tour** from the Ribbon Bar you can see how the distribution behaves over time. 
 
-### Building a Heat Map ###
-
-In the final example, I am changing the visualization to a Heat Map. Using the filters section I am exluding the 
-Hubei province, else it will dominate the visualization. As Value for the Heat Map I have selected the Number of 
-Confirmed Cases.
-
-<div style="display:flex; align-items:center; justify-content:center;margin-bottom:15px;">
-    <a href="/static/images/blog/covid_19_excel/08_Heatmap_Confirmed_Excluding_Hubei.png">
-        <img src="/static/images/blog/covid_19_excel/08_Heatmap_Confirmed_Excluding_Hubei.png">
-    </a>
-</div>
-
-Using a Heat Map we can quickly identify the currently most impacted regions.
-
 ## Conclusion ##
 
 Microsoft Excel makes it easy to build simple visualizations of the [COVID-19] dataset, without putting 

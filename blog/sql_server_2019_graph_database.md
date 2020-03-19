@@ -389,7 +389,7 @@ BEGIN
                                                     FROM sys.columns as [column]
                                                     WHERE [column].[graph_type] is null and [node].[object_id] = [column].[object_id]
                                                     FOR JSON PATH)
-                FROM [master].[sys].[tables] as [node]
+                FROM [sys].[tables] as [node]
                 WHERE is_node = 1 and schema_id = @NodesSchemaId
                 FOR JSON PATH),
                    edges = (SELECT EC.name AS edge_constraint_name, 
