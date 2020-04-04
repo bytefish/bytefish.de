@@ -303,4 +303,4 @@ And that's it. Is this approach perfect? Oh it's not for sure:
 
 But this approach will yield results quickly without any magic involved and you'll stick to the official Neo4j .NET driver.
 
-I wasted so much of my lifetime with ORM libraries... I rather write queries in code, than fighting leaky abstractions.
+I wasted so much of my lifetime with ORM libraries... I rather write queries in code, than fight leaky abstractions.
