@@ -1,4 +1,4 @@
-title: Using ASP.NET Core with Cookie Authentication
+title: Cookie Authentication in ASP.NET Core
 date: 2020-04-04 09:59
 tags: dotnet, netcore
 category: dotnet
