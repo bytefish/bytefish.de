@@ -6,7 +6,7 @@ slug: neo4j_dotnet_client
 author: Philipp Wagner
 summary: Using the Neo4j .NET Driver.
 
-I am playing around with a Neo4j for a small project and it's been a while since using Neo4j. The latest 
+I am playing around with Neo4j for a small project and it's been a while since using Neo4j. The latest 
 Neo4j 4.0 came with some changes to the .NET API and my previous approaches to writing data seemed overly 
 complicated to me.
 
