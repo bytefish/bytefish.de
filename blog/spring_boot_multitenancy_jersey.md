@@ -1,8 +1,8 @@
-﻿title: Providing Multitenancy with Spring Boot
+﻿title: Providing Multitenancy with Spring Boot and Jersey
 date: 2017-10-17 08:32
 tags: java, jersey, spring
 category: java
-slug: spring_boot_multitenancy
+slug: spring_boot_multitenancy_jersey
 author: Philipp Wagner
 summary: This article shows how to provide Multitenancy with Spring Boot.
 
