@@ -137,6 +137,11 @@ It's useful to take a look at the Project structure first:
 
 The purpose of the various classes: 
 
+* ``async``
+    * ``AsyncConfig``
+        * Provides a TaskExecutor decorated for TenantAware Processing.
+    * ``TenantAwareTaskDecorator``
+        * Adds a Spring Boot ``TaskDecorator``, that passes the TenantName to a Child Thread.
 * ``core``
     * ``ThreadLocalStorage``
         * Stores the Tenant Identifier in a ``ThreadLocal``.
@@ -157,7 +162,7 @@ The purpose of the various classes:
 * ``web``
     * ``configuration``
         * ``WebMvcConfig``
-                * Configures the Spring MVC interceptors.
+            * Configures the Spring MVC interceptors.
     * ``controllers``
         * ``CustomerController``
             * Implements a REST Webservice for persisting and deleting Customers.
@@ -555,7 +560,7 @@ public class SampleSpringApplication extends SpringBootServletInitializer {
 		Map<Object,Object> targetDataSources = new HashMap<>();
 
 		targetDataSources.put("TenantOne", tenantOne());
-		//targetDataSources.put("TenantTwo", tenantTwo());
+		targetDataSources.put("TenantTwo", tenantTwo());
 
 		dataSource.setTargetDataSources(targetDataSources);
 
@@ -563,11 +568,6 @@ public class SampleSpringApplication extends SpringBootServletInitializer {
 
 		return dataSource;
 	}
-//
-//	@Bean
-//	public DataSource dataSource() {
-//		return new DynamicTenantAwareRoutingSource("D:\\tenants.json");
-//	}
 
 	public DataSource tenantOne() {
 
@@ -670,6 +670,143 @@ Querying the ``TenantTwo`` database will now return the inserted customer:
 > curl -H "X-TenantID: TenantTwo" -X GET http://localhost:8080/customers
 
 [{"id":1,"firstName":"Hans","lastName":"Wurst"}]
+```
+
+## Resolving the Tenant in Asynchronous Methods ##
+
+There is a problem though with the ``ThreadLocal`` in the ``ThreadLocalStorage``: Asynchronous methods. 
+
+Spring Boot has a very cool way for asynchronous processing, which is by simply using the ``@Async`` annotation. In the Spring Boot 
+implementation a new or existing thread is likely to be spun up from the ``ThreadPoolTaskExecutor``, thus the Tenant Name in the 
+``ThreadLocal`` will be empty. 
+
+Let's fix this!
+
+What we could do is to add a ``TaskDecorator`` to Spring Boots ``ThreadPoolTaskExecutor``, and pass in the Tenant Name from the Parent Thread:
+
+```java
+// Copyright (c) Philipp Wagner. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+package de.bytefish.multitenancy.async;
+
+import de.bytefish.multitenancy.core.ThreadLocalStorage;
+import org.springframework.core.task.TaskDecorator;
+
+public class TenantAwareTaskDecorator implements TaskDecorator {
+
+    @Override
+    public Runnable decorate(Runnable runnable) {
+        String tenantName = ThreadLocalStorage.getTenantName();
+        return () -> {
+            try {
+                ThreadLocalStorage.setTenantName(tenantName);
+                runnable.run();
+            } finally {
+                ThreadLocalStorage.setTenantName(null);
+            }
+        };
+    }
+}
+```
+
+And in the ``AsyncConfigurerSupport`` we could add the ``TenantAwareTaskDecorator`` to the ``ThreadPoolTaskExecutor``. This 
+configuration will be loaded by Spring in the Startup phase:
+
+```java
+// Copyright (c) Philipp Wagner. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+package de.bytefish.multitenancy.async;
+
+import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.AsyncConfigurerSupport;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+
+import java.util.concurrent.Executor;
+
+@Configuration
+public class AsyncConfig extends AsyncConfigurerSupport {
+
+    @Override
+    public Executor getAsyncExecutor() {
+        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+
+        executor.setThreadNamePrefix("TenantAwareTaskExecutor-");
+        executor.setTaskDecorator(new TenantAwareTaskDecorator());
+        executor.initialize();
+
+        return executor;
+    }
+
+}
+```
+
+To test it, let's add an asynchronous method ``findAllAsync`` to the ``ICustomerRepository``:
+
+```java
+// Copyright (c) Philipp Wagner. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+package de.bytefish.multitenancy.repositories;
+
+import de.bytefish.multitenancy.model.Customer;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.scheduling.annotation.Async;
+
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+
+public interface ICustomerRepository extends CrudRepository<Customer, Long> {
+
+    @Async
+    @Query("select c from Customer c")
+    CompletableFuture<List<Customer>> findAllAsync();
+
+}
+```
+
+And add a new endpoint to the ``CustomerController``:
+
+```java
+// ...
+
+@RestController
+public class CustomerController {
+
+    private final ICustomerRepository repository;
+
+    @Autowired
+    public CustomerController(ICustomerRepository repository) {
+        this.repository = repository;
+    }
+
+    // ...
+    
+    @GetMapping("/async/customers")
+    public List<CustomerDto> getAllAsync() throws ExecutionException, InterruptedException {
+        CompletableFuture<List<Customer>> customers = repository.findAllAsync();
+
+        // Return the DTO List:
+        return StreamSupport.stream(customers.get().spliterator(), false)
+                .map(Converters::convert)
+                .collect(Collectors.toList());
+    }
+    
+}
+```
+
+And let's use curl to test it. Does it work?
+
+```
+curl -H "X-TenantID: TenantOne" -X GET http://localhost:8080/async/customers
+```
+
+And surprise... it does work as intended:
+
+```
+[{"id":1,"firstName":"Philipp","lastName":"Wagner"},{"id":2,"firstName":"Max","lastName":"Mustermann"}]
 ```
 
 ## Conclusion ##
