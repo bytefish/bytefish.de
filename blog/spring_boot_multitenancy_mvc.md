@@ -321,13 +321,26 @@ public class TenantNameInterceptor extends HandlerInterceptorAdapter {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
+        // Implement your logic to extract the Tenant Name here. Another way would be to
+        // parse a JWT and extract the Tenant Name from the Claims in the Token. In the
+        // example code we are just extracting a Header value:
         String tenantName = request.getHeader("X-TenantID");
 
-        if(tenantName != null) {
-            ThreadLocalStorage.setTenantName(tenantName);
-        }
+        // Always set the Tenant Name, so we avoid leaking Tenants between Threads even in the scenario, when no
+        // Tenant is given. I do this because if somehow the afterCompletion Handler isn't called the Tenant Name
+        // could still be persisted within the ThreadLocal:
+        ThreadLocalStorage.setTenantName(tenantName);
 
         return true;
+    }
+
+    @Override
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
+
+        // After completing the request, make sure to erase the Tenant from the current Thread. It's
+        // because Spring may reuse the Thread in the Thread Pool and you don't want to leak this
+        // information:
+        ThreadLocalStorage.setTenantName(null);
     }
 }
 ```
@@ -392,7 +405,15 @@ package de.bytefish.multitenancy.web.converter;
 import de.bytefish.multitenancy.model.Customer;
 import de.bytefish.multitenancy.web.model.CustomerDto;
 
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+
 public class Converters {
+
+    private Converters() {
+
+    }
 
     public static CustomerDto convert(Customer source) {
         if(source == null) {
@@ -410,6 +431,11 @@ public class Converters {
         return new Customer(source.getId(), source.getFirstName(), source.getLastName());
     }
 
+    public static List<CustomerDto> convert(Iterable<Customer> customers) {
+        return StreamSupport.stream(customers.spliterator(), false)
+                .map(Converters::convert)
+                .collect(Collectors.toList());
+    }
 }
 ```
 
@@ -433,6 +459,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -448,17 +476,17 @@ public class CustomerController {
 
     @GetMapping("/customers")
     public List<CustomerDto> getAll() {
-        // Return the DTO List:
-        return StreamSupport.stream(repository.findAll().spliterator(), false)
-                .map(Converters::convert)
-                .collect(Collectors.toList());
+        Iterable<Customer> customers = repository.findAll();
+
+        return Converters.convert(customers);
     }
 
     @GetMapping("/customers/{id}")
     public CustomerDto get(@PathVariable("id") long id) {
-        Customer customer = repository.findOne(id);
+        Customer customer = repository
+                .findById(id)
+                .orElse(null);
 
-        // Return the DTO:
         return Converters.convert(customer);
     }
 
@@ -476,7 +504,7 @@ public class CustomerController {
 
     @DeleteMapping("/customers/{id}")
     public void delete(@PathVariable("id") long id) {
-        repository.delete(id);
+        repository.deleteById(id);
     }
 
 }
@@ -484,7 +512,7 @@ public class CustomerController {
 
 #### Configuration ####
 
-To configure Spring MVC, we need to extend the ``WebMvcConfigurerAdapter`` and add the ``TenantNameInterceptor`` to the list of interceptors.
+To configure Spring MVC, we need to extend the ``WebMvcConfigurer`` and add the ``TenantNameInterceptor`` to the list of interceptors.
 
 ```java
 // Copyright (c) Philipp Wagner. All rights reserved.
@@ -495,10 +523,10 @@ package de.bytefish.multitenancy.web.configuration;
 import de.bytefish.multitenancy.web.interceptors.TenantNameInterceptor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
-public class WebMvcConfig extends WebMvcConfigurerAdapter {
+public class WebMvcConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
@@ -525,31 +553,27 @@ All other dependencies are automatically resolved by Spring Boot.
 package de.bytefish.multitenancy;
 
 import com.zaxxer.hikari.HikariDataSource;
-import de.bytefish.multitenancy.routing.DynamicTenantAwareRoutingSource;
 import de.bytefish.multitenancy.routing.TenantAwareRoutingSource;
+import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.boot.web.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 
 @SpringBootApplication
+@EnableAsync
 @EnableScheduling
 @EnableTransactionManagement
-public class SampleSpringApplication extends SpringBootServletInitializer {
+public class SampleSpringApplication {
 
 	public static void main(String[] args) {
-		new SampleSpringApplication()
-				.configure(new SpringApplicationBuilder(SampleSpringApplication.class))
-				.properties(getDefaultProperties())
-				.run(args);
+		SpringApplication.run(SampleSpringApplication.class, args);
 	}
 
 	@Bean
@@ -596,26 +620,38 @@ public class SampleSpringApplication extends SpringBootServletInitializer {
 
 		return dataSource;
 	}
-
-	private static Properties getDefaultProperties() {
-
-		Properties defaultProperties = new Properties();
-
-		// Set sane Spring Hibernate properties:
-		defaultProperties.put("spring.jpa.show-sql", "true");
-		defaultProperties.put("spring.jpa.hibernate.naming.physical-strategy", "org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl");
-		defaultProperties.put("spring.datasource.initialize", "false");
-
-		// Prevent JPA from trying to Auto Detect the Database:
-		defaultProperties.put("spring.jpa.database", "postgresql");
-
-		// Prevent Hibernate from Automatic Changes to the DDL Schema:
-		defaultProperties.put("spring.jpa.hibernate.ddl-auto", "none");
-
-		return defaultProperties;
-	}
-
 }
+```
+
+#### Getting Rid if Warning ####
+
+Spring Boot introduces a lot of magic to make things work with minimal coding... and sometimes convention 
+over configuration introduces headaches. When Spring Boot starts there is no Tenant set in the Thread, so 
+we cannot use things like automatic detection of the database.
+
+So I have added a Properties file ``application.properties`` to configure Spring:
+
+```properties
+# Get Rid of the OIV Warning:
+spring.jpa.open-in-view=false
+# Show the SQL Statements fired by JPA:
+spring.jpa.show-sql=true
+# Set sane Spring Hibernate properties:
+spring.jpa.hibernate.naming.physical-strategy=org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+# Prevent JPA from trying to Initialize...:
+spring.jpa.database=postgresql
+# ... and do not Auto-Detect the Database:
+spring.datasource.initialize=false
+# Prevent Hibernate from Automatic Changes to the DDL Schema:
+spring.jpa.hibernate.ddl-auto=none
+```
+
+The same thing happens down in Hibernate internals, where it attempts to read Metadata to initialize JDBC 
+settings. To prevent those connections, which we don't want to be done I have added a properties file 
+``hibernate.properties`` which is automagically read by Hibernate:
+
+```properties
+hibernate.temp.use_jdbc_metadata_defaults=false
 ```
 
 ## Testing the Application ##
@@ -732,6 +768,9 @@ public class AsyncConfig extends AsyncConfigurerSupport {
     public Executor getAsyncExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
 
+        executor.setCorePoolSize(7);
+        executor.setMaxPoolSize(42);
+        executor.setQueueCapacity(11);
         executor.setThreadNamePrefix("TenantAwareTaskExecutor-");
         executor.setTaskDecorator(new TenantAwareTaskDecorator());
         executor.initialize();
