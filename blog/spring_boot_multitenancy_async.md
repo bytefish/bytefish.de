@@ -4,7 +4,7 @@ tags: java, spring
 category: java
 slug: spring_boot_multitenancy_async
 author: Philipp Wagner
-summary: This article shows how to preserve tenant 
+summary: This article shows how to preserve tenant information in asynchronous methods using Spring Boot.
 
 In the past days I have revisited an old Spring Boot example for implementing Multi-Tenant applications. It 
 got updated to the latest Spring Boot release, all packages have been updated and I updated it to use the 
