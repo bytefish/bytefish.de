@@ -216,61 +216,6 @@ export class SearchService {
 }
 ```
 
-### Components ###
-
-#### File Upload ####
-
-``components/file-upload/file-upload-component.html`` 
-
-```html
-<h2>Add a Document to the Search Index</h2>
-
-<form [formGroup]="fileUploadForm" (ngSubmit)="onSubmit()">
-    <div fxLayout="column" class="file-input-container">
-        <div fxLayout="column">
-            <mat-form-field fxFlex>
-                <input matInput formControlName="title" type="text" placeholder="Document Title">
-            </mat-form-field>
-        </div>
-        <div fxLayout="column">
-            <mat-form-field fxFlex>
-                <mat-chip-list #chipList aria-label="Suggestions" formControlName="suggestions">
-                  <mat-chip *ngFor="let suggestion of fileUploadForm.get('suggestions').value" [selectable]="true" [removable]="true" (removed)="onRemoveSuggestion(suggestion)">
-                    {{suggestion}}
-                    <mat-icon matChipRemove>cancel</mat-icon>
-                  </mat-chip>
-                  <input class="min-chips-height" placeholder="Suggestions"
-                         [matChipInputFor]="chipList"
-                         [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-                         [matChipInputAddOnBlur]="true"
-                         (matChipInputTokenEnd)="onAddSuggestion($event)">
-                </mat-chip-list>
-              </mat-form-field>
-        </div>
-        <!-- Upload Item -->
-        <div fxLayout="row">
-            <input #fileInput id="fileInput" type="file" [hidden]="true" (change)="onFileInputChange($event)">
-            <mat-form-field fxFlex [floatLabel]="'never'">
-                <input matInput type="text" formControlName="file" (click)="fileInput.click()"
-                    placeholder="Please Select a File ..." readonly>
-            </mat-form-field>
-            <button mat-mini-fab aria-label="Upload Button with Attachment Icon" (click)="fileInput.click()">
-                <mat-icon>attach_file</mat-icon>
-            </button>
-        </div>
-        <div fxLayout="column" fxLayoutAlign="center start">
-
-            <div style="margin: 20px">
-                <mat-checkbox color="primary" formControlName="ocr">Add OCR Data to Search Index</mat-checkbox>
-            </div>
-        </div>
-        <div fxLayout="column">
-            <button type="submit" mat-raised-button color="accent" [disabled]="isFileUploading">Index Document</button>
-        </div>
-    </div>
-</form>
-```
-
 ### Routes ###
 
 Next we define the routes for the application. There are only two routes:
@@ -309,7 +254,427 @@ const routes: Routes = [
 export class AppRoutingModule { }
 ```
 
+### Components ###
 
+#### App Component ####
+
+```html
+<div class="search-container" fxLayout="column">
+    <div class="search-bar" fxLayout="row" fxLayoutAlign="center center">
+        <input #search type="search" (keyup.enter)="onKeyupEnter(search.value)" [formControl]="control" [matAutocomplete]="auto">
+        <mat-autocomplete #auto="matAutocomplete">
+            <ng-container *ngIf="suggestions$ | async as suggestions">
+                <mat-option *ngFor="let suggestion of suggestions?.results" [value]="suggestion.text">
+                    <span [innerHtml]="suggestion.highlight"></span>
+                </mat-option>
+            </ng-container>
+        </mat-autocomplete>
+        <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+            <mat-icon>more_vert</mat-icon>
+        </button>
+        <mat-menu #menu="matMenu">
+            <button mat-menu-item (click)="openFileUploadDialog()">
+                <mat-icon>add</mat-icon>
+                <span>Upload Document</span>
+            </button>
+            <button mat-menu-item routerLink="/status">
+                <mat-icon>schedule</mat-icon>
+                <span>Document Status</span>
+            </button>
+        </mat-menu>
+    </div>
+    <div>
+        <router-outlet></router-outlet>
+    </div>
+</div>
+<button class="add-button" mat-mini-fab aria-label="Upload Button with Attachment Icon"
+    (click)="openFileUploadDialog()">
+    <mat-icon>add</mat-icon>
+</button>
+```
+
+```scss
+@import '~@angular/material/theming';
+
+$accent:  mat-palette($mat-amber);
+
+.search-container {
+  height: auto;
+}
+
+.search-bar {
+  height: 60px;
+  background-color: mat-color($accent, 200);
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05),0 1px 4px rgba(0,0,0,0.05),0 2px 8px rgba(0,0,0,0.05);
+}
+
+.search-link {
+
+  color: rgb(2, 80, 224);
+  text-decoration: none;
+
+  &:visited {
+    color:  rgb(2, 80, 224);
+  }
+}
+
+input {
+  border: solid 1px black;
+  outline: none;
+  margin: 10px;
+  padding: 6px 16px;
+  width: 100%;
+  max-width: 600px;
+  height: 40px;
+  font-size: 16px;
+}
+
+.small {
+  font-size: 12px;
+}
+
+h3 {
+  margin: 0;
+  font-size: 20px;
+  line-height: 1.3;
+}
+
+.mat-card-content {
+  margin: 0;
+}
+
+p {
+  margin: 0;
+}
+
+cite {
+  font-size: 12px;
+}
+
+.search-results {
+  background-color: #eee;
+  height: 100%;
+  padding: 25px;
+}
+
+.search-result {
+  width: 500px;
+}
+
+.add-button {
+  position: fixed;
+  top: auto;
+  right: 30px;
+  bottom: 30px;
+  left: auto;
+}
+```
+
+```typescript
+import { Component, ViewChild } from '@angular/core';
+import { SearchSuggestions } from '@app/app.model';
+import { HttpClient } from '@angular/common/http';
+import { environment } from '@environments/environment';
+import { Router, ActivatedRoute } from '@angular/router';
+import { Observable, of } from 'rxjs';
+import { switchMap, debounceTime, catchError, map, filter } from 'rxjs/operators';
+import { FormControl } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
+import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
+import { FileUploadComponent } from './components/file-upload/file-upload.component';
+import { DocumentStatusComponent } from './components/document-status/document-status.component';
+import { SearchService } from './services/search.service';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.scss']
+})
+export class AppComponent {
+
+  destroy$: Observable<void>;
+
+  control = new FormControl();
+
+  query$: Observable<string>;
+  suggestions$: Observable<SearchSuggestions>;
+
+  @ViewChild('search', { read: MatAutocompleteTrigger }) 
+  autoComplete: MatAutocompleteTrigger;
+
+  constructor(private route: ActivatedRoute, 
+    private searchService: SearchService,
+    private dialog: MatDialog, 
+    private router: Router, 
+    private httpClient: HttpClient) {
+
+  }
+
+  ngOnInit(): void {
+
+    this.route.queryParams
+      .pipe(
+        map(params => params['q']),
+        filter(query => !!query)
+      )
+      .subscribe(query => {
+        this.control.setValue(query);
+        this.searchService.submitSearch(query);
+      });
+
+    this.suggestions$ = this.control.valueChanges
+      .pipe(
+        debounceTime(300), // Debounce time to not send every keystroke ...
+        switchMap(value => this
+          .getSuggestions(value)
+          .pipe(catchError(() => of(<SearchSuggestions>{ query: value, results: []}))))
+      );
+  }
+
+  onKeyupEnter(value: string): void {
+    
+    if(!!this.autoComplete) {
+      this.autoComplete.closePanel();
+    }
+   
+    // Instead of firing the Search directly, let's update the Route instead:
+    this.router.navigate(['/search'], { queryParams: { q: value } });
+  }
+
+  getSuggestions(query: string): Observable<SearchSuggestions> {
+
+    if (!query) {
+      return of(null);
+    }
+
+    return this.httpClient
+      // Get the Results from the API:
+      .get<SearchSuggestions>(`${environment.apiUrl}/suggest`, {
+        params: {
+          q: query
+        }
+      })
+      .pipe(catchError((err) => {
+        console.error(`An error occured while fetching suggestions: ${err}`);
+
+        return of(<SearchSuggestions>{ query: query, results: []})
+      }));
+  }
+
+  openFileUploadDialog() {
+    this.dialog.open(FileUploadComponent);
+  }
+
+  openDocumentStatusDialog() {
+    this.dialog.open(DocumentStatusComponent);
+  }
+}
+```
+#### File Upload ####
+
+The file upload is a bit tricky and probably hard to digest for the "pure RESTful" API folk. The simplest 
+way to upload a file is what the browser offers, so I am sending a ``multipart/form-data`` HTTP request to 
+an endpoint and send the values in form fields.
+
+Basically I need ...
+
+* An ``<input>`` for the document title.
+* A ``<mat-chip-list>`` for a list of suggestions.
+* A checkbox, that signals if OCR should be applied or not.
+* An ``<input>`` with ``type="file"`` to upload a File
+
+The Component template is defined in ``components/file-upload/file-upload-component.html``:
+
+```html
+<h2>Add a Document to the Search Index</h2>
+
+<form [formGroup]="fileUploadForm" (ngSubmit)="onSubmit()">
+    <div fxLayout="column" class="file-input-container">
+        <div fxLayout="column">
+            <mat-form-field fxFlex>
+                <input matInput formControlName="title" type="text" placeholder="Document Title">
+            </mat-form-field>
+        </div>
+        <div fxLayout="column">
+            <mat-form-field fxFlex>
+                <mat-chip-list #chipList aria-label="Suggestions" formControlName="suggestions">
+                  <mat-chip *ngFor="let suggestion of fileUploadForm.get('suggestions').value" [selectable]="true" [removable]="true" (removed)="onRemoveSuggestion(suggestion)">
+                    {{suggestion}}
+                    <mat-icon matChipRemove>cancel</mat-icon>
+                  </mat-chip>
+                  <input class="min-chips-height" placeholder="Suggestions"
+                         [matChipInputFor]="chipList"
+                         [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                         [matChipInputAddOnBlur]="true"
+                         (matChipInputTokenEnd)="onAddSuggestion($event)">
+                </mat-chip-list>
+              </mat-form-field>
+        </div>
+        <div fxLayout="row">
+            <input #fileInput id="fileInput" type="file" [hidden]="true" (change)="onFileInputChange($event)">
+            <mat-form-field fxFlex [floatLabel]="'never'">
+                <input matInput type="text" formControlName="file" (click)="fileInput.click()"
+                    placeholder="Please Select a File ..." readonly>
+            </mat-form-field>
+            <button mat-mini-fab aria-label="Upload Button with Attachment Icon" (click)="fileInput.click()">
+                <mat-icon>attach_file</mat-icon>
+            </button>
+        </div>
+        <div fxLayout="column" fxLayoutAlign="center start">
+            <div style="margin: 20px">
+                <mat-checkbox color="primary" formControlName="ocr">Add OCR Data to Search Index</mat-checkbox>
+            </div>
+        </div>
+        <div fxLayout="column">
+            <button type="submit" mat-raised-button color="accent" [disabled]="isFileUploading">Index Document</button>
+        </div>
+    </div>
+</form>
+```
+
+The components styles are defined in ``components/file-upload/file-upload-component.scss``:
+
+```scss
+.file-input-container {
+    width: 500px;
+    margin: 25px;
+}
+
+.mat-form-field-padding {
+    margin: 15px;
+}
+```
+
+And the component class is defined in the TypeScript file ``components/file-upload/file-upload-component.ts``:
+
+
+```typescript
+import { COMMA, ENTER } from '@angular/cdk/keycodes';
+import { Component } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { environment } from '@environments/environment';
+import { FormControl, FormGroup, Validators, AbstractControl } from '@angular/forms';
+import { MatDialogRef } from '@angular/material/dialog';
+import { MatChipInputEvent } from '@angular/material/chips';
+import { StringUtils } from '@app/utils/string-utils';
+
+@Component({
+    selector: 'app-fileupload',
+    templateUrl: './file-upload.component.html',
+    styleUrls: ['./file-upload.component.scss']
+})
+export class FileUploadComponent {
+    file: File;
+
+    separatorKeysCodes: number[] = [ENTER, COMMA];
+
+    fileUploadForm = new FormGroup({
+        title: new FormControl('', Validators.required),
+        suggestions: new FormControl([], Validators.required),
+        file: new FormControl('', Validators.required),
+        ocr: new FormControl(false)
+    });
+
+    isFileUploading: boolean = false;
+
+    constructor(public dialogRef: MatDialogRef<FileUploadComponent>, private httpClient: HttpClient) {
+
+    }
+
+    onFileInputChange(fileInputEvent: any): void {
+        this.file = fileInputEvent.target.files[0];
+        this.fileControl.setValue(this.file?.name);
+    }
+
+    onAddSuggestion(event: MatChipInputEvent): void {
+
+        const input = event.input;
+        const value = event.value;
+
+        if (!StringUtils.isNullOrWhitespace(value)) {
+            this.suggestionsControl.setErrors(null);
+            this.suggestionsControl.value.push(value.trim());
+        }
+
+        if (input) {
+            input.value = '';
+        }
+
+        this.suggestionsControl.updateValueAndValidity();
+    }
+
+    onRemoveSuggestion(suggestion: string): void {
+        const index = this.suggestionsControl.value.indexOf(suggestion);
+
+        if (index >= 0) {
+            this.suggestionsControl.value.splice(index, 1);
+        }
+
+        this.suggestionsControl.updateValueAndValidity();
+    }
+
+
+    onSubmit(): void {
+
+        if (this.fileUploadForm.invalid) {
+            return;
+        }
+
+        this.isFileUploading = true;
+
+        this.httpClient
+            .post<any>(`${environment.apiUrl}/index`, this.buildRequestFormData())
+            .subscribe(x => {
+                this.isFileUploading = false;
+                this.dialogRef.close();
+            })
+    }
+
+    buildRequestFormData(): FormData {
+        const formData = new FormData();
+
+        formData.append('title', this.titleControl.value);
+        formData.append('suggestions', this.getCommaSeparatedSuggestions(this.suggestionsControl.value));
+        formData.append('file', this.file);
+        formData.append('isOcrRequested', this.ocrControl.value);
+
+        return formData;
+    }
+
+    getCommaSeparatedSuggestions(values: string[]): string {
+        return values
+            .map(x => `"${x}"`)
+            .join(",");
+    }
+
+    get titleControl(): AbstractControl {
+        return this.fileUploadForm.get('title');
+    }
+
+    get suggestionsControl(): AbstractControl {
+        return this.fileUploadForm.get('suggestions');
+    }
+
+    get fileControl(): AbstractControl {
+        return this.fileUploadForm.get('file');
+    }
+
+    get ocrControl(): AbstractControl {
+        return this.fileUploadForm.get('ocr');
+    }
+}
+```
+
+There is no magic involved: 
+
+* Reactive Forms are used to bind the ``<input>`` values.
+* The ``<mat-chip-list>`` code is copied from:
+    * [https://material.angular.io/components/chips/examples](https://material.angular.io/components/chips/examples)
+* A ``FormData`` object is sent to the endpoint ``${environment.apiUrl}/index``
+
+And that's it.
+    
+[@angular/flex-layout]: https://github.com/angular/flex-layout
 
 ## License ##
 
