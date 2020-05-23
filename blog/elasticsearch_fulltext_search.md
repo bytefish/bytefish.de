@@ -256,7 +256,18 @@ export class AppRoutingModule { }
 
 ### Components ###
 
-#### App Component ####
+#### AppComponent ####
+
+The ``AppComponent`` is going to host all other components. So it is going to contain a:
+
+* An ``<input>`` with ``type="search"`` for the search bar.
+* A ``<mat-menu>`` to navigate between pages.
+* A ``<router-outlet>`` to host child components.
+* A Floating Action Button to upload files.
+
+Please note, that I have used the ``<mat-autocomplete>`` to display the suggestions.
+
+The template is defined in the file ``app.component.html``:
 
 ```html
 <div class="search-container" fxLayout="column">
@@ -293,6 +304,9 @@ export class AppRoutingModule { }
 </button>
 ```
 
+Then we add some styling to the components in the file ``app.component.scss``:
+
+
 ```scss
 @import '~@angular/material/theming';
 
@@ -308,16 +322,6 @@ $accent:  mat-palette($mat-amber);
   box-shadow: 0 1px 2px rgba(0,0,0,0.05),0 1px 4px rgba(0,0,0,0.05),0 2px 8px rgba(0,0,0,0.05);
 }
 
-.search-link {
-
-  color: rgb(2, 80, 224);
-  text-decoration: none;
-
-  &:visited {
-    color:  rgb(2, 80, 224);
-  }
-}
-
 input {
   border: solid 1px black;
   outline: none;
@@ -329,38 +333,6 @@ input {
   font-size: 16px;
 }
 
-.small {
-  font-size: 12px;
-}
-
-h3 {
-  margin: 0;
-  font-size: 20px;
-  line-height: 1.3;
-}
-
-.mat-card-content {
-  margin: 0;
-}
-
-p {
-  margin: 0;
-}
-
-cite {
-  font-size: 12px;
-}
-
-.search-results {
-  background-color: #eee;
-  height: 100%;
-  padding: 25px;
-}
-
-.search-result {
-  width: 500px;
-}
-
 .add-button {
   position: fixed;
   top: auto;
@@ -369,6 +341,19 @@ cite {
   left: auto;
 }
 ```
+
+In the class component file at ``app.component.ts`` we wire things up. 
+
+The suggestions for the ``<mat-autocomplete>`` work by listening to ``valueChanges`` observable of 
+the ``FormControl`` and then ``pipe`` the value to an API endpoint. By using ``debounceTime(300)`` 
+not every single keystroke will be sent to the endpoint, but only after 300ms.
+
+Instead of sending the query directly to the search service, I am using Router navigation to transport 
+the state. That has the nice side-effect, that you can use ``/search?q=MySearch`` to search for documents 
+containing ``MySearch``. The ``OnInit`` method then submits the value to the ``SearchService``.
+
+Make sure to always use the ``catchError`` operator when defining Observables, because you don't want an 
+error to silently kill your atuo-complete or other subscriptions.
 
 ```typescript
 import { Component, ViewChild } from '@angular/core';
@@ -470,7 +455,228 @@ export class AppComponent {
   }
 }
 ```
-#### File Upload ####
+
+#### SearchComponent ####
+
+The ``SearchComponent`` holds the results of a query. It basically works by subscribing to the ``SearchService``, but 
+first let's take a look at the data model again:
+
+```typescript
+export enum SearchStateEnum {
+  Loading = "loading",
+  Finished = "finished",
+  Error = "error"
+}
+
+export interface SearchQuery {
+  state: SearchStateEnum;
+  data: SearchResults;
+  error: string;
+}
+
+export interface SearchResults {
+  query: string;
+  results: SearchResult[];
+}
+
+export interface SearchResult {
+  identifier: string;
+  title: string;
+  matches: string[];
+  keywords: string[];
+  url: string;
+  type: string;
+}
+```
+
+The ``SearchStateEnum`` defines three states a query can have:
+
+* ``Loading``
+* ``Finished``
+* ``Error``
+
+Based on the state we want to give the user some feedback, that the query is currently being processed. If the query was 
+successful, the ``SearchQuery`` holds the ``SearchResults``. Now if the query yielded no results, you probably want to 
+display some message based upon. 
+
+Long story short: In the template ``components/search/search.component.html`` you'll see, that the different states can 
+be handeled by simply using a ``[ngIf]``.
+
+```html
+<div fxFill fxLayout="column" style="padding-top: 25px;">
+  <ng-container *ngIf="query$ | async as query">
+    <!--  -->
+    <ng-template [ngIf]="query.state == 'loading'">
+      <div fxFlex fxLayout="row" fxLayoutAlign="center" style="margin-bottom:25px;">
+        <mat-spinner></mat-spinner>
+      </div>
+    </ng-template>
+    <!-- There was an error processing this request -->
+    <ng-template [ngIf]="query.state == 'error'">
+      <div fxFlex fxLayout="row" fxLayoutAlign="center" style="margin-bottom:25px;">
+        <p>We are very sorry... There was an error processing the request. Maybe try later again? 😓</p>
+      </div>
+    </ng-template>
+    <!--No results found -->
+    <ng-template [ngIf]="query.state == 'finished' && query.data?.results.length == 0">
+      <div fxFlex fxLayout="row" fxLayoutAlign="center" style="margin-bottom:25px;">
+        <p>This query has no results. Maybe try a different one? 😓</p>
+      </div>      
+    </ng-template>
+    <ng-template [ngIf]="query.state == 'finished' && query.data?.results.length > 0">
+      <div *ngFor="let result of query.data?.results" fxFlex fxLayout="row" style="margin-bottom:25px;">
+        <div fxFlex fxLayoutAlign="center">
+          <mat-card class="search-result">
+            <mat-card-content>
+              <div class="search-result-header" fxLayout="column">
+                <h3><a class="search-link" href="{{result.url}}">{{result.title}}</a></h3>
+              </div>
+              <div>
+                <br />
+                <p><strong>Matches in Content:</strong></p>
+                <ul>
+                  <li *ngFor="let match of result?.matches"><span [innerHtml]="match"></span></li>
+                </ul>
+              </div>
+              <div>
+                <mat-chip-list aria-label="Keywords">
+                  <mat-chip *ngFor="let keyword of result?.keywords" color="accent">{{keyword}}</mat-chip>
+                </mat-chip-list>
+              </div>
+            </mat-card-content>
+            <mat-card-actions>
+            </mat-card-actions>
+          </mat-card>
+        </div>
+      </div>
+    </ng-template>
+  </ng-container>
+</div>
+```
+
+We style the search results in the ``components/search/search.component.scss``, by adding some colors and paddings
+
+```scss
+.search-result {
+  width: 600px;
+}
+
+.search-results {
+  background-color: #eee;
+  height: 100%;
+  padding: 25px;
+}
+
+.search-link {
+
+  color: rgb(2, 80, 224);
+  text-decoration: none;
+
+  &:visited {
+    color:  rgb(2, 80, 224);
+  }
+}
+
+h3 {
+  margin: 0;
+  font-size: 20px;
+  line-height: 1.3;
+}
+
+.mat-card-content {
+  margin: 0;
+  word-wrap: break-word;
+}
+
+p {
+  margin: 0;
+}
+```
+
+And finally the TypeScript file for the ``SearchComponent`` in ``components/search/search.component.ts`` is very concise. 
+
+```typescript
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { SearchResults, SearchStateEnum, SearchQuery } from '@app/app.model';
+import { HttpClient } from '@angular/common/http';
+import { environment } from '@environments/environment';
+import { Observable, of, concat, Subject } from 'rxjs';
+import { map, switchMap, filter, catchError, takeUntil } from 'rxjs/operators';
+import { FormControl } from '@angular/forms';
+import { SearchService } from '@app/services/search.service';
+
+@Component({
+  selector: 'app-search',
+  templateUrl: './search.component.html',
+  styleUrls: ['./search.component.scss']
+})
+export class SearchComponent implements OnInit, OnDestroy {
+  
+  destroy$ = new Subject<void>();
+
+  control = new FormControl();
+  query$: Observable<SearchQuery>;
+
+  constructor(private httpClient: HttpClient, private searchService: SearchService) {
+
+  }
+
+  ngOnInit(): void {
+    this.query$ = this.searchService.onSearchSubmit()
+      .pipe(
+        filter(query => !!query.term),
+        switchMap(query =>
+          concat(
+            of(<SearchQuery>{ state: SearchStateEnum.Loading }),
+            this.doSearch(query.term).pipe(
+              map(results => <SearchQuery>{state: SearchStateEnum.Finished, data: results}),
+              catchError(err => of(<SearchQuery>{ state: SearchStateEnum.Error, error: err }))
+            )
+          )
+        ),
+        takeUntil(this.destroy$)
+      );
+  }
+
+  doSearch(query: string): Observable<SearchResults> {
+    return this.httpClient
+      .get<SearchResults>(`${environment.apiUrl}/search`, {
+        params: {
+          q: query
+        }
+      });
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+}
+```
+
+I know the ``Observable`` in ``ngOnInit`` looks a bit frightening, so let's dissect it a bit. 
+
+The component get's a ``SearchService`` injected, which provides a public method ``searchService.onSearchSubmit()``. This is 
+an ``Observable``, that emits search terms entered probably in some other component. Now think in Streams: 
+
+1. The ``SearchService`` emits a new search value...
+2. ... we check if it is not empty or undefined using the ``filter`` operator.
+3. ... we then transform the ``Observable`` with the search term into an ``Observable<SearchQuery>``, which is going to hold the results.
+4. ... inside the ``switchMap`` we are using ``concatMap``. ``concatMap`` makes sure to evaluate sequentially.
+5. ... we then query the API endpoint using ``doSearch`` method, which returns us the ``SearchResults``.
+6. ... by using the ``map`` operator we are transforming the ``SearchResults`` into a finished ``SearchQuery``.
+7. ... if an error occurs we are returning a ``SearchQuery`` in the error state.
+8. ... we listen for the stream until the component is destroyed. This pattern for unsubscribing streams was taken from RxJS samples.
+
+Now you might ask yourself: But where do you actually bind it to the component? This is done by using Angulars built-in ``async`` pipe:
+
+```html
+<ng-container *ngIf="query$ | async as query">
+    <!-- Work the SearchQuery ... -->
+</ng-container>
+```
+
+#### FileUploadComponent ####
 
 The file upload is a bit tricky and probably hard to digest for the "pure RESTful" API folk. The simplest 
 way to upload a file is what the browser offers, so I am sending a ``multipart/form-data`` HTTP request to 
@@ -545,7 +751,14 @@ The components styles are defined in ``components/file-upload/file-upload-compon
 }
 ```
 
-And the component class is defined in the TypeScript file ``components/file-upload/file-upload-component.ts``:
+And the component class is defined in the TypeScript file ``components/file-upload/file-upload-component.ts``.
+
+Again there is no magic involved: 
+
+* Reactive Forms are used to bind the ``<input>`` values.
+* The ``<mat-chip-list>`` code is copied from:
+    * [https://material.angular.io/components/chips/examples](https://material.angular.io/components/chips/examples)
+* A ``FormData`` object is sent to the endpoint ``${environment.apiUrl}/index``
 
 
 ```typescript
@@ -665,16 +878,266 @@ export class FileUploadComponent {
 }
 ```
 
-There is no magic involved: 
+#### Document Status ####
 
-* Reactive Forms are used to bind the ``<input>`` values.
-* The ``<mat-chip-list>`` code is copied from:
-    * [https://material.angular.io/components/chips/examples](https://material.angular.io/components/chips/examples)
-* A ``FormData`` object is sent to the endpoint ``${environment.apiUrl}/index``
+As a user you want to get some feedback what happened to my upload or what's happening *right now*. Has my document been 
+processed yet? How many documents failed to process and what's the reason? You probably want to delete documents altogether 
+or re-run some indexing.
 
-And that's it.
-    
-[@angular/flex-layout]: https://github.com/angular/flex-layout
+For this we are using a ``<mat-table>`` containing the relevant bits of data in the template file ``components/document-status/document-status.component.html``:
+
+```
+<div fxFill fxLayout="column">
+    <div fxFlex fxLayout="row" style="margin:25px;">
+        <div fxFlex *ngIf="isDataSourceLoading" fxLayoutAlign="center">
+            <mat-spinner></mat-spinner>
+        </div>
+        <div *ngIf="!isDataSourceLoading" fxFlex>
+            <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+                <ng-container matColumnDef="select">
+                    <th mat-header-cell *matHeaderCellDef>
+                        <mat-checkbox color="primary" (change)="$event ? masterToggle() : null"
+                            [checked]="selection.hasValue() && isAllSelected()"
+                            [indeterminate]="selection.hasValue() && !isAllSelected()" [aria-label]="checkboxLabel()">
+                        </mat-checkbox>
+                    </th>
+                    <td mat-cell *matCellDef="let row">
+                        <mat-checkbox color="primary" (click)="$event.stopPropagation()"
+                            (change)="$event ? selection.toggle(row) : null" [checked]="selection.isSelected(row)"
+                            [aria-label]="checkboxLabel(row)">
+                        </mat-checkbox>
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="id">
+                    <th mat-header-cell *matHeaderCellDef> Document ID </th>
+                    <td mat-cell *matCellDef="let element"> {{element.id}} </td>
+                </ng-container>
+                <ng-container matColumnDef="title">
+                    <th mat-header-cell *matHeaderCellDef> Title </th>
+                    <td mat-cell *matCellDef="let element"> {{element.title}} </td>
+                </ng-container>
+                <ng-container matColumnDef="filename">
+                    <th mat-header-cell *matHeaderCellDef> Filename </th>
+                    <td mat-cell *matCellDef="let element"> {{element.filename}} </td>
+                </ng-container>
+                <ng-container matColumnDef="isOcrRequested">
+                    <th mat-header-cell *matHeaderCellDef> Additional OCR </th>
+                    <td mat-cell *matCellDef="let element">
+                        <mat-checkbox color="primary" [checked]="element.isOcrRequested" [disableRipple]="true"
+                            (click)="$event.preventDefault()"> </mat-checkbox>
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="status">
+                    <th mat-header-cell *matHeaderCellDef> Status </th>
+                    <td mat-cell *matCellDef="let element"> {{element.status}} </td>
+                </ng-container>
+                <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="selection.toggle(row)">
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div fxFlex fxLayout="row" style="margin:25px;" fxLayoutAlign="end center" fxLayoutGap="25px">
+        <button mat-raised-button color="accent" (click)="scheduleSelectedDocuments()">Re-Index Documents (Alt + R)</button>
+        <button mat-raised-button color="accent" (click)="removeSelectedDocuments()">Remove Documents (Alt + Del)</button>
+    </div>
+</div>
+```
+
+The styling in ``components/document-status/document-status.component.scss`` sets the column width:
+
+```scss
+.document-status-container {
+  margin: 25px;
+}
+
+.mat-form-field-padding {
+  margin: 15px;
+}
+
+.min-chips-height {
+  min-height: 50px;
+}
+
+table {
+  width: 100%;
+}
+
+td.mat-column-select {
+  width: 50px;
+}
+
+td.mat-column-documentId {
+  width: 300px;
+}
+
+td.mat-column-filename {
+  width: 400px;
+}
+
+td.mat-column-isOcrRequested {
+  width: 100px;
+}
+
+td.mat-column-status {
+  width: 150px;
+}
+```
+
+
+In the class component file at ``components/document-status/document-status.component.ts`` the Document Status is loaded from 
+the API endpoint ``/status``. Initially the entire table is reloaded in the ``ngOnInit`` method. Every five seconds only the 
+state of each document is updated, so we do not override current selections.
+
+Keyboard Shortcuts often make life a lot easier for Power Users. So if you are designing UIs make sure to also include Keyboard 
+shortcuts for repititive tasks, so users don't get a Carpal tunnel syndrome.
+
+```typescript
+import { Component, OnInit, HostListener, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { environment } from '@environments/environment';
+import { MatTableDataSource } from '@angular/material/table';
+import { SelectionModel } from '@angular/cdk/collections';
+import { DocumentStatus } from '@app/app.model';
+import { catchError, concatMap, mergeMap, toArray, tap, takeUntil } from 'rxjs/operators';
+import { of, from, Subject, interval } from 'rxjs';
+
+@Component({
+  selector: 'app-document-status',
+  templateUrl: './document-status.component.html',
+  styleUrls: ['./document-status.component.scss']
+})
+export class DocumentStatusComponent implements OnInit, OnDestroy {
+
+  private destroy$ = new Subject<void>();
+
+  displayedColumns: string[] = ['select', 'id', 'title', 'filename', 'isOcrRequested', 'status'];
+
+  isDataSourceLoading: boolean = false;
+  dataSource = new MatTableDataSource<DocumentStatus>();
+  selection = new SelectionModel<DocumentStatus>(true, []);
+
+  constructor(private httpClient: HttpClient, private changeDetectorRefs: ChangeDetectorRef) {
+
+  }
+
+  ngOnInit(): void {
+    interval(5000)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => this.reloadStatusValues());
+
+    this.reloadDataTable();
+  }
+
+  reloadDataTable() {
+    this.selection.clear();
+
+    this.httpClient
+      .get<DocumentStatus[]>(`${environment.apiUrl}/status`)
+      .pipe(
+        catchError(() => of<DocumentStatus[]>([])))
+      .subscribe(data => {
+        this.dataSource.data = data;
+      });
+  }
+
+  reloadStatusValues() {
+    this.httpClient
+      .get<DocumentStatus[]>(`${environment.apiUrl}/status`)
+      .pipe(
+        catchError(() => of<DocumentStatus[]>([])))
+      .subscribe(data => {
+
+        const status = new Map(data.map(i => [i.id, i.status]));
+
+        this.dataSource.data
+          .forEach(row => {
+            if (status.has(row.id)) {
+              row.status = status.get(row.id);
+            }
+          });
+
+        this.changeDetectorRefs.detectChanges();
+      });
+  }
+
+
+  /** Whether the number of selected elements matches the total number of rows. */
+  isAllSelected() {
+    const numSelected = this.selection.selected.length;
+    const numRows = this.dataSource.data.length;
+    return numSelected === numRows;
+  }
+
+  /** Selects all rows if they are not all selected; otherwise clear selection. */
+  masterToggle() {
+    this.isAllSelected() ?
+      this.selection.clear() :
+      this.dataSource.data.forEach(row => this.selection.select(row));
+  }
+
+  /** The label for the checkbox on the passed row */
+  checkboxLabel(row?: DocumentStatus): string {
+    if (!row) {
+      return `${this.isAllSelected() ? 'select' : 'deselect'} all`;
+    }
+    return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row ${row.id}`;
+  }
+
+  @HostListener('document:keyup', ['$event'])
+  handleKeyboardEvent(event: KeyboardEvent) {
+    if (event.altKey && event.key === 'Delete') {
+      this.removeSelectedDocuments();
+    }
+
+    if (event.altKey && (event.key === 'r' || event.key === 'R')) {
+      this.scheduleSelectedDocuments();
+    }
+  }
+
+  removeSelectedDocuments() {
+
+    var documentsToRemove = this.selection.selected
+
+    from(documentsToRemove)
+      .pipe(
+        mergeMap(x => this.httpClient.delete(`${environment.apiUrl}/status/${x.id}`)),
+        toArray()
+      )
+      .subscribe(() => this.reloadDataTable());
+  }
+
+  scheduleSelectedDocuments() {
+
+    var documentsToIndex = this.selection.selected
+
+    from(documentsToIndex)
+      .pipe(
+        mergeMap(x => this.httpClient.post<any>(`${environment.apiUrl}/status/${x.id}/index`, [])),
+        toArray()
+      )
+      .subscribe(() => this.reloadDataTable());
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+}
+```
+
+## Backend ##
+
+So far we have written the Frontend. Of course this whole process of writing applications is always some kind of 
+Chicken-Egg problem. What comes first, the Frontend or the Backend? I say neither. It's evolution. 
+
+In my projects I often start with a Database model. 
+
+
+
+## Conclusion ##
+
+I think Angular is a good framework to quickly **get something done**. 
 
 ## License ##
 
