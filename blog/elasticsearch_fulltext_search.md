@@ -197,8 +197,13 @@ export interface DocumentStatus {
 
 ### Services ###
 
-In the file ``service/search.service.ts`` we are using a ``BehaviorSubject``, which replays the 
-last emitted event to all subscribers and starts with an empty search term.
+One way to pass data between Angular components is to use a shared services, like described in the Angular Guide:
+
+* [https://angular.io/guide/component-interaction#parent-and-children-communicate-via-a-service](https://angular.io/guide/component-interaction#parent-and-children-communicate-via-a-service)
+
+We need to pass the search term to the child components, so we define ``SearchService``. In the file 
+``service/search.service.ts`` we are using a ``BehaviorSubject``, which replays the last search query 
+to all subscribers and initially starts with an empty search term.
 
 ```typescript
 import { Injectable } from '@angular/core';
@@ -262,14 +267,16 @@ export class AppRoutingModule { }
 
 #### AppComponent ####
 
-The ``AppComponent`` is going to host all other components. So it is going to contain a:
+The ``AppComponent`` is going to host all other child components. 
 
-* An ``<input>`` with ``type="search"`` for the search bar.
+It is going to contain a:
+
+* An ``<input>`` with ``type="search"`` in a search bar.
 * A ``<mat-menu>`` to navigate between pages.
 * A ``<router-outlet>`` to host child components.
-* A Floating Action Button to upload files.
+* A Floating Action Button (FAB) to show a file upload dialog.
 
-Please note, that I have used the ``<mat-autocomplete>`` to display the suggestions.
+The Angular Material ``<mat-autocomplete>`` component will be used to display the suggestions.
 
 The template is defined in the file ``app.component.html``:
 
@@ -310,7 +317,6 @@ The template is defined in the file ``app.component.html``:
 
 Then we add some styling to the components in the file ``app.component.scss``:
 
-
 ```scss
 @import '~@angular/material/theming';
 
@@ -346,18 +352,18 @@ input {
 }
 ```
 
-In the class component file at ``app.component.ts`` we wire things up. 
+And in the class component file at ``app.component.ts`` we wire things up.
 
-The suggestions for the ``<mat-autocomplete>`` work by listening to ``valueChanges`` observable of 
-the ``FormControl`` and then ``pipe`` the value to an API endpoint. By using ``debounceTime(300)`` 
-not every single keystroke will be sent to the endpoint, but only after 300ms.
+How do the suggestions for the ``<mat-autocomplete>`` work? A ``FormControl`` in Angular provides the Observable ``valueChanges``, 
+by using ``debounceTime(300)`` we make sure not every single keystroke is sent to the server but only after 300ms. We are then 
+using the ``switchMap`` operator to query the Suggestions API endpoint.
 
-Instead of sending the query directly to the search service, I am using Router navigation to transport 
-the state. That has the nice side-effect, that you can use ``/search?q=MySearch`` to search for documents 
-containing ``MySearch``. The ``OnInit`` method then submits the value to the ``SearchService``.
+Now when a user enters a query I am using Router navigation to navigate to the ``/search`` page. This has the nice side-effect, 
+that you can use ``/search?q=MySearch`` in a URL to search for documents containing ``MySearch``. The ``ngOnInit`` method then 
+emits the search term to the ``SearchService``.
 
-Make sure to always use the ``catchError`` operator when defining Observables, because you don't want an 
-error to silently kill your atuo-complete or other subscriptions.
+Make sure to always use the ``catchError`` operator when defining Observables, because you don't want an error to silently kill your 
+atuo-complete or other subscriptions.
 
 ```typescript
 import { Component, ViewChild } from '@angular/core';
@@ -462,8 +468,9 @@ export class AppComponent {
 
 #### SearchComponent ####
 
-The ``SearchComponent`` holds the results of a query. It basically works by subscribing to the ``SearchService``, but 
-first let's take a look at the data model again:
+The ``SearchComponent`` shows the results of a query. 
+
+First let's take a look at the data model again:
 
 ```typescript
 export enum SearchStateEnum {
@@ -499,12 +506,14 @@ The ``SearchStateEnum`` defines three states a query can have:
 * ``Finished``
 * ``Error``
 
-Based on the state we want to give the user some feedback, that the query is currently being processed. If the query was 
-successful, the ``SearchQuery`` holds the ``SearchResults``. Now if the query yielded no results, you probably want to 
-display some message based upon. 
+Based on the state we want to give the user some feedback:
 
-Long story short: In the template ``components/search/search.component.html`` you'll see, that the different states can 
-be handeled by simply using a ``[ngIf]``.
+* Is the search currently being processed?
+* Has the search finished successfully?
+* Has the search finished successfully without results?
+* Has the search run into an error?
+
+In the template ``components/search/search.component.html`` you'll see, that these different states can be handeled by simply using a ``[ngIf]``.
 
 ```html
 <div fxFill fxLayout="column" style="padding-top: 25px;">
@@ -663,16 +672,19 @@ I know the ``Observable`` in ``ngOnInit`` looks a bit frightening, so let's diss
 The component get's a ``SearchService`` injected, which provides a public method ``searchService.onSearchSubmit()``. This is 
 an ``Observable``, that emits search terms entered probably in some other component. Now think in Streams: 
 
-1. The ``SearchService`` emits a new search value...
-2. ... we check if it is not empty or undefined using the ``filter`` operator.
-3. ... we then transform the ``Observable`` with the search term into an ``Observable<SearchQuery>``, which is going to hold the results.
-4. ... inside the ``switchMap`` we are using ``concatMap``. ``concatMap`` makes sure to evaluate sequentially.
-5. ... we then query the API endpoint using ``doSearch`` method, which returns us the ``SearchResults``.
-6. ... by using the ``map`` operator we are transforming the ``SearchResults`` into a finished ``SearchQuery``.
-7. ... if an error occurs we are returning a ``SearchQuery`` in the error state.
-8. ... we listen for the stream until the component is destroyed. This pattern for unsubscribing streams was taken from RxJS samples.
+1. The ``SearchService`` emits a new search term ...
+2. ... we check if the search term is not empty or undefined using the ``filter`` operator.
+3. ... we then transform the ``Observable`` with the search term into an ``Observable<SearchQuery>``.
+4. ... inside the ``switchMap`` we are using ``concatMap``. ``concatMap`` makes sure the following operators evaluate sequentially.
+5. ... we start by emitting a ``SearchQuery`` in the ``Loading`` state.
+6. ... we then query the API endpoint using ``doSearch`` method, which returns us the ``SearchResults``.
+7. ... by using the ``map`` operator we are transforming the ``SearchResults`` into a finished ``SearchQuery``.
+8. ... if an error occurs we are returning a ``SearchQuery`` in the error state.
+9. ... we listen for the stream until the component is destroyed. The ``takeUntil(destroy$)`` pattern for unsubscribing streams was taken from RxJS samples.
 
-Now you might ask yourself: But where do you actually bind it to the component? This is done by using Angulars built-in ``async`` pipe:
+Now you might ask yourself: But where do you actually bind the data to the template? 
+
+This is done by using Angulars built-in ``async`` pipe:
 
 ```html
 <ng-container *ngIf="query$ | async as query">
@@ -682,9 +694,11 @@ Now you might ask yourself: But where do you actually bind it to the component? 
 
 #### FileUploadComponent ####
 
-The file upload is a bit tricky and probably hard to digest for the "pure RESTful" API folk. The simplest 
-way to upload a file is what the browser offers, so I am sending a ``multipart/form-data`` HTTP request to 
-an endpoint and send the values in form fields.
+The file upload is a bit tricky and probably hard to digest for the "pure RESTful" API folk. 
+
+The easiest way to upload files is to use, what the browser already offers. 
+
+So I am sending a ``multipart/form-data`` HTTP request to an endpoint and send all values in form fields.
 
 Basically I need ...
 
@@ -1130,17 +1144,76 @@ export class DocumentStatusComponent implements OnInit, OnDestroy {
 }
 ```
 
+### Module ###
+
+The ``app.module.ts`` now imports all Angular Material dependencies, provides the ``SearchService`` and 
+declares the ``AppComponent``, ``SearchComponent``, ``FileUploadComponent`` and ``DocumentStatusComponent``:
+
+```typescript
+import { BrowserModule } from '@angular/platform-browser';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
+import { NgModule } from '@angular/core';
+import { AppRoutingModule } from './app-routing.module';
+import { AppComponent } from './app.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { FlexLayoutModule } from '@angular/flex-layout';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatIconModule } from '@angular/material/icon';
+import { MatCardModule } from '@angular/material/card';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatTableModule } from '@angular/material/table';
+import { MatMenuModule } from '@angular/material/menu';
+import { FileUploadComponent } from '@app/components/file-upload/file-upload.component';
+import { SearchComponent } from '@app/components/search/search.component';
+import { DocumentStatusComponent } from '@app/components/document-status/document-status.component';
+import { SearchService } from './services/search.service';
+
+@NgModule({
+  declarations: [
+    AppComponent,
+    SearchComponent,
+    FileUploadComponent,
+    DocumentStatusComponent
+  ],
+  imports: [
+    BrowserModule,
+    HttpClientModule,
+    AppRoutingModule,
+    BrowserAnimationsModule,
+    ReactiveFormsModule,
+    FormsModule,
+    FlexLayoutModule,
+    MatInputModule,
+    MatCardModule,
+    MatFormFieldModule,
+    MatAutocompleteModule,
+    MatDialogModule,
+    MatProgressSpinnerModule,
+    MatButtonModule,
+    MatIconModule,
+    MatChipsModule,
+    MatCheckboxModule,
+    MatTableModule,
+    MatMenuModule
+  ],
+  providers: [
+    SearchService
+  ],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+```
+
 ## Backend ##
 
-Of course this whole process of writing applications is always some kind of Chicken-Egg problem:
-
-> What comes first, the Frontend or the Backend?
-
-I say neither. It's evolution.
-
-If you look at the repositories history you can see, that I started by exploring what Elasticsearch can provide. Then 
-I wrote some kind of upload component. Then I implemented some kind of indexing pipeline, which I later put in a 
-``BackgroundService`` so it isn't blocking HTTP Requests... which led to a Document Status view.
+So let's now get to the Backend!
 
 ### Overview ###
 
@@ -1152,6 +1225,7 @@ It's a good idea to look at the high-level structure of the Backend first:
     </a>
 </div>
 
+These namespaces are used for:
 
 * ``Contracts``
     * The Data Transfer Objects exchanged between the Frontend and Backend. 
@@ -1181,18 +1255,22 @@ It's a good idea to look at the high-level structure of the Backend first:
 * ``Startup.cs``
     * Configures the HTTP Pipeline.
 
-Now documenting and explaining how code fits together is always somewhat complicated. And I am *particularly bad* at UML Class Diagrams and UML Sequence Diagrams. 
+Now documenting and explaining how code fits together is always somewhat complicated. 
+
+And I am *particularly bad* at UML Class Diagrams and UML Sequence Diagrams. 
 
 So I explain it in a way it makes sense to me.
 
 ### Database ###
 
-I think it's almost always wrong to have Elasticsearch as your primary data store for any application. Document databases are 
-perfect for what they are meant to be: Indexing document and providing a fulltext search engines. It's not useful to shoehorn 
-a Document database like Elasticsearch into the single source of truth.
+Let's start with the database.
 
-So what I am doing instead is to write the file and meta data into a Postgres database first. "What the actual ...! You cannot 
-write binary data into a SQL database!" I hear you say. But it's like this: Keeping files on disk and database in sync requires a 
+Document databases are perfect for what they are meant to be: Indexing document and providing a fulltext search engines. It's 
+not useful to shoehorn a Document database like Elasticsearch into the single source of truth. That's what I am always using 
+Postgres for.
+
+It works like this: I will write the file and meta data into a Postgres database first. "What the actual ...! You cannot write 
+binary data into a SQL database!" I hear you say. But it's like this: Keeping files on disk and database in sync requires a 
 complexity I don't want to introduce in a simple example.
 
 And while you are not scaling to thousands of concurrent users: [Keep It Simple, Stupid]. 
@@ -1332,7 +1410,6 @@ namespace ElasticsearchFulltextExample.Web.Database.Model
 }
 ```
 
-
 #### Mapping to Database Table and Columns ####
 
 EntityFramework Core provides the interface ``IEntityTypeConfiguration<T>`` to build mappings between the 
@@ -1413,17 +1490,14 @@ namespace ElasticsearchFulltextExample.Web.Database.TypeConfigurations
 }
 ```
 
-There are a few things to note. First of all the ``StatusEnum`` is converted to an ``int``, when writing to the database and converted 
-from ``int`` to the ``StatusEnum`` on its way back. While you could move the ``Keywords`` and ``Suggestions`` property into a new table, 
-I decided to just write a delimited list into the database.
+There are a few things to note. 
 
-The reason is simply: I don't want this example to explode with code. This way I can quickly map between the uploaded document and the 
-database. If you need to query for keywords or suggestions in the database or put constraints on them, you should correctly put the entities 
-in their own table and provide a many-to-many relationship using a junction table.
+* The ``StatusEnum`` is converted to an ``int``, when writing to the database and converted from ``int`` to the ``StatusEnum`` on its way back. 
+* ``Keywords`` and ``Suggestions`` are just comma separated lists. If you need to query for keywords or suggestions create tables for them.
 
 ##### Converting between a String[] and String #####
 
-You could easily switch the database for this example from let's say PostgreSQL to SQLite. And while Postgres knows how to deal with Arrays, 
+You could easily switch the database for this example from let's say PostgreSQL to SQLite. And while Postgres knows how to deal with arrays, 
 SQLite or other databases do not. That's why we just write a comma separated list when writing the array, and split the data on reading it back 
 from the database.
 
@@ -1456,13 +1530,10 @@ namespace ElasticsearchFulltextExample.Web.Database
 }
 ```
 
-EntityFramework Core needs something called a ``ValueComparer<T>`` when operating on a ``ChangeTracking`` graph, because it needs to know 
-if a value has changed and its update magic should be applied. So we are providing a ``StringArrayValueComparer``. 
+EntityFramework Core needs something called a ``ValueComparer<T>`` when operating on the ``ChangeTracking`` graph, because it needs to know 
+if a value has changed and its update magic should be applied. So we are providing a ``StringArrayValueComparer``:
 
 ```csharp
-// Copyright (c) Philipp Wagner. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
-
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System;
 using System.Linq;
@@ -1479,8 +1550,8 @@ namespace ElasticsearchFulltextExample.Web.Database.ValueComparers
 
 #### The DbContext ####
 
-The ``ApplicationDbContext`` now has one ``DbSet`` only, the documents. We are using EntityFramework Fluent mappings, so we need to override the  
-``OnModelCreating(ModelBuilder modelBuilder)`` method of the ``DbContext`` and provide the ``DocumentTypeConfiguration``.
+The ``ApplicationDbContext`` now has one ``DbSet<Document>``. We are using the EntityFramework Core Fluent mappings, so it's neccessary 
+to override the  ``OnModelCreating(ModelBuilder modelBuilder)`` method and pass the ``IEntityTypeConfiguration``.
 
 ```csharp
 using ElasticsearchFulltextExample.Web.Database.Model;
@@ -1506,9 +1577,9 @@ namespace ElasticsearchFulltextExample.Web.Database.Context
 
 #### Reasons behind a DbContextFactory ####
 
-You may have seen, that I am also providing a Factory for providing a ``DbContext``. Why on earth is he doing this you might ask?
+You may have seen, that I a factory is used to create a new ``DbContext``. Why on earth is he doing this you might ask?
 
-In EntityFramework 6 it was possible to instantiate a ``DbContext`` when you felt like, let's say something like this:
+In EntityFramework 6 it was possible to simply instantiate a ``DbContext`` when you felt like:
 
 ```csharp
 using(var context = new ApplicationDbContext("MyConnectionString") 
@@ -1517,14 +1588,15 @@ using(var context = new ApplicationDbContext("MyConnectionString")
 }
 ```
 
-But in ASP.NET Core you are supposed to inject the ``DbContext`` and there is no **obvious** way to instantiate a ``DbContext`` 
-without using Dependency Injection. The EntityFramework Core issue tracker contains an interesting discussion on this "issue":
+But in ASP.NET Core you are supposed to inject the ``DbContext`` and there is no **obvious** way to pass a Connection String 
+from a configuration file into the ``DbContext``. The EntityFramework Core issue tracker on GitHub contains an interesting 
+discussion on this:
 
 * [https://github.com/dotnet/efcore/issues/2718](https://github.com/dotnet/efcore/issues/2718)
 
-And while there are probably some ways of doing it, I simply add another abstraction layer and have a factory building 
-the ``DbContext`` for me. This way I don't have to deal with injecting a ``DbContext`` and thinking about it's scope, lifetime
-and the state of the ``ChangeTracker`` when used in multiple methods.
+And while there are probably some ways of fixing this, I simply add another abstraction layer and have a factory building 
+the ``DbContext`` for me. This way I don't have to deal with injecting a ``DbContext`` and don't have to think about it's scope, 
+lifetime and the state of the ``ChangeTracker``.
 
 ```csharp
 using ElasticsearchFulltextExample.Web.Database.Context;
@@ -1751,8 +1823,6 @@ Powerpoint, PDF, ... files?". And finally we can answer it. In this example it's
 > between base64, you can use the CBOR format instead of JSON and specify the field as a bytes array instead of a string 
 > representation. The processor will skip the base64 decoding then.
 
-
-
 Most of the code in this article is taken from "The Future of Attachments for Elasticsearch and .NET":
 
 * [https://www.elastic.co/blog/the-future-of-attachments-for-elasticsearch-and-dotnet](https://www.elastic.co/blog/the-future-of-attachments-for-elasticsearch-and-dotnet)
@@ -1826,10 +1896,6 @@ namespace ElasticsearchFulltextExample.Web.Elasticsearch.Model
 #### Create the Elasticsearch mapping using the Mapping API ####
 
 [elastic.co]: https://www.elastic.co/
-
-To put yet another abstraction layer on top, we wrap the communication with Elasticsearch into the ``ElasticsearchClient``. The 
-``ElasticsearchClient`` will be reposible for creating indexes, create document mappings, add / delete documents, provide search 
-results and suggestions. 
 
 The ``ElasticsearchDocument`` Mapping is defined in the method ``ElasticsearchClient#CreateIndexAsync``. Again most of the Attachment 
 mapping was taken from the [elastic.co] blog post. We are mapping the ``Keywords`` property to a ``Keyword`` field type and the 
@@ -2120,14 +2186,7 @@ namespace ElasticsearchFulltextExample.Web.Services
 
 ### IndexController ###
 
-In the Frontend section we have seen, that I am using a ``multipart/form-data`` request to upload documents and meta data. People might 
-wonder: Why aren't you using a Base64 representation for the file? Put it in a clean JSON object and have a nice RESTful endpoint!
-
-It's because turning an uploaded file into Base64 on client-side is a nightmare and not that simple, plus I don't want to keep all 
-data in memory when uploading the binary file to the server. What would happen, if you turn a 30 Megabyte PDF file into Base64? Exactely: 
-The server memory would probably explode... especially when 3 concurrent uploads are done.
-
-Live a happy life and don't be too dogmatic about APIs.
+In the Frontend section we have seen, that I am using a ``multipart/form-data`` request to upload documents and meta data.
 
 #### Data Model ####
 
