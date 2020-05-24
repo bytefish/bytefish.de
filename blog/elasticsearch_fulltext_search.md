@@ -2,7 +2,7 @@
 date: 2020-05-24 13:59
 tags: dotnet, elasticsearch, tesseract
 category: elasticsearch
-slug: fulltext_search_example
+slug: elasticsearch_fulltext_search
 author: Philipp Wagner
 summary: This article shows how to implement Full Text Search and Auto-Completion with ASP.NET Core, Angular and Elasticsearch.
 
