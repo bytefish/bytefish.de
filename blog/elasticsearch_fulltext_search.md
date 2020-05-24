@@ -7,8 +7,10 @@ author: Philipp Wagner
 summary: This article shows how to implement Full Text Search and Auto-Completion with ASP.NET Core, Angular and Elasticsearch.
 
 Every project grows to a point it needs to support a Fulltext Search. And once you reach the point 
-you'll need to give estimates. But have you ever built such a thing? How do you extract data from 
-PDF files? Microsoft Word? Microsoft Excel? Microsoft PowerPoint? RTF? JPEG Images?
+you'll need to give estimates.
+
+But have you ever built such a thing? How do you extract data from PDF files? Microsoft Word? Microsoft 
+Excel? Microsoft PowerPoint? RTF? JPEG Images? How do you call Elasticsearch and process its results?
 
 In this article I will develop a simple Fulltext Search Frontend and Backend using ASP.NET Core, 
 Angular 9, Elasticsearch, Tesseract and PostgreSQL. It is meant as a basis for quick prototyping 
@@ -79,8 +81,9 @@ things. It's all basic Angular.
 
 #### Adding Paths to the tsconfig.json ####
 
-In the ``tsconfig.json`` ``compilerOptions`` I am adding ``paths``. So we can import components and services using 
-``@app`` and ``@environments`` instead of having to use relative paths:
+When importing components and services in Angular I want to write ``@app`` and ``@environments`` for referencing the app 
+and environment folders instead of having to use relative paths. You can set this by adding a section ``paths`` in the 
+``tsconfig.json``, like this:
 
 ```json
 {
@@ -122,12 +125,12 @@ export const environment = {
 
 ### The Data Model ###
 
-I am going to keep it very simple for this application and put all data contracts in a global file 
-I have called ``app.model.ts``. In a larger application you probably want to modularize your Angular 
-application, but this is sufficient for now.
+I am going to keep it very simple for this application and put all data contracts in a global file called 
+``app.model.ts``. In a larger application you probably want to modularize your Angular application, but this 
+is sufficient for now.
 
-The interfaces ``SearchStateEnum``, ``SearchQuery``, ``SearchResults`` and ``SearchResult`` hold the Search 
-results for a given query:
+The interfaces ``SearchStateEnum``, ``SearchQuery``, ``SearchResults`` and ``SearchResult`` hold the 
+Search results for a given query:
 
 ```typescript
 export enum SearchStateEnum {
@@ -157,7 +160,7 @@ export interface SearchResult {
 }
 ```
 
-For the suggestions we define two interfaces ``SearchSuggestions`` and ``SearchSuggestion``:
+For the suggestions in the Auto-Complete Box we define two interfaces ``SearchSuggestions`` and ``SearchSuggestion``:
 
 ```typescript
 export interface SearchSuggestions {
@@ -1724,6 +1727,8 @@ namespace ElasticsearchFulltextExample.Web.Services
 
 ### Elasticsearch ###
 
+[Ingest Attachment Processor Plugin]: https://www.elastic.co/guide/en/elasticsearch/plugins/master/ingest-attachment.html
+
 If you are working with .NET there is a great library to interface with an Elasticsearch server: NEST. 
 
 According to the Elasticsearch documentation NEST ...
@@ -1735,8 +1740,7 @@ According to the Elasticsearch documentation NEST ...
 > client when wishing to.
 
 Elasticsearch can be extended using Plugins, which brings us back to the original question: "How do we read data from Excel, 
-Powerpoint, PDF, ... files?". And finally we can answer it. In this example it's done by using the 
-[Ingest Attachment Processor Plugin]:
+Powerpoint, PDF, ... files?". And finally we can answer it. In this example it's done by using the [Ingest Attachment Processor Plugin]:
 
 > The ingest attachment plugin lets Elasticsearch extract file attachments in common formats (such as PPT, XLS, and PDF) 
 > by using the Apache text extraction library Tika.
@@ -1747,7 +1751,7 @@ Powerpoint, PDF, ... files?". And finally we can answer it. In this example it's
 > between base64, you can use the CBOR format instead of JSON and specify the field as a bytes array instead of a string 
 > representation. The processor will skip the base64 decoding then.
 
-[Ingest Attachment Processor Plugin]: https://www.elastic.co/guide/en/elasticsearch/plugins/master/ingest-attachment.html
+
 
 Most of the code in this article is taken from "The Future of Attachments for Elasticsearch and .NET":
 
@@ -1755,15 +1759,13 @@ Most of the code in this article is taken from "The Future of Attachments for El
 
 #### ElasticsearchDocument ####
 
-It starts with defining the ``ElasticsearchDocument``: What should the document in Elasticsearch look like? We pipe through 
-the keywords and suggestions, and pass in the data as a byte array to Elasticsearch. There is also a Property ``Attachment`` 
-using ``Nest.Attachment`` as its data type.
+What should the document in Elasticsearch look like? This is defined in the ``ElasticsearchDocument`` class.
 
 I suggest reading the  "The Future of Attachments for Elasticsearch and .NET" for more information:
 
 * [https://www.elastic.co/blog/the-future-of-attachments-for-elasticsearch-and-dotnet](https://www.elastic.co/blog/the-future-of-attachments-for-elasticsearch-and-dotnet)
 
-The ``ElasticsearchDocument`` model then looks like this: 
+The ``ElasticsearchDocument`` model now looks like this: 
 
 ```csharp
 using Nest;
