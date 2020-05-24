@@ -1,10 +1,10 @@
 ﻿title: Building a Fulltext Search Engine with ASP.NET Core, Angular 9, Elasticsearch and Tesseract
-date: 2020-05-22 13:59
+date: 2020-05-24 13:59
 tags: dotnet, elasticsearch, tesseract
 category: elasticsearch
 slug: fulltext_search_example
 author: Philipp Wagner
-summary: This article shows how to implement Full Text Search, Auto-Completion with ASP.NET Core, Angular and Elasticsearch
+summary: This article shows how to implement Full Text Search and Auto-Completion with ASP.NET Core, Angular and Elasticsearch.
 
 Every project grows to a point it needs to support a Fulltext Search. And once you reach the point 
 you'll need to give estimates. But have you ever built such a thing? How do you extract data from 
@@ -14,7 +14,7 @@ In this article I will develop a simple Fulltext Search Frontend and Backend usi
 Angular 9, Elasticsearch, Tesseract and PostgreSQL. It is meant as a basis for quick prototyping 
 and iterate on ideas.
 
-You can find all code on 
+You can find all code in my GitHub repository at:
 
 * [https://github.com/bytefish/ElasticsearchFulltextExample](https://github.com/bytefish/ElasticsearchFulltextExample)
 
@@ -22,8 +22,9 @@ You can find all code on
 
 Let's take a look at what we will build.
 
-Basically we need a way to send documents from a client to a server, so we will build a small 
-dialog for uploading files and adding some metadata like keywords and a document title:
+If we want to make documents searchable, we need a way to send documents from a client to a server, 
+so we will build a small dialog for uploading files and adding some metadata like keywords and a document 
+title:
 
 <div style="display:flex; align-items:center; justify-content:center;margin-bottom:15px;">
     <a href="/static/images/blog/elasticsearch_fulltext_search/Frontend_AddDocument.png">
@@ -41,8 +42,8 @@ status for each document:
     </a>
 </div>
 
-What's a modern search without getting suggestions? Suggestions can help users find interesting 
-content or reduce typos. So we'll also add an Auto-Completion box:
+What's a modern search without getting suggestions? Suggestions can help users find interesting content 
+or reduce typos. So we'll also add an Auto-Completion box:
 
 <div style="display:flex; align-items:center; justify-content:center;margin-bottom:15px;">
     <a href="/static/images/blog/elasticsearch_fulltext_search/Frontend_Auto_Completion.png">
@@ -50,8 +51,11 @@ content or reduce typos. So we'll also add an Auto-Completion box:
     </a>
 </div>
 
-And what are we building all this for? Exactely, for getting search results on the uploaded data. The 
-final result will contain the highlighted results from the Elasticsearch server:
+And what are we building all this for? 
+
+Exactely, for getting search results on the uploaded data! 
+
+The search results will contain the highlighted matches from the Elasticsearch server:
 
 <div style="display:flex; align-items:center; justify-content:center;margin-bottom:15px;">
     <a href="/static/images/blog/elasticsearch_fulltext_search/Frontend_Search_Results.png">
@@ -62,16 +66,16 @@ final result will contain the highlighted results from the Elasticsearch server:
 ## Frontend ##
 
 The Frontend is written with Angular 9. And it should be obvious, that I am not a great UI designer or 
-CSS wizard. Just take a look at my minimal website, and even that took me weeks to build!
+CSS wizard. Just take a look at my minimal website... and even that took me weeks to build!
 
 That's why the project uses the Angular Material components:
 
 * [https://material.angular.io/](https://material.angular.io/)
 
-Also note, that I am not using ngrx or any Redux libraries in the code, just because it would 
-overcomplicate things. It's all basic Angular. 
+Also note, that I am not using ngrx or any Redux libraries in the code, just because it would overcomplicate 
+things. It's all basic Angular.
 
-### Configuring the Environment ###
+### Preparation ###
 
 #### Adding Paths to the tsconfig.json ####
 
@@ -116,14 +120,14 @@ export const environment = {
 };
 ```
 
-### Defining the Data Model ###
+### The Data Model ###
 
 I am going to keep it very simple for this application and put all data contracts in a global file 
 I have called ``app.model.ts``. In a larger application you probably want to modularize your Angular 
 application, but this is sufficient for now.
 
-The interfaces ``SearchStateEnum``, ``SearchQuery``, ``SearchResults`` and ``SearchResult`` hold the 
-Search results for a given query:
+The interfaces ``SearchStateEnum``, ``SearchQuery``, ``SearchResults`` and ``SearchResult`` hold the Search 
+results for a given query:
 
 ```typescript
 export enum SearchStateEnum {
@@ -167,8 +171,7 @@ export interface SearchSuggestion {
 }
 ```
 
-And a document in the index can have a status and general file informations... like a filename, 
-a title and if OCR was requested on the document or not.
+And to get an overview of indexed documents we are defining a ``DocumentStatus`` interface:
 
 ```typescript
 export enum StatusEnum {
@@ -190,8 +193,6 @@ export interface DocumentStatus {
 ```
 
 ### Services ###
-
-#### Search Service ####
 
 In the file ``service/search.service.ts`` we are using a ``BehaviorSubject``, which replays the 
 last emitted event to all subscribers and starts with an empty search term.
@@ -3027,12 +3028,59 @@ namespace ElasticsearchFulltextExample.Web
 }
 ```
 
+
+## appsettings.json ##
+
+All Options are read from the ``appsettings.json`` file, where you define the:
+
+* Database Connection String
+* Elasticsearch Index Name and Endpoint 
+* Tesseract Executable and Temporary Directory
+* Logging Levels
+
+On my system the SSD is on the ``G:`` device, so I installed Elasticsearch and Postgres there:
+
+```json
+{
+  "ConnectionStrings": {
+    "DocumentDatabase": "Server=127.0.0.1;Port=5432;Database=sampledb;User Id=philipp;Password=test_pwd;"
+  },
+  "Application": {
+    "BaseUri": "http://localhost:9000",
+    "Tesseract": {
+      "Executable": "\"C:\\Program Files\\Tesseract-OCR\\tesseract.exe\"",
+      "TempDirectory": "G:\\Data\\Tesseract"
+    },
+    "DataProtection": {
+      "Directory": "G:\\Data\\Keys"
+    },
+    "Elasticsearch": {
+      "Uri": "http://localhost:9200",
+      "IndexName": "documents"
+    },
+    "Indexer": {
+      "IndexDelay": 10
+    }
+  },
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft": "Warning",
+      "Microsoft.Hosting.Lifetime": "Information"
+    }
+  },
+  "AllowedHosts": "*"
+}
+
+```
+
 ## Conclusion ##
 
-And that's it. You now have a full example for a Frontend and Backend Fulltext Search with ASP.NET Core and Angular! 
+And that's it.
 
-This makes it easier for me to prototype such applications and it gives me a feeling how much code is needed when using ASP.NET Core. 
+You now have a Fulltext Search application example for a Frontend and a Backend with ASP.NET Core and Angular 9! 
 
+Start your Elasticsearch server and PostgreSQL database, add some documents and explore what's possible. 👍
 
 ## License ##
 
