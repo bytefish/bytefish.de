@@ -19,6 +19,7 @@ template: page
 * [http://www.martinovsky.net](http://www.martinovsky.net)
 * [http://www.akahl.net](http://www.akahl.net)
 * [http://felix.abecassis.me](http://felix.abecassis.me)
+* [https://blog.jensknipper.de/](https://blog.jensknipper.de/)
 * [http://www.opencv.org](http://www.opencv.org)
 * [http://www.github.com](http://www.github.com)
     * [https://github.com/bytefish](https://www.github.com/bytefish)
