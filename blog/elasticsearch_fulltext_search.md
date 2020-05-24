@@ -518,7 +518,7 @@ be handeled by simply using a ``[ngIf]``.
     <!-- There was an error processing this request -->
     <ng-template [ngIf]="query.state == 'error'">
       <div fxFlex fxLayout="row" fxLayoutAlign="center" style="margin-bottom:25px;">
-        <p>We are very sorry... There was an error processing the request. Maybe try later again? 😓</p>
+        <p>We are very sorry... There was an error processing the request. Maybe try again later? 😓</p>
       </div>
     </ng-template>
     <!--No results found -->
