@@ -1128,12 +1128,621 @@ export class DocumentStatusComponent implements OnInit, OnDestroy {
 
 ## Backend ##
 
-So far we have written the Frontend. Of course this whole process of writing applications is always some kind of 
-Chicken-Egg problem. What comes first, the Frontend or the Backend? I say neither. It's evolution. 
+Of course this whole process of writing applications is always some kind of Chicken-Egg problem:
 
-In my projects I often start with a Database model. 
+> What comes first, the Frontend or the Backend?
+
+I say neither. It's evolution.
+
+If you look at the repositories history you can see, that I started by exploring what Elasticsearch can provide. Then 
+I wrote some kind of upload component. Then I implemented some kind of indexing pipeline, which I later put in a 
+``BackgroundService`` so it isn't blocking HTTP Requests... which led to a Document Status view.
+
+### Overview ###
+
+It's a good idea to look at the high-level structure of the Backend first:
+
+<div style="display:flex; align-items:center; justify-content:center;margin-bottom:15px;">
+    <a href="/static/images/blog/elasticsearch_fulltext_search/Backend_Overview.png">
+        <img src="/static/images/blog/elasticsearch_fulltext_search/Backend_Overview.png">
+    </a>
+</div>
 
 
+* ``Contracts``
+    * The Data Transfer Objects exchanged between the Frontend and Backend. 
+* ``Controllers``
+    * The API Endpoints the Frontend queries for Suggestions and Search results.
+* ``Database``
+    * The uploaded documents and the meta data are directly stored in a Relational database.
+* ``Elasticsearch``
+    * The Elasticsearch integration layer, which includes creating the Index, Pipelines and so on.
+* ``Hosting``
+    * We need to run Background Services for preparing the SQL database, creating the Elasticsearch index and pipeline and running a loop to index documents. 
+* ``Logging``
+    * Abstractions for the Microsoft ``ILogger`` interfaces.
+* ``Options``
+    * There are many options we can set for the application. Think of:
+        * Elasticsearch index name or port
+        * SQL Database Connection String
+        * Tesseract parameters
+        * ...
+    * The idea is to use the ASP.NET Core functionality for reading options from the configuration.
+* ``Services``
+    * The Application Services for:
+        * Indexing documents in Elasticsearch
+        * Runnung OCR on a document using Tesseract
+* ``Programs.cs``
+    * Defines the Webservers directories, ports and so on.
+* ``Startup.cs``
+    * Configures the HTTP Pipeline.
+
+Now documenting and explaining how code fits together is always somewhat complicated. And I am *particularly bad* at UML Class Diagrams and UML Sequence Diagrams. 
+
+So I explain it in a way it makes sense to me.
+
+### Database ###
+
+I think it's almost always wrong to have Elasticsearch as your primary data store for any application. Document databases are 
+perfect for what they are meant to be: Indexing document and providing a fulltext search engines. It's not useful to shoehorn 
+a Document database like Elasticsearch into the single source of truth.
+
+So what I am doing instead is to write the file and meta data into a Postgres database first. "What the actual ...! You cannot 
+write binary data into a SQL database!" I hear you say. But it's like this: Keeping files on disk and database in sync requires a 
+complexity I don't want to introduce in a simple example.
+
+And while you are not scaling to thousands of concurrent users: [Keep It Simple, Stupid]. 
+
+Plus modern databases come with features, that allow storing large binary files in rows without performance impact:
+
+* [https://www.postgresql.org/docs/9.1/storage-toast.html](https://www.postgresql.org/docs/9.1/storage-toast.html)
+
+#### Project Structure ####
+
+It's good to get an Overview first, how the Database namespace is structured.
+
+<div style="display:flex; align-items:center; justify-content:center;margin-bottom:15px;">
+    <a href="/static/images/blog/elasticsearch_fulltext_search/Backend_Overview.png">
+        <img src="/static/images/blog/elasticsearch_fulltext_search/Backend_Overview.png">
+    </a>
+</div>
+
+* ``Context`` 
+    * Holds the Entity Framework ``DbContext``.
+* ``Factory``
+    * A Factory to create a ``DbContext`` when needed, instead of injecting a scoped ``DbContext``.
+* ``Migrations``
+    * Database Migrations for creating and updating the database schema.
+* ``Model``
+    * The object model representing the database.
+* ``TypeConfigurations``
+    * The mapping between the database model and object model-
+* ``ValueComparers``
+    * For Snapshotting and Value comparisms it's sometimes needed to define a ``ValueComparer``.
+* ``ValueConverters``
+    * Sometimes the database model and the object model doesn't match, and representations need to be converted.
+
+   
+So it starts with the ``Model``, that define what a ``Document`` in the database looks like:
+
+```csharp
+using System;
+
+namespace ElasticsearchFulltextExample.Web.Database.Model
+{
+    public class Document
+    {
+        /// <summary>
+        /// A unique document id.
+        /// </summary>
+        public int Id { get; set; }
+
+        /// <summary>
+        /// The Title of the Document for Suggestion.
+        /// </summary>
+        public string Title { get; set; }
+
+        /// <summary>
+        /// The Original Filename of the uploaded document.
+        /// </summary>
+        public string Filename { get; set; }
+
+        /// <summary>
+        /// The Data of the Document.
+        /// </summary>
+        public byte[] Data { get; set; }
+
+        /// <summary>
+        /// Keywords to filter for.
+        /// </summary>
+        public string[] Keywords { get; set; }
+
+        /// <summary>
+        /// Suggestions for the Autocomplete Field.
+        /// </summary>
+        public string[] Suggestions { get; set; }
+
+        /// <summary>
+        /// OCR Data.
+        /// </summary>
+        public bool IsOcrRequested { get; set; }
+
+        /// <summary>
+        /// The Date the Document was uploaded.
+        /// </summary>
+        public DateTime UploadedAt { get; set; }
+
+        /// <summary>
+        /// The Date the Document was indexed at.
+        /// </summary>
+        public DateTime? IndexedAt { get; set; }
+
+        /// <summary>
+        /// The Document Status.
+        /// </summary>
+        public StatusEnum Status { get; set; }
+    }
+}
+```
+
+The Status of the Document is defined in the ``StatusEnum`` and it maps to the one defined in the ``Contracts``:
+
+```csharp
+namespace ElasticsearchFulltextExample.Web.Database.Model
+{
+    /// <summary>
+    /// Defines all possible states a document can have.
+    /// </summary>
+    public enum StatusEnum
+    {
+        /// <summary>
+        /// The document has no Status assigned.
+        /// </summary>
+        None = 0,
+
+        /// <summary>
+        /// The document is scheduled for indexing by a BackgroundService.
+        /// </summary>
+        ScheduledIndex = 1,
+
+        /// <summary>
+        /// The document is scheduled for deletion by a BackgroundService.
+        /// </summary>
+        ScheduledDelete = 2,
+
+        /// <summary>
+        /// The document has been indexed.
+        /// </summary>
+        Indexed = 3,
+
+        /// <summary>
+        /// The document indexing has failed due to an error.
+        /// </summary>
+        Failed = 4,
+
+        /// <summary>
+        /// The document has been removed from the index.
+        /// </summary>
+        Deleted = 5
+    }
+}
+```
+
+
+#### Mapping to Database Table and Columns ####
+
+EntityFramework Core provides the interface ``IEntityTypeConfiguration<T>`` to build mappings between the 
+database schema and the object model. I always prefer to use an ``IEntityTypeConfiguration<T>``, instead of 
+using Attributes.
+
+```csharp
+using ElasticsearchFulltextExample.Web.Database.Model;
+using ElasticsearchFulltextExample.Web.Database.ValueComparers;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+
+namespace ElasticsearchFulltextExample.Web.Database.TypeConfigurations
+{
+    public class DocumentTypeConfiguration : IEntityTypeConfiguration<Document>
+    {
+        public void Configure(EntityTypeBuilder<Document> builder)
+        {
+            builder
+                .ToTable("documents")
+                .HasKey(x => x.Id);
+
+            builder
+                .Property(x => x.Id)
+                .HasColumnName("id")
+                .ValueGeneratedOnAdd();
+
+            builder
+                .Property(x => x.Filename)
+                .HasColumnName("filename")
+                .IsRequired();
+
+            builder
+                .Property(x => x.Title)
+                .HasColumnName("title")
+                .IsRequired();
+
+            builder
+                .Property(x => x.Data)
+                .HasColumnName("data")
+                .IsRequired();
+
+            builder
+                .Property(x => x.Suggestions)
+                .HasColumnName("suggestions")
+                .HasConversion(new DelimitedStringValueConverter(','))
+                .IsRequired()
+                .Metadata.SetValueComparer(new StringArrayValueComparer());
+
+            builder
+                .Property(x => x.Keywords)
+                .HasColumnName("keywords")
+                .HasConversion(new DelimitedStringValueConverter(','))
+                .IsRequired()
+                .Metadata.SetValueComparer(new StringArrayValueComparer());
+
+            builder
+                .Property(x => x.IsOcrRequested)
+                .HasColumnName("is_ocr_requested")
+                .IsRequired();
+
+            builder
+                .Property(x => x.UploadedAt)
+                .HasColumnName("uploaded_at")
+                .IsRequired();
+
+            builder
+                .Property(x => x.IndexedAt)
+                .HasColumnName("indexed_at");
+
+            builder
+                .Property(x => x.Status)
+                .HasColumnName("status")
+                .HasConversion<int>()
+                .IsRequired();
+        }
+    }
+}
+```
+
+There are a few things to note. First of all the ``StatusEnum`` is converted to an ``int``, when writing to the database and converted 
+from ``int`` to the ``StatusEnum`` on its way back. While you could move the ``Keywords`` and ``Suggestions`` property into a new table, 
+I decided to just write a delimited list into the database.
+
+The reason is simply: I don't want this example to explode with code. This way I can quickly map between the uploaded document and the 
+database. If you need to query for keywords or suggestions in the database or put constraints on them, you should correctly put the entities 
+in their own table and provide a many-to-many relationship using a junction table.
+
+##### Converting between a String[] and String #####
+
+You could easily switch the database for this example from let's say PostgreSQL to SQLite. And while Postgres knows how to deal with Arrays, 
+SQLite or other databases do not. That's why we just write a comma separated list when writing the array, and split the data on reading it back 
+from the database.
+
+```csharp
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using System.Linq;
+using TinyCsvParser.Tokenizer;
+
+namespace ElasticsearchFulltextExample.Web.Database
+{
+    public class DelimitedStringValueConverter : ValueConverter<string[], string>
+    {
+        public DelimitedStringValueConverter(char delimiter)
+            : this(delimiter, new QuotedStringTokenizer(delimiter))
+        {
+        }
+
+        public DelimitedStringValueConverter(char delimiter, ITokenizer tokenizer)
+            : base(x => BuildDelimitedLine(x, delimiter), x => tokenizer.Tokenize(x), null)
+        {
+        }
+
+        private static string BuildDelimitedLine(string[] values, char delimiter)
+        {
+            var quotedValues = values.Select(value => $"\"{value}\"");
+
+            return string.Join(delimiter, quotedValues);
+        }
+    }
+}
+```
+
+EntityFramework Core needs something called a ``ValueComparer<T>`` when operating on a ``ChangeTracking`` graph, because it needs to know 
+if a value has changed and its update magic should be applied. So we are providing a ``StringArrayValueComparer``. 
+
+```csharp
+// Copyright (c) Philipp Wagner. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+using Microsoft.EntityFrameworkCore.ChangeTracking;
+using System;
+using System.Linq;
+
+namespace ElasticsearchFulltextExample.Web.Database.ValueComparers
+{
+    public class StringArrayValueComparer : ValueComparer<string[]>
+    {
+        public StringArrayValueComparer()
+            : base((c1, c2) => c1.SequenceEqual(c2), c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())), c => c.ToArray()) { }
+    }
+}
+```
+
+#### The DbContext ####
+
+The ``ApplicationDbContext`` now has one ``DbSet`` only, the documents. We are using EntityFramework Fluent mappings, so we need to override the  
+``OnModelCreating(ModelBuilder modelBuilder)`` method of the ``DbContext`` and provide the ``DocumentTypeConfiguration``.
+
+```csharp
+using ElasticsearchFulltextExample.Web.Database.Model;
+using ElasticsearchFulltextExample.Web.Database.TypeConfigurations;
+using Microsoft.EntityFrameworkCore;
+
+namespace ElasticsearchFulltextExample.Web.Database.Context
+{
+    public class ApplicationDbContext : DbContext
+    {
+        public ApplicationDbContext(DbContextOptions options)
+            : base(options) { }
+
+        public DbSet<Document> Documents { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.ApplyConfiguration(new DocumentTypeConfiguration());
+        }
+    }
+}
+```
+
+#### Reasons behind a DbContextFactory ####
+
+You may have seen, that I am also providing a Factory for providing a ``DbContext``. Why on earth is he doing this you might ask?
+
+In EntityFramework 6 it was possible to instantiate a ``DbContext`` when you felt like, let's say something like this:
+
+```csharp
+using(var context = new ApplicationDbContext("MyConnectionString") 
+{
+    // ...
+}
+```
+
+But in ASP.NET Core you are supposed to inject the ``DbContext`` and there is no **obvious** way to instantiate a ``DbContext`` 
+without using Dependency Injection. The EntityFramework Core issue tracker contains an interesting discussion on this "issue":
+
+* [https://github.com/dotnet/efcore/issues/2718](https://github.com/dotnet/efcore/issues/2718)
+
+And while there are probably some ways of doing it, I simply add another abstraction layer and have a factory building 
+the ``DbContext`` for me. This way I don't have to deal with injecting a ``DbContext`` and thinking about it's scope, lifetime
+and the state of the ``ChangeTracker`` when used in multiple methods.
+
+```csharp
+using ElasticsearchFulltextExample.Web.Database.Context;
+using Microsoft.EntityFrameworkCore;
+
+namespace ElasticsearchFulltextExample.Web.Database.Factory
+{
+    public class ApplicationDbContextFactory
+    {
+        private readonly DbContextOptions options;
+
+        public ApplicationDbContextFactory(DbContextOptions options)
+        {
+            this.options = options;
+        }
+
+        public ApplicationDbContext Create()
+        {
+            return new ApplicationDbContext(options);
+        }
+    }
+}
+```
+
+#### Creating the DB Migrations ####
+
+By installing ``Microsoft.EntityFrameworkCore.Tools`` I can create and apply Database migrations directly from the Package Manager console. 
+
+I want the Migrations to go to ``Database/Migrations`` of the Project, so I am creating the ``InitialMigration`` to create the table like this:
+
+```
+Add-Migration InitialCreate -Context ApplicationDbContext -OutputDir "Database/Migrations" 
+```
+
+And that's it for the database side.
+
+### Elasticsearch ###
+
+If you are working with .NET there is a great library to interface with an Elasticsearch server: NEST. 
+
+According to the Elasticsearch documentation NEST ...
+
+> ... is a high level client that maps all requests and responses as types, and comes with a strongly typed query 
+> DSL that maps 1 to 1 with the Elasticsearch query DSL. It takes advantage of specific .NET features to provide 
+> higher level abstractions such as auto mapping of CLR types. Internally, NEST uses and still exposes the low level 
+> Elasticsearch.Net client, providing access to the power of NEST and allowing users to drop down to the low level 
+> client when wishing to.
+
+
+
+### Document Upload ###
+
+In the Frontend section we have seen, that I am using a ``multipart/form-data`` request to upload documents and meta data. People might 
+wonder: Why aren't you using a Base64 representation for the file, put it in a clean JSON object and have a nice RESTful endpoint?
+
+It's because turning an uploaded file into Base64 on client-side is not that simple, plus I don't want to keep all data in memory 
+when uploading a binary file. What would happen, if you turn a 30 Megabyte PDF file into Base64? Exactely: The server memory would 
+probably explode... especially when 3 concurrent uploads are done.
+
+Do not follow false RESTful prophets and don't try to be too dogmatic!
+
+#### Contract ####
+
+In the Contract we can easily bind the data using the ``[FromForm]`` attributes and for the file you can use an ``IFormFile`` coming 
+with ASP.NET Core. The underlying Model Binder in ASP.NET Core knows how to handle it.
+
+```csharp
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+
+namespace ElasticsearchFulltextExample.Web.Contracts
+{
+    public class DocumentUploadDto
+    {
+        [FromForm(Name = "title")]
+        public string Title { get; set; }
+
+        [FromForm(Name = "suggestions")]
+        public string Suggestions { get; set; }
+
+        [FromForm(Name = "isOcrRequested")]
+        public string IsOcrRequested { get; set; }
+
+        [FromForm(Name = "file")]
+        public IFormFile File { get; set; }
+    }
+}
+```
+
+#### Controller ####
+
+[Keep It Simple, Stupid]: https://en.wikipedia.org/wiki/KISS_principle
+
+The Controller receives the ``DocumentUploadDto`` and schedules the file for indexing. 
+
+The ``IndexController`` has one Endpoint ``/api/index``, which binds the ``DocumentUploadDto`` passed as Form data. I want 
+everything to be asynchronous from the start, so the method also gets a ``CancellationToken`` passed into. The 
+``CancellationToken`` is automatically set by the ASP.NET Core environment.
+
+The Controller gets two dependencies injected:
+
+* ``ILogger<IndexController>`` the Microsoft ``ILogger`` abstraction for Logging.
+* ``ApplicationDbContextFactory`` a factory to create a ``DbContext`` for writing to the database.
+
+Keywords are passed as a Comma-separated list like this: ``"Data Mining", "Statistics"``. All 
+
+```csharp
+// Copyright (c) Philipp Wagner. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+using ElasticsearchFulltextExample.Web.Contracts;
+using ElasticsearchFulltextExample.Web.Database.Factory;
+using ElasticsearchFulltextExample.Web.Database.Model;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using System;
+using System.IO;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using TinyCsvParser.Tokenizer;
+using ITokenizer = TinyCsvParser.Tokenizer.ITokenizer;
+
+namespace ElasticsearchFulltextExample.Web.Controllers
+{
+    public class IndexController : Controller
+    {
+        private readonly ILogger<IndexController> logger;
+        private readonly ITokenizer suggestionsTokenizer;
+        private readonly ApplicationDbContextFactory applicationDbContextFactory;
+
+        public IndexController(ILogger<IndexController> logger, ApplicationDbContextFactory applicationDbContextFactory)
+        {
+            this.logger = logger;
+            this.suggestionsTokenizer = new QuotedStringTokenizer(',');
+            this.applicationDbContextFactory = applicationDbContextFactory;
+        }
+
+        [HttpPost]
+        [Route("/api/index")]
+        public async Task<IActionResult> IndexDocument([FromForm] DocumentUploadDto documentDto, CancellationToken cancellationToken)
+        {
+            try
+            {
+                await ScheduleIndexing(documentDto, cancellationToken);
+
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e, "Failed to schedule document for Indexing");
+
+                return StatusCode(500);
+            }
+        }
+
+        private async Task ScheduleIndexing(DocumentUploadDto documentDto, CancellationToken cancellationToken)
+        {
+            using (var context = applicationDbContextFactory.Create())
+            {
+                using (var transaction = await context.Database.BeginTransactionAsync())
+                {
+                    bool.TryParse(documentDto.IsOcrRequested, out var isOcrRequest);
+
+                    var document = new Document
+                    {
+                        Title = documentDto.Title,
+                        Filename = documentDto.File.FileName,
+                        Suggestions = GetSuggestions(documentDto.Suggestions),
+                        Keywords = GetSuggestions(documentDto.Suggestions),
+                        Data = await GetBytesAsync(documentDto.File),
+                        IsOcrRequested = isOcrRequest,
+                        UploadedAt = DateTime.UtcNow,
+                        Status = StatusEnum.ScheduledIndex
+                    };
+
+                    context.Documents.Add(document);
+
+                    await context.SaveChangesAsync(cancellationToken);
+                    await transaction.CommitAsync();
+                }
+            }
+        }
+
+        private string[] GetSuggestions(string suggestions)
+        {
+            if (suggestions == null)
+            {
+                return null;
+            }
+
+            return suggestionsTokenizer
+                .Tokenize(suggestions)
+                .Select(x => x.Trim())
+                .ToArray();
+        }
+
+        private async Task<byte[]> GetBytesAsync(IFormFile formFile)
+        {
+            using (var memoryStream = new MemoryStream())
+            {
+                await formFile.CopyToAsync(memoryStream);
+
+                return memoryStream.ToArray();
+            }
+        }
+    }
+}
+```
+
+```csharp
+```
+
+```csharp
+```
+
+```csharp
+```
+
+```csharp
+```
 
 ## Conclusion ##
 
