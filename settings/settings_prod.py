@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
-
+import os
 from emojiextension import EmojiExtension
 
 # This is a simple configuration for the Pelican (http://getpelican.com) 
 # project and it is probably closely tied to the 'minimal' theme I am 
 # using.
-PLUGIN_PATHS = [ 'plugins' ]
+PLUGIN_PATHS = [ os.path.abspath('./plugins'), ]
+PLUGINS = [ 'sitemap', ]
 # Most important metadata:
 AUTHOR = 'Philipp Wagner'
 EMAIL = 'philipp AT bytefish DOT de'
@@ -91,6 +92,16 @@ STATIC_PATHS = ['images', 'apps', 'extra/.htaccess', 'extra/robots.txt']
 # Github Base Path:
 GITHUB_ISSUE_PATH='https://github.com/bytefish/bytefish.de/issues'
 GITHUB_SOURCE_PATH='https://github.com/bytefish/bytefish.de/blob/master/blog'
+#Sitemap Settings:
+SITEMAP = {
+    'format': 'xml',
+    'exclude': ['tag/', 'category/'],
+    'priorities': {
+        'articles': 0.5,
+        'indexes': 0.5,
+        'pages': 0.5
+    }
+}
 
 # Custom functions available to all templates:
 import calendar

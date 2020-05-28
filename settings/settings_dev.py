@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
-
+import os
 from emojiextension import EmojiExtension
 
 # This is a simple configuration for the Pelican (http://getpelican.com) 
 # project and it is probably closely tied to the 'minimal' theme I am 
 # using.
-PLUGIN_PATHS = [ 'plugins' ]
+PLUGIN_PATHS = [ os.path.abspath('./plugins'), ]
+PLUGINS = ['sitemap', ]
 # Most important metadata:
 AUTHOR = 'Philipp Wagner'
 EMAIL = 'philipp AT bytefish DOT de'

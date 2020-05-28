@@ -2,38 +2,12 @@
 ## global config. Symlinks maybe needed for URL rewriting.
 Options -Indexes -MultiViews +FollowSymLinks
 ##
-## Set GZIP compression for faster load time and 
-## reduce amount of bandwidth consumed by clients:
-SetOutputFilter DEFLATE
-AddOutputFilterByType DEFLATE text/html text/css text/plain text/xml application/x-javascript application/x-httpd-php
-BrowserMatch ^Mozilla/4 gzip-only-text/html
-BrowserMatch ^Mozilla/4\.0[678] no-gzip
-BrowserMatch \bMSIE !no-gzip !gzip-only-text/html
-BrowserMatch \bMSI[E] !no-gzip !gzip-only-text/html
-SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png)$ no-gzip
-Header append Vary User-Agent env=!dont-vary
-##
 ## Make sure nobody gets the htaccess files:
 <Files ~ "^[\._]ht">
     Order allow,deny
     Deny from all
     Satisfy All
 </Files>
-## Block some servers not identifying themselves, but harvesting
-## the page like crazy. Thanks a lot for eating up hundreds of 
-## megabytes traffic for a tiny page like mine:
-order allow,deny
-deny from feed01.hetzner.itroot.de
-deny from your-server.de
-deny from in.markelytics.com
-deny from spirit.fibrenetworks.org
-deny from 173.244.194.77.static.midphase.com
-deny from 66.63.177.53.static.quadranet.com
-deny from pptp-212-201-77-65.pptp.stw-bonn.de
-deny from 31.28.170.182
-deny from 23.101.169.3
-deny from lstlambert-658-1-263-229.w81-250.abo.wanadoo.fr
-allow from all
 ##
 ## Set the 404 page:
 ErrorDocument 404                   /404.html
