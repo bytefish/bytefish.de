@@ -84,11 +84,12 @@ DEFAULT_CATEGORY = 'uncategorized'
 # A list of files to copy from the source to the destination
 EXTRA_PATH_METADATA = {
   'extra/.htaccess' : { 'path' : '../.htaccess'},
-  'extra/robots.txt' : { 'path' : '../robots.txt' }
+  'extra/robots.txt' : { 'path' : '../robots.txt' },
+  'extra/favicon.ico' : { 'path': '../favicon.ico' },
 }
 # Folders to copy to <output>/static/...:
 STATIC_SAVE_AS = 'static/{path}'
-STATIC_PATHS = ['images', 'apps', 'extra/.htaccess', 'extra/robots.txt']
+STATIC_PATHS = ['images', 'apps', 'extra/.htaccess', 'extra/robots.txt', 'extra/favicon.ico']
 
 # Github Base Path:
 GITHUB_ISSUE_PATH='https://github.com/bytefish/bytefish.de/issues'
