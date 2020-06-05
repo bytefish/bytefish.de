@@ -96,7 +96,7 @@ GITHUB_SOURCE_PATH='https://github.com/bytefish/bytefish.de/blob/master/blog'
 #Sitemap Settings:
 SITEMAP = {
     'format': 'xml',
-    'exclude': ['tag/', 'category/'],
+    'exclude': ['tag/', 'category/', '404.html'],
     'priorities': {
         'articles': 0.5,
         'indexes': 0.5,

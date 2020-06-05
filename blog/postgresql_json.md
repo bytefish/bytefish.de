@@ -14,9 +14,9 @@ PostgreSQL 9.4 comes with a set of features for generating and querying [JSON][j
 generating JSON data from a relational schema. We are building a tiny database application for managing images with associated 
 tags and comments.
 
-You can get the scripts in this article from:
+You can get the scripts in this article from the following gist:
 
-* [https://github.com/bytefish/bytefish.de/tree/master/code/pgsample](https://github.com/bytefish/bytefish.de/tree/master/code/pgsample)
+* [https://gist.github.com/bytefish/92730b86466b9d4daf31e8eb26b68b0b](https://gist.github.com/bytefish/92730b86466b9d4daf31e8eb26b68b0b)
 
 ## User and Database  ##
 
