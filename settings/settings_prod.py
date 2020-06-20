@@ -63,8 +63,10 @@ TAG_FEED_ATOM = None
 TAG_FEED_RSS = None
 CATEGORY_FEED_RSS = None
 CATEGORY_FEED_ATOM = None
+AUTHOR_FEED_RSS = None
 AUTHOR_FEED_ATOM  = None
-AUTHOR_FEED_ATOM_URL = None
+TRANSLATION_FEED_ATOM = None
+TRANSLATION_FEED_RSS = None
 # Separate page directory and articles directory:
 PAGE_PATHS = [ 'pages' ]
 ARTICLE_PATHS = [ 'blog' ]
