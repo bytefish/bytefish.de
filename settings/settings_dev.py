@@ -67,6 +67,7 @@ AUTHOR_FEED_RSS = None
 AUTHOR_FEED_ATOM  = None
 TRANSLATION_FEED_ATOM = None
 TRANSLATION_FEED_RSS = None
+RSS_FEED_SUMMARY_ONLY = False
 # Separate page directory and articles directory:
 PAGE_PATHS = [ 'pages' ]
 ARTICLE_PATHS = [ 'blog' ]
