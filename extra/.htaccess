@@ -8,6 +8,12 @@ Options -Indexes -MultiViews +FollowSymLinks
     Deny from all
     Satisfy All
 </Files>
+## Block some servers not identifying themselves, but harvesting
+## the page like crazy. Thanks a lot for eating up hundreds of 
+## megabytes traffic for a tiny page like mine:
+order allow,deny
+deny from lstlambert-658-1-263-229.w81-250.abo.wanadoo.fr
+allow from all
 ##
 ## Set the 404 page:
 ErrorDocument 404                   /404.html
