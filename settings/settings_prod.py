@@ -56,11 +56,10 @@ FEED_DOMAIN = SITEURL
 FEED_MAX_ITEMS = 10
 # We only want RSS/ATOM Feeds for all articles, exclude categories:
 FEED_RSS = 'feeds/rss.xml'
-TAG_FEED_RSS = 'feeds/{slug}.rss.xml'
-CATEGORY_FEED_RSS = None
 FEED_ATOM = 'feeds/atom.xml'
 FEED_ALL_ATOM = None
 TAG_FEED_ATOM = None
+CATEGORY_FEED_RSS = None
 CATEGORY_FEED_ATOM = None
 # Separate page directory and articles directory:
 PAGE_PATHS = [ 'pages' ]
