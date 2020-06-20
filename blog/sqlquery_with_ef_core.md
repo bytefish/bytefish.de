@@ -4,7 +4,7 @@ tags: dotnet, efcore
 category: dotnet
 slug: sqlquery_with_ef_core
 author: Philipp Wagner
-summary: This article shows how to do dynamic
+summary: This article shows how to implement a SqlQuery extension for EntityFramework Core.
 
 One thing I am missing in EntityFramework Core is a way to run raw SQL queries and map the results 
 to a class, just like the EntityFramework 6 ``DbContext.Database.SqlQuery<T>`` method. So why on earth 
