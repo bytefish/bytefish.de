@@ -7,16 +7,25 @@ author: Philipp Wagner
 summary: This article shows how to implement a SqlQuery extension for EntityFramework Core.
 
 One thing I am missing in EntityFramework Core is a way to run raw SQL queries and map the results 
-to a class, just like the EntityFramework 6 ``DbContext.Database.SqlQuery<T>`` method. So why on earth 
-would you want to execute raw SQL? 
+to a class, just like the EntityFramework 6 ``DbContext.Database.SqlQuery<T>`` method. 
 
-For small projects it's much simpler to write a small query, than fiddling with abstractions like... [LINQ] 
-if you are in C\# or [JPQL] if you are in Java. I firmly believe a good query can save you hundred lines of 
-code. Does it create a maintenance nightmare? Probably.
+So why on earth would you want to execute raw SQL? 
 
-Anyway! On GitHub [@davidbaxterbrowne] shared a quite nice solution to the problem. I think it's worth sharing, 
-because it is quite hard to find being buried in a GitHub issue. The method takes a ``FormattableString``, so 
-it does parameter binding under the hood to avoid SQL injections.
+For small projects it's much simpler to write a small query, than fiddling with abstractions like... 
+
+* [LINQ] if you are in C\# 
+* [JPQL] if you are in Java 
+
+I firmly believe a good query can save you hundred lines of code. 
+
+Does it create a maintenance nightmare? Probably.
+
+Anyway! 
+
+[@davidbaxterbrowne] shared quite nice solution to add a ``SqlQuery<T>`` extension method to an 
+EntityFramework Core ``DbContext``.
+
+I think it's worth sharing, because it is quite hard to find being buried in a GitHub issue.
 
 All credit goes to [@davidbaxterbrowne]:
 
@@ -92,9 +101,11 @@ public async Task<List<MyObject>> GetEntitiesAsync(DateTime startDate, Cancellat
 }
 ```
 
-It's not perfect, because you still need to hardcode the provider in the ``OnConfiguring`` method of the 
-``DbContext``, but I didn't find a simple way in the EntityFramework Core API surface to get the original 
-options.
+Please note, that the method takes a ``FormattableString``, so it does parameter binding under the hood to avoid SQL injections.
+
+
+It's not a perfect solution, because you still need to hardcode the provider in the ``OnConfiguring`` method of the ``DbContext``, 
+but I didn't find a simple way in the EntityFramework Core API surface to get the original options.
 
 Let me know, if you have ideas on how to improve the code.
 

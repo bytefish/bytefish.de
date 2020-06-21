@@ -6,9 +6,15 @@ slug: aspnet_core_identity_database
 author: Philipp Wagner
 summary: This article shows how to rename columns in a generated ASP.NET Core identity database model.
 
-I always shake in horror when it comes to implementing my own user management in an application. There is 
-just **so much** you can get wrong. And so much we need to reinvent! What about implementing... Two Factor 
-Authentication? Registration? Safe Password Hashing? Roles and Claims?
+I always shake in horror when it comes to implementing my own user management in an application. 
+
+There is **so much** you can get wrong. And so much we need to reinvent! What about implementing... 
+
+* Two Factor Authentication? 
+* Registration? 
+* Registration Confirmations?
+* Safe Password Hashing? 
+* Roles and Claims?
 
 Time is money. And time is often a very limiting factor in projects. 
 
@@ -21,8 +27,8 @@ Server Naming Conventions. But in database systems like PostgreSQL you really do
 ``myschema."AspNetUserLogins"`` when being used in queries.
 
 PostgreSQL is among the databases to use SnakeCase names for entities, so a table like ``myschema."AspNetUserLogins"`` 
-would become something along the lines of ``myschema.asp_net_user_logins"``. Plus you want the properties like ``"Id"`` 
-written in snake case like ``id``. 
+would become something along the lines of ``myschema.asp_net_user_logins"``. Plus you want the properties like 
+``"Id"`` written in snake case like ``id``. 
 
 ## A solution for PostgreSQL ###
 
