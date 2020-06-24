@@ -6,7 +6,7 @@ slug: spring_boot_multitenancy_using_rls
 author: Philipp Wagner
 summary: This article shows how to provide Multitenancy with Spring Boot using Row Level Security.
 
-In this post I will show you how to provide multitenancy in a Spring Boot applicationn using Postgres Row Level Security Feature.
+In this post I will show you how to provide multitenancy in a Spring Boot application using Postgres Row Level Security Feature.
 
 ## What Is Multitenancy ##
 
