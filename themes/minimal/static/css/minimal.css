@@ -295,6 +295,12 @@ p code {
   color: #b3555e;
 }
 
+ul > * > code {
+  font-size: 15px;
+  color: #b3555e;
+
+}
+
 pre {
   background: #f8f8f8; 
   border: 1px dashed #d7d7c8;
