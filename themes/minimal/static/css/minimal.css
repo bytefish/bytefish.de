@@ -290,7 +290,7 @@ code {
   font-family: Consolas, "Liberation Mono", Menlo, monospace;
 }
 
-code {
+p code {
   font-size: 15px;
   color: #b3555e;
 }
