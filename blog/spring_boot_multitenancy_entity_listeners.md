@@ -2,7 +2,7 @@
 date: 2020-08-02 15:17
 tags: java, spring
 category: java
-slug: entity_listeners_for_multitenant_spring_boot_multitenancy
+slug: spring_boot_multitenancy_entity_listeners
 author: Philipp Wagner
 summary: This article shows how to provide Multitenancy with Spring Boot using Row Level Security.
 
