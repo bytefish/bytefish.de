@@ -261,7 +261,7 @@ namespace MapboxTileServer.Services
 
 What's left is serving the Tiles. We are writing a ``TilesController``, which gets the ``ApplicationOptions`` and ``MapboxTileService`` 
 injected. There is a single ``HttpGet`` Endpoint, which resolves all required parameters from the the requested Route. For Mapbox 
-Vector Tiles (MIME Type ``application/vnd.mapbox-vector-tile`` we need to add the ``Content-Type: gzip`` header, because this data 
+Vector Tiles (MIME Type ``application/vnd.mapbox-vector-tile``) we need to add the ``Content-Type: gzip`` header, because this data 
 has already been gzipped in the database.
 
 ```csharp
