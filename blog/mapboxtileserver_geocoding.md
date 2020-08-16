@@ -104,7 +104,7 @@ You can find all code in the MapboxTileServer GitHub repository at:
 
 * [https://github.com/bytefish/MapboxTileServer](https://github.com/bytefish/MapboxTileServer)
 
-## Backend: Integratin the Photon API ##
+## Backend: Integrating the Photon API ##
 
 ### Extending the ApplicationOptions ###
 
