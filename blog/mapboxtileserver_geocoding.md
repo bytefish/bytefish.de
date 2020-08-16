@@ -40,11 +40,15 @@ You can find the GitHub repositories at:
 
 ### Getting the Search Index Data for Photon ###
 
-Now the kind people of [GraphHopper] and [Ionvia] provide a download for the elasticsearch index, that Photon uses. The index 
-is built each week, so it contains recent additions to the [OpenStreetMap] data. The archive ``photon-db-latest.tar.bz2`` always 
-contains the latest build and can be downloaded from:
+Photon requires an elasticsearch index. This index can be built by using the Photon CLI to import the data 
+from [Nomatim], but there is a much simpler way.
 
-* http://download1.graphhopper.com/public/
+The kind people of [GraphHopper] and [Ionvia] provide a download of the Photon elasticsearch index. The index 
+is built each week, so it contains recent additions to the [OpenStreetMap] data. 
+
+The archive ``photon-db-latest.tar.bz2`` always contains the latest build and can be downloaded from:
+
+* [http://download1.graphhopper.com/public/](http://download1.graphhopper.com/public/)
 
 If you are using a Unix system you can also run the following command to download and extract the latest search index:
 
@@ -60,7 +64,7 @@ wget -O - http://download1.graphhopper.com/public/photon-db-latest.tar.bz2 | bzi
 When you have downloaded an extracted the data, you start with getting the latest JAR file from the Photon 
 releases. As of writing this is 0.3.3:
 
-* https://github.com/komoot/photon/releases/tag/0.3.3
+* [https://github.com/komoot/photon/releases/tag/0.3.3](https://github.com/komoot/photon/releases/tag/0.3.3)
 
 What I do now is writing a simple Batch Script to set the Java executable, the JAR file and the Data Directory, which 
 contains the Search index you have just downloaded and extracted:
