@@ -15,7 +15,7 @@ OpenStreetMap data and mapping in general. It is a great project and I wish [Ber
 project.
 
 Playing with [baremaps] has also taught me how complicated it is to design styles and how to preprocess 
-OSM data for your needs. At some point I gave up, but instead of throwing away the code I wrote I adapted 
+OSM data for your needs. At some point I gave up, but instead of throwing away the code, I adapted 
 it to use the pre-built [OpenMapTiles]:
 
 * [https://github.com/bytefish/MapboxTileServer](https://github.com/bytefish/MapboxTileServer)
