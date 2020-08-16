@@ -43,7 +43,7 @@ You can find the GitHub repositories at:
 Photon requires an elasticsearch index. This index can be built by using the Photon CLI to import the data 
 from [Nomatim], but there is a much simpler way.
 
-The kind people of [GraphHopper] and [Ionvia] provide a download of the Photon elasticsearch index. The index 
+The kind people of [GraphHopper] and user [@ionvia] provide a download of the Photon elasticsearch index. The index 
 is built each week, so it contains recent additions to the [OpenStreetMap] data. 
 
 The archive ``photon-db-latest.tar.bz2`` always contains the latest build and can be downloaded from:
@@ -57,7 +57,7 @@ wget -O - http://download1.graphhopper.com/public/photon-db-latest.tar.bz2 | bzi
 ```
 
 [GraphHopper]: https://www.graphhopper.com/
-[Ionvia]: https://github.com/lonvia
+[@ionvia]: https://github.com/lonvia
 
 ### Getting Photon Up and Running ###
 
