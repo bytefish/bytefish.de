@@ -91,8 +91,8 @@ It was *unbelievably easy* to get started with Photon. The developers have done 
 ## What we are going to build ##
 
 Photon is already up and running. So what we are going to do now is to integrate it into the MapboxTileServer example 
-we have written in our last article. We will add a simple Autocomplete Box to search for places and for selected places 
-we will add a Marker.
+we have written in our last article. We will add a simple Autocomplete Box to search for places. And for selected places 
+we will add a Marker to the Mapbox GL JS canvas.
 
 <div style="display:flex; align-items:center; justify-content:center;">
     <a href="/static/images/blog/mapboxtileserver_geocoding/MapboxTileServerGeocodingExample.png">
