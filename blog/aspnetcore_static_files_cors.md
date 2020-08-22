@@ -20,13 +20,13 @@ According to Microsoft CORS ...
 * Is safer and more flexible than earlier techniques, such as JSONP.
 
 ASP.NET Core provides a CORS Middleware, that handles all the dirty work of configuring and handling CORS, which can 
-be easily added as a Service using the ``IServiceCollection#AddCors(...)`` extension and and integrated into the request 
-``IApplicationBuilder#UseCors``.
+be easily added as a Service using the ``IServiceCollection#AddCors`` extension and and integrated into the request 
+using the ``IApplicationBuilder#UseCors`` extension.
 
 ## The Problem ##
 
 But there is a little twist in ASP.NET Core. If you are using the Static Files feature with the ``IApplicationBuilder`` extension 
-method ``UseStaticFiles(...)``, then no CORS strategy is applied. So while we are able to serve all requests to Controllers with 
+method ``UseStaticFiles()``, then no CORS strategy is applied. So while we are able to serve all requests to Controllers with 
 CORS headers, all requests to static files from Vue.js with fail.
 
 ## The Solution ##
