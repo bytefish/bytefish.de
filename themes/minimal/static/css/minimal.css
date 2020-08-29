@@ -43,7 +43,7 @@ html {
 }
 
 body {
-  font: 18px Lora, Georgia, serif;
+  font: 18px Georgia, serif;
   font-weight: 400;
   line-height: 24px;
   background-color: #fff;
@@ -76,7 +76,7 @@ body {
 }
 
 .page-title {
-    font-family: Bitter, Georgia, serif;
+    font-family: Arial, sans-serif;
 }
 
 /*----------------------------*/
@@ -383,7 +383,7 @@ h3,
 h4,
 h5 {
   margin-bottom: 0.5em;
-  font-family: Bitter, Georgia, serif;
+  font-family: Arial, sans-serif;
 }
 
 h1 {
@@ -500,7 +500,7 @@ table {
     }
     
     article {
-        font-size: 17px;
+        font-size: 18px;
         line-height: 28px;
     }
     

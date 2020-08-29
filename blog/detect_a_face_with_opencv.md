@@ -2,7 +2,7 @@ title: Detect a face with OpenCV
 date: 2010/11/21 17:59
 tags: opencv, cpp, python
 category: computer vision
-slug: opencv/object_detection
+slug: object_detection
 author: Philipp Wagner
 summary: Short snippet on how to perform face detection with the OpenCV2 bindings.
 

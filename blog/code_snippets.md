@@ -2,7 +2,7 @@ title: OpenCV Code Snippets
 date: 2011-10-28 17:13
 tags: opencv, cpp
 category: computer vision
-slug: opencv/code_snippets
+slug: code_snippets
 author: Philipp Wagner
 summary: Some OpenCV code snippets that might be useful for somebody.
 

@@ -5,12 +5,12 @@ import os
 # project and it is probably closely tied to the 'minimal' theme I am 
 # using.
 PLUGIN_PATHS = [ os.path.abspath('./plugins'), ]
-PLUGINS = ['sitemap', ]
+PLUGINS = [ 'sitemap', ]
 # Most important metadata:
 AUTHOR = 'Philipp Wagner'
 EMAIL = 'philipp AT bytefish DOT de'
-SITENAME = 'https://bytefish.de'
-OUTPUT_PATH = 'output/DEV/'
+SITENAME = 'https://www.bytefish.de'
+OUTPUT_PATH = 'output/PROD/'
 # Base URL this page is hosted at:
 SITEURL = 'http://localhost:8000'
 # Timezone is GMT+1:
@@ -34,21 +34,21 @@ MARKDOWN = {
 # We don't use relative URLs:
 RELATIVE_URLS = False
 # Edit predefined pathes:
-ARCHIVES_SAVE_AS = 'pages/index.html'
+ARCHIVES_SAVE_AS = 'archives.html'
 # Generates nice URLs for pages:
-PAGE_URL = '{slug}'
-PAGE_SAVE_AS = '{slug}/index.html'
+PAGE_URL = '{slug}.html'
+PAGE_SAVE_AS = '{slug}.html'
 # Generate nice URLs for articles:
 ARTICLE_EXCLUDES = (('pages',))
-ARTICLE_URL = 'blog/{slug}'
-ARTICLE_SAVE_AS = 'blog/{slug}/index.html'
+ARTICLE_URL = 'blog/{slug}.html'
+ARTICLE_SAVE_AS = 'blog/{slug}.html'
 # Generate nice URLs for tags:
-TAG_URL = 'tag/{name}/'
-TAG_SAVE_AS = 'tag/{name}/index.html'
-TAGS_SAVE_AS = 'tags/index.html'
+TAG_URL = 'tag/{name}.html'
+TAG_SAVE_AS = 'tag/{name}.html'
+TAGS_SAVE_AS = 'tags.html'
 # Generate nice URLs for categories:
-CATEGORY_URL = 'category/{name}/'
-CATEGORY_SAVE_AS = 'category/{name}/index.html'
+CATEGORY_URL = 'category/{name}.html'
+CATEGORY_SAVE_AS = 'category/{name}.html'
 # Setup the RSS/ATOM feeds:
 FEED_DOMAIN = SITEURL
 FEED_MAX_ITEMS = 10
@@ -64,19 +64,18 @@ CATEGORY_FEED_ATOM = None
 AUTHOR_FEED_RSS = None
 AUTHOR_FEED_ATOM  = None
 TRANSLATION_FEED_ATOM = None
-TRANSLATION_FEED_RSS = None
 RSS_FEED_SUMMARY_ONLY = False
 # Separate page directory and articles directory:
 PAGE_PATHS = [ 'pages' ]
 ARTICLE_PATHS = [ 'blog' ]
 # Save index as blog/index.html instead of index.html:
-INDEX_SAVE_AS = 'blog/index.html'
+INDEX_SAVE_AS = 'blog.html'
 # Navigation menu:
 SECTIONS = [
-  ('blog', '/blog'),
-  ('about', '/about'),
-  ('pages', '/pages'),
-  ('documents', '/documents'),]
+  ('blog', '/blog.html'),
+  ('about', '/about.html'),
+  ('pages', '/pages.html'),
+  ('documents', '/documents.html'),]
 # Links to display in the footer:
 LINKS = [
   ('bsd', 'http://www.opensource.org/licenses/BSD-3-Clause'),
@@ -94,10 +93,19 @@ EXTRA_PATH_METADATA = {
 # Folders to copy to <output>/static/...:
 STATIC_SAVE_AS = 'static/{path}'
 STATIC_PATHS = ['images', 'apps', 'extra/.htaccess', 'extra/robots.txt', 'extra/favicon.ico']
-
 # Github Base Path:
 GITHUB_ISSUE_PATH='https://github.com/bytefish/bytefish.de/issues'
 GITHUB_SOURCE_PATH='https://github.com/bytefish/bytefish.de/blob/master/blog'
+#Sitemap Settings:
+SITEMAP = {
+    'format': 'xml',
+    'exclude': ['tag/', 'category/', '404.html'],
+    'priorities': {
+        'articles': 0.5,
+        'indexes': 0.5,
+        'pages': 0.5
+    }
+}
 
 # Custom functions available to all templates:
 import calendar

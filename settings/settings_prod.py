@@ -9,10 +9,10 @@ PLUGINS = [ 'sitemap', ]
 # Most important metadata:
 AUTHOR = 'Philipp Wagner'
 EMAIL = 'philipp AT bytefish DOT de'
-SITENAME = 'https://bytefish.de'
+SITENAME = 'https://www.bytefish.de'
 OUTPUT_PATH = 'output/PROD/'
 # Base URL this page is hosted at:
-SITEURL = 'https://bytefish.de'
+SITEURL = 'https://www.bytefish.de'
 # Timezone is GMT+1:
 TIMEZONE = 'Europe/Paris'
 # Using a simple date format:
@@ -34,21 +34,21 @@ MARKDOWN = {
 # We don't use relative URLs:
 RELATIVE_URLS = False
 # Edit predefined pathes:
-ARCHIVES_SAVE_AS = 'pages/index.html'
+ARCHIVES_SAVE_AS = 'pages.html'
 # Generates nice URLs for pages:
-PAGE_URL = '{slug}'
-PAGE_SAVE_AS = '{slug}/index.html'
+PAGE_URL = '{slug}.html'
+PAGE_SAVE_AS = '{slug}.html'
 # Generate nice URLs for articles:
 ARTICLE_EXCLUDES = (('pages',))
-ARTICLE_URL = 'blog/{slug}'
-ARTICLE_SAVE_AS = 'blog/{slug}/index.html'
+ARTICLE_URL = 'blog/{slug}.html'
+ARTICLE_SAVE_AS = 'blog/{slug}.html'
 # Generate nice URLs for tags:
-TAG_URL = 'tag/{name}/'
-TAG_SAVE_AS = 'tag/{name}/index.html'
-TAGS_SAVE_AS = 'tags/index.html'
+TAG_URL = 'tag/{name}.html'
+TAG_SAVE_AS = 'tag/{name}.html'
+TAGS_SAVE_AS = 'tags.html'
 # Generate nice URLs for categories:
-CATEGORY_URL = 'category/{name}/'
-CATEGORY_SAVE_AS = 'category/{name}/index.html'
+CATEGORY_URL = 'category/{name}.html'
+CATEGORY_SAVE_AS = 'category/{name}.html'
 # Setup the RSS/ATOM feeds:
 FEED_DOMAIN = SITEURL
 FEED_MAX_ITEMS = 10
@@ -68,14 +68,14 @@ RSS_FEED_SUMMARY_ONLY = False
 # Separate page directory and articles directory:
 PAGE_PATHS = [ 'pages' ]
 ARTICLE_PATHS = [ 'blog' ]
-# Save index as blog/index.html instead of index.html:
-INDEX_SAVE_AS = 'blog/index.html'
+# Save index as blog.html instead of index.html:
+INDEX_SAVE_AS = 'blog.html'
 # Navigation menu:
 SECTIONS = [
-  ('blog', '/blog'),
-  ('about', '/about'),
-  ('pages', '/pages'),
-  ('documents', '/documents'),]
+  ('blog', '/blog.html'),
+  ('about', '/about.html'),
+  ('pages', '/pages.html'),
+  ('documents', '/documents.html'),]
 # Links to display in the footer:
 LINKS = [
   ('bsd', 'http://www.opensource.org/licenses/BSD-3-Clause'),
