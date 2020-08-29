@@ -34,7 +34,7 @@ MARKDOWN = {
 # We don't use relative URLs:
 RELATIVE_URLS = False
 # Edit predefined pathes:
-ARCHIVES_SAVE_AS = 'archives.html'
+ARCHIVES_SAVE_AS = 'pages.html'
 # Generates nice URLs for pages:
 PAGE_URL = '{slug}.html'
 PAGE_SAVE_AS = '{slug}.html'
