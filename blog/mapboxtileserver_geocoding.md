@@ -480,6 +480,74 @@ autocomplete({
 });
 ```
 
+## Running the example ##
+
+The .NET Tile Server used here can be found in its repository at:
+
+* [https://github.com/bytefish/MapboxTileServer](https://github.com/bytefish/MapboxTileServer)
+
+### Starting the Server ###
+
+You can start it by running the ``docker-compose`` command in the folder [Docker folder]:
+
+```
+docker-compose up --detach --no-deps --build
+```
+
+[Docker folder]: https://github.com/bytefish/MapboxTileServer/tree/master/Docker
+
+### Configuring the Server ###
+
+The Backend is configured to load the OpenMapTiles from the file ``/Tiles/2017-07-03_europe_germany.mbtiles``, which 
+you can configure to any other filename by changing the ``appsettings.json`` of the Server:
+
+```json
+{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft": "Warning",
+      "Microsoft.Hosting.Lifetime": "Information"
+    }
+  },
+  "Application": {
+    "SchemaDirectory": "/static/schemas",
+    "Photon": {
+      "ApiUrl": "http://localhost:2322/api"
+    },
+    "Tilesets": {
+      "openmaptiles": {
+        "Filename": "/Tiles/2017-07-03_europe_germany.mbtiles",
+        "ContentType": "application/vnd.mapbox-vector-tile"
+      },
+      "natural_earth_2_shaded_relief.raster": {
+        "Filename": "/Tiles/natural_earth_2_shaded_relief.raster.mbtiles",
+        "ContentType": "image/png"
+      }
+    }
+  },
+  "AllowedHosts": "*"
+}
+```
+
+The ``/Tiles`` volume is mounted in the ``docker-compose.yaml``, you might configure it:
+
+```yaml
+version: '3.0'
+services:
+  mapbox_tileserver:
+    container_name: mapbox_tileserver
+    build: 
+        context: ../MapboxTileServer
+        dockerfile: ../Docker/mapbox_tileserver/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Linux
+    volumes:
+      - G:/Tiles:/Tiles
+    ports:
+      - 9000:9000
+```
+
 ## Conclusion ##
 
 And that's it! You can now start Photon, the MapboxTileServer and enjoy Geocoding.
