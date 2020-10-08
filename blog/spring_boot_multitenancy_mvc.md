@@ -58,6 +58,17 @@ If you are interested in refreshing Tenants dynamically, please read up on my re
 
 * [https://bytefish.de/blog/spring_boot_multitenancy_configuration/](https://bytefish.de/blog/spring_boot_multitenancy_configuration/)
 
+### The Request Flow ###
+
+It is probably best to summarize the request flow at the start of the post, so you have an idea how things work together:
+
+1. A HTTP Request flows in with a Header ``X-TenantID``, that contains a Tenant identifier.
+2. The ``X-TenantID`` header value is extracted and Tenant Name is written into a ``ThreadLocal``.
+3. An implementation of an ``AbstractRoutingDataSource`` uses the ``ThreadLocal`` to resolve a ``DataSource`` (based on a Tenant identifier).
+4. The JPA EntityManager in the Spring Boot application then uses this ``DataSource`` to make queries to the Tenant-specific Database.
+5. A HTTP Response is sent.
+6. The Tenant identifier in the ``ThreadLocal`` is reset to prevent leaking data.
+
 ### Creating the Databases ###
 
 First of all we need to create a database user and the tenant databases for this tutorial. I am going to use PostgreSQL for this 
