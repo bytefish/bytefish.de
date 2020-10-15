@@ -21,7 +21,7 @@ from pelican import signals, contents
 from pelican.utils import get_date
 
 TXT_HEADER = """{0}/index.html
-{0}/archives.html
+{0}/pages.html
 {0}/tags.html
 {0}/categories.html
 """
