@@ -15,7 +15,9 @@ summary: This article introduces SqlMapper, which is Java 1.8 library to map bet
 
 .NET has a large amount of Micro ORMs ([Dapper], [NPoco], [OrmLite], ...) to access databases in a very 
 simple way, while Java is lacking small libraries. [SqlMapper] is a wrapper over the JDBC [ResultSet], 
-and makes it very easy to map between Java Beans and a database table.
+and makes it very easy to map between Java Beans and a database table:
+
+* [https://github.com/bytefish/SqlMapper](https://github.com/bytefish/SqlMapper)
 
 ## Basic Usage ##
 
@@ -78,14 +80,12 @@ private class Person {
 
 ### Define the Mapping ###
 
-All you have implement is the mapping between both, which is done with an ``AbstractMap``:
+All you have implement is the mapping between both, which is done with a ``ResultSetMapping``:
 
 ```java
-public class PersonMap extends AbstractMap<Person>
+public class PersonMap extends ResultSetMapping<Person>
 {
     public PersonMap() {
-        super("sample", "unit_test");
-
         map("first_name", String.class, Person::setFirstName);
         map("last_name", String.class, Person::setLastName);
         map("birth_date", LocalDate.class, Person::setBirthDate);
@@ -96,7 +96,7 @@ public class PersonMap extends AbstractMap<Person>
 ### Map ResultSet to an Entity ###
 
 An ``SqlMapper`` is used to perform the actual mapping between a [ResultSet] and the Entities. It takes 
-an ``IObjectCreator`` and an AbstractMap``. The ``IObjectCreator`` is a functional interface, that is 
+an ``IObjectCreator`` and an ResultSetMapping``. The ``IObjectCreator`` is a functional interface, that is 
 used to instantiate a target object.
 
 The ``SqlMapper.toEntity`` method returns a ``SqlMappingResult<TEntity>``. The ``SqlMappingResult<TEntity>`` 
