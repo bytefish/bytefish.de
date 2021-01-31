@@ -17,21 +17,3 @@ Here are some documents we wrote. Some of them are in german, but they'll get tr
   <li class="document-description">Is an introduction into statistical machine learning with OpenCV. It contains a guide for setting up OpenCV on Windows and Linux. A brief introduction and code for Support Vector Machines and Multilayer Perceptrons is given. Good to get started with OpenCV and its Machine Learning library!</li>
   <li class="document-downloads"><a class="mediafile pdf" href="https://www.bytefish.de/pdf/machinelearning.pdf">PDF (English)</a></li>
 </ul>
-<ul class="document">
-  <li class="document-title"><b>Einfuehrung in MapReduce</b></li>
-  <li class="document-author"><em>Filip Martinovský, Philipp Wagner, Stefan Heinze</em></li>
-  <li class="document-description">Is an introduction to MapReduce and gives some ideas on how to implement it in Erlang.</li>
-  <li class="document-downloads"><a class="mediafile pdf" href="https://www.bytefish.de/pdf/mapreduce.pdf">PDF (German)</a></li>
-</ul>
-<ul class="document">
-  <li class="document-title"><b>Distributed Hash Tables</b></li>
-  <li class="document-author"><em>Filip Martinovský, Philipp Wagner</em></li>
-  <li class="document-description">Reads like a tutorial on how to implement distributed hash tables. Chord, a protocol for distributed hash tables, is described and implemented in Erlang.</li>
-  <li class="document-downloads"><a class="mediafile pdf" href="https://www.bytefish.de/pdf/dht.pdf">PDF (German)</a></li>
-</ul>
-<ul class="document">
-  <li class="document-title"><b>Gesichtserkennung mit Eigenfaces</b></li>
-  <li class="document-author"><em>Filip Martinovský, Philipp Wagner</em></li>
-  <li class="document-description">Explains face recognition with Eigenfaces. Shows the performance of a prototype on two datasets (Yale Facedatabase A, AT&amp;T Dataset).</li>
-  <li class="document-downloads"><a class="mediafile pdf" href="https://www.bytefish.de/pdf/eigenfaces.pdf">PDF (German)</a></li>
-</ul>
