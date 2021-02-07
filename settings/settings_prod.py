@@ -17,8 +17,8 @@ SITEURL = 'https://www.bytefish.de'
 TIMEZONE = 'Europe/Paris'
 # Using a simple date format:
 DEFAULT_DATE_FORMAT = ('%d %b %Y')
-# We are using the custom minimal theme:
-THEME = './themes/minimal/'
+# We are using the custom minimal2 theme:
+THEME = './themes/minimal2/'
 # Probably add rst here:
 MARKUP = ('md',)
 # Markdown Configuration:

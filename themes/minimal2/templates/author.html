@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block content_title %}{{page_name}}{%endblock%}
+
+{% block content %}
+  <h1>Posts by {{ author }}:</h1>
+  {% if articles %}
+  <dl>
+  {% for year, date_year in dates | groupby('date.year') | sort(reverse=True) %}
+      {% for article in date_year | sort(attribute='date', reverse=True) %}
+      <dt class="article-date">{{ article.date.strftime('%B %d, %Y') }}</dt>
+      <dd class="article-title"><a href="/{{ article.url }}">{{ article.title }}</a></dd>
+      {% endfor %}
+  {% endfor %}
+  </dl>
+  {% endif %}
+{% endblock %}

@@ -10,7 +10,7 @@ PLUGINS = [ 'sitemap', ]
 AUTHOR = 'Philipp Wagner'
 EMAIL = 'philipp AT bytefish DOT de'
 SITENAME = 'https://www.bytefish.de'
-OUTPUT_PATH = 'output/PROD/'
+OUTPUT_PATH = 'output/DEV/'
 # Base URL this page is hosted at:
 SITEURL = 'http://localhost:8000'
 # Timezone is GMT+1:
@@ -18,7 +18,7 @@ TIMEZONE = 'Europe/Paris'
 # Using a simple date format:
 DEFAULT_DATE_FORMAT = ('%d %b %Y')
 # We are using the custom minimal theme:
-THEME = './themes/minimal/'
+THEME = './themes/minimal2/'
 # Probably add rst here:
 MARKUP = ('md',)
 # Markdown Configuration:
