@@ -23,7 +23,7 @@ pelican -s settings/settings_dev.py .
 
 The output will be written to the folder ``settings/output/DEV``.
 
-## 
+## Theme ##
 
 The ``minimal2`` theme used for the page is based on the [ZeroToCode] Layout by [Linus Lee]:
 
