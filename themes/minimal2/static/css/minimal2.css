@@ -29,7 +29,6 @@ p {
 li a,
 p a {
     text-decoration: underline;
-    color: var(--cf-accent);
     cursor: pointer;
 }
 
@@ -140,11 +139,12 @@ dl {
 
 dt.article-date {
   font-weight: bold;
-  margin-top: 1em;
+  margin-top: 0.5em;
 }
 
 dd.article-title {
   margin-left: 1.5em;
+  line-height: 1.5em;
 }
 
 /*----------------------------*/
