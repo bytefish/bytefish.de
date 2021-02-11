@@ -66,7 +66,7 @@ section h3 {
 }
 
 section p {
-    margin-bottom: 32px;
+    margin-bottom: 16px;
 }
 
 .overlay {
@@ -103,11 +103,6 @@ ul {
   list-style-type: square;
   list-style-image: none;
 
-}
-
-ul,
-ol {
-  margin: 0 0 1em 3.5em;
 }
 
 ul li,
@@ -177,7 +172,7 @@ dd.article-title {
 .highlight {
     overflow: visible;
     padding: 12px 8px 12px 16px;
-    margin-bottom: 32px;
+    margin-bottom: 16px;
     /* for positioning the "try it" button */
     position: relative;
 }
