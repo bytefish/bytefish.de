@@ -14,7 +14,7 @@ nav {
 header {
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
     flex-shrink: 0;
     padding: 4px;
@@ -224,6 +224,7 @@ li > code {
 
   header > .button {
     width: 100%;
+    text-align: center;
   }
   
   /* 
