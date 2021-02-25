@@ -222,8 +222,11 @@ li > code {
     width: 100%;
   }
 
-  header > .button {
-    width: 100%;
+  header > div.logo > .button {
+    text-align: center;
+  }
+
+  header > nav > .button {
     text-align: center;
   }
   
