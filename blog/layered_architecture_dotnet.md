@@ -53,7 +53,7 @@ Aggregate Roots, Unit of Work, CQRS and using a Repository Pattern to abstract t
 a lot of topics to digest. At the same time, there are very few recommended .NET examples to learn 
 from.
 
-What's my problem with using a Domain-Drivden Design approach right from the start? 
+What's my problem with using a Domain-Driven Design approach right from the start? 
 
 It is **very easy** to do it wrong.
 
