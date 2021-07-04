@@ -28,6 +28,7 @@ MARKDOWN = {
         'markdown.extensions.toc' : {},
         'markdown.extensions.extra': {},
         'markdown.extensions.meta': {},
+        'markdown.extensions.footnotes': {},
     },
     'output_format': 'html5',
 }
