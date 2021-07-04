@@ -14,8 +14,8 @@ There is no shortage of Software Architecture literature.
 
 Do you want to build a Layered Architecture, Hexagonal Architcture, Event-driven Architecture, Service-oriented Architecture, 
 Clean Architecture? Are you going to build a Monolith? Or do you go for Microservices? Are you going to use a Relational 
-Database? Or better use a Document-Database? An Event-Bus to decouple all the things? What about Domain Driven Development? 
-What's this Eventual Consistency?
+Database? Or better use a Document-Database? An Event-Bus to decouple all the things? What about Domain Driven Design? 
+What's this Eventual Consistency? ...
 
 There's a simple answer: 
 
