@@ -2089,7 +2089,11 @@ You want to know:
 * What is the Process ID and Process Name?
 * ...
 
-And once you are done, you probably want to evaluate your logs? Structured Logging to rescue!
+And once you are done, you probably want to evaluate your logs? Structured Logging to rescue! 
+
+I will show how to use *Serilog* to answer most of the questions above:
+
+* [https://serilog.net/](https://serilog.net/)
 
 ### Log Method Arguments, Entry and Exit ###
 
