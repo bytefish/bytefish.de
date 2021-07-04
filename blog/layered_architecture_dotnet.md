@@ -1837,7 +1837,7 @@ namespace LayeredArchitecture.Base.Auditing
 
 Each entity that should be audited then implements the ``IAuditedEntity`` interface:
 
-```
+```csharp
 // Copyright (c) Philipp Wagner. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
