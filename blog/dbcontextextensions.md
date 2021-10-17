@@ -21,242 +21,6 @@ It can be installed with [NuGet](https://www.nuget.org/) with the following comm
 PM> Install-Package DbContextScope.Core
 ```
 
-## EntityMap: Building modular DbContext's ##
-
-Your application grows and so does the amount of ``DbSet`` properties in your ``DbContext``. There is a simple way 
-to avoid it, by using an ``IEntityTypeConfiguration`` and automatically register the mappings in the ``DbContext``. 
-By using ``DbContext#Set<TEntityType>`` we can then access the underlying ``DbSet``.
-
-But looking at the ``IEntityTypeConfiguration`` interface, I can see I would lose access to the ``ModelBuilder``:
-
-```csharp
-// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
-
-namespace Microsoft.EntityFrameworkCore
-{
-    public interface IEntityTypeConfiguration<TEntity>
-        where TEntity : class
-    {
-        void Configure(EntityTypeBuilder<TEntity> builder);
-    }
-}
-```
-
-So first of all we define an interface, which can be used to configure the ``ModelBuilder``:
-
-```csharp
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
-
-using Microsoft.EntityFrameworkCore;
-
-namespace DbContextExtensions.Mappings
-{
-    /// <summary>
-    /// Implements Entity Framework Core Type Configurations using the 
-    /// <see cref="ModelBuilder"/>. This class is used as an abstraction, 
-    /// so we can pass the <see cref="IEntityTypeConfiguration{TEntity}"/> 
-    /// into a <see cref="DbContext"/>.
-    /// </summary>
-    public interface IEntityMap
-    {
-        /// <summary>
-        /// Configures the <see cref="ModelBuilder"/> for an entity.
-        /// </summary>
-        /// <param name="builder"><see cref="ModelBuilder"/></param>
-        void Map(ModelBuilder builder);
-    }
-}
-```
-
-And we can then define an ``EntityMap<TEntityType>`` base class, which can be used to configure the ``ModelBuilder`` 
-and the ``EntityTypeBuilder<TEntityType>`` at the same time:
-
-```csharp
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
-
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
-
-namespace DbContextExtensions.Mappings
-{
-    /// <summary>
-    /// A base class for providing simplified access to a <see cref="EntityTypeBuilder{TEntityType}"/> for a 
-    /// given <see cref="TEntityType"/>. This is used to enable mappings for each type individually.
-    /// </summary>
-    /// <typeparam name="TEntityType"></typeparam>
-    public abstract class EntityMap<TEntityType> : IEntityMap
-            where TEntityType : class
-    {
-        /// <summary>
-        /// Implements the <see cref="IEntityMap"/>.
-        /// </summary>
-        /// <param name="builder"><see cref="ModelBuilder"/> passed from the <see cref="DbContext"/></param>
-        public void Map(ModelBuilder builder)
-        {
-            InternalMap(builder, builder.Entity<TEntityType>());
-        }
-
-        /// <summary>
-        /// Implementy the Entity Type configuration for a <see cref="TEntityType"/>.
-        /// </summary>
-        /// <param name="model">The <see cref="ModelBuilder"/> to configure</param>
-        /// <param name="entity">The <see cref="EntityTypeBuilder{TEntity}"/> to configure</param>
-        protected abstract void InternalMap(ModelBuilder model, EntityTypeBuilder<TEntityType> entity);
-    }
-}
-```
-
-And finally we can define an ``ApplicationDbContext`` as the basis for the application:
-
-```csharp
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
-
-using DbContextExtensions.Mappings;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.Extensions.Logging;
-using System.Collections.Generic;
-using System.Linq;
-
-namespace DbContextExtensions.Context
-{
-    /// <summary>
-    /// A base class for a <see cref="DbContext"/> using <see cref="IEntityMap"/> mappings.
-    /// </summary>
-    public class ApplicationDbContext : DbContext
-    {
-        private readonly IReadOnlyCollection<IEntityMap> mappings;
-
-        /// <summary>
-        /// Creates a new <see cref="DbContext"/> to query the database.
-        /// </summary>
-        /// <param name="loggerFactory">A Logger Factory to enable EF Core Logging facilities</param>
-        /// <param name="mappings">The <see cref="IEntityMap"/> mappings for mapping query results</param>
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, IEnumerable<IEntityMap> mappings)
-            : base(options)
-        {
-            this.mappings = mappings
-                .ToList()
-                .AsReadOnly();
-        }
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            ApplyMappings(modelBuilder);
-        }
-
-        private void ApplyMappings(ModelBuilder modelBuilder)
-        {
-            foreach (var mapping in mappings)
-            {
-                Logger.LogDebug("Applying EntityMap {EntityMap}", mapping.GetType());
-
-                mapping.Map(modelBuilder);
-            }
-        }
-
-        protected ILogger<ApplicationDbContext> Logger => this.GetService<ILogger<ApplicationDbContext>>();
-    }
-}
-```
-
-### Example: Using the ApplicationDbContext and EntityMap's ###
-
-We define the ``Person`` class first:
-
-```csharp
-class Person
-{
-    public int Id { get; set; }
-
-    public string FirstName { get; set; }
-
-    public string LastName { get; set; }
-
-    public DateTime BirthDate { get; set; }
-}
-```
-
-And its ``IEntityMap`` implementation using the ``EntityMap`` base class like this:
-
-```csharp
-// The Fluent EF Core Mapping.
-class PersonEntityMap : EntityMap<Person>
-{
-    protected override void InternalMap(ModelBuilder model, EntityTypeBuilder<Person> entity)
-    {
-        model
-            .HasSequence("SeqPerson", seq_builder => seq_builder.IncrementsBy(10));
-
-        entity
-            .ToTable("Person", "dbo")
-            .HasKey(x => x.Id);
-
-        entity
-            .Property(x => x.Id)
-            .UseHiLo("SeqDocument")
-            .HasColumnName("PersonID");
-
-        entity
-            .Property(x => x.FirstName)
-            .HasColumnName("FirstName");
-
-        entity
-            .Property(x => x.LastName)
-            .HasColumnName("LastName");
-
-        entity
-            .Property(x => x.BirthDate)
-            .HasColumnName("BirthDate");
-    }
-}
-```
-
-Now what's left is to register the ``IEntityMap`` implementations and the ``ApplicationDbContext`` in the DI Container:
-
-```csharp
-// Register the Mappings:
-services.AddSingleton<IEntityMap, PersonEntityMap>();
-
-// Configure the DbContextFactory, which instantiates the DbContext:
-services.AddDbContext<ApplicationDbContext>((options) =>
-{
-    options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
-});
-
-// Configure the DbContextFactory, which can be used to instantiate DbContexts, when needed:
-services.AddDbContextFactory<ApplicationDbContext>((services, options) =>
-{
-    options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
-});
-```
-
-The method ``DbContext#Set<T>`` can then be used on the ``ApplicationDbContext`` to query the entity:
-
-```csharp
-public class PersonService 
-{
-    private readonly ApplicationDbContext context;
-    
-    public PersonService(ApplicationDbContext context)
-    {
-        this.context = context;
-    }
-    
-    public List<Person> GetAll() 
-    {
-        return context
-            .Set<Person>()
-            .ToList();
-    }
-}
-```
-
-And that's it.
-
 ## DbContextScope: Scoping the DbContext for a simpler Software Architecture ##
 
 I like starting out with a simple Software Architecture. Life is complicated enough. 
@@ -1338,6 +1102,243 @@ commited. Does it cover each and every use case? Probably not. Is it going to si
 scenarios? I hope so!
 
 Time will tell... and I will update this article.
+
+
+## EntityMap: Building modular DbContext's ##
+
+Your application grows and so does the amount of ``DbSet`` properties in your ``DbContext``. There is a simple way 
+to avoid it, by using an ``IEntityTypeConfiguration`` and automatically register the mappings in the ``DbContext``. 
+By using ``DbContext#Set<TEntityType>`` we can then access the underlying ``DbSet``.
+
+But looking at the ``IEntityTypeConfiguration`` interface, I can see I would lose access to the ``ModelBuilder``:
+
+```csharp
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+
+namespace Microsoft.EntityFrameworkCore
+{
+    public interface IEntityTypeConfiguration<TEntity>
+        where TEntity : class
+    {
+        void Configure(EntityTypeBuilder<TEntity> builder);
+    }
+}
+```
+
+So first of all we define an interface, which can be used to configure the ``ModelBuilder``:
+
+```csharp
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+using Microsoft.EntityFrameworkCore;
+
+namespace DbContextExtensions.Mappings
+{
+    /// <summary>
+    /// Implements Entity Framework Core Type Configurations using the 
+    /// <see cref="ModelBuilder"/>. This class is used as an abstraction, 
+    /// so we can pass the <see cref="IEntityTypeConfiguration{TEntity}"/> 
+    /// into a <see cref="DbContext"/>.
+    /// </summary>
+    public interface IEntityMap
+    {
+        /// <summary>
+        /// Configures the <see cref="ModelBuilder"/> for an entity.
+        /// </summary>
+        /// <param name="builder"><see cref="ModelBuilder"/></param>
+        void Map(ModelBuilder builder);
+    }
+}
+```
+
+And we can then define an ``EntityMap<TEntityType>`` base class, which can be used to configure the ``ModelBuilder`` 
+and the ``EntityTypeBuilder<TEntityType>`` at the same time:
+
+```csharp
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+
+namespace DbContextExtensions.Mappings
+{
+    /// <summary>
+    /// A base class for providing simplified access to a <see cref="EntityTypeBuilder{TEntityType}"/> for a 
+    /// given <see cref="TEntityType"/>. This is used to enable mappings for each type individually.
+    /// </summary>
+    /// <typeparam name="TEntityType"></typeparam>
+    public abstract class EntityMap<TEntityType> : IEntityMap
+            where TEntityType : class
+    {
+        /// <summary>
+        /// Implements the <see cref="IEntityMap"/>.
+        /// </summary>
+        /// <param name="builder"><see cref="ModelBuilder"/> passed from the <see cref="DbContext"/></param>
+        public void Map(ModelBuilder builder)
+        {
+            InternalMap(builder, builder.Entity<TEntityType>());
+        }
+
+        /// <summary>
+        /// Implementy the Entity Type configuration for a <see cref="TEntityType"/>.
+        /// </summary>
+        /// <param name="model">The <see cref="ModelBuilder"/> to configure</param>
+        /// <param name="entity">The <see cref="EntityTypeBuilder{TEntity}"/> to configure</param>
+        protected abstract void InternalMap(ModelBuilder model, EntityTypeBuilder<TEntityType> entity);
+    }
+}
+```
+
+And finally we can define an ``ApplicationDbContext`` as the basis for the application:
+
+```csharp
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+using DbContextExtensions.Mappings;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace DbContextExtensions.Context
+{
+    /// <summary>
+    /// A base class for a <see cref="DbContext"/> using <see cref="IEntityMap"/> mappings.
+    /// </summary>
+    public class ApplicationDbContext : DbContext
+    {
+        private readonly IReadOnlyCollection<IEntityMap> mappings;
+
+        /// <summary>
+        /// Creates a new <see cref="DbContext"/> to query the database.
+        /// </summary>
+        /// <param name="loggerFactory">A Logger Factory to enable EF Core Logging facilities</param>
+        /// <param name="mappings">The <see cref="IEntityMap"/> mappings for mapping query results</param>
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, IEnumerable<IEntityMap> mappings)
+            : base(options)
+        {
+            this.mappings = mappings
+                .ToList()
+                .AsReadOnly();
+        }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            ApplyMappings(modelBuilder);
+        }
+
+        private void ApplyMappings(ModelBuilder modelBuilder)
+        {
+            foreach (var mapping in mappings)
+            {
+                Logger.LogDebug("Applying EntityMap {EntityMap}", mapping.GetType());
+
+                mapping.Map(modelBuilder);
+            }
+        }
+
+        protected ILogger<ApplicationDbContext> Logger => this.GetService<ILogger<ApplicationDbContext>>();
+    }
+}
+```
+
+### Example: Using the ApplicationDbContext and EntityMap's ###
+
+We define the ``Person`` class first:
+
+```csharp
+class Person
+{
+    public int Id { get; set; }
+
+    public string FirstName { get; set; }
+
+    public string LastName { get; set; }
+
+    public DateTime BirthDate { get; set; }
+}
+```
+
+And its ``IEntityMap`` implementation using the ``EntityMap`` base class like this:
+
+```csharp
+// The Fluent EF Core Mapping.
+class PersonEntityMap : EntityMap<Person>
+{
+    protected override void InternalMap(ModelBuilder model, EntityTypeBuilder<Person> entity)
+    {
+        model
+            .HasSequence("SeqPerson", seq_builder => seq_builder.IncrementsBy(10));
+
+        entity
+            .ToTable("Person", "dbo")
+            .HasKey(x => x.Id);
+
+        entity
+            .Property(x => x.Id)
+            .UseHiLo("SeqDocument")
+            .HasColumnName("PersonID");
+
+        entity
+            .Property(x => x.FirstName)
+            .HasColumnName("FirstName");
+
+        entity
+            .Property(x => x.LastName)
+            .HasColumnName("LastName");
+
+        entity
+            .Property(x => x.BirthDate)
+            .HasColumnName("BirthDate");
+    }
+}
+```
+
+Now what's left is to register the ``IEntityMap`` implementations and the ``ApplicationDbContext`` in the DI Container:
+
+```csharp
+// Register the Mappings:
+services.AddSingleton<IEntityMap, PersonEntityMap>();
+
+// Configure the DbContextFactory, which instantiates the DbContext:
+services.AddDbContext<ApplicationDbContext>((options) =>
+{
+    options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+});
+
+// Configure the DbContextFactory, which can be used to instantiate DbContexts, when needed:
+services.AddDbContextFactory<ApplicationDbContext>((services, options) =>
+{
+    options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
+});
+```
+
+The method ``DbContext#Set<T>`` can then be used on the ``ApplicationDbContext`` to query the entity:
+
+```csharp
+public class PersonService 
+{
+    private readonly ApplicationDbContext context;
+    
+    public PersonService(ApplicationDbContext context)
+    {
+        this.context = context;
+    }
+    
+    public List<Person> GetAll() 
+    {
+        return context
+            .Set<Person>()
+            .ToList();
+    }
+}
+```
+
+And that's it.
 
 [Enterprise Application Architecture (Archived)](https://web.archive.org/web/20020329184043/http://www.martinfowler.com/isa/concurrency.html)
 [Unit Of Work]: https://martinfowler.com/eaaCatalog/unitOfWork.html
