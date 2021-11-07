@@ -6,9 +6,9 @@ slug: bulk_updates_postgres
 author: Philipp Wagner
 summary: On Bulk Updates with PostgreSQL and Npgsql.
 
-Something, that often comes up in the PostgreSqlCopyHelper and PgBulkInsert issue trackes is how to do bulk 
-updates to PostgreSQL with the libraries. Simple answer is: You can't. The underlying Postgres ``COPY`` protocol 
-only does inserts.
+Something, that often comes up in the [PostgreSQLCopyHelper] and [PgBulkInsert] issue trackers is how to do bulk 
+updates with the libraries. Simple answer is: You can't. The underlying Postgres ``COPY`` protocol only supports 
+inserts.
 
 In SQL Server I've always used Table-valued Parameters (TVP) to send a batch of data over the wire and perform a 
 ``MERGE`` statement on the bulk data. So let's see how to do something similar in Postgres using composite types 
@@ -16,11 +16,14 @@ and Npgsql.
 
 All code can also be found in a Gist at:
 
-* https://gist.github.com/bytefish/dbd2da81267990e9326044661be1c480
+* [https://gist.github.com/bytefish/dbd2da81267990e9326044661be1c480](https://gist.github.com/bytefish/dbd2da81267990e9326044661be1c480)
+
+[PostgreSQLCopyHelper]: https://github.com/PostgreSQLCopyHelper/PostgreSQLCopyHelper
+[PgBulkInsert]: https://github.com/PgBulkInsert/PgBulkInsert
 
 ## Implementation ##
 
-Imagine we want to Bulk Insert or Update measurements of a device. 
+Imagine we want to bulk insert or update measurements of a device. 
 
 We probably come up with a table like this:
 
