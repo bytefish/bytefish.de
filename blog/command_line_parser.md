@@ -8,7 +8,7 @@ summary: On Building a simple .NET CLI Parser
 
 I recently had to parse the command line arguments of the ``dotnet`` executable to read some option 
 values. I think something like this should come out of the box in the .NET ecosystem. And apparently 
-their has been a lot of work on it:
+there has been a lot of work on it:
 
 * [https://github.com/dotnet/command-line-api](https://github.com/dotnet/command-line-api)
 

@@ -32,7 +32,7 @@ For an EF Core-based application I want to know exactely:
 * *Who* actually writes the changes to the database? 
 * *When* are those changes written?
 
-### So yes... Who actually calls SaveChanges on my DbContext? ###
+### Questions, Questions, Questions, ... ###
 
 If you are following the official documentation and tutorials on EF Core, then most probably the Dependency Injection 
 container is responsible for creating and disposing your ``DbContext`` instances. The lifetime of a ``DbContext`` then 
@@ -91,18 +91,18 @@ Business Transaction? Remember you do not control its lifetime, the DI container
 
 Again no simple answers here.
 
-The only fool-proof way I can think of is:
+The only fool-proof way to keep some control I can think of is:
 
-* Take a dependency on an ``IDbContextFactory<TContext>``
-    * Create a ``DbContext`` when we start the Business Transaction.
+* Take a dependency on an ``IDbContextFactory<TContext>`` in the Service Layer
+    * Create a ``DbContext`` the moment we start a Business Transaction.
 * Pass a ``DbContext`` as a parameter into Repositories. 
     * Repositories and Services then no longer carry the ``DbContext`` and everything can be registered as a ``Singleton``.
 
-This is making the DI Container configuration much, much simpler to reason about:
+This makes a DI Container configuration much, much simpler to reason about:
 
 ```csharp
 // Repository ...
-public class BuyerRepository
+public class BuyerRepository : IBuyerRepository
 {
     public Buyer Add(OrderingContext context, Buyer buyer)
     {
@@ -121,20 +121,24 @@ public class BuyerRepository
 }
 
 // Service ...
-public class BuyerService
+public class BuyerService : IBuyerService
 {
     private readonly IDbContextFactory<OrderingContext> dbContextFactory;
+    private readonly IBuyerRepository buyerRepository;
 
     public BuyerRepository(IDbContextFactory<OrderingContext> dbContextFactory, IBuyerRepository buyerRepository)
     {
         this.dbContextFactory = dbContextFactory;
+        this.buyerRepository = buyerRepository;
     }
 
-    public Buyer Add(Buyer buyer)
+    public void Add(Buyer buyer)
     {
         using(var context = dbContextFactory.Create()) 
         {
-            return buyerRepository.Add(context, buyer);
+            buyerRepository.Add(context, buyer);
+            
+            context.SaveChanges();
         }
     }
     
@@ -142,23 +146,35 @@ public class BuyerService
 }
 ``` 
 
-The questionable and potentially dangerous passing of the ``DbContext`` directly into a repository aside... this probably works great, as long 
-as 1 Service method equals 1 Business Transaction. But what happens, if I need to coordinate between multiple Service-level methods? What if two 
-methods need to call each other? 
+The questionable and potentially dangerous passing of the ``DbContext`` directly to a repository aside... This 
+probably works great, as long as 1 Service method equals 1 Business Transaction. But what happens, if I need to 
+coordinate between multiple Service-level methods? What if two methods need to call each other? 
 
-In the above example both methods create a separate ``DbContext``? Bad. Should they use the same instance? I don't know. 
+In the above example both methods would create a separate ``DbContext``? Bad. Should they use the same instance? I don't know. 
 
 Not easy to say.
 
 #### And how does Microsoft work with the EF Core DbContext? ####
 
-That makes me think: Are my software architecture skills really so, so poor? Am I too stupid? Do I probably get it all wrong here? Am I 
-overthinking it? Could all these issues be solved using some magical CQRS-style architecture, that's all the hype? But still with Commands 
-and all that we'll need to design all layers below the Commands, no? And there... we'll come back to all questions above.
+That makes me think:
 
-So. Microsoft has a DDD example project "eShopOnContainers", which is their ".NET Microservices Sample Reference Application". It uses EF Core 
-in one of its Microservices so... how does Microsoft address some of my questions? Let's take a deep dive into the implementation of the Order 
-Microservice (*a single Microservice*), to validate or invalidate my concerns.
+* Are my software architecture skills really so, so poor? 
+* Am I too stupid? Do I probably get it all wrong here? 
+* Am I overthinking it? 
+
+I wouldn't rule out any of these options!
+
+Could all these issues be solved by using some magical CQRS-style architecture, that's all the hype right now? But still with Commands and all 
+that we'll need to design all layers below the Commands. And there... we'll come back to all questions above. 
+
+It's good, that Microsoft has a DDD example project "eShopOnContainers" as their ".NET Microservices Sample Reference Application":
+
+* [https://github.com/dotnet-architecture/eShopOnContainers](https://github.com/dotnet-architecture/eShopOnContainers)
+
+It uses EF Core in one of its Microservices responsible for handling Orders so... how does Microsoft address some of my questions? Let's take 
+a deep dive into the implementation of the Order Microservice (*a single Microservice*), to validate or invalidate my concerns:
+
+* [https://github.com/dotnet-architecture/eShopOnContainers/tree/dev/src/Services/Ordering](https://github.com/dotnet-architecture/eShopOnContainers/tree/dev/src/Services/Ordering)
 
 Looking at the ``Startup`` Dependency Injection configuration for the Ordering Web service we can see, that the ``DbContext`` 
 (``OrderingContext``) is scoped to the Lifetime of the Request. There is even a nice comment on how the graph of objects 
@@ -453,14 +469,16 @@ Now back to my original question:
 
 * *Who* calls ``DbContext#SaveChanges``? 
 
-The moment we called ``_orderRepository.UnitOfWork.SaveEntitiesAsync(cancellationToken)`` in the Command Handler, we are dispatching the Domain Events first. 
-So the first ``SaveChanges`` on the ``OrderingContext`` is actually done by the ``ValidateOrAddBuyerAggregateWhenOrderStartedDomainEventHandler``, because it 
-uses the same ``OrderingContext``.
+The moment we called ``SaveEntitiesAsync(cancellationToken)`` in the ``CreateOrderCommandHandler``, we are dispatching the ``Order``s Domain Events. 
 
-Does it have side-effects to operate on the same ``DbContext`` and commit it to the database mutliple times? Isn't each handler there using its own 
-transaction then? How could you rollback the whole thing into a consistent state then? How do we solve such an issue? 
+So the first ``SaveChanges`` on the ``OrderingContext`` is actually done by the ``ValidateOrAddBuyerAggregateWhenOrderStartedDomainEventHandler``! 
 
-Yes exactely, by wrapping it all in a Transaction... regardless if needed one or not:
+Puzzle solved!
+
+Does it have side-effects to operate on the same ``DbContext`` and commit it to the database mutliple times? Isn't each handler using its own 
+transaction? How could you rollback the whole thing into a consistent state then? How do we solve such an issue?
+
+Yes exactely, by wrapping it all in a Transaction... regardless if needed or not:
 
 ```csharp
 public class TransactionBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
@@ -525,16 +543,17 @@ public class TransactionBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequ
 }
 ```
 
-Please bear with me, this shouldn't come off negative. All I want to say is, that it's not easy to understand the lifetime of a Unit of Work 
-in such DDD examples. I find myself knee-deep in Dependency Injection configurations, when trying to understand it and reason about the code. 
+Please bear with me, this shouldn't come off negative. A lot of work has been put into the eShopOnContainers application, and it really has a good documentation.
 
-I know the eShopOnContainers application serves the purpose to showcase how Domain Driven Design could be implemented in .NET, how Docker and 
-Kubernetes can be used. And the eShopOnContainers application probably doesn't need the same strict transactional guarantees as a traditional, 
+All I want to say is, that it's not easy to understand the lifetime of a ``DbContext`` in such CQRS / DDD examples. I constantly find myself 
+knee-deep in Dependency Injection configurations, when trying to understand it and reason about the code. And that's a bad sign when it's 
+all about your most precious asset... your data.
+
+I know the eShopOnContainers application serves the purpose to showcase how CQRS / Domain Driven Design could be implemented in .NET, how Docker 
+and Kubernetes can be used. And the eShopOnContainers application probably doesn't need the same strict transactional guarantees as a traditional, 
 boring, enterprise CRUD application. 
 
-Still I find it *extremly hard* to understand the lifetime of the ``DbContext`` in the Microservice example.
-
-### DbContextScope: Managing the DbContext in an Ambient way ###
+## DbContextScope: Managing the DbContext in an Ambient way ##
 
 Let's go a different route and manage the ``DbContext`` in an ambient way. The idea for the ``DbContextScope`` is taken from 
 Mehdi El Gueddari and his blog post is a perfect explanation on it:
@@ -558,7 +577,7 @@ using (var dbContextScope = dbContextScopeFactory.Create())
     await dbContext.Set<Person>()
         .AddAsync(new Person() { FirstName = "Philipp", LastName = "Wagner", BirthDate = new DateTime(2013, 1, 1) });
 
-    dbContextScope1.Complete();
+    dbContextScope.Complete();
 }
 ```
 
