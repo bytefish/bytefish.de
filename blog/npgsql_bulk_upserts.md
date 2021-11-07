@@ -156,10 +156,16 @@ namespace NpgsqlTypeMappings.Example
 
 ## Conclusion ##
 
-So how well does it perform? Bulk Updating and Inserting ``1,000,000`` measurements takes something around ``20`` seconds on my 
-machine. It's well within the range of what I expected. According to [this article] (that's all research I did) one million inserts 
-in a single transaction took 81 seconds... so I think this method does fairly well.
+So how well does it perform? 
 
-Do you know a better way to do Bulk Updates with PostgreSQL without Staging Tables? Let me know!
+Bulk inserting and updating  ``1,000,000`` measurements takes something around ``20`` seconds on my machine. It's well within the range of what I 
+expected. According to [this article] (that's all research I did) one million inserts in a single transaction takes something around 81 seconds... so 
+I think this method does fairly well.
+
+Do you know a better way to do bulk updates with PostgreSQL, that doesn't include staging tables?
+
+Let's discuss it in the GitHub Gist over at:
+
+* [https://gist.github.com/bytefish/dbd2da81267990e9326044661be1c480](https://gist.github.com/bytefish/dbd2da81267990e9326044661be1c480)
 
 [this article]: https://www.cybertec-postgresql.com/en/postgresql-bulk-loading-huge-amounts-of-data/
