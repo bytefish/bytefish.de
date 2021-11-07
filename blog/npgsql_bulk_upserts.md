@@ -80,7 +80,7 @@ $$;
 
 We are done on the Postgres side! 
 
-What's left is using Npsql for mapping the composite type and calling the Stored Procedure:
+What's left is using Npgsql for mapping the composite type and calling the Stored Procedure:
 
 ```csharp
 using Npgsql;
