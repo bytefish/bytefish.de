@@ -19,10 +19,16 @@ The GitHub repository contains all SQL scripts necessary to create the database 
 
 Let's start by adding the required dependencies for the project!
 
-We'll need ``spring-boot-starter-webflux`` to provide the WebFlux framework. Providing non-blocking services requires us to 
-go all-in on reactive and try not to block in the application. That's why we need to add ``r2dbc-postgresql`` as the Postgres 
-R2DBC implementation to provide reactive programming with PostgreSQL. I am lazy and want to have Spring Boot implementing the 
-CRUD repositories and everything for me, so we also take a dependency on ``spring-boot-starter-data-r2dbc``.
+We'll need ``spring-boot-starter-webflux`` to provide the WebFlux framework.
+
+Providing non-blocking services requires us to go all-in on reactive and try not to block in the application. That's 
+why we also need to add ``r2dbc-postgresql`` as the Postgres R2DBC implementation to provide reactive programming with 
+PostgreSQL. 
+
+And last but not least, yes I am lazy. I want Spring Boot to implement the CRUD repositories and everything else for me, so 
+we also take a dependency on ``spring-boot-starter-data-r2dbc`` for providing all R2DBC goodies.
+
+So the following dependencies have been set in the projects Maven POM:
 
 ```java
 <dependencies>
@@ -49,7 +55,9 @@ That's it.
 
 ## Implementation ##
 
-The application is used to create, read and update customers. So we start by defining the ``Customer`` domain model:
+The application is used to create, read and update customers. 
+
+So we start by defining the ``Customer`` domain model:
 
 ```java
 // Copyright (c) Philipp Wagner. All rights reserved.
