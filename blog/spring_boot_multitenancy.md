@@ -1,12 +1,16 @@
-﻿title: Providing Multitenancy with Spring Boot and Jersey
-date: 2017-10-17 08:32
-tags: java, jersey, spring
+﻿title: Providing Multitenancy with Spring Boot
+date: 2020-04-26 21:38
+tags: java, spring
 category: java
-slug: spring_boot_multitenancy_jersey
+slug: spring_boot_multitenancy
 author: Philipp Wagner
 summary: This article shows how to provide Multitenancy with Spring Boot.
 
 In this post I will show you how to provide multitenancy in a Spring Boot application.
+
+A Spring Boot WebFlux implementation can be found at:
+
+* [https://www.bytefish.de/blog/spring_boot_multitenancy_webflux.html](https://www.bytefish.de/blog/spring_boot_multitenancy_webflux.html)
 
 ## What Is Multitenancy ##
 
@@ -52,7 +56,18 @@ The GitHub repository for this post can be found at:
 
 * [https://github.com/bytefish/SpringBootMultiTenancy](https://github.com/bytefish/SpringBootMultiTenancy)
 
-In this example we are going to develop a multitenant application to manage the clients of tenants.
+In this example we are going to develop a multitenant application to manage customers.
+
+### The Request Flow ###
+
+It is probably best to summarize the request flow at the start of the post, so you have an idea how things work together:
+
+1. A HTTP Request flows in with a Header ``X-TenantID``, that contains a Tenant identifier.
+2. The ``X-TenantID`` header value is extracted and Tenant Name is written into a ``ThreadLocal``.
+3. An implementation of an ``AbstractRoutingDataSource`` uses the ``ThreadLocal`` to resolve a ``DataSource`` (based on a Tenant identifier).
+4. The JPA EntityManager in the Spring Boot application then uses this ``DataSource`` to make queries to the Tenant-specific Database.
+5. A HTTP Response is sent.
+6. The Tenant identifier in the ``ThreadLocal`` is reset to prevent leaking data.
 
 ### Creating the Databases ###
 
@@ -127,12 +142,17 @@ END IF;
 
 It's useful to take a look at the Project structure first:
 
-<a href="/static/images/blog/spring_boot_multitenancy/project_customer.jpg">
-	<img class="mediacenter" src="/static/images/blog/spring_boot_multitenancy/project_customer.jpg" alt="Project Overview" />
+<a href="/static/images/blog/spring_boot_multitenancy/project_structure_spring_mvc.jpg">
+	<img class="mediacenter" src="/static/images/blog/spring_boot_multitenancy/project_structure_spring_mvc.jpg" alt="Project Overview" />
 </a>
 
 The purpose of the various classes: 
 
+* ``async``
+    * ``AsyncConfig``
+        * Provides a TaskExecutor decorated for TenantAware Processing.
+    * ``TenantAwareTaskDecorator``
+        * Adds a Spring Boot ``TaskDecorator``, that passes the TenantName to a Child Thread.
 * ``core``
     * ``ThreadLocalStorage``
         * Stores the Tenant Identifier in a ``ThreadLocal``.
@@ -143,21 +163,26 @@ The purpose of the various classes:
     * ``ICustomerRepository``
         * A CRUD Repository to persist customers.
 * ``routing``
+    * ``config``
+        * ``DatabaseConfiguration``
+            * For dynamic Tenant Configuration
+    * ``DynamicTenantAwareRoutingSource``
+        * Periodically refreshes the DataSources to identify new or stale datasources
     * ``TenantAwareRoutingSource``
         * Uses the Tenant Identifier to identify the database of this tenant.
 * ``web``
     * ``configuration``
-        * ``JerseyConfiguration``
-                * Configures Jersey Filters and Resources.
+        * ``WebMvcConfig``
+            * Configures the Spring MVC interceptors.
+    * ``controllers``
+        * ``CustomerController``
+            * Implements a REST Webservice for persisting and deleting Customers.
     * ``converter``
         * ``Converters``
             * Converts between the Domain Model and the Data Transfer Object.
-    * ``filters``
-        * ``TenantNameFilter``
+    * ``interceptor``
+        * ``TenantNameInterceptor``
             * Extracts the Tenant Identifier from an incoming request.
-    * ``resources``
-        * ``CustomerResource``
-            * Implements a REST Webservice for persisting and deleting Customers.
 
 ### Infrastructure ###
 
@@ -283,54 +308,50 @@ public interface ICustomerRepository extends CrudRepository<Customer, Long> {
 
 ### The Web Layer ###
 
-I am a fanboy of the Jersey framework (https://jersey.github.io/), which is easy to extend and integrates well with Spring Boot.
-
 #### Extracting the Tenant Information ####
 
 There are several ways to extract the tenant identifier from an incoming request. The Webservice client will send a HTTP Header 
-with the name ``X-TenantID`` in the example. In Jersey you can implement a ``ContainerRequestFilter`` to intercept an incoming 
-request and extract data from it.
+with the name ``X-TenantID`` in the example. In Spring MVC you can implement a ``HandlerInterceptorAdapter`` to intercept an 
+incoming request and extract data from it.
 
-The ``TenantNameFilter`` reads the ``X-TenantID`` header and stores its value in the ``ThreadLocalStorage``.
+The ``TenantNameInterceptor`` reads the ``X-TenantID`` header and stores its value in the ``ThreadLocalStorage``.
 
 ```java
 // Copyright (c) Philipp Wagner. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-package de.bytefish.multitenancy.web.filters;
+package de.bytefish.multitenancy.web.interceptors;
 
 import de.bytefish.multitenancy.core.ThreadLocalStorage;
+import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
-import javax.ws.rs.container.ContainerRequestContext;
-import javax.ws.rs.container.ContainerRequestFilter;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.ext.Provider;
-import java.io.IOException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
-@Provider
-public class TenantNameFilter implements ContainerRequestFilter {
+public class TenantNameInterceptor extends HandlerInterceptorAdapter {
+    @Override
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+
+        // Implement your logic to extract the Tenant Name here. Another way would be to
+        // parse a JWT and extract the Tenant Name from the Claims in the Token. In the
+        // example code we are just extracting a Header value:
+        String tenantName = request.getHeader("X-TenantID");
+
+        // Always set the Tenant Name, so we avoid leaking Tenants between Threads even in the scenario, when no
+        // Tenant is given. I do this because if somehow the afterCompletion Handler isn't called the Tenant Name
+        // could still be persisted within the ThreadLocal:
+        ThreadLocalStorage.setTenantName(tenantName);
+
+        return true;
+    }
 
     @Override
-    public void filter(ContainerRequestContext ctx) throws IOException {
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
 
-        MultivaluedMap<String, String> headers = ctx.getHeaders();
-
-        if(headers == null) {
-            return;
-        }
-
-        if(!headers.containsKey("X-TenantID")) {
-            return;
-        }
-
-        String tenantName = headers.getFirst("X-TenantID");
-
-        if(tenantName == null) {
-            return;
-        }
-
-        // Set in the Thread Context of the Request:
-        ThreadLocalStorage.setTenantName(tenantName);
+        // After completing the request, make sure to erase the Tenant from the current Thread. It's
+        // because Spring may reuse the Thread in the Thread Pool and you don't want to leak this
+        // information:
+        ThreadLocalStorage.setTenantName(null);
     }
 }
 ```
@@ -395,7 +416,15 @@ package de.bytefish.multitenancy.web.converter;
 import de.bytefish.multitenancy.model.Customer;
 import de.bytefish.multitenancy.web.model.CustomerDto;
 
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+
 public class Converters {
+
+    private Converters() {
+
+    }
 
     public static CustomerDto convert(Customer source) {
         if(source == null) {
@@ -413,67 +442,67 @@ public class Converters {
         return new Customer(source.getId(), source.getFirstName(), source.getLastName());
     }
 
+    public static List<CustomerDto> convert(Iterable<Customer> customers) {
+        return StreamSupport.stream(customers.spliterator(), false)
+                .map(Converters::convert)
+                .collect(Collectors.toList());
+    }
 }
 ```
 
-#### Resource ####
+#### Controller ####
 
-Implementing the RESTful Webservice with Jersey now basically boils down to using the ``ICustomerRepository`` for querying 
-the database and using the ``Converters`` to convert between both representations. 
+Implementing the RESTful Webservice with Spring MVC requires us to implement a ``RestController``. We are using 
+the ``ICustomerRepository`` for querying the database and using the ``Converters`` to convert between both 
+representations. 
 
 ```java
 // Copyright (c) Philipp Wagner. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-package de.bytefish.multitenancy.web.resources;
+package de.bytefish.multitenancy.web.controllers;
 
 import de.bytefish.multitenancy.model.Customer;
 import de.bytefish.multitenancy.repositories.ICustomerRepository;
 import de.bytefish.multitenancy.web.converter.Converters;
 import de.bytefish.multitenancy.web.model.CustomerDto;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.security.RolesAllowed;
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-@Component
-@Path("/customers")
-public class CustomerResource {
+@RestController
+public class CustomerController {
 
     private final ICustomerRepository repository;
 
     @Autowired
-    public CustomerResource(ICustomerRepository repository) {
+    public CustomerController(ICustomerRepository repository) {
         this.repository = repository;
     }
 
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
+    @GetMapping("/customers")
     public List<CustomerDto> getAll() {
-        // Return the DTO List:
-        return StreamSupport.stream(repository.findAll().spliterator(), false)
-                .map(Converters::convert)
-                .collect(Collectors.toList());
+        Iterable<Customer> customers = repository.findAll();
+
+        return Converters.convert(customers);
     }
 
-    @GET
-    @Path("{id}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public CustomerDto get(@PathParam("id") long id) {
-        Customer customer = repository.findOne(id);
+    @GetMapping("/customers/{id}")
+    public CustomerDto get(@PathVariable("id") long id) {
+        Customer customer = repository
+                .findById(id)
+                .orElse(null);
 
-        // Return the DTO:
         return Converters.convert(customer);
     }
 
-    @POST
-    @Produces(MediaType.APPLICATION_JSON)
-    public CustomerDto post(CustomerDto customer) {
+    @PostMapping("/customers")
+    public CustomerDto post(@RequestBody CustomerDto customer) {
         // Convert to the Domain Object:
         Customer source = Converters.convert(customer);
 
@@ -484,20 +513,17 @@ public class CustomerResource {
         return Converters.convert(result);
     }
 
-    @DELETE
-    @Path("{id}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public void delete(@PathParam("id") long id) {
-        repository.delete(id);
+    @DeleteMapping("/customers/{id}")
+    public void delete(@PathVariable("id") long id) {
+        repository.deleteById(id);
     }
+
 }
 ```
 
 #### Configuration ####
 
-Jersey needs to be configured with the Filter and Resource. This is done by extending the ``ResourceConfig`` and registering the 
-``TenantNameFilter`` and ``CustomerResource``. I have also added two properties, which allow you to do Request tracing. They 
-might be handy for debugging, so uncomment them if you need. 
+To configure Spring MVC, we need to extend the ``WebMvcConfigurer`` and add the ``TenantNameInterceptor`` to the list of interceptors.
 
 ```java
 // Copyright (c) Philipp Wagner. All rights reserved.
@@ -505,72 +531,61 @@ might be handy for debugging, so uncomment them if you need.
 
 package de.bytefish.multitenancy.web.configuration;
 
+import de.bytefish.multitenancy.web.interceptors.TenantNameInterceptor;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import de.bytefish.multitenancy.web.filters.TenantNameFilter;
-import de.bytefish.multitenancy.web.resources.CustomerResource;
-import org.glassfish.jersey.server.ResourceConfig;
-import org.springframework.stereotype.Component;
+@Configuration
+public class WebMvcConfig implements WebMvcConfigurer {
 
-/**
- * Jersey Configuration (Resources, Modules, Filters, ...)
- */
-@Component
-public class JerseyConfig extends ResourceConfig {
-
-    public JerseyConfig() {
-
-        // Register the Filters:
-        register(TenantNameFilter.class);
-
-        // Register the Resources:
-        register(CustomerResource.class);
-
-        // Uncomment to disable WADL Generation:
-        //property("jersey.config.server.wadl.disableWadl", true);
-
-        // Uncomment to add Request Tracing:
-        //property("jersey.config.server.tracing.type", "ALL");
-        //property("jersey.config.server.tracing.threshold", "TRACE");
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(new TenantNameInterceptor());
     }
+
 }
 ```
 
 ### Plugging it together ###
 
 Finally it is time to plug everything together using Spring Boot. All we have to do is to define a ``Bean`` for the ``DataSource``, 
-and use the ``TenantAwareRoutingSource`` for routing. I have also added some sane properties for Spring JPA, so Spring doesn't 
-try to automatically detect the database.
+and use the ``TenantAwareRoutingSource`` for routing. If you want a dynamic routing, that refreshes Data Sources at runtime, please 
+use the ``DynamicTenantAwareRoutingSource``. 
+
+I have also added some sane properties for Spring JPA, so Spring doesn't try to automatically detect the database.
 
 All other dependencies are automatically resolved by Spring Boot. 
 
 ```java
+// Copyright (c) Philipp Wagner. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
 package de.bytefish.multitenancy;
 
 import com.zaxxer.hikari.HikariDataSource;
 import de.bytefish.multitenancy.routing.TenantAwareRoutingSource;
+import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.boot.web.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
+import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 
 @SpringBootApplication
+@EnableAsync
+@EnableScheduling
 @EnableTransactionManagement
-public class SampleJerseyApplication extends SpringBootServletInitializer {
+public class SampleSpringApplication {
 
 	public static void main(String[] args) {
-		new SampleJerseyApplication()
-				.configure(new SpringApplicationBuilder(SampleJerseyApplication.class))
-				.properties(getDefaultProperties())
-				.run(args);
+		SpringApplication.run(SampleSpringApplication.class, args);
 	}
-
 
 	@Bean
 	public DataSource dataSource() {
@@ -616,26 +631,38 @@ public class SampleJerseyApplication extends SpringBootServletInitializer {
 
 		return dataSource;
 	}
-
-	private static Properties getDefaultProperties() {
-
-		Properties defaultProperties = new Properties();
-
-		// Set sane Spring Hibernate properties:
-		defaultProperties.put("spring.jpa.show-sql", "true");
-		defaultProperties.put("spring.jpa.hibernate.naming.physical-strategy", "org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl");
-		defaultProperties.put("spring.datasource.initialize", "false");
-
-		// Prevent JPA from trying to Auto Detect the Database:
-		defaultProperties.put("spring.jpa.database", "postgresql");
-
-		// Prevent Hibernate from Automatic Changes to the DDL Schema:
-		defaultProperties.put("spring.jpa.hibernate.ddl-auto", "none");
-
-		return defaultProperties;
-	}
-
 }
+```
+
+#### Getting Rid if Warning ####
+
+Spring Boot introduces a lot of magic to make things work with minimal coding... and sometimes convention 
+over configuration introduces headaches. When Spring Boot starts there is no Tenant set in the Thread, so 
+we cannot use things like automatic detection of the database.
+
+So I have added a Properties file ``application.properties`` to configure Spring:
+
+```properties
+# Get Rid of the OIV Warning:
+spring.jpa.open-in-view=false
+# Show the SQL Statements fired by JPA:
+spring.jpa.show-sql=true
+# Set sane Spring Hibernate properties:
+spring.jpa.hibernate.naming.physical-strategy=org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+# Prevent JPA from trying to Initialize...:
+spring.jpa.database=postgresql
+# ... and do not Auto-Detect the Database:
+spring.datasource.initialize=false
+# Prevent Hibernate from Automatic Changes to the DDL Schema:
+spring.jpa.hibernate.ddl-auto=none
+```
+
+The same thing happens down in Hibernate internals, where it attempts to read Metadata to initialize JDBC 
+settings. To prevent those connections, which we don't want to be done I have added a properties file 
+``hibernate.properties`` which is automagically read by Hibernate:
+
+```properties
+hibernate.temp.use_jdbc_metadata_defaults=false
 ```
 
 ## Testing the Application ##
@@ -692,7 +719,146 @@ Querying the ``TenantTwo`` database will now return the inserted customer:
 [{"id":1,"firstName":"Hans","lastName":"Wurst"}]
 ```
 
+## Resolving the Tenant in Asynchronous Methods ##
+
+There is a problem though with the ``ThreadLocal`` in the ``ThreadLocalStorage``: Asynchronous methods. 
+
+Spring Boot has a very cool way for asynchronous processing, which is by simply using the ``@Async`` annotation. In the Spring Boot 
+implementation a new or existing thread is likely to be spun up from the ``ThreadPoolTaskExecutor``, thus the Tenant Name in the 
+``ThreadLocal`` will be empty. 
+
+Let's fix this!
+
+What we could do is to add a ``TaskDecorator`` to Spring Boots ``ThreadPoolTaskExecutor``, and pass in the Tenant Name from the Parent Thread:
+
+```java
+// Copyright (c) Philipp Wagner. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+package de.bytefish.multitenancy.async;
+
+import de.bytefish.multitenancy.core.ThreadLocalStorage;
+import org.springframework.core.task.TaskDecorator;
+
+public class TenantAwareTaskDecorator implements TaskDecorator {
+
+    @Override
+    public Runnable decorate(Runnable runnable) {
+        String tenantName = ThreadLocalStorage.getTenantName();
+        return () -> {
+            try {
+                ThreadLocalStorage.setTenantName(tenantName);
+                runnable.run();
+            } finally {
+                ThreadLocalStorage.setTenantName(null);
+            }
+        };
+    }
+}
+```
+
+And in the ``AsyncConfigurerSupport`` we could add the ``TenantAwareTaskDecorator`` to the ``ThreadPoolTaskExecutor``. This 
+configuration will be loaded by Spring in the Startup phase:
+
+```java
+// Copyright (c) Philipp Wagner. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+package de.bytefish.multitenancy.async;
+
+import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.AsyncConfigurerSupport;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+
+import java.util.concurrent.Executor;
+
+@Configuration
+public class AsyncConfig extends AsyncConfigurerSupport {
+
+    @Override
+    public Executor getAsyncExecutor() {
+        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+
+        executor.setCorePoolSize(7);
+        executor.setMaxPoolSize(42);
+        executor.setQueueCapacity(11);
+        executor.setThreadNamePrefix("TenantAwareTaskExecutor-");
+        executor.setTaskDecorator(new TenantAwareTaskDecorator());
+        executor.initialize();
+
+        return executor;
+    }
+
+}
+```
+
+To test it, let's add an asynchronous method ``findAllAsync`` to the ``ICustomerRepository``:
+
+```java
+// Copyright (c) Philipp Wagner. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+package de.bytefish.multitenancy.repositories;
+
+import de.bytefish.multitenancy.model.Customer;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.scheduling.annotation.Async;
+
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+
+public interface ICustomerRepository extends CrudRepository<Customer, Long> {
+
+    @Async
+    @Query("select c from Customer c")
+    CompletableFuture<List<Customer>> findAllAsync();
+
+}
+```
+
+And add a new endpoint to the ``CustomerController``:
+
+```java
+// ...
+
+@RestController
+public class CustomerController {
+
+    private final ICustomerRepository repository;
+
+    @Autowired
+    public CustomerController(ICustomerRepository repository) {
+        this.repository = repository;
+    }
+
+    // ...
+    
+    @GetMapping("/async/customers")
+    public List<CustomerDto> getAllAsync() throws ExecutionException, InterruptedException {
+        CompletableFuture<List<Customer>> customers = repository.findAllAsync();
+
+        // Return the DTO List:
+        return StreamSupport.stream(customers.get().spliterator(), false)
+                .map(Converters::convert)
+                .collect(Collectors.toList());
+    }
+    
+}
+```
+
+And let's use curl to test it. Does it work?
+
+```
+curl -H "X-TenantID: TenantOne" -X GET http://localhost:8080/async/customers
+```
+
+And surprise... it does work as intended:
+
+```
+[{"id":1,"firstName":"Philipp","lastName":"Wagner"},{"id":2,"firstName":"Max","lastName":"Mustermann"}]
+```
+
 ## Conclusion ##
 
-It's really easy to provide multitenancy with Spring Boot. Using the ``AbstractRoutingDataSource`` makes it possible to easily 
-implement a Database-Per-Tenant approach for multitenancy. 
+It's really easy to provide multitenancy with Spring Boot. Using the ``AbstractRoutingDataSource`` makes it possible to easily implement a Database-Per-Tenant approach for multitenancy. 
