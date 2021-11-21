@@ -2,6 +2,23 @@
 
 {% block title %}{{ article.title }}{% endblock %}
 
+{% block json_ld %}
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      "headline": "{{ article.title }}",
+      "datePublished": "{{ article.date.strftime('%Y-%m-%dT%H:%M:%S%z') }}",
+      "author": [{
+          "@type": "Person",
+          "name": "{{ article.author }}",
+          "url": "{{ SITEURL }}/{{article.author.url}}"
+        }]
+    }
+    </script>
+{% endblock %}
+
+
 {% block content_title %}{{ article.url }}{% endblock %}
 
 {% block content %}

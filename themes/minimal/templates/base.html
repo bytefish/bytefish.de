@@ -17,6 +17,7 @@
     <link href="{{ FEED_DOMAIN }}/{{ FEED_RSS }}" type="application/atom+xml" rel="alternate" title="{{ SITENAME }} RSS Feed" />
 {% endif %}
     <title>{% block title %}{{ SITENAME }}{% endblock title %}</title>
+    {% block json_ld %}{% endblock %}
   </head>
   <body>
     <div id="container">
