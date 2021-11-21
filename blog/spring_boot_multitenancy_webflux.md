@@ -6,10 +6,9 @@ slug: spring_boot_multitenancy_webflux
 author: Philipp Wagner
 summary: This article shows how to provide Multitenancy with Spring Boot WebFlux.
 
-The article on Multitenancy with Spring Boot is rather outdated. These days high performance Java services are written with 
-Spring Boot WebFlux, which is Spring Boot's reactive and non-blocking web application framework.
-
-So I updated the code and also provide a Spring Boot WebFlux implementation at:
+These days high performance Java services are written with Spring Boot WebFlux, which is Spring Boot's 
+reactive and non-blocking web application framework. So I decided to update the Multitenancy with Spring 
+Boot example and provide a Spring Boot WebFlux implementation at:
 
 * [https://github.com/bytefish/SpringBootMultiTenancy_WebFlux](https://github.com/bytefish/SpringBootMultiTenancy_WebFlux)
 
@@ -30,7 +29,7 @@ we also take a dependency on ``spring-boot-starter-data-r2dbc`` for providing al
 
 So the following dependencies have been set in the projects Maven POM:
 
-```java
+```xml
 <dependencies>
 
     <dependency>
@@ -304,11 +303,11 @@ public class ReactorUtils {
 }
 ```
 
-This ``PostgresTenantConnectionFactory`` is now configured in by extending the ``AbstractR2dbcConfiguration``. This is 
-where we are adding the connections for each tenant. All this can also be externalized to a configuration of course, but 
-for sake of simplicity we are doing it in code:
+This ``PostgresTenantConnectionFactory`` configured by extending the ``AbstractR2dbcConfiguration``. This is where we 
+are adding the connections for each tenant. All this can also be externalized to a configuration of course, but for 
+sake of simplicity we are doing it in code:
 
-```
+```java
 // Copyright (c) Philipp Wagner. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
@@ -383,7 +382,7 @@ public class MultitenantPostgresConfiguration extends AbstractR2dbcConfiguration
 Using Spring Boot Data magic we can simply use a ``ReactiveCrudRepository`` to connect to the database and perform 
 CRUD operations on it. We only need to define the ``ICustomerRepository`` interface for the entity:
 
-```
+```java
 // Copyright (c) Philipp Wagner. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
