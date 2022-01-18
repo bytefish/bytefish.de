@@ -45,11 +45,13 @@ convert your Gregorian Calendar-based Date to the [Japanese Calendar]?
 
 There's a reason libraries for handling temporal things exist... because it takes superpowers get it right.
 
-At the moment, there is a proposal for ECMAScript, which 
+At the moment, there is a proposal to add a Temporal API to the ECMAScript standard, and it also has a reference implementation at:
 
 * [https://github.com/tc39/proposal-temporal](https://github.com/tc39/proposal-temporal)
 
-> Date has been a long-standing pain point in ECMAScript. This is a proposal for Temporal, a global Object that acts as a top-level namespace (like Math), 
+The proposal says, that JavaScripts Date ...
+
+> [...] has been a long-standing pain point in ECMAScript. This is a proposal for Temporal, a global Object that acts as a top-level namespace (like Math), 
 > that brings a modern date/time API to the ECMAScript language. For a detailed look at some of the problems with Date, and the motivations for Temporal, 
 > see: Fixing JavaScript Date.
 >
