@@ -40,7 +40,7 @@ I think it's a good excuse for learning about the upcoming JavaScript ``Temporal
 ## Handling Time in JavaScript ##
 
 Handling Dates in JavaScript is a mess, just like it's a mess in any other language. Dates are a complicated thing, just think 
-of [Leap years], [Leap seconds}, [Daylight saving time], [Date formats], [Timezones], ... and what if you suddenly need to 
+of [Leap years], [Leap seconds], [Daylight saving time], [Date formats], [Timezones], ... and what if you suddenly need to 
 convert your Gregorian Calendar-based Date to the [Japanese Calendar]?
 
 There's a reason libraries for handling temporal things exist... because it takes superpowers get it right.
