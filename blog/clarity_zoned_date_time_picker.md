@@ -13,7 +13,7 @@ In a personal project I wanted to learn how to work with the [Clarity Design Sys
 
 It comes with a rich set of Web Components and Angular Components and is actively maintained by VMware:
 
-* [https://clarity.design/]: https://clarity.design/
+* [https://clarity.design](https://clarity.design)
 
 [Clarity Design System]: https://clarity.design/
 
