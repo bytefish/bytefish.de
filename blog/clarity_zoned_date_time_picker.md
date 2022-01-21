@@ -1,4 +1,4 @@
-title: Building a Date Picker with Timezone Support using Clarity and the Temporal API
+title: Building an Angular Date Picker using Clarity and the JavaScript Temporal API
 date: 2022-01-18 20:34
 tags: angular, typescript, javascript, clarity
 category: angular
