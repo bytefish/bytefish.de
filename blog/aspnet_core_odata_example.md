@@ -14,7 +14,7 @@ In this article I will show you how to use ASP.NET Core OData and EF Core to qui
 and how to use Angular to display, filter and paginate datasets. It's not complicated, but there had 
 been quite a few pieces to the puzzle.
 
-This is an article, that has been in the back of my mind for years and I am glad I finally get it out.
+This is an article, that has been in the back of my mind for a year and I am glad I finally get it out.
 
 All code can be found at:
 
@@ -25,7 +25,7 @@ All code can be found at:
 We will build a Backend and Frontend for the "Wide World Importers" database, which is a Microsoft SQL Server 
 sample database for a fictional company:
 
-* https://docs.microsoft.com/en-us/sql/samples/wide-world-importers-what-is?view=sql-server-ver15
+* [https://docs.microsoft.com/en-us/sql/samples/wide-world-importers-what-is](https://docs.microsoft.com/en-us/sql/samples/wide-world-importers-what-is)
 
 The Microsoft documentation describes the fictionous "Wide World Importers" as ...
 
@@ -74,28 +74,11 @@ have been put into them:
 
 * [https://github.com/microsoft/sql-server-samples/tree/master/samples/databases/](https://github.com/microsoft/sql-server-samples/tree/master/samples/databases/)
 
-What I like about the Wide World Importers sample database is, that it has been crafted to work well with 
+What I like about the "Wide World Importers" sample database is, that it has been crafted to work well with 
 Scaffolding. It has Stored Procedures, Views, Temporal Tables, Spatial Types... basically a lot of things to 
 explore (and traps to fall into):
 
 * [https://github.com/microsoft/sql-server-samples/tree/master/samples/databases/wide-world-importers](https://github.com/microsoft/sql-server-samples/tree/master/samples/databases/wide-world-importers)
-
-> As a wholesaler, WWI's customers are mostly companies who resell to individuals. WWI sells to retail 
-> customers across the United States including specialty stores, supermarkets, computing stores, tourist 
-> attraction shops, and some individuals. WWI also sells to other wholesalers via a network of agents who 
-> promote the products on WWI's behalf. While all of WWI's customers are currently based in the United 
-> States, the company is intending to push for expansion into other countries.
-> 
-> WWI buys goods from suppliers including novelty and toy manufacturers, and other novelty wholesalers. They 
-> stock the goods in their WWI warehouse and reorder from suppliers as needed to fulfil customer orders. They 
-> also purchase large volumes of packaging materials, and sell these in smaller quantities as a convenience for 
-> the customers.
->
-> Recently WWI started to sell a variety of edible novelties such as chilli chocolates. The company previously 
-> did not have to handle chilled items. Now, to meet food handling requirements, they must monitor the temperature 
-> in their chiller room and any of their trucks that have chiller sections.
-
-I think it's a perfect database to experiment with!
 
 ### Creating the WWI Database ###
 
