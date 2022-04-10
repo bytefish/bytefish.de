@@ -82,7 +82,7 @@ explore (and traps to fall into):
 
 ### Creating the WWI Database ###
 
-We are going to work with WideWorldImporters OLTP Databasem which is described at;
+We are going to work with WideWorldImporters OLTP Databasem which is described at:
 
 * [https://github.com/microsoft/sql-server-samples/tree/master/samples/databases/wide-world-importers/wwi-ssdt](https://github.com/microsoft/sql-server-samples/tree/master/samples/databases/wide-world-importers/wwi-ssdt)
 
