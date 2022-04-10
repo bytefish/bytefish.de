@@ -122,13 +122,7 @@ And... that's it!
 
 ## Implementing the Backend ##
 
-Let's write down the Connection String to ``WideWorldImporters`` database first, because we will need it soon:
-
-```
-Server=localhost\SQLEXPRESS;Database=WideWorldImporters;Trusted_Connection=True;
-```
-
-So it begins ...
+So it begins ... 
 
 ### Project Overview ###
 
