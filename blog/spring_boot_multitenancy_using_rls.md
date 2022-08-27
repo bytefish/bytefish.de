@@ -8,6 +8,10 @@ summary: This article shows how to provide Multitenancy with Spring Boot using R
 
 In this post I will show you how to provide multitenancy in a Spring Boot application using Postgres Row Level Security Feature.
 
+## Table of contents ##
+
+[TOC]
+
 ## What Is Multitenancy ##
 
 As soon as your application has multiple customers you will need to implement some kind of multitenancy for your application. 
