@@ -486,9 +486,8 @@ the application loads.
 ```typescript
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-import { Component, Input, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
-import { DropdownItem } from './models/dropdown-item';
+import { Component, OnInit } from '@angular/core';
+import { Observable, of } from 'rxjs';
 import { MenuItem } from './models/menu-item';
 import { MenuService } from './services/menu.service';
 import { TranslationService } from './services/translation.service';
@@ -500,12 +499,11 @@ import { TranslationService } from './services/translation.service';
 })
 export class AppComponent implements OnInit {
 
-  sidenavMenu$!: Observable<MenuItem[]>;
-  headerMenu$!: Observable<MenuItem[]>;
-  dropdownMenu$!: Observable<MenuItem[]>;
+  sidenavMenu$: Observable<MenuItem[]> = of([]);
+  headerMenu$: Observable<MenuItem[] >= of([]);
+  dropdownMenu$: Observable<MenuItem[]> = of([]);
 
-  constructor(public translations: TranslationService, public menuItemService: MenuService) {
-
+  constructor(public menuItemService: MenuService, public translations: TranslationService) {
   }
 
   ngOnInit(): void {
@@ -1409,7 +1407,7 @@ translate column names a ``TranslationService`` gets injected to the component.
 import { Component } from '@angular/core';
 import { ClrDatagridStateInterface } from '@clr/angular';
 import { ODataEntitiesResponse } from 'src/app/models/odata-response';
-import { City, Country } from 'src/app/models/entities';
+import { City } from 'src/app/models/entities';
 import { ODataService } from 'src/app/services/odata-service';
 import { TranslationService } from 'src/app/services/translation.service';
 import { ODataUtils } from 'src/app/utils/odata-utils';
@@ -1423,9 +1421,10 @@ export class CitiesTableComponent {
 
   loading: boolean = true;
   filterOpen: boolean = false;
-  tableData!: ODataEntitiesResponse<City>;
+  tableData: ODataEntitiesResponse<City> | null;
 
   constructor(public odataService: ODataService, public translations: TranslationService) {
+    this.tableData = null;
   }
 
   refresh(state: ClrDatagridStateInterface) {
