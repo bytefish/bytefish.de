@@ -19,6 +19,10 @@ I've found most of the example implementations to be overly complicated.
 
 So here is my overly complicated implementation!
 
+## Table of contents ##
+
+[TOC]
+
 ## Creating the Database ##
 
 Let's start with the database.
@@ -229,60 +233,9 @@ namespace AspNetCoreMultitenancy.Multitenancy
 
 That's it for managing the Tenants.
 
-### Where to keep the current Tenant? ###
+### The Tenant Identifier in the ASP.NET Core application ###
 
-And now comes the most important question of this article: 
-
-* How do we pass the current ``Tenant`` through the application?
-
-See I really don't want to fiddle around with Dependency Injection like passing an ``IHttpContextAccessor`` through the application, just 
-to get the Tenant name. The idea is to just let the ``Tenant`` flow with the async execution by using a global ``AsyncLocal<Tenant>``. I 
-am calling the class ``TenantExecutionContext``:
-
-```csharp
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
-
-using System;
-using System.Threading;
-
-namespace AspNetCoreMultitenancy.Multitenancy
-{
-    /// <summary>
-    /// Holds the Tenant in an Ambient Context, which simplifies the code.
-    /// </summary>
-    public static class TenantExecutionContext
-    {
-        /// <summary>
-        /// Holds the Tenant in an <see cref="AsyncLocal{T}"/>, so it flows top-down.
-        /// </summary>
-        private static AsyncLocal<Tenant> tenant = new AsyncLocal<Tenant>();
-
-        /// <summary>
-        /// Gets the current Tenant 
-        /// </summary>
-        public static Tenant? Tenant => tenant.Value;
-
-        public static void SetTenant(Tenant value)
-        {
-            if(value == null)
-            {
-                throw new InvalidOperationException($"Tried set an empty Tenant");
-            }
-
-            var currentTenant = tenant.Value;
-
-            if(currentTenant == null || string.Equals(currentTenant.Name, value.Name, StringComparison.InvariantCulture))
-            {
-                tenant.Value = value;
-
-                return;
-            }
-
-            throw new InvalidOperationException($"Tried assign the Tenant to '{value.Name}', but it is already set to {currentTenant.Name}");
-       }
-    }
-}
-```
+#### Custom Middleware for extracting the Tenant Identifier ####
 
 The Tenant Name is going to be passed to the ASP.NET Core application using a Header with the Name ``X-TenantName``. Using a 
 custom Middleware we can extract the Tenant Name, look it up from the Tenant database and write it into the ``TenantExecutionContext``:
@@ -359,6 +312,57 @@ namespace AspNetCoreMultitenancy.Multitenancy
 }
 ```
 
+#### Passing the Tenant Identifier through the application ####
+
+The idea here is to just let the ``Tenant`` flow with the async execution by using a global ``AsyncLocal<Tenant>``. I am calling the class ``TenantExecutionContext``:
+
+```csharp
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+using System;
+using System.Threading;
+
+namespace AspNetCoreMultitenancy.Multitenancy
+{
+    /// <summary>
+    /// Holds the Tenant in an Ambient Context, which simplifies the code.
+    /// </summary>
+    public static class TenantExecutionContext
+    {
+        /// <summary>
+        /// Holds the Tenant in an <see cref="AsyncLocal{T}"/>, so it flows top-down.
+        /// </summary>
+        private static AsyncLocal<Tenant> tenant = new AsyncLocal<Tenant>();
+
+        /// <summary>
+        /// Gets the current Tenant 
+        /// </summary>
+        public static Tenant? Tenant => tenant.Value;
+
+        public static void SetTenant(Tenant value)
+        {
+            if(value == null)
+            {
+                throw new InvalidOperationException($"Tried set an empty Tenant");
+            }
+
+            var currentTenant = tenant.Value;
+
+            if(currentTenant == null || string.Equals(currentTenant.Name, value.Name, StringComparison.InvariantCulture))
+            {
+                tenant.Value = value;
+
+                return;
+            }
+
+            throw new InvalidOperationException($"Tried assign the Tenant to '{value.Name}', but it is already set to {currentTenant.Name}");
+       }
+    }
+}
+```
+
+#### Passing the Tenant Identifier to Postgres ####
+
 Remember how Postgres used a Session variable to resolve the current Tenant Name? By implementing a ``DbConnectionInterceptor`` we 
 can set the ``app.current_tenant`` session variable, when the Database connection is opened:
 
@@ -408,8 +412,11 @@ namespace AspNetCoreMultitenancy.Multitenancy
 }
 ```
 
-## Implementing the Multi-Tenant Application ##
+## A sample Multi-Tenant application ##
 
+We will be writing a sample multi-tenant application, that is used to manage customers.
+
+### Data Model ###
 We start by defining the Domain Model ``Customer``, which will be managed by the ASP.NET Core application:
 
 ```csharp
@@ -439,6 +446,8 @@ namespace AspNetCoreMultitenancy.Models
     }
 }
 ```
+
+### Database ###
 
 ... and implement an ``IEntityTypeConfiguration<Customer>`` to configure the database mapping:
 
@@ -475,7 +484,7 @@ namespace AspNetCoreMultitenancy.Database.Mappings
 }
 ```
 
-... and we will provide the database access using the ``ApplicationDbContext``:
+And we will provide the database access using the ``ApplicationDbContext``:
 
 ```csharp
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
@@ -513,7 +522,9 @@ namespace AspNetCoreMultitenancy.Database
 }
 ```
 
-### Providing the Web service CRUD Endpoints ###
+### Web Service  ###
+
+#### Domain Transfer Object ####
 
 It's always a good idea to separate your Domain Model and your Web service model. In this example it's a little 
 overkill, but let's be a good citizen and define a DTO for the Web service endpoints:
@@ -585,6 +596,8 @@ namespace AspNetCoreMultitenancy.Converters
     }
 }
 ```
+
+#### ASP.NET Core WebAPI Controller ####
 
 In the ``CustomerController`` we are now providing the RESTful CRUD Endpoints:
 
@@ -694,7 +707,7 @@ namespace AspNetCoreMultitenancy.Controllers
 }
 ```
 
-### Enabling Multitenancy on Startup ###
+#### Enabling Multitenancy on Startup ####
 
 Did you see anything related to Multitenancy yet? 
 
@@ -771,7 +784,7 @@ namespace AspNetCoreMultitenancy
 
 And that's it.
 
-## Does it work? ##
+#### Does it work? ####
 
 We start with inserting customers to the database of Tenant ``Tenant 1`` (``33F3857A-D8D7-449E-B71F-B5B960A6D89A``):
 
@@ -826,3 +839,21 @@ Querying with ``Tenant 2`` will now return the inserted customer:
 ```
 
 Works!
+
+## Discussion ##
+
+The article has provoked some discussion at Twitter and I think it's worth adding the points noted by [@roji](https://github.com/roji) here.
+
+I am quoting from the [original Twitter thread](https://twitter.com/shayrojansky/status/1478826905348587524):
+
+> Careful where you add the tenant ID from. This sample takes it from the HTTP request, which means 
+> the client application can decide to be anyone they want - you probably want to use actual authentication 
+> to manage this.
+> 
+> The interceptor approach adds a roundtrip before each and every database command, just to set the tenant ID, 
+> not amazing for perf. I'd instead do that roundtrip once, when the DbContext is set up for the scope 
+> (roundtrip-per-web-request instead of roundtrip-per-db-command).
+> 
+> Finally, the tenant ID is managed via AsyncLocal, from the middleware to the interceptor. That's OK, but it 
+> should be pretty simply to use standard DI techniques instead. I'd personally not resort to AsyncLocal unless 
+> there's specific difficulties with the DI approach.

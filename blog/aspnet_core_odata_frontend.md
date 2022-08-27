@@ -43,7 +43,7 @@ The final application will look like this:
 
 ## Application Basics ##
 
-### Translations ###
+### Application Translations ###
 
 You should start your applications with translations. Translations are everywhere in your application, just think of 
 menu items, column headers, ... you are going to need them basically everywhere. And modern applications should also take 
@@ -407,7 +407,7 @@ export function sidebarMenuItems(translations: TranslationService): Array<MenuIt
 };
 ```
 
-#### A MenuService: Providing menus to other components ####
+#### Providing menus to other components ####
 
 Although we load our translations in a static way, you could also load them from other data sources. So we can define a 
 small abstraction ``MenuService`` for providing the menu:
@@ -473,7 +473,7 @@ export class MenuService {
 }
 ```
 
-### The Application Container  ###
+### Application Container  ###
 
 The application should be a *desktop-first* application. We want a side menu, that allows us to have a menu in a classic 
 tree structure. Sorry, no Hamburgers here! To allow fast access of important data, you want to have a header menu, that 
