@@ -81,13 +81,13 @@ explore (and traps to fall into):
 
 ### Creating the WWI Database ###
 
-We are going to work with WideWorldImporters OLTP Databasem which is described at:
+We are going to work with WideWorldImporters OLTP Database which is described at:
 
 * [https://github.com/microsoft/sql-server-samples/tree/master/samples/databases/wide-world-importers/wwi-ssdt](https://github.com/microsoft/sql-server-samples/tree/master/samples/databases/wide-world-importers/wwi-ssdt)
 
 In the Releases for the Repository you can find a full Backup (``WideWorldImporters-Full.bak`` ):
 
-* https://github.com/microsoft/sql-server-samples/releases/tag/wide-world-importers-v1.0
+* [https://github.com/microsoft/sql-server-samples/releases/tag/wide-world-importers-v1.0](https://github.com/microsoft/sql-server-samples/releases/tag/wide-world-importers-v1.0)
 
 From the GitHub Release Page we are downloading the Backup ``WideWorldImporters-Full.bak`` and import it.
 
@@ -165,9 +165,8 @@ A deeper drill-down shows what the reasoning behind the folder structure is:
 
 We'll create a separate ``WideWorldImporters.Database`` project for the Backend, so we can evolve the Database "independently" of the Api. 
 
-Now Entity Framework 6 had a nice designer for Database-First development. It was loved by many and hated by many. With EF Core you are 
-now using a Command Line Interface, that's loved by many and hated by many. Anyways... it needs to be installed first, so switch to the 
-Package Manager Console (``View -> Other Windows -> Package Manager Console``) and type:
+In EF Core you are using a Command Line Interface for Scaffolding. It needs to be installed first, so switch to the Package Manager Console 
+(``View -> Other Windows -> Package Manager Console``) and type:
 
 ```
 dotnet tool install --global dotnet-ef
@@ -262,7 +261,8 @@ So we start by installing the ASP.NET Core OData library into the ``WideWorldImp
 PM> dotnet add package Microsoft.AspNetCore.OData
 ```
 
-Next we define an ``ApplicationEdmModel`` class to provide the applications ``IEdmModel``:
+Next we define an ``ApplicationEdmModel`` class to provide the applications ``IEdmModel``. We will add all generated models 
+as an ``EntitySet``, so they can be queried:
 
 ```csharp
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
@@ -327,10 +327,8 @@ namespace WideWorldImporters.Api.Models
 }
 ```
 
-
 In the ``Startup`` we can now use the ``IServiceCollection#AddOData()`` extension to add all OData dependencies 
-and configure the OData Routes. We are providing the ``IEdmModel`` by using our previously defined written 
-``IEdmService``:
+and configure the OData Routes. We are providing the ``IEdmModel``:
 
 ```csharp
 // ...
@@ -380,10 +378,11 @@ Job done! 👍
 
 ### Running some Queries ###
 
-Now we need a way to query the ``ODataController``, that can be used to throw our OData queries at.
+The Entity sets are exposed with an ``ODataController`` in ASP.NET Core OData. I want to have a ``Get``, ``GetById``, ``Put``, 
+``Patch`` and ``Delete`` endpoint for every Entity set. And I am lazy, so I don't want to write it by hand, that needs to be 
+generated. 
 
-
-To generate them we will use T4 Text Templates, the most underrated tool in .NET development:
+We can use T4 Text Templates, easily the most underrated tool in .NET development:
 
 * [https://docs.microsoft.com/en-us/visualstudio/modeling/code-generation-and-t4-text-templates?view=vs-2022](https://docs.microsoft.com/en-us/visualstudio/modeling/code-generation-and-t4-text-templates?view=vs-2022)
 
@@ -1341,6 +1340,6 @@ So our ``geo.distance`` function works fine.
 
 ## Conclusion ##
 
-And we come to an end here! It was ASP.NET Core OData was a fun experiment and I think it is a great piece of technology.
+And we come to an end here! ASP.NET Core OData was a fun experiment and I think it is a great piece of technology.
 
-I hope you enjoyed this article. And I hope the next article won't take another 10 months.
+And I hope the next article won't take another 10 months. 😓
