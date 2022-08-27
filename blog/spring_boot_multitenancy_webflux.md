@@ -14,6 +14,10 @@ Boot example and provide a Spring Boot WebFlux implementation at:
 
 The GitHub repository contains all SQL scripts necessary to create the database used in this article.
 
+## Table of contents ##
+
+[TOC]
+
 ## Adding the Maven Dependencies ##
 
 Let's start by adding the required dependencies for the project!
