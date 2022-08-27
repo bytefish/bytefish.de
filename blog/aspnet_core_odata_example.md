@@ -32,6 +32,41 @@ sample database for a fictional company:
 
 * [https://docs.microsoft.com/en-us/sql/samples/wide-world-importers-what-is](https://docs.microsoft.com/en-us/sql/samples/wide-world-importers-what-is)
 
+We are building a Backend, that scaffolds the WWI database and exposes the data with Microsoft ASP.NET Core OData 8. We will 
+learn how to extend Microsoft ASP.NET Core OData 8 for spatial types, see how to generate the OData endpoints using T4 Text 
+Templates and provide OpenAPI 3.0 documents for Frontend code generation goodies.
+
+The Frontend is an Angular application to query the OData endpoints. We are going to use Angular components of the Clarity 
+Design system, because Clarity takes a Desktop-first approach and has a very nice Datagrid, that's easy to extend:
+
+* [https://clarity.design/](https://clarity.design/)
+
+The final application will look like this:
+
+<div style="display:flex; align-items:center; justify-content:center;margin-bottom:15px;">
+    <a href="/static/images/blog/aspnet_core_odata_example/00_WWI_App.jpg">
+        <img src="/static/images/blog/aspnet_core_odata_example/00_WWI_App.jpg">
+    </a>
+</div>
+
+So let's go ahead and write an application. 👍
+
+## Wide World Importers Database ##
+
+It's always a very time-consuming task to build interesting datasets for articles. So I had a 
+look at the list of Microsoft SQL Server sample databases, because... I am sure a lot of thoughts 
+have been put into them:
+
+* [https://github.com/microsoft/sql-server-samples/tree/master/samples/databases/](https://github.com/microsoft/sql-server-samples/tree/master/samples/databases/)
+
+What I like about the "Wide World Importers" sample database is, that it has been crafted to work well with 
+Scaffolding. It has Stored Procedures, Views, Temporal Tables, Spatial Types... basically a lot of things to 
+explore (and traps to fall into):
+
+* [https://github.com/microsoft/sql-server-samples/tree/master/samples/databases/wide-world-importers](https://github.com/microsoft/sql-server-samples/tree/master/samples/databases/wide-world-importers)
+
+### About the Database ###
+
 The Microsoft documentation describes the fictionous "Wide World Importers" as ...
 
 > [...] a wholesale novelty goods importer and distributor operating from the San Francisco bay area.
@@ -52,40 +87,7 @@ The Microsoft documentation describes the fictionous "Wide World Importers" as .
 
 I think it's a perfect non-trivial database to work with!
 
-We are building a Backend, that scaffolds the WWI database and exposes the data with Microsoft ASP.NET Core OData 8. We will 
-learn how to extend Microsoft ASP.NET Core OData 8 for spatial types, see how to generate the OData endpoints using T4 Text 
-Templates and provide OpenAPI 3.0 documents for Frontend code generation goodies.
-
-The Frontend is an Angular application to query the OData endpoints. We are going to use Angular components of the Clarity 
-Design system, because Clarity takes a Desktop-first approach and has a very nice Datagrid, that's easy to extend:
-
-* [https://clarity.design/](https://clarity.design/)
-
-The final application will look like this:
-
-<div style="display:flex; align-items:center; justify-content:center;margin-bottom:15px;">
-    <a href="/static/images/blog/aspnet_core_odata_example/00_WWI_App.jpg">
-        <img src="/static/images/blog/aspnet_core_odata_example/00_WWI_App.jpg">
-    </a>
-</div>
-
-So let's go ahead and write an application. 👍
-
-## The Wide World Importers Database ##
-
-It's always a very time-consuming task to build interesting datasets for articles. So I had a 
-look at the list of Microsoft SQL Server sample databases, because... I am sure a lot of thoughts 
-have been put into them:
-
-* [https://github.com/microsoft/sql-server-samples/tree/master/samples/databases/](https://github.com/microsoft/sql-server-samples/tree/master/samples/databases/)
-
-What I like about the "Wide World Importers" sample database is, that it has been crafted to work well with 
-Scaffolding. It has Stored Procedures, Views, Temporal Tables, Spatial Types... basically a lot of things to 
-explore (and traps to fall into):
-
-* [https://github.com/microsoft/sql-server-samples/tree/master/samples/databases/wide-world-importers](https://github.com/microsoft/sql-server-samples/tree/master/samples/databases/wide-world-importers)
-
-### Creating the WWI Database ###
+### Importing the Database ###
 
 We are going to work with WideWorldImporters OLTP Database which is described at:
 
@@ -125,10 +127,9 @@ The default settings will fit. Click "Ok" and wait a moment for the backup to be
 
 And... that's it!
 
+## ASP.NET Core OData Backend ##
 
-## Implementing the Backend ##
-
-### Project Overview ###
+### Solution Overview ###
 
 It's a good idea to get an high-level overview of the project first, so you get a basic idea:
 
@@ -167,16 +168,20 @@ A deeper drill-down shows what the reasoning behind the folder structure is:
     * ``WideWorldImportContext.cs``
         * The generated ``DbContext`` for the WWI Database.
 
-### Scaffolding the WWI Model and DbContext with EF Core Tooling ###
+### Scaffolding the Database ###
 
-We'll create a separate ``WideWorldImporters.Database`` project for the Backend, so we can evolve the Database "independently" of the Api. 
+We'll create a separate ``WideWorldImporters.Database`` project first, so we can evolve the Database "independently" of the Api. 
 
-In EF Core you are using a Command Line Interface for Scaffolding. It needs to be installed first, so switch to the Package Manager Console 
-(``View -> Other Windows -> Package Manager Console``) and type:
+#### Installing the dotnet-ef Command Line Interface ####
+
+In EF Core you are using a ``dotnet-ef`` Command Line Interface for Scaffolding. It needs to be installed first, so switch to the 
+Package Manager Console (``View -> Other Windows -> Package Manager Console``) and type:
 
 ```
 dotnet tool install --global dotnet-ef
 ```
+
+#### Installing EntityFramework Core dependencies ####
 
 According to the "Entity Framework Core tools reference" documentation we also need to install ``Microsoft.EntityFrameworkCore.Design`` to use the Database-first tooling:
 
@@ -189,6 +194,9 @@ And because the database has some spatial data types, we also add the following 
 ```
 PM> dotnet add package Microsoft.EntityFrameworkCore.SqlServer.NetTopologySuite
 ```
+
+#### Scaffold the Database using the dotnet-ef CLI ####
+
 
 The best place to start is the "Reverse Engineering" documentation, which describes all the switches and parameters of the ``dotnet ef`` tooling:
 
@@ -253,7 +261,7 @@ namespace ODataSample.Backend
 
 That's it for the Scaffolding!
 
-### Adding ASP.NET Core OData 8 to the mix ###
+### Adding ASP.NET Core OData 8 ###
 
 What's ASP.NET Core OData? It's Microsofts implementation of the OData (Open Data Protocol) specification, which ...
 
@@ -267,8 +275,10 @@ So we start by installing the ASP.NET Core OData library into the ``WideWorldImp
 PM> dotnet add package Microsoft.AspNetCore.OData
 ```
 
-Next we define an ``ApplicationEdmModel`` class to provide the applications ``IEdmModel``. We will add all generated models 
-as an ``EntitySet``, so they can be queried:
+#### Application EDM Data Model ###
+
+We define an ``ApplicationEdmModel`` class to provide the applications ``IEdmModel``, which is used to build the 
+EDM Schema by ASP.NET Core OData. We will add all generated models as an ``EntitySet``, so they can be queried:
 
 ```csharp
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
@@ -333,6 +343,8 @@ namespace WideWorldImporters.Api.Models
 }
 ```
 
+#### Adding OData Services to ASP.NET Core ####
+
 In the ``Startup`` we can now use the ``IServiceCollection#AddOData()`` extension to add all OData dependencies 
 and configure the OData Routes. We are providing the ``IEdmModel``:
 
@@ -358,7 +370,7 @@ namespace ODataSample.Backend
                 .AddOData((opt) =>
                 {
                     opt.AddRouteComponents("odata", ApplicationEdmModel.GetEdmModel())
-                        .EnableQueryFeatures().Select().Expand().Count().Filter().SetMaxTop(250);
+                        .EnableQueryFeatures().SetMaxTop(250);
                 });
 
         }
@@ -382,7 +394,7 @@ And drums please 🥁 ...
 
 Job done! 👍
 
-### Running some Queries ###
+#### Creating an OData-enabled Controller ####
 
 The Entity sets are exposed with an ``ODataController`` in ASP.NET Core OData. I want to have a ``Get``, ``GetById``, ``Put``, 
 ``Patch`` and ``Delete`` endpoint for every Entity set. And I am lazy, so I don't want to write it by hand, that needs to be 
@@ -641,6 +653,8 @@ namespace WideWorldImporters.Api.Controllers
 }
 ```
 
+### Running OData Queries against the Wide World Importers database ###
+
 Now let's start the Backend now and give it a shot, a browser is totally sufficient.
 
 Navigating to ``http://localhost:5000/odata/Orders?$top=2`` is going to return 2 orders:
@@ -804,9 +818,11 @@ And navigating to ``http://localhost:5000/odata/Orders/1`` returns the Order wit
 
 Great! 🙌
 
-### Dealing with Spatial Data in OData ###
+## Spatial Data in ASP.NET Core OData ##
 
-If you query some endpoints, you'll see a ``geometry`` data type in some tables... and booom! It crashes.
+If you query some endpoints, you'll see a ``geometry`` data type in some tables... and booom! 
+
+It crashes.
 
 What's the problem?
 
@@ -815,6 +831,8 @@ ASP.NET Core OData uses the ``Microsoft.Spatial`` library for Geographical types
 objects in the ``EdmModel`` an unserializable hell is awaiting (most probably).
 
 But let's not go crazy and solve it step by step!
+
+### Adding Microsoft.Spatial to the Scaffolded Data Model ###
 
 It's impossible for me to add NetTopologySuite support to ASP.NET Core OData (Sorry!), and it's impossible for me to add support for 
 ``Microsoft.Spatial`` to Entity Framework Core (Sorry!). So we need to find a way to convert between both of them.
@@ -831,9 +849,13 @@ the partial classes.
 
 See where this goes?
 
+### Extending Partial Classes with Microsoft.Spatial properties ###
+
 The idea: We add ``Microsoft.Spatial`` properties prefixed with ``Edm...`` to the generated model using a partial class. OData knows how to work 
 with it. At the same time we tell the ``ODataModelBuilder`` to ignore the ``NetTopologySuite`` properties. On the other side, we will tell the 
 Entity Framework Core ``DbContext`` to please ignore the ``Microsoft.Spatial`` types.
+
+#### Convert between Microsoft.Spatial and NetTopologySuite ####
 
 What's left is a little conversion between both. So we need a way to convert between both the ``Microsoft.Spatial`` and ``NetTopologySuite`` 
 representation. So I am taking the dumbest approach possible... Geographical objects can be represented in a "Well Known Text (WKT)" format, 
@@ -902,6 +924,8 @@ namespace WideWorldImporters.Database.Spatial
 }
 ```
 
+#### Adding Microsoft.Spatial Properties to the Data Model ####
+
 Next we create a folder ``Models``, where we will add additional data to the generated model classes using the ``partial`` keyword. Why 
 not directly edit the generated model classes? Because they have been generated and you don't want to recreate all the work, when you 
 are updating your database model.
@@ -941,6 +965,7 @@ namespace WideWorldImporters.Database.Models
     }
 }
 ```
+#### Configuring the DbContext for Spatial types ###
 
 We finally tell the EF Core ``ModelBuilder``, that it should ignore all of our ``Microsoft.Spatial`` properties:
 
@@ -966,6 +991,8 @@ namespace WideWorldImporters.Database
     }
 }
 ```
+
+#### Configuring the EDM Model for Spatial types ###
 
 Switch back to the ``WideWorldImporters.Api`` project and open the ``ApplicationEdmModel``, that defines the ``IEdmModel``. 
 
@@ -1046,6 +1073,8 @@ namespace WideWorldImporters.Api.Models
 }
 ```
 
+### Running Spatial Queries ###
+
 Start the ``WideWorldImporters.Api`` project and navigate to ``http://localhost:5000/swagger/index.html``, et voila, the model now uses the correct OData types:
 
 <div style="display:flex; align-items:center; justify-content:center;margin-bottom:15px;">
@@ -1106,6 +1135,8 @@ Querying for countries should now also return the Border Polygon:
   ]
 }
 ```
+
+### Custom FilterBinder for Geo distance queries ###
 
 And what's all that good for? 
 
@@ -1291,7 +1322,7 @@ namespace WideWorldImporters.Api
     }
 }
 ```
-
+#### Running Spatial Queries using the FilterBinder ####
 Let's try!
 
 New York should be somewhere around ``POINT(-73.9814311179 40.7614927583)`` if I am not mistaken. 
@@ -1346,6 +1377,10 @@ So our ``geo.distance`` function works fine.
 
 ## Conclusion ##
 
-And we come to an end here! ASP.NET Core OData was a fun experiment and I think it is a great piece of technology.
+And we come to an end here! 
+
+ASP.NET Core OData was a fun experiment and I think it is a great piece of technology. The Microsoft team has 
+done a great job enabling OData for ASP.NET Core applications. The API design makes it possible to "easily" extend 
+the framework (a relative term when it comes to ``Expression`` trees).
 
 And I hope the next article won't take another 10 months. 😓
