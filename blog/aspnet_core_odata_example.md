@@ -13,11 +13,17 @@ In this article I will show you how to use ASP.NET Core OData and EF Core to qui
 and how to use Angular to display, filter and paginate datasets. It's not complicated, but there had 
 been quite a few pieces to the puzzle.
 
-This article deals with the Backend with ASP.NET Core OData, the Frontend will be discussed in the next article.
+This article deals with the Backend with ASP.NET Core OData, the article for the Frontend is available at:
+
+* [https://www.bytefish.de/blog/aspnet_core_odata_frontend.html](https://www.bytefish.de/blog/aspnet_core_odata_frontend.html)
 
 All code can be found at:
 
 * [https://github.com/bytefish/WideWorldImporters](https://github.com/bytefish/WideWorldImporters)
+
+## Table of contents ##
+
+[TOC]
 
 ## What we are going to build ##
 

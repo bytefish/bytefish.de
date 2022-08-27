@@ -18,6 +18,10 @@ All code can be found at:
 
 * [https://github.com/bytefish/WideWorldImporters](https://github.com/bytefish/WideWorldImporters)
 
+## Table of contents ##
+
+[TOC]
+
 ## What we are going to build ##
 
 "I just want to show some data in a table and filter it. Why is all this so, so complicated?", 
@@ -37,13 +41,15 @@ The final application will look like this:
     </a>
 </div>
 
-## Translations ##
+## Application Basics ##
+
+### Translations ###
 
 You should start your applications with translations. Translations are everywhere in your application, just think of 
 menu items, column headers, ... you are going to need them basically everywhere. And modern applications should also take 
 good care of a11y, because some people depend on screenreaders and additional information.
 
-### Providing translations for the application ###
+#### Providing translations for the application ####
 
 I want type-safety for the translations. In my opinion there is nothing worse, than operating on strings and suddenly have placeholders popping 
 up in the UI, because you mistyped some identifier... or even worse embarassing key names show up. So I will simply use an approach I have seen 
@@ -141,7 +147,7 @@ import { AppCommonStrings, defaultCommonStrings, germanCommonStrings } from "../
 }
 ```
 
-### Providing translations for Clarity controls ###
+#### Providing translations for Clarity controls ####
 
 Clarity uses the same simple approach, that I like a lot, because it's so transparent and not magic. The framework wants you to configure the translations 
 in the ``ClrCommonStringsService`` for every language you want to support. 
@@ -208,13 +214,13 @@ export class CommonStringsService {
 }
 ```
 
-## The Application Menus ##
+### Application Menus ###
 
 Your users are going to navigate your application by using menus. It's a good next step in your 
 application development to think about menus. Do you want a side menu, a header menu or something 
 like a drop down menu?
 
-### Starting with... translations again ###
+#### Starting with... translations again ####
 
 We start the implementation for the menu by defining the translations in the ``AppCommonStrings``, this is done for 
 the sidemenu items, the header items and the dropdown items. Please feel totally free to come up with your own 
@@ -277,7 +283,7 @@ export const defaultCommonStrings: AppCommonStrings = {
 };
 ```
 
-### Modelling the Menu Items ###
+#### Modelling the Menu Items ####
 
 Next we define the menu items in the application. Each item can have children, so we are able to build 
 a hierarchy of menu sections and menu items. They should be the same for all kinds of menus in our 
@@ -333,6 +339,8 @@ export interface MenuItem {
     children?: MenuItem[];
 }
 ```
+
+#### Defining the actual Menu structure ####
 
 And we define the actual menu contents in a class ``data/app-menu-items.ts``, where each method also takes a dependency on the 
 ``TranslationService`` for translating all menu item texts.
@@ -399,10 +407,12 @@ export function sidebarMenuItems(translations: TranslationService): Array<MenuIt
 };
 ```
 
+#### A MenuService: Providing menus to other components ####
+
 Although we load our translations in a static way, you could also load them from other data sources. So we can define a 
 small abstraction ``MenuService`` for providing the menu:
 
-```
+```typescript
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 import { Injectable } from "@angular/core";
@@ -463,7 +473,7 @@ export class MenuService {
 }
 ```
 
-## The Application Container  ##
+### The Application Container  ###
 
 The application should be a *desktop-first* application. We want a side menu, that allows us to have a menu in a classic 
 tree structure. Sorry, no Hamburgers here! To allow fast access of important data, you want to have a header menu, that 
@@ -561,9 +571,9 @@ child components go into the ``<router-outlet>``.
 </div>
 ```
 
-## OData or ... Query all the things! ##
+## Integrating OData into the Application ##
 
-### Modelling the OData Responses ###
+### Modelling OData Responses in TypeScript ###
 
 We start the OData integration by defining what an OData response looks like and how it is constructed from the Angular 
 ``HttpResponse``. We will create a file ``models/odata-response.ts`` with the following content:
@@ -693,6 +703,8 @@ export class ODataEntitiesResponse<T> extends ODataResponse {
 }
 ```
 
+### ODataService: Enable components to run OData queries ###
+
 Now that we know the shape of our response, we can define an ``ODataService`` to query the API for a single entity or an array of entities:
 
 ```typescript
@@ -755,20 +767,29 @@ And that's it already for the mapping the OData queries. There is no fancy build
 query parameters. Writing them by hand for your use cases makes absolutely everything much easier, implementation-wise... a little 
 bit of code duplication is better than an expensive abstraction!
 
-### Filters, Filters, Filters  ###
+### Implementing a Filter API  ###
 
-So we need to send a ``$filter`` parameter to the OData service, to filter entities. We start by creating a small "Filter API" 
-in a file ``models/filters.ts``. The idea is, that you have Filters of various types (``Numeric``, ``String``, ``Date``, ``Boolean``, 
-...) and Filter operators (``StartsWith``, ``EndsWith``, ...). 
+We will use a the Clarity Datagrid to expose data from OData-endpoints and to allow filtering:
 
-A ``ColumnFilter`` will be applied to every column in a Datagrid. And it's not a "perfect abstraction", but the best I came up with: 
-Every ``ColumnFilter`` can be converted into an ``ODataFilter``. Every ``ODataFilter`` in turn knows, what it looks like as an OData 
-string.
+* [https://clarity.design/documentation/datagrid/structure](https://clarity.design/documentation/datagrid/structure)
+
+So the "Filter API" will be built in a way, that's compatible with the Clarity Datagrid. 
+
+The idea is, that you have Filters of various types (``Numeric``, ``String``, ``Date``, ``Boolean``, ...) and 
+Filter operators (``StartsWith``, ``EndsWith``, ...). A ``ColumnFilter`` will be implemented by a custom Clarity 
+Datagrid filter as described in:
+
+* [https://clarity.design/documentation/datagrid/custom-filtering](https://clarity.design/documentation/datagrid/custom-filtering)
+
+That way we can get the state of the Datagrid (``ClrDatagridStateInterface<T>``) and the columns will return their OData representations.
+
+#### Filter Types ####
+
+All Filters in our application should use a specific type, such as being a filter for numerics, for dates or booleans. We describe 
+these in an enumeration ``FilterType``.
 
 ```typescript
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
-
-import { Temporal } from "@js-temporal/polyfill";
 
 /**
  * Each Filter has a Type.
@@ -779,6 +800,15 @@ export enum FilterType {
     DateFilter = "dateFilter",
     BooleanFilter = "booleanFilter",
 };
+```
+
+#### Filter Operators ####
+
+All Filters share a common set of Operators. Something like ``IsNull`` applies for strings, dates or numeric values. We 
+define the entire set of available operators in an enumeration ``FilterOperator``.
+
+```typescript
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 /**
  * All Filters share a common set of FilterOperators, such as "Greater Than"...
@@ -807,7 +837,17 @@ export enum FilterOperator {
     No = "no",
     All = "all"
 };
+```
 
+#### Column Filters ####
+
+A columns in a Datagrid can have a filter. This Filter is applied on a field and has a filter operator, such as 
+``IsNull`` or ``StartsWith``. A column filter maybe applied and needs to know how to reset itself to an initial 
+state.
+
+The method ``ColumnFilter#toODataFilter`` returns the OData Filter, that's needed to construct OData queries.
+
+```
 /**
  * A Column Filter is applied to a field and knows 
  */
@@ -838,8 +878,17 @@ export interface ColumnFilter {
      */
     toODataFilter(): ODataFilter;
 }
+```
 
+#### ODataFilter for OData queries ####
 
+An ``ODataFilter`` is used to translate the current Filter into an OData query string. It is basically the 
+same interface like a ``ColumnFilter``, so I suspect they could be merged. But I am not sure, so I leave them 
+as separate models.
+
+By using the ``ODataFilter#toODataString`` method an ``ODataFilter`` can be translated into an OData query string.
+
+```typescript
 /**
  * Every OData Filter is applied to a field and provides a way to serialize itself into the OData Format.
  */
@@ -860,7 +909,11 @@ export interface ODataFilter {
      */
     toODataString(): string | null;
 };
+```
 
+One of its implementation is an ``ODataStringFilter``:
+
+```typescript
 /**
  * OData Filter on a String field.
  */
@@ -931,241 +984,26 @@ export class ODataStringFilter implements ODataFilter {
         }
     }
 }
-
-/**
- * A Filter for dates and date range queries.
- */
-export class ODataDateFilter implements ODataFilter {
-
-    /**
-     * The field to apply the filter on.
-     */
-    readonly field: string;
-
-    /**
-     * The filter operator to apply, such as "IsNull", "StartsWith", ...
-     */
-    readonly operator: FilterOperator;
-
-    /**
-     * The start date for a range query.
-     */
-    readonly startDate: Temporal.ZonedDateTime | null;
-
-    /**
-     * The end date for a range query.
-     */
-    readonly endDate: Temporal.ZonedDateTime | null;
-
-    /**
-     * Builds a new Date Filter.
-     * 
-     * @param field - The field to apply the filter on. 
-     * @param operator - The filter operator to apply, such as "IsNull", "StartsWith", ...
-     * @param startDate - The start date for a range query.
-     * @param endDate - The end date for a range query.
-     */
-    constructor(field: string, operator: FilterOperator, startDate: Temporal.ZonedDateTime | null, endDate: Temporal.ZonedDateTime | null) {
-        this.field = field;
-        this.operator = operator;
-        this.startDate = startDate;
-        this.endDate = endDate;
-    }
-
-    /**
-     * Converts this Filter to an OData string.
-     * 
-     * @returns OData filter string for the field.
-     */
-    toODataString(): string | null {
-
-        if (this.operator == FilterOperator.None) {
-            return null;
-        }
-
-        const startDate = this.toODataDateTime(this.startDate);
-        const endDate =  this.toODataDateTime(this.endDate);
-
-        switch (this.operator) {
-            case FilterOperator.IsNull:
-                return `${this.field} eq null`;
-            case FilterOperator.IsNotNull:
-                return `${this.field} ne null`;
-            case FilterOperator.IsEqualTo:
-                return `${this.field}  eq ${startDate}`;
-            case FilterOperator.IsNotEqualTo:
-                return `${this.field}  neq ${startDate}`;
-            case FilterOperator.After:
-            case FilterOperator.IsGreaterThan:
-                return `${this.field} gt ${startDate}`;
-            case FilterOperator.IsGreaterThanOrEqualTo:
-                return `${this.field} ge ${startDate}`;
-            case FilterOperator.Before:
-            case FilterOperator.IsLessThan:
-                return `${this.field} lt ${startDate}`;
-            case FilterOperator.IsLessThanOrEqualTo:
-                return `${this.field} le ${startDate}`;
-            case FilterOperator.BetweenExclusive:
-                return `(${this.field} gt ${startDate}) and (${this.field} lt ${endDate})`;
-            case FilterOperator.BetweenInclusive:
-                return `(${this.field} ge ${startDate}) and (${this.field} le ${endDate})`;
-            default:
-                throw new Error(`${this.operator} is not supported`);
-        }
-    }
-
-    /**
-     * Converts the ``ZonedDateTime`` into an OData-compatible string. OData needs 
-     * Dates to be formatted in UTC (Zulu) ISO format.
-     * 
-     * @param zonedDateTime - The ``ZonedDateTime`` to filter for.
-     * @returns OData representation for the ``ZonedDateTime``
-     */
-    toODataDateTime(zonedDateTime: Temporal.ZonedDateTime | null): string | null {
-        if(zonedDateTime == null) {
-            return null;
-        }
-
-        const utcZonedDateTimeString = zonedDateTime
-            .withTimeZone('UTC')
-            .toString({ smallestUnit: 'seconds', timeZoneName: 'never', offset: 'never'});
-        
-        return `${utcZonedDateTimeString}Z`;
-    }
-};
-
-/**
- * A Filter for for boolean values.
- */
-export class ODataBooleanFilter implements ODataFilter {
-
-    /**
-     * The field to apply the filter on.
-     */
-    readonly field: string;
-
-    /**
-     * The filter operator to apply, such as "Yes", "No", ...
-     */
-    readonly operator: FilterOperator;
-
-    /**
-     * 
-     * @param field - The field to apply the filter on.
-     * @param operator - The filter operator to apply, such as "Yes", "No", ...
-     */
-    constructor(field: string, operator: FilterOperator) {
-        this.field = field;
-        this.operator = operator;
-    }
-
-    /**
-     * Converts this Filter to an OData string.
-     * 
-     * @returns OData filter string for the field.
-     */
-    toODataString(): string | null {
-        
-        if (this.operator == FilterOperator.None) {
-            return null;
-        }
-
-        switch (this.operator) {
-            case FilterOperator.IsNull:
-                return `${this.field} eq null`;
-            case FilterOperator.IsNotNull:
-                return `${this.field} ne null`;
-            case FilterOperator.Yes:
-                return `${this.field} eq true`;
-            case FilterOperator.No:
-                return `${this.field} eq false`;
-            default:
-                return null;
-        }
-    }
-}
-
-/**
- *  A Filter for numeric values and range queries.
- */
-export class ODataNumericFilter implements ODataFilter {
-
-    /**
-     * The field to apply the filter on. 
-     */
-    readonly field: string;
-
-    /**
-     * The filter operator to apply, such as "IsNull", "LessThan", ...
-     */
-    readonly operator: FilterOperator;
-
-    /**
-     * Lower Bound for range queries.
-     */
-    readonly low: number | null;
-
-    /**
-     * Upper Bound for Range Queries.
-     */
-    readonly high: number | null;
-
-    /**
-     * 
-     * @param field - The field to apply the filter on. 
-     * @param operator - The filter operator to apply, such as "IsNull", "LessThan", ...
-     * @param low - Lower Bound for range queries.
-     * @param high - Upper Bound for Range Queries.
-     */
-    constructor(field: string, operator: FilterOperator, low: number | null, high: number | null) {
-        this.field = field;
-        this.operator = operator;
-        this.low = low;
-        this.high = high;
-    }
-
-    /**
-     * Converts this Filter to an OData string.
-     * 
-     * @returns OData filter string for the field.
-     */
-    toODataString(): string | null {
-
-        if (this.operator == FilterOperator.None) {
-            return null;
-        }
-
-        switch (this.operator) {
-            case FilterOperator.IsNull:
-                return `${this.field} eq null`;
-            case FilterOperator.IsNotNull:
-                return `${this.field} ne null`;
-            case FilterOperator.IsGreaterThan:
-                return `${this.field} gt ${this.low}`; 
-            case FilterOperator.IsGreaterThanOrEqualTo:
-                return `${this.field} ge ${this.low}`;
-            case FilterOperator.IsLessThan:
-                return `${this.field} lt ${this.low}`;
-            case FilterOperator.IsLessThan:
-                return `${this.field} le ${this.low}`;
-            case FilterOperator.BetweenExclusive:
-                return `(${this.field} gt ${this.low}) and (${this.field} lt ${this.high})`;
-            case FilterOperator.BetweenInclusive:
-                return `(${this.field} ge ${this.low}) and (${this.field} le ${this.high})`;
-            default:
-                return null;
-        }
-    }
-}
 ```
 
-### Integrating it into the Clarity DataGrid ###
+### Extending the Clarity Datagrid with OData Filters ###
 
-We can then implement the Components to integrate our Filters into the Clarity Datagrid, such as a ``StringFilterComponent``. To simplify 
-implementation, we are only implementing it for Server-side Filtering. If you want to implement Client-side filtering, you need to implement 
-the ``ClrDatagridFilterInterface#accepts(item: any)`` method to filter elements.
+We can then implement the Components to integrate our Filters into the Clarity Datagrid, such as a ``StringFilterComponent``. 
 
-Here is a ``StringFilter``, that can be used as a starting point.
+You can learn about custom filtering in Clarity at:
+
+* [https://clarity.design/documentation/datagrid/custom-filtering](https://clarity.design/documentation/datagrid/custom-filtering)
+
+To simplify implementation, we are only implementing it for Server-side Filtering. If you want to implement Client-side 
+filtering, you need to implement the ``ClrDatagridFilterInterface#accepts(item: any)`` method to filter elements.
+
+#### Implementing a Custom Filter ####
+
+All custom filters for a Clarity Datagrid need to implement the ``ClrDatagridFilterInterface<T>`` interface. Our 
+OData-enabled filters also need to implement the ``ColumnFilter`` of our very own "Filter API". 
+
+Here is a ``StringFilter`` component, that can be used as a starting point. The repository implements more 
+filters, such as for Numeric and Date Ranges.
 
 ```typescript
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
@@ -1321,7 +1159,7 @@ export class StringFilterComponent implements ClrDatagridFilterInterface<any>, C
 }
 ```
 
-### From the Clarity Datagrid to an OData Filter ###
+#### From Datagrid state to an OData Query ####
 
 These filters can then be used to build an OData string for the current Datagrid's state. The class ``ODataUtils#asODataString`` 
 takes the Datagrid state to set the ``$filter``, ``$sort``, ``$top``, ``$skip`` and ``$count`` query parameters. Optionally the 
@@ -1520,7 +1358,7 @@ export class ODataUtils {
 
 And that's it for filtering!
 
-## Query the WideWorldImporters Backend ##
+## Querying the WideWorldImporters Backend ##
 
 With all the infrastructure code in place, we can finally, finally query the data. 
 
@@ -1565,7 +1403,7 @@ The component code is very concise and basically boils down to getting a ``ClrDa
 using the ``ODataUtils`` and finally using the ``ODataService`` to query the WideWorldImporters backend. To 
 translate column names a ``TranslationService`` gets injected to the component.
 
-```
+```typescript
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 import { Component } from '@angular/core';
@@ -1670,9 +1508,11 @@ And the result is a beautiful data grid, that allows us to sort, filter and pagi
 
 The GitHub repository contains more tables, so you get a feeling on how to work with it.
 
-### Final Plumbing Steps ###
+## Final Plumbing Steps ##
 
 A little bit of plumbing is necessary to setup the Routes and the Angular Dependency Injection container.
+
+### Setting Angular Routes ###
 
 In the ``app-routing.module.ts`` we are defining the routes for the application:
 
@@ -1699,6 +1539,8 @@ const routes: Routes = [
 })
 export class AppRoutingModule { }
 ```
+
+### Angular Module ###
 
 And in the ``app.module.ts`` we define the application roots dependency injection container.
 
@@ -1779,5 +1621,9 @@ And oh... That's it already!
 
 ## Conclusion ##
 
-I think it was very easy to build an Angular application, that uses an OData-enabled Backend to provide access to the data.
+I think it was very easy to build an Angular application, that uses an OData-enabled Backend to provide access to 
+the data. The Clarity Design components comes with a wide range of high-quality components and has a very versatile 
+Datagrid, that's easy to extend.
+
+All this leaves you with a good basis for your own adventure with Clarity and OData-enabled Backends.
 
