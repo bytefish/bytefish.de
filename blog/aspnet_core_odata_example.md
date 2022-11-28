@@ -6,9 +6,6 @@ slug: aspnet_core_odata_example
 author: Philipp Wagner
 summary: This article shows how to build a Frontend and Backend application with Angular, Clarity, ASP.NET Core OData, and Entity Framework Core.
 
-It's been almost 10 months since my last article. A family takes slightly more time than expected... and 
-I have lately been spending my 1 hour free time a day with... sleeping. \#Parenthood
-
 In this article I will show you how to use ASP.NET Core OData and EF Core to quickly build Backends 
 and how to use Angular to display, filter and paginate datasets. It's not complicated, but there had 
 been quite a few pieces to the puzzle.

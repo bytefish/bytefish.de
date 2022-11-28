@@ -6,8 +6,6 @@ slug: aspnet_core_odata_frontend
 author: Philipp Wagner
 summary: This article shows how to build a Frontend application with Angular, that works with an ASP.NET Core OData Backend.
 
-Now that the children are in Kindergarten, I have a lot more time for writing articles. #Freedom
-
 In the last article I have shown how to build a Backend for WideWorldImporters database using ASP.NET Core OData and EntityFramework Core:
 
 * [https://www.bytefish.de/blog/aspnet_core_odata_example.html](https://www.bytefish.de/blog/aspnet_core_odata_example.html)
