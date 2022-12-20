@@ -48,11 +48,11 @@ CREATE TABLE IF NOT EXISTS sample.tenant
 And we are adding two example Tenants, that will be using the sample application:
 
 ```sql
-INSERT INTO sample.tenant(id, name, description)
+INSERT INTO sample.tenant(tenant_id, name, description)
 VALUES (1, '33F3857A-D8D7-449E-B71F-B5B960A6D89A', 'Tenant 1')
 ON CONFLICT  DO NOTHING;
 
-INSERT INTO sample.tenant(id, name, description)
+INSERT INTO sample.tenant(tenant_id, name, description)
 VALUES (2, '7344384A-A2F4-4FC4-A382-315FCB421A72', 'Tenant 2')
 ON CONFLICT  DO NOTHING;
 ```
