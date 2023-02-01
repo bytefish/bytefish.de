@@ -326,7 +326,7 @@ The index.html simply consists of a ``canvas`` element, which is going to be pop
 With the ``signalr-client`` I am going to first open a connection to the ``SensorHub``, then register on the ``Broadcast`` message 
 and finally update the Chart with the received measurement. 
 
-The JavaScript [Chart.js] part was originally written by [Simon Brunel](https://github.com/simonbrunel) and is available [here](https://plnkr.co/Imxwl9OQJuaMepLNy6ly).
+The JavaScript [Chart.js] part was originally written by [Simon Brunel](https://github.com/simonbrunel) and is available [here](https://plnkr.co/edit/Imxwl9OQJuaMepLNy6ly).
 
 ```html
 <!DOCTYPE html>
