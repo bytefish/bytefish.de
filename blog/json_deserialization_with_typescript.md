@@ -399,6 +399,223 @@ export function transform(obj: any, classType: any) {
 
 ```
 
+## Adding Unit Tests for both implementations ##
+
+In the `deserializer.spec.ts` class, we are adding tests to ensure both approaches work correctly.
+
+```typescript
+import { describe, it, } from 'mocha';
+import { Temporal } from "@js-temporal/polyfill";
+import { deepStrictEqual } from "assert";
+
+import { deserialize, isObject, JsonConverter, JsonProperty, JsonType, transform, transformArray } from './deserializer';
+
+const fixtureChildOrder1 = `
+    { 
+        "orderId": 1,
+        "orderNumber": "8472-423-14",
+        "pickupDateTime":"2018-07-15T05:35:03.000Z"
+    }`;
+
+const fixtureChildOrder2 = `
+    { 
+        "orderId": 2,
+        "orderNumber": "1341-7856-75189",
+        "pickupDateTime":"2019-01-12T01:15:03.000Z"
+    }`;
+
+const fixtureCustomer = `
+    {
+        "customerId": 4,
+        "customerName": "Northwind Toys",
+        "orders": [
+            ${fixtureChildOrder1},
+            ${fixtureChildOrder2}
+        ]
+    }
+`;
+
+const fixturePlainDateExample = `
+    {
+        "shippingDate": "2012-01-01"
+    }
+`;
+
+export class JsonConverterExample {
+
+    @JsonProperty("shippingDate")
+    @JsonConverter((val) => Temporal.PlainDate.from(val))
+    shippingDate?: Temporal.PlainDate;
+
+}
+
+const fixtureDifferentNameExample = `
+    {
+        "myShippingDate": "2012-01-01"
+    }
+`;
+
+export class JsonPropertyExample {
+
+    @JsonProperty("myShippingDate")
+    shippingDate?: string;
+}
+
+const fixtureODataEntityResponse = `
+    {
+        "@odata.context" : "http://localhost:5000/odata/#Customer",
+        "@odata.count" : 2,
+        "orderId": 2,
+        "orderNumber": "1341-7856-75189",
+        "pickupDateTime":"2019-01-12T01:15:03.000Z"
+    }
+`;
+
+const fixtureODataEntitiesResponse = `
+    {
+        "@odata.context" : "http://localhost:5000/odata/#Customer",
+        "@odata.count" : 2,
+        "value" : [
+            ${fixtureChildOrder1},
+            ${fixtureChildOrder2} 
+        ]
+    }
+`;
+
+export class Order {
+
+    @JsonProperty("orderId")
+    orderId?: number;
+
+    @JsonProperty("orderNumber")
+    orderNumber?: string;
+
+    @JsonProperty("pickupDateTime")
+    @JsonType(Date)
+    pickupDateTime?: Date;
+
+}
+
+export class Customer {
+
+    @JsonProperty("orderId")
+    customerId?: number;
+
+    @JsonProperty("customerName")
+    customerName?: string;
+
+    @JsonProperty("orders")
+    @JsonType([Order])
+    orders?: Order[];
+}
+
+export class OrderWithoutDecorators {
+
+    orderId?: number;
+
+    orderNumber?: string;
+
+    pickupDateTime?: Date;
+}
+
+describe('JSON.parse', () => {
+
+    it('Should not parse string as Date', () => {
+        
+        // prepare
+        const json = `
+        { 
+            "orderId": 1,
+            "orderNumber": "8472-423-14",
+            "pickupDateTime":"2018-07-15T05:35:03.000Z"
+        }`;
+
+        // act
+        const verifyResult = JSON.parse(json) as Order;
+
+        // verify
+        const isTypeOfString = typeof verifyResult.pickupDateTime === "string";
+        const isInstanceOfDate = verifyResult.pickupDateTime instanceof Date;
+        
+
+        deepStrictEqual(isTypeOfString, true);
+        deepStrictEqual(isInstanceOfDate, false);
+    }); 
+
+});
+
+describe('deserialize', () => {
+
+    it('Decorated Order should parse Date', () => {
+        // prepare        
+        const json = `
+        { 
+            "orderId": 1,
+            "orderNumber": "8472-423-14",
+            "pickupDateTime":"2018-07-15T05:35:03.000Z"
+        }`;
+
+        // act
+        const verifyResult: Order = deserialize<Order>(json, Order);
+
+        // verify
+        const isTypeOfObject = typeof verifyResult.pickupDateTime === "object";
+        const isInstanceOfDate = verifyResult.pickupDateTime instanceof Date;
+        
+        deepStrictEqual(isTypeOfObject, true);
+        deepStrictEqual(isInstanceOfDate, true);
+    }); 
+
+
+    it('Should convert Customer with manual conversion', () => {
+        // prepare
+        const data = JSON.parse(fixtureCustomer);
+
+        // act
+        const verifyResult: Customer = Converters.convertToCustomer(data);
+        
+        // verify
+        const isTypeOfObject = typeof verifyResult.orders[0].pickupDateTime === "object";
+        const isInstanceOfDate = verifyResult.orders[0].pickupDateTime instanceof Date;
+        
+        deepStrictEqual(isTypeOfObject, true);
+        deepStrictEqual(isInstanceOfDate, true);
+
+        deepStrictEqual(verifyResult.orders[0].pickupDateTime, new Date("2018-07-15T05:35:03.000Z"));
+        deepStrictEqual(verifyResult.orders[1].pickupDateTime, new Date("2019-01-12T01:15:03.000Z"));
+    }); 
+
+    it('Should Convert Child Array and Dates', () => {
+        // prepare
+        // act
+        const customer: Customer = deserialize(fixtureCustomer, Customer);
+        
+        // verify
+        deepStrictEqual(customer.orders[0].pickupDateTime, new Date("2018-07-15T05:35:03.000Z"));
+        deepStrictEqual(customer.orders[1].pickupDateTime, new Date("2019-01-12T01:15:03.000Z"));
+    }); 
+
+    it('Should Convert Plain Date', () => {
+        // prepare
+        // act
+        const verifyResult: JsonConverterExample = deserialize(fixturePlainDateExample, JsonConverterExample);
+        
+        deepStrictEqual(verifyResult.shippingDate, Temporal.PlainDate.from("2012-01-01"));
+    }); 
+
+    it('Should Convert by Name', () => {
+        // prepare
+        //act
+        const verifyResult: JsonConverterExample = deserialize(fixtureDifferentNameExample, JsonPropertyExample);
+
+        // verify
+        deepStrictEqual(verifyResult.shippingDate, "2012-01-01");
+    }); 
+    
+    // ...
+});
+```
+
 ## Conclusion ##
 
 I thought hard about, what's the best way in TypeScript to deserialize a given JSON object.
