@@ -1,4 +1,4 @@
-﻿title: JSON Deserialization with TypeScript
+﻿title: Deserializing JSON in TypeScript
 date: 2023-03-27 08:33
 tags: typescript, json
 category: typescript
@@ -618,18 +618,16 @@ describe('deserialize', () => {
 
 ## Conclusion ##
 
-I thought hard about, what's the best way in TypeScript to deserialize a given JSON object.
+So what's the best way with TypeScript to deserialize a given JSON object?
 
-And I have to admit, that `@JsonProperty` and `@JsonType` decorators look great on the outside. They make the whole 
-deserialization very clean. You could easily add decorators like `@JsonRequired` to require certain properties 
-during deserialization, one can imagine `@JsonValidate` decorator to validate incoming data.
+I have to admit, that `@JsonProperty` and `@JsonType` decorators look great on the outside. They make the whole 
+deserialization such a clean thing. You could easily add decorators like `@JsonRequired` to require certain properties 
+during deserialization, one can imagine decorators like `@JsonValidate` decorator to validate incoming data.
 
-But with a manual conversion? I can just debug and step through the whole thing, and get the freedom to do whatever 
-I want with the data. What would have been a `@JsonRequired` decorator will now be a function `Converters#require`, 
-so what? 
+But with a manual conversion... I can just debug and step through the whole thing, and get the freedom to do whatever 
+I want with the incoming data. What would have been a `@JsonRequired` decorator will be a function `Converters#require`, 
+so what?
 
-I am working on an OData application, so I have access to all schema elements, their properties and types. That makes 
-it possible to simply generate all TypeScript interfaces and required converter functions... no magic included and 
-that's probably the way I would go.
-
-What is your approach to JSON deserialization with TypeScript?
+See I am working on an OData-based application, so I have access to all schema elements, their properties and 
+types. That makes it possible to simply generate all TypeScript interfaces and required converter functions... 
+no magic included and that's most probably the way I would go.

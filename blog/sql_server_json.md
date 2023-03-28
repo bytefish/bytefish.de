@@ -1,4 +1,4 @@
-title: Working with JSON in SQL Server using FOR JSON PATH
+title: Generating JSON in Microsoft SQL Server 2012+
 date: 2023-03-27 11:34
 tags: csharp, sqlserver, dotnet, sql
 category: csharp, sql, sqlserver
@@ -16,7 +16,7 @@ the `FOR JSON PATH` expression and learn how to query it in a C# application usi
 
 All code can be found in a GitHub repository at:
 
-* [https://github.com/bytefish/SqlMapper](https://github.com/bytefish/SqlMapper)
+* [https://github.com/bytefish/SqlQueryMapper](https://github.com/bytefish/SqlQueryMapper)
 
 ## What we are going to build ##
 
@@ -74,7 +74,7 @@ FROM [Application].[Person] person
 FOR JSON PATH
 ```
 
-## Using SqlMapper to Query for JSON  ##
+## Using SqlQueryMapper to Query for JSON  ##
 
 We can then model the Response we want to return to the Client application:
 
