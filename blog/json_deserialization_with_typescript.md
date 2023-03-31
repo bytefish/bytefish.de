@@ -6,12 +6,21 @@ slug: json_deserizaltion_with_typescript
 author: Philipp Wagner
 summary: This article shows how to deserialize JSON with TypeScript.
 
+This article looks at options for deserializing JSON in JavaScript (TypeScript).
+
+## Table of contents ##
+
+[TOC]
+
+## JSON and JavaScript ##
+
 If you have ever worked with JSON in an Angular application, you know that you cannot 
 trust the deserialized results. JavaScript doesn't have Reflection, JSON doesn't have 
 a data type for a `Date` and so... so `JSON.parse` doesn't know that you want the 
 incoming `string` value `"2018-07-15T05:35:03.000Z"` converted to a `Date`.
 
 Great!
+
 
 Say you have defined an interface `Order` as:
 
@@ -80,7 +89,7 @@ All code can be found in a GitHub repository at:
 
 * [https://github.com/bytefish/TypeScriptExperiments](https://github.com/bytefish/TypeScriptExperiments)
 
-## Solutions ##
+## Solving the Problem ##
 
 ### Manual Conversion ###
 

@@ -18,6 +18,10 @@ All code can be found in a GitHub repository at:
 
 * [https://github.com/bytefish/SqlQueryMapper](https://github.com/bytefish/SqlQueryMapper)
 
+## Table of contents ##
+
+[TOC]
+
 ## What we are going to build ##
 
 Imagine we are building a subset of a larger application and we are managing the address 

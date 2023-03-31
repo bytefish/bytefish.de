@@ -20,6 +20,10 @@ The GitHub repository for this article can be found at:
 
 [recently been announced by Microsoft]: https://blogs.msdn.microsoft.com/webdev/2017/09/14/announcing-signalr-for-asp-net-core-2-0/
 
+## Table of contents ##
+
+[TOC]
+
 ## What we are going to build ##
 
 Something everyone wants on their dashboards are Real-time Charts, which display incoming values. 

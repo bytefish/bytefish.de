@@ -16,6 +16,9 @@ All code can be found in a GitHub repository at:
 
 * [https://github.com/bytefish/WideWorldImporters/blob/main/Backend/WideWorldImporters.ModelGenerator](https://github.com/bytefish/WideWorldImporters/blob/main/Backend/WideWorldImporters.ModelGenerator)
 
+## Table of contents ##
+
+[TOC]
 
 ## What we are going to build ##
 
@@ -71,7 +74,7 @@ export class Converters {
 }
 ```
 
-## T4 Templates to Rescure ##
+## T4 Templates to Rescue ##
 
 The idea is to use Runtime T4 Templates to generate the data. The T4 Template expects all 
 Metadata about entities and their properties, because I don't want to reference the entire 
