@@ -614,7 +614,7 @@ handle it.
 The great thing is, that this also applies to data modifications bypassing our application layer, such 
 as Stored Procedures or ETL jobs, that need to run on the database.
 
-```
+```csharp
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using EfCoreAudit.Temporal.Model;
