@@ -2,7 +2,7 @@
 date: 2023-04-02 13:26
 tags: aspnetcore, efcore, dotnet, csharp
 category: csharp
-slug: entity_framework_core_auditing_issues
+slug: entity_framework_core_temporal_tables
 author: Philipp Wagner
 summary: This article discusses auditing with EntityFramework Core.
 
