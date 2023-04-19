@@ -25,4 +25,3 @@ template: page
     * [https://github.com/bytefish](https://www.github.com/bytefish)
     * [https://github.com/chsc](https://github.com/chsc)
     * [https://github.com/m4dm4x](https://github.com/m4dm4x)
-* [http://www.ipernity.com/home/21666](http://www.ipernity.com/home/21666)

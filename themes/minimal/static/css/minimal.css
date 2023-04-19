@@ -612,14 +612,6 @@ table {
   }
 
   /*
-    Don't show the bottom links, since the occupy too much 
-    space on small devices (and may look ugly!).
-  */
-  #links {
-    display: none !important;
-  }
-  
-  /*
     Define the blocklink now, which turns the menu items
     into a block link, which is easy to hit with a touch 
     device.
