@@ -168,6 +168,10 @@ class SitemapGenerator(object):
 
         pageurl = '' if page.url == 'index.html' else page.url
 
+        # TODO Pelican outputs archives.html, although we are writing to blog.html
+        if pageurl == 'archives.html':
+            pageurl = 'blog.html'
+        
         #Exclude URLs from the sitemap:
         if self.format == 'xml':
             flag = False
