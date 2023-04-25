@@ -1,5 +1,10 @@
 {% extends "base.html" %}
 
+{% block meta %}
+    <meta name="description" content="Articles by {{ author }}" />
+    <meta name="keywords" content="author" />
+{% endblock %}
+
 {% block content_title %}{{page_name}}{%endblock%}
 
 {% block content %}
