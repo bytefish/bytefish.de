@@ -23,14 +23,14 @@
   <body>
     <div id="container">
       <div id="header">
-        <span class="page-title"><a href="{{ SITEURL }}" class="page-title-link">www.bytefish.de</a></span>
-          <div id="menu">
-            <ul class="navigation">
-              {% for title, link in SECTIONS %}
-              <li class="navigation-item"><a href="{{ link }}" class="navigation-link blocklink">{{ title }}</a></li>
-              {% endfor %}
-            </ul>
-          </div>
+        <p class="page-title"><a href="{{ SITEURL }}" class="page-title-link">www.bytefish.de</a></p>
+        <div id="menu">
+          <ul class="navigation">
+            {% for title, link in SECTIONS %}
+            <li class="navigation-item"><a href="{{ link }}" class="navigation-link blocklink">{{ title }}</a></li>
+            {% endfor %}
+          </ul>
+        </div>
       </div>
       <div class="clearer"></div>
       <article class="main-column">

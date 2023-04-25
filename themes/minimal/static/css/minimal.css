@@ -78,9 +78,6 @@ body {
 .page-title {
     font-family: Arial, sans-serif;
     font-size: 34px;
-    line-height: 44px;
-    margin-bottom: 28px;
-    margin-top: 28px;
 }
 
 /*----------------------------*/
@@ -90,10 +87,10 @@ body {
 /* 
   Don't style header.
 */
-#header h1 a,
-#header h1 a:hover, 
-#header h1 a:active,
-#header h1 a:visited
+#header a,
+#header a:hover, 
+#header a:active,
+#header a:visited
 {
   color: #333;
   text-decoration: none;
@@ -520,6 +517,13 @@ table {
 	  padding-left: 20px;
       padding-right: 20px;
 	}
+    
+    .page-title {
+        font-size: 34px;
+		line-height: 44px;
+		margin-bottom: 8px;
+		margin-top: 8px;
+    }
 
 	h1 {
 		font-size: 34px;
@@ -596,8 +600,8 @@ table {
   }
   
   .page-title {
-    margin-bottom: 5px;
-    margin-top: 5px;
+    margin-bottom: 10px;
+    margin-top: 10px;
   }
   
   .page-title-link {
