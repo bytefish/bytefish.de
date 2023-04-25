@@ -2,6 +2,7 @@ title: research
 date: 2013-03-25 10:20
 author: Philipp Wagner
 template: page
+summary: Research I am interested in.
 
 This page serves as a place to put interesting links, ideas, algorithms or implementations to.
 

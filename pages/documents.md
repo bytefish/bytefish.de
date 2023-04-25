@@ -2,6 +2,7 @@ title: documents
 date: 2013-03-25 10:20
 author: Philipp Wagner
 template: page
+summary: PDF documents on various topics.
 
 Here are some documents we wrote. Some of them are in german, but they'll get translated as soon as possible. Non-german readers are highly encouraged to look at all the beautiful pictures inside! If you have a question, just mail one of us.
 

@@ -1,5 +1,10 @@
 {% extends "base.html" %}
 
+{% block meta %}
+    <meta name="description" content="Articles for tag '{{ tag }}'" />
+    <meta name="keywords" content="{{ tag }}" />
+{% endblock %}
+
 {% block title %}Articles for Tag &quot;{{ tag }}&quot;{% endblock %}
 {% block content_title %}tag/{{ tag }}{%endblock%}
 

@@ -1,8 +1,9 @@
 title: android
 date: 2013-03-25 10:20
 author: Philipp Wagner
-template: page_discussion
+template: page
 tags: java, android
+summary: Several Android Snippets, that might or might not be interesting.
 
 # Android #
 
