@@ -36,7 +36,7 @@ We will be writing a small Web application, that uses [vis.js] for rendering a G
 
 <div style="display:flex; align-items:center; justify-content:center;">
     <a href="/static/images/blog/sql_server_2019_graph_database/graph.jpg">
-        <img src="/static/images/blog/sql_server_2019_graph_database/graph.jpg">
+        <img src="/static/images/blog/sql_server_2019_graph_database/graph.jpg" alt="Resulting Graph of the sample Schema">
     </a>
 </div>
 

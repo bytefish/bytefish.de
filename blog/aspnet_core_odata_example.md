@@ -42,7 +42,7 @@ The final application will look like this:
 
 <div style="display:flex; align-items:center; justify-content:center;margin-bottom:15px;">
     <a href="/static/images/blog/aspnet_core_odata_example/00_WWI_App.jpg">
-        <img src="/static/images/blog/aspnet_core_odata_example/00_WWI_App.jpg">
+        <img src="/static/images/blog/aspnet_core_odata_example/00_WWI_App.jpg" alt="The final Angular application, that's going to be built">
     </a>
 </div>
 
@@ -100,7 +100,7 @@ We start the SQL Server Management Studio and connect to our SQLEXPRESS instance
 
 <div style="display:flex; align-items:center; justify-content:center;margin-bottom:15px;">
     <a href="/static/images/blog/aspnet_core_odata_example/01_Restore_WWI_Database.jpg">
-        <img src="/static/images/blog/aspnet_core_odata_example/01_Restore_WWI_Database.jpg">
+        <img src="/static/images/blog/aspnet_core_odata_example/01_Restore_WWI_Database.jpg" alt="Restoring the WWI database in SQL Server Management Studio">
     </a>
 </div>
 
@@ -108,7 +108,7 @@ On the "General" page select "Device" as the Source and select the Backup like t
 
 <div style="display:flex; align-items:center; justify-content:center;margin-bottom:15px;">
     <a href="/static/images/blog/aspnet_core_odata_example/02_Restore_WWI_Database.jpg">
-        <img src="/static/images/blog/aspnet_core_odata_example/02_Restore_WWI_Database.jpg">
+        <img src="/static/images/blog/aspnet_core_odata_example/02_Restore_WWI_Database.jpg" alt="Selecting the Backup Source">
     </a>
 </div>
 
@@ -116,7 +116,7 @@ We are now ready to import the database:
 
 <div style="display:flex; align-items:center; justify-content:center;margin-bottom:15px;">
     <a href="/static/images/blog/aspnet_core_odata_example/03_Restore_WWI_Database.jpg">
-        <img src="/static/images/blog/aspnet_core_odata_example/03_Restore_WWI_Database.jpg">
+        <img src="/static/images/blog/aspnet_core_odata_example/03_Restore_WWI_Database.jpg" alt="Final step for restoring the WWI database">
     </a>
 </div>
 
@@ -132,7 +132,7 @@ It's a good idea to get an high-level overview of the project first, so you get 
 
 <div style="display:flex; align-items:center; justify-content:center;margin-bottom:15px;">
     <a href="/static/images/blog/aspnet_core_odata_example/00_Solution_Overview.jpg">
-        <img src="/static/images/blog/aspnet_core_odata_example/00_Solution_Overview.jpg">
+        <img src="/static/images/blog/aspnet_core_odata_example/00_Solution_Overview.jpg" alt="High-Level View on the Solution structure">
     </a>
 </div>
 
@@ -225,7 +225,7 @@ Our Solution now contains the ``WideWorldImportersContext`` and all model classe
 
 <div style="display:flex; align-items:center; justify-content:center;margin-bottom:15px;">
     <a href="/static/images/blog/aspnet_core_odata_example/04_Scaffolding_WWI_Files.jpg">
-        <img src="/static/images/blog/aspnet_core_odata_example/04_Scaffolding_WWI_Files.jpg">
+        <img src="/static/images/blog/aspnet_core_odata_example/04_Scaffolding_WWI_Files.jpg" alt="The scaffolded Model classes and DbContext in the Database project">
     </a>
 </div>
 
@@ -385,7 +385,7 @@ And drums please 🥁 ...
 
 <div style="display:flex; align-items:center; justify-content:center;margin-bottom:15px;">
     <a href="/static/images/blog/aspnet_core_odata_example/05_OData_Edmx_Model.jpg">
-        <img src="/static/images/blog/aspnet_core_odata_example/05_OData_Edmx_Model.jpg">
+        <img src="/static/images/blog/aspnet_core_odata_example/05_OData_Edmx_Model.jpg" alt="EDMX Model returned by the $metadata endpoint">
     </a>
 </div>
 
@@ -1076,7 +1076,7 @@ Start the ``WideWorldImporters.Api`` project and navigate to ``http://localhost:
 
 <div style="display:flex; align-items:center; justify-content:center;margin-bottom:15px;">
     <a href="/static/images/blog/aspnet_core_odata_example/07_Schema_Edm_Geometry.jpg">
-        <img src="/static/images/blog/aspnet_core_odata_example/07_Schema_Edm_Geometry.jpg">
+        <img src="/static/images/blog/aspnet_core_odata_example/07_Schema_Edm_Geometry.jpg" alt="EDMX Model with the correct types for Geography">
     </a>
 </div>
 

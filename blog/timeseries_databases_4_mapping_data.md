@@ -114,7 +114,7 @@ Which yields the following plot of Germany:
 
 <div style="display:flex; align-items:center; justify-content:center;">
     <a href="/static/images/blog/timeseries_databases_4_mapping_data/empty_shape_germany.png">
-        <img src="/static/images/blog/timeseries_databases_4_mapping_data/empty_shape_germany.png">
+        <img src="/static/images/blog/timeseries_databases_4_mapping_data/empty_shape_germany.png" alt="Shape of Germany without any Overlays">
     </a>
 </div>
 
@@ -229,7 +229,7 @@ It shows, that every federal state has one weather station active in 2017:
 
 <div style="display:flex; align-items:center; justify-content:center;">
     <a href="/static/images/blog/timeseries_databases_4_mapping_data/german_weather_stations.png">
-        <img src="/static/images/blog/timeseries_databases_4_mapping_data/german_weather_stations.png">
+        <img src="/static/images/blog/timeseries_databases_4_mapping_data/german_weather_stations.png" alt="Weather Stations in Germany plotted on a Shapefile">
     </a>
 </div>
 
@@ -315,7 +315,7 @@ I am using the [viridis] color palette, because it is easier to read by those wi
 
 <div style="display:flex; align-items:center; justify-content:center;">
     <a href="/static/images/blog/timeseries_databases_4_mapping_data/germany_average_temperature_2017.png">
-        <img src="/static/images/blog/timeseries_databases_4_mapping_data/germany_average_temperature_2017.png">
+        <img src="/static/images/blog/timeseries_databases_4_mapping_data/germany_average_temperature_2017.png" alt="Average Temperature in 2017 by Germanies Federal States">
     </a>
 </div>
 
@@ -334,7 +334,7 @@ And it shows, that tiny Saarland was the warmest federal state in July 2017:
 
 <div style="display:flex; align-items:center; justify-content:center;">
     <a href="/static/images/blog/timeseries_databases_4_mapping_data/germany_average_temperature_07_2017.png">
-        <img src="/static/images/blog/timeseries_databases_4_mapping_data/germany_average_temperature_07_2017.png">
+        <img src="/static/images/blog/timeseries_databases_4_mapping_data/germany_average_temperature_07_2017.png" alt="Average Temperature in July 2017 for Germanies Federal States">
     </a>
 </div>
 
@@ -351,7 +351,7 @@ And it shows, that Bavaria was the coldest federal state in December 2017:
 
 <div style="display:flex; align-items:center; justify-content:center;">
     <a href="/static/images/blog/timeseries_databases_4_mapping_data/germany_average_temperature_12_2017.png">
-        <img src="/static/images/blog/timeseries_databases_4_mapping_data/germany_average_temperature_12_2017.png">
+        <img src="/static/images/blog/timeseries_databases_4_mapping_data/germany_average_temperature_12_2017.png" alt="Average Temperature in December 2017 for Germanies Federal States">
     </a>
 </div>
 

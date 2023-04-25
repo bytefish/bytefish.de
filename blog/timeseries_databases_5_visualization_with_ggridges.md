@@ -111,7 +111,7 @@ And the result shows the temperature distribution per months:
 
 <div style="display:flex; align-items:center; justify-content:center;">
     <a href="/static/images/blog/timeseries_databases_5_visualization_with_ggridges/result.png">
-        <img src="/static/images/blog/timeseries_databases_5_visualization_with_ggridges/result.png">
+        <img src="/static/images/blog/timeseries_databases_5_visualization_with_ggridges/result.png" alt="Final Rideline plot for Temperature distribution per months">
     </a>
 </div>
 

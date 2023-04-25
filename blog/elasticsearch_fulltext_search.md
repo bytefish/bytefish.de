@@ -30,7 +30,7 @@ title:
 
 <div style="display:flex; align-items:center; justify-content:center;margin-bottom:15px;">
     <a href="/static/images/blog/elasticsearch_fulltext_search/Frontend_AddDocument.png">
-        <img src="/static/images/blog/elasticsearch_fulltext_search/Frontend_AddDocument.png">
+        <img src="/static/images/blog/elasticsearch_fulltext_search/Frontend_AddDocument.png" alt="UI for adding a document to the Elasticsearch">
     </a>
 </div>
 
@@ -40,7 +40,7 @@ status for each document:
 
 <div style="display:flex; align-items:center; justify-content:center;margin-bottom:15px;">
     <a href="/static/images/blog/elasticsearch_fulltext_search/Frontend_DocumentStatus.png">
-        <img src="/static/images/blog/elasticsearch_fulltext_search/Frontend_DocumentStatus.png">
+        <img src="/static/images/blog/elasticsearch_fulltext_search/Frontend_DocumentStatus.png" alt="DocumentStatus for the queued document">
     </a>
 </div>
 
@@ -49,7 +49,7 @@ or reduce typos. So we'll also add an Auto-Completion box:
 
 <div style="display:flex; align-items:center; justify-content:center;margin-bottom:15px;">
     <a href="/static/images/blog/elasticsearch_fulltext_search/Frontend_Auto_Completion.png">
-        <img src="/static/images/blog/elasticsearch_fulltext_search/Frontend_Auto_Completion.png">
+        <img src="/static/images/blog/elasticsearch_fulltext_search/Frontend_Auto_Completion.png" alt="Auto-Completion for queries">
     </a>
 </div>
 
@@ -61,7 +61,7 @@ The search results will contain the highlighted matches from the Elasticsearch s
 
 <div style="display:flex; align-items:center; justify-content:center;margin-bottom:15px;">
     <a href="/static/images/blog/elasticsearch_fulltext_search/Frontend_Search_Results.png">
-        <img src="/static/images/blog/elasticsearch_fulltext_search/Frontend_Search_Results.png">
+        <img src="/static/images/blog/elasticsearch_fulltext_search/Frontend_Search_Results.png" alt="Search Results">
     </a>
 </div>
 
@@ -1221,7 +1221,7 @@ It's a good idea to look at the high-level structure of the Backend first:
 
 <div style="display:flex; align-items:center; justify-content:center;margin-bottom:15px;">
     <a href="/static/images/blog/elasticsearch_fulltext_search/Backend_Overview.png">
-        <img src="/static/images/blog/elasticsearch_fulltext_search/Backend_Overview.png">
+        <img src="/static/images/blog/elasticsearch_fulltext_search/Backend_Overview.png" alt="High-Level Overview for the Solution">
     </a>
 </div>
 
@@ -1285,7 +1285,7 @@ It's good to get an Overview first, how the Database namespace is structured.
 
 <div style="display:flex; align-items:center; justify-content:center;margin-bottom:15px;">
     <a href="/static/images/blog/elasticsearch_fulltext_search/Backend_Overview.png">
-        <img src="/static/images/blog/elasticsearch_fulltext_search/Backend_Overview.png">
+        <img src="/static/images/blog/elasticsearch_fulltext_search/Backend_Overview.png" alt="High-Level Overview for the .NET Soltion">
     </a>
 </div>
 

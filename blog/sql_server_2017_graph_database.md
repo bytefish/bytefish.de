@@ -200,7 +200,7 @@ On a high-level the .NET-side of the Project looks like this:
 
 <div style="display:flex; align-items:center; justify-content:center;">
     <a href="/static/images/blog/sql_server_2017_graph_database/ProjectStructure.jpg">
-        <img src="/static/images/blog/sql_server_2017_graph_database/ProjectStructure.jpg">
+        <img src="/static/images/blog/sql_server_2017_graph_database/ProjectStructure.jpg" alt="High-Level Overview for the sample application">
     </a>
 </div>
 
@@ -328,7 +328,7 @@ It takes only **531 Milliseconds** to execute the Query:
 
 <div style="display:flex; align-items:center; justify-content:center;">
     <a href="/static/images/blog/sql_server_2017_graph_database/WeatherDelayQuery.jpg">
-        <img src="/static/images/blog/sql_server_2017_graph_database/WeatherDelayQuery.jpg">
+        <img src="/static/images/blog/sql_server_2017_graph_database/WeatherDelayQuery.jpg" alt="Query Results for the Delayed Flights query">
     </a>
 </div>
 

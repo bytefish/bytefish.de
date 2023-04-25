@@ -39,7 +39,7 @@ Imagine we have the following Excel Sheet with a list of people:
 
 <div style="display:flex; align-items:center; justify-content:center;">
     <a href="/static/images/blog/excel_xml_export/sample_sheet.png">
-        <img src="/static/images/blog/excel_xml_export/sample_sheet.png">
+        <img src="/static/images/blog/excel_xml_export/sample_sheet.png" alt="Sample Excel Sheet, that's going to be exported">
     </a>
 </div>
 
@@ -78,7 +78,7 @@ XML Source pane.
 
 <div style="display:flex; align-items:center; justify-content:center;">
     <a href="/static/images/blog/excel_xml_export/add_xml_schema.png">
-        <img src="/static/images/blog/excel_xml_export/add_xml_schema.png">
+        <img src="/static/images/blog/excel_xml_export/add_xml_schema.png" alt="Creating the XML Mapping for the Sheet data">
     </a>
 </div>
 
@@ -105,7 +105,7 @@ Executing this script leaves us with the generated contracts:
 
 <div style="display:flex; align-items:center; justify-content:center;">
     <a href="/static/images/blog/excel_xml_export/generated_contracts.png">
-        <img src="/static/images/blog/excel_xml_export/generated_contracts.png">
+        <img src="/static/images/blog/excel_xml_export/generated_contracts.png" alt="Generated Contracts for a given XSD file">
     </a>
 </div>
 

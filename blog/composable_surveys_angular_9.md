@@ -50,7 +50,7 @@ see how I would implement it with Angular 9:
 
 <div style="display:flex; align-items:center; justify-content:center;margin-bottom:15px;">
     <a href="/static/images/blog/composable_surveys_angular_9/survey.png">
-        <img src="/static/images/blog/composable_surveys_angular_9/survey.png">
+        <img src="/static/images/blog/composable_surveys_angular_9/survey.png" alt="The final Survey application">
     </a>
 </div>
 

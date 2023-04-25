@@ -212,7 +212,7 @@ And executing the `/auth/login` endpoint shows, that the response contains a Coo
 
 <div style="display:flex; align-items:center; justify-content:center;margin-bottom:15px;">
     <a href="/static/images/blog/aspnet_core_odata_authorization/AuthEndpoint_Login_Scopes.jpg">
-        <img src="/static/images/blog/aspnet_core_odata_authorization/AuthEndpoint_Login_Scopes.jpg">
+        <img src="/static/images/blog/aspnet_core_odata_authorization/AuthEndpoint_Login_Scopes.jpg" alt="Cookies for Endpoint">
     </a>
 </div>
 
@@ -438,7 +438,7 @@ A HTTP GET on `/odata/Products` now returns a HTTP Status 403 (Forbidden), becau
 
 <div style="display:flex; align-items:center; justify-content:center;margin-bottom:15px;">
     <a href="/static/images/blog/aspnet_core_odata_authorization/ProductEndpoint_ReadByKeyOnly_GetAll.jpg">
-        <img src="/static/images/blog/aspnet_core_odata_authorization/ProductEndpoint_ReadByKeyOnly_GetAll.jpg">
+        <img src="/static/images/blog/aspnet_core_odata_authorization/ProductEndpoint_ReadByKeyOnly_GetAll.jpg" alt="Shows the 403 Error when Scope is Missing">
     </a>
 </div>
 
@@ -446,7 +446,7 @@ A HTTP GET on `/odata/Products(1)` for reading by key returns the HTTP Status 20
 
 <div style="display:flex; align-items:center; justify-content:center;margin-bottom:15px;">
     <a href="/static/images/blog/aspnet_core_odata_authorization/ProductEndpoint_ReadByKeyOnly_GetByKey.jpg">
-        <img src="/static/images/blog/aspnet_core_odata_authorization/ProductEndpoint_ReadByKeyOnly_GetByKey.jpg">
+        <img src="/static/images/blog/aspnet_core_odata_authorization/ProductEndpoint_ReadByKeyOnly_GetByKey.jpg" alt="Shows the 200 Status (OK) with data, when Scope is available">
     </a>
 </div>
 
@@ -468,7 +468,7 @@ The user is now allowed to create an entity by sending a HTTP POST to the `/odat
 
 <div style="display:flex; align-items:center; justify-content:center;margin-bottom:15px;">
     <a href="/static/images/blog/aspnet_core_odata_authorization/ProductEndpoint_Create_CreateProduct.jpg">
-        <img src="/static/images/blog/aspnet_core_odata_authorization/ProductEndpoint_Create_CreateProduct.jpg">
+        <img src="/static/images/blog/aspnet_core_odata_authorization/ProductEndpoint_Create_CreateProduct.jpg" alt="A Product is created, because the user has the Product.Create Scope">
     </a>
 </div>
 
@@ -476,7 +476,7 @@ The fresh product can now be queried by calling `/odata/Products(10)`:
 
 <div style="display:flex; align-items:center; justify-content:center;margin-bottom:15px;">
     <a href="/static/images/blog/aspnet_core_odata_authorization/ProductEndpoint_Create_ReadByKey.jpg">
-        <img src="/static/images/blog/aspnet_core_odata_authorization/ProductEndpoint_Create_ReadByKey.jpg">
+        <img src="/static/images/blog/aspnet_core_odata_authorization/ProductEndpoint_Create_ReadByKey.jpg" alt="A Query for the Product, that has been created">
     </a>
 </div>
 

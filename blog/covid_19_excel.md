@@ -23,7 +23,7 @@ So it all starts with getting the data into an Excel Sheet. From the Ribbon Bar 
 
 <div style="display:flex; align-items:center; justify-content:center;margin-bottom:15px;">
     <a href="/static/images/blog/covid_19_excel/01_Excel_Get_SqlServer_Data.png">
-        <img src="/static/images/blog/covid_19_excel/01_Excel_Get_SqlServer_Data.png">
+        <img src="/static/images/blog/covid_19_excel/01_Excel_Get_SqlServer_Data.png" alt="COVID Data in SQL Server">
     </a>
 </div>
 
@@ -32,7 +32,7 @@ In the Dialog Box you then enter the Server and Database. We have used the datab
 
 <div style="display:flex; align-items:center; justify-content:center;margin-bottom:15px;">
     <a href="/static/images/blog/covid_19_excel/02_Enter_SqlServer_Connection_Details.png">
-        <img src="/static/images/blog/covid_19_excel/02_Enter_SqlServer_Connection_Details.png">
+        <img src="/static/images/blog/covid_19_excel/02_Enter_SqlServer_Connection_Details.png" alt="Database Connection details in Excel">
     </a>
 </div>
 
@@ -41,7 +41,7 @@ table and click the **Load** Button.
 
 <div style="display:flex; align-items:center; justify-content:center;margin-bottom:15px;">
     <a href="/static/images/blog/covid_19_excel/03_Select_And_Load_Table.png">
-        <img src="/static/images/blog/covid_19_excel/03_Select_And_Load_Table.png">
+        <img src="/static/images/blog/covid_19_excel/03_Select_And_Load_Table.png" alt="Selecting the Observation table, that contains the data to be displayed">
     </a>
 </div>
 
@@ -50,7 +50,7 @@ pane will show you the number of rows loaded, and errors if any.
 
 <div style="display:flex; align-items:center; justify-content:center;margin-bottom:15px;">
     <a href="/static/images/blog/covid_19_excel/04_Loaded_Data_In_Sheet2.png">
-        <img src="/static/images/blog/covid_19_excel/04_Loaded_Data_In_Sheet2.png">
+        <img src="/static/images/blog/covid_19_excel/04_Loaded_Data_In_Sheet2.png" alt="The loaded Observation data in an Excel Sheet">
     </a>
 </div>
 
@@ -62,7 +62,7 @@ Now from the Ribbon Bar you create a 3D Map by navigating to ...
 
 <div style="display:flex; align-items:center; justify-content:center;margin-bottom:15px;">
     <a href="/static/images/blog/covid_19_excel/05_Create_3D_Map.png">
-        <img src="/static/images/blog/covid_19_excel/05_Create_3D_Map.png">
+        <img src="/static/images/blog/covid_19_excel/05_Create_3D_Map.png" alt="Opening the Excel 3D Map Dialog">
     </a>
 </div>
 
@@ -72,7 +72,7 @@ right pane you can see, that it already correctly mapped the columns **Country**
 
 <div style="display:flex; align-items:center; justify-content:center;margin-bottom:15px;">
     <a href="/static/images/blog/covid_19_excel/06_Initial_3D_Map.png">
-        <img src="/static/images/blog/covid_19_excel/06_Initial_3D_Map.png">
+        <img src="/static/images/blog/covid_19_excel/06_Initial_3D_Map.png" alt="Creating the Excel 3D Map">
     </a>
 </div>
 
@@ -88,7 +88,7 @@ Once I am done, I am finally configuring the Tooltip to show useful data.
 
 <div style="display:flex; align-items:center; justify-content:center;margin-bottom:15px;">
     <a href="/static/images/blog/covid_19_excel/07_Configured_Map.png">
-        <img src="/static/images/blog/covid_19_excel/07_Configured_Map.png">
+        <img src="/static/images/blog/covid_19_excel/07_Configured_Map.png" alt="Final 3D Map">
     </a>
 </div>
 

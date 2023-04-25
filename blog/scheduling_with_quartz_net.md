@@ -24,7 +24,7 @@ The best way to explain a solution is to look at the project structure first and
 
 <div style="display:flex; align-items:center; justify-content:center;">
     <a href="/static/images/blog/scheduling_with_quartz_net/project.png">
-        <img src="/static/images/blog/scheduling_with_quartz_net/project.png">
+        <img src="/static/images/blog/scheduling_with_quartz_net/project.png" alt="High-Level Overview of the sample .NET application">
     </a>
 </div>
 
@@ -1039,7 +1039,7 @@ And that's it. You can now boot the service and schedule Firebase messages by po
 
 <div style="display:flex; align-items:center; justify-content:center;">
     <a href="/static/images/blog/scheduling_with_quartz_net/postman.png">
-        <img src="/static/images/blog/scheduling_with_quartz_net/postman.png">
+        <img src="/static/images/blog/scheduling_with_quartz_net/postman.png" alt="Postman Sample for invoking the Scheduler endpoint">
     </a>
 </div>
 

@@ -71,7 +71,7 @@ On a high-level the Project looks like this:
 
 <div style="display:flex; align-items:center; justify-content:center;">
     <a href="/static/images/blog/neo4j_at_scale_airline_dataset/project_structure.jpg">
-        <img src="/static/images/blog/neo4j_at_scale_airline_dataset/project_structure.jpg">
+        <img src="/static/images/blog/neo4j_at_scale_airline_dataset/project_structure.jpg" alt="High-Level Overview for the .NET solution">
     </a>
 </div>
 
@@ -201,7 +201,7 @@ I was able to insert something around ``3.000`` nodes and ``15.000`` relationshi
 
 <div style="display:flex; align-items:center; justify-content:center;">
     <a href="/static/images/blog/neo4j_at_scale_airline_dataset/neo4j_import.png">
-        <img src="/static/images/blog/neo4j_at_scale_airline_dataset/neo4j_import.png">
+        <img src="/static/images/blog/neo4j_at_scale_airline_dataset/neo4j_import.png" alt="Console Output during the import of the Dataset">
     </a>
 </div>
 
@@ -235,7 +235,7 @@ post on its own:
 
 <div style="display:flex; align-items:center; justify-content:center;">
     <a href="/static/images/blog/neo4j_at_scale_airline_dataset/top_airports_delayed_by_weather.jpg">
-        <img src="/static/images/blog/neo4j_at_scale_airline_dataset/top_airports_delayed_by_weather.jpg">
+        <img src="/static/images/blog/neo4j_at_scale_airline_dataset/top_airports_delayed_by_weather.jpg" alt="Results for the Delayed Flights Query">
     </a>
 </div>
 

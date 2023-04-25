@@ -364,7 +364,7 @@ Basically I structure the CSV parsing for every dataset in its own project, like
 
 <div style="display:flex; align-items:center; justify-content:center;">
     <a href="/static/images/blog/apache_jena/csv_parsing.jpg">
-        <img src="/static/images/blog/apache_jena/csv_parsing.jpg">
+        <img src="/static/images/blog/apache_jena/csv_parsing.jpg" alt="Code Structure for parsing the CSV data">
     </a>
 </div>
 
@@ -852,7 +852,7 @@ and then builds the indexes:
 
 <div style="display:flex; align-items:center; justify-content:center;">
     <a href="/static/images/blog/apache_jena/apache_fuseki_web_app.jpg">
-        <img src="/static/images/blog/apache_jena/apache_fuseki_web_app.jpg">
+        <img src="/static/images/blog/apache_jena/apache_fuseki_web_app.jpg" alt="Apache Fuseki Web Application for querying data">
     </a>
 </div>
 

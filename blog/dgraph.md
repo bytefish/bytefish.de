@@ -245,7 +245,7 @@ Basically I structure the CSV parsing for every dataset in its own project, like
 
 <div style="display:flex; align-items:center; justify-content:center;">
     <a href="/static/images/blog/dgraph/csv_parsing.jpg">
-        <img src="/static/images/blog/dgraph/csv_parsing.jpg">
+        <img src="/static/images/blog/dgraph/csv_parsing.jpg" alt="High-Level Overview of the .NET solution">
     </a>
 </div>
 
