@@ -77,6 +77,10 @@ body {
 
 .page-title {
     font-family: Arial, sans-serif;
+    font-size: 34px;
+    line-height: 44px;
+    margin-bottom: 28px;
+    margin-top: 28px;
 }
 
 /*----------------------------*/

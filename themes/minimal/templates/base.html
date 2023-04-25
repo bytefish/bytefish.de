@@ -3,6 +3,7 @@
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    {% block meta %}{% endblock %}
     
     <link rel="apple-touch-icon" sizes="180x180" href="/static/images/favicon/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/static/images/favicon/favicon-32x32.png">
@@ -22,7 +23,7 @@
   <body>
     <div id="container">
       <div id="header">
-        <h1 class="page-title"><a href="{{ SITEURL }}" class="page-title-link">www.bytefish.de</a></h1>
+        <span class="page-title"><a href="{{ SITEURL }}" class="page-title-link">www.bytefish.de</a></span>
           <div id="menu">
             <ul class="navigation">
               {% for title, link in SECTIONS %}
