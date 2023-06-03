@@ -54,119 +54,322 @@ Let's see what we can do!
 
 ## Adding Blazor Components ##
 
-### Adding the Bootstrap 5 CSS Grid ###
+### Adding a 12-Column CSS Grid ###
 
-I start by downloading the latest Bootstrap 5 release over at:
 
-* [https://getbootstrap.com/docs/5.3/getting-started/download/](https://getbootstrap.com/docs/5.3/getting-started/download/)
+In the `app.css` we are adding a simple 12-Column Grid Layout. The idea is 
+to help us building responsive layouts in a quicker way without needing to 
+include additional libraries.
 
-I copy the Bootstrap Grid CSS from `dist/css/bootstrap-grid.css` to my Blazor project at `css/grid.css` and include it 
-in the `index.html`:
+```css
+.row {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    grid-gap: 20px;
+}
 
-```
-<!DOCTYPE html>
-<html lang="en">
+.col-xs-12 {
+    grid-column: span 12
+}
 
-    <head>
-        <!-- ... -->
-        <link href="css/grid.css" rel="stylesheet" />
-        <!-- ... -->
-    </head>
-    
-    <!-- ... -->
+.col-xs-11 {
+    grid-column: span 11;
+}
 
-</html>
-```
+.col-xs-10 {
+    grid-column: span 10
+}
 
-In the `grid.css` I am renaming `.container` to `.fluent-container` incase the Project templates already have a `.container` specified.
+.col-xs-9 {
+    grid-column: span 9
+}
 
-## Containers ##
+.col-xs-8 {
+    grid-column: span 8
+}
 
-We start by adding a `MaxWidth` enumeration for the container size:
+.col-xs-7 {
+    grid-column: span 7
+}
 
-```csharp
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+.col-xs-6 {
+    grid-column: span 6
+}
 
-using System.ComponentModel;
+.col-xs-5 {
+    grid-column: span 5
+}
 
-namespace WideWorldImporters.Blazor.Web.Enums
-{
-    public enum MaxWidth
-    {
-        [Description("lg")]
-        Large,
-        [Description("md")]
-        Medium,
-        [Description("sm")]
-        Small,
-        [Description("xl")]
-        ExtraLarge,
-        [Description("xxl")]
-        ExtraExtraLarge,
-        [Description("xs")]
-        ExtraSmall,
+.col-xs-4 {
+    grid-column: span 4
+}
+
+.col-xs-3 {
+    grid-column: span 3
+}
+
+.col-xs-2 {
+    grid-column: span 2
+}
+
+.col-xs-1 {
+    grid-column: span 1
+}
+
+@media (min-width: 576px) {
+    .col-sm-12 {
+        grid-column: span 12
+    }
+
+    .col-sm-11 {
+        grid-column: span 11;
+    }
+
+    .col-sm-10 {
+        grid-column: span 10
+    }
+
+    .col-sm-9 {
+        grid-column: span 9
+    }
+
+    .col-sm-8 {
+        grid-column: span 8
+    }
+
+    .col-sm-7 {
+        grid-column: span 7
+    }
+
+    .col-sm-6 {
+        grid-column: span 6
+    }
+
+    .col-sm-5 {
+        grid-column: span 5
+    }
+
+    .col-sm-4 {
+        grid-column: span 4
+    }
+
+    .col-sm-3 {
+        grid-column: span 3
+    }
+
+    .col-sm-2 {
+        grid-column: span 2
+    }
+
+    .col-sm-1 {
+        grid-column: span 1
+    }
+}
+
+@media (min-width: 768px) {
+    .col-md-12 {
+        grid-column: span 12
+    }
+
+    .col-md-11 {
+        grid-column: span 11;
+    }
+
+    .col-md-10 {
+        grid-column: span 10
+    }
+
+    .col-md-9 {
+        grid-column: span 9
+    }
+
+    .col-md-8 {
+        grid-column: span 8
+    }
+
+    .col-md-7 {
+        grid-column: span 7
+    }
+
+    .col-md-6 {
+        grid-column: span 6
+    }
+
+    .col-md-5 {
+        grid-column: span 5
+    }
+
+    .col-md-4 {
+        grid-column: span 4
+    }
+
+    .col-md-3 {
+        grid-column: span 3
+    }
+
+    .col-md-2 {
+        grid-column: span 2
+    }
+
+    .col-md-1 {
+        grid-column: span 1
+    }
+}
+
+@media (min-width: 992px) {
+    .col-lg-12 {
+        grid-column: span 12
+    }
+
+    .col-lg-11 {
+        grid-column: span 11;
+    }
+
+    .col-lg-10 {
+        grid-column: span 10
+    }
+
+    .col-lg-9 {
+        grid-column: span 9
+    }
+
+    .col-lg-8 {
+        grid-column: span 8
+    }
+
+    .col-lg-7 {
+        grid-column: span 7
+    }
+
+    .col-lg-6 {
+        grid-column: span 6
+    }
+
+    .col-lg-5 {
+        grid-column: span 5
+    }
+
+    .col-lg-4 {
+        grid-column: span 4
+    }
+
+    .col-lg-3 {
+        grid-column: span 3
+    }
+
+    .col-lg-2 {
+        grid-column: span 2
+    }
+
+    .col-lg-1 {
+        grid-column: span 1
+    }
+}
+
+@media (min-width: 1200px) {
+    .col-xl-12 {
+        grid-column: span 12
+    }
+
+    .col-xl-11 {
+        grid-column: span 11;
+    }
+
+    .col-xl-10 {
+        grid-column: span 10
+    }
+
+    .col-xl-9 {
+        grid-column: span 9
+    }
+
+    .col-xl-8 {
+        grid-column: span 8
+    }
+
+    .col-xl-7 {
+        grid-column: span 7
+    }
+
+    .col-xl-6 {
+        grid-column: span 6
+    }
+
+    .col-xl-5 {
+        grid-column: span 5
+    }
+
+    .col-xl-4 {
+        grid-column: span 4
+    }
+
+    .col-xl-3 {
+        grid-column: span 3
+    }
+
+    .col-xl-2 {
+        grid-column: span 2
+    }
+
+    .col-xl-1 {
+        grid-column: span 1
+   }
+}
+
+
+@media (min-width: 1400px) {
+    .col-xxl-12 {
+        grid-column: span 12
+    }
+
+    .col-xxl-11 {
+        grid-column: span 11;
+    }
+
+    .col-xxl-10 {
+        grid-column: span 10
+    }
+
+    .col-xxl-9 {
+        grid-column: span 9
+    }
+
+    .col-xxl-8 {
+        grid-column: span 8
+    }
+
+    .col-xxl-7 {
+        grid-column: span 7
+    }
+
+    .col-xxl-6 {
+        grid-column: span 6
+    }
+
+    .col-xxl-5 {
+        grid-column: span 5
+    }
+
+    .col-xxl-4 {
+        grid-column: span 4
+    }
+
+    .col-xxl-3 {
+        grid-column: span 3
+    }
+
+    .col-xxl-2 {
+        grid-column: span 2
+    }
+
+    .col-xxl-1 {
+        grid-column: span 1
     }
 }
 ```
 
-And then use it in the `FluentContainer.razor` component:
 
-```razor
-@namespace WideWorldImporters.Blazor.Components
-@using Microsoft.Fast.Components.FluentUI.Utilities
-@using WideWorldImporters.Blazor.Web.Enums
-@using WideWorldImporters.Blazor.Web.Extensions
-
-@inherits FluentComponentBase
-<div @ref=Element @attributes="AdditionalAttributes" class="@Classname" style="@Style">
-    @ChildContent
-</div>
-
-@code {
-
-    // Licensed under the MIT license. See LICENSE file in the project root for full license information.
-
-    /// <summary>
-    /// Child content to be rendered.
-    /// </summary>
-    [Parameter]
-    public RenderFragment? ChildContent { get; set; }
-
-    /// <summary>
-    /// Builds the CSS class based on the given Parameters.
-    /// </summary>
-    public string? Classname => new CssBuilder()
-        .AddClass("fluent-container")
-        .AddClass($"fluent-container-{MaxWidth.ToDescriptionString()}", !Fixed)
-        .AddClass($"fluent-container-fluid", Fluid)
-        .AddClass(Class)
-        .Build();
-
-    /// <summary>
-    /// Set the container as fluid container. It will set the width to 100% at all breakpoints.
-    /// </summary>
-    public bool Fluid { get; set; } = false;
-
-    /// <summary>
-    /// Set the max-width to match the min-width of the current breakpoint. This is useful if you'd prefer to design for a fixed set of sizes instead of trying to accommodate a fully fluid viewport. It's fluid by default.
-    /// </summary>
-    [Parameter]
-    public bool Fixed { get; set; } = false;
-
-    /// <summary>
-    /// Determine the max-width of the container. The container width grows with the size of the screen. Set to false to disable maxWidth.
-    /// </summary>
-    [Parameter]
-    public MaxWidth MaxWidth { get; set; } = MaxWidth.Large;
-
-    protected override void OnInitialized()
-    {
-        base.OnInitialized();
-    }
-}
-```
-
-## 12-Column Grid ##
+## Adding a Blazor Grid component ##
 
 What really helps when starting out with web applications is a 12-Grid column layout. No matter how 
 hard I try, I still have problems centering a `div`, so don't get me started with `flex` and so on.
@@ -199,15 +402,8 @@ In the `FluentGridRow.razor` we are adding:
     /// </summary>
     public string? Classname => new CssBuilder()
         .AddClass("row")
-        .AddClass($"row-{Columns}", Columns != null)
         .AddClass(Class)
         .Build();
-
-    /// <summary>
-    /// Optional number of columns for the row.
-    /// </summary>
-    [Parameter]
-    public int? Columns { get; set; }
 
     protected override void OnInitialized()
     {
@@ -316,27 +512,25 @@ feels just like using Bootstrap Grid and... I like it:
 @using WideWorldImporters.Blazor.Web.Enums
 @using WideWorldImporters.Blazor.Web.Extensions
 
-<FluentContainer>
-    <FluentGridRow>
-        <FluentGridColumn md="12" xl="3">
-            <p>Row 1, Column 1</p>
-        </FluentGridColumn>
-        <FluentGridColumn md="12" xl="3">
-            <p>Row 1, Column 2</p>
-        </FluentGridColumn>
-        <FluentGridColumn md="12" xl="3">
-            <p>Row 1, Column 3</p>
-        </FluentGridColumn>
-    </FluentGridRow>
-    <FluentGridRow>
-        <FluentGridColumn xs="12" md="6">
-            <p>Row 2, Column 1</p>
-        </FluentGridColumn>
-        <FluentGridColumn xs="12" md="6">
-            <p>Row 2, Column 2</p>
-        </FluentGridColumn>
-    </FluentGridRow>
-</FluentContainer>
+<FluentGridRow>
+    <FluentGridColumn md="12" xl="3">
+        <p>Row 1, Column 1</p>
+    </FluentGridColumn>
+    <FluentGridColumn md="12" xl="3">
+        <p>Row 1, Column 2</p>
+    </FluentGridColumn>
+    <FluentGridColumn md="12" xl="3">
+        <p>Row 1, Column 3</p>
+    </FluentGridColumn>
+</FluentGridRow>
+<FluentGridRow>
+    <FluentGridColumn xs="12" md="6">
+        <p>Row 2, Column 1</p>
+    </FluentGridColumn>
+    <FluentGridColumn xs="12" md="6">
+        <p>Row 2, Column 2</p>
+    </FluentGridColumn>
+</FluentGridRow>
 
 @code {
 
