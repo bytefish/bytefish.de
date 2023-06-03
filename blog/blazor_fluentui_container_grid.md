@@ -374,7 +374,7 @@ include additional libraries.
 What really helps when starting out with web applications is a 12-Grid column layout. No matter how 
 hard I try, I still have problems centering a `div`, so don't get me started with `flex` and so on.
 
-Let's just reuse the Bootstrap Grid and provide two wrappers `FluentGridRow` and `FluentGridColumn`.
+Let's just reuse the 12-Column Grid Layout and provide two wrappers `FluentGridRow` and `FluentGridColumn`.
 
 In the `FluentGridRow.razor` we are adding:
 
