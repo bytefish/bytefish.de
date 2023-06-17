@@ -18,6 +18,10 @@ to reproduce this post can be found in my GitHub repository at:
 
 * [https://github.com/bytefish/FcmSharp/tree/master/FcmSharp/Examples/CSharp/FcmSharp.Scheduler.Quartz](https://github.com/bytefish/FcmSharp/tree/master/FcmSharp/Examples/CSharp/FcmSharp.Scheduler.Quartz)
 
+## Table of contents ##
+
+[TOC]
+
 ## Project Structure ##
 
 The best way to explain a solution is to look at the project structure first and then break it down:

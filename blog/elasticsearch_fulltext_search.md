@@ -20,6 +20,10 @@ You can find all code in my GitHub repository at:
 
 * [https://github.com/bytefish/ElasticsearchFulltextExample](https://github.com/bytefish/ElasticsearchFulltextExample)
 
+## Table of contents ##
+
+[TOC]
+
 ## What we are going to build ##
 
 Let's take a look at what we will build.

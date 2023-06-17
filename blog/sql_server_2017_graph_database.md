@@ -16,6 +16,10 @@ The source code for this article can be found in my GitHub repository at:
 
 * [https://github.com/bytefish/SqlServer2017GraphDatabase](https://github.com/bytefish/SqlServer2017GraphDatabase)
 
+## Table of contents ##
+
+[TOC]
+
 ## The Plan: Analyzing the Airline On Time Performance ##
 
 The plan is to analyze the Airline On Time Performance dataset, which contains:
