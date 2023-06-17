@@ -50,6 +50,8 @@ paper, for doing a check and to read objects.
 
 ## Database Project Structure ##
 
+[WideWorldImporters OLTP Database]: https://github.com/microsoft/sql-server-samples/tree/master/samples/databases/wide-world-importers/wwi-ssdt/
+
 Before starting a database application, a team should *agree* on structure and naming conventions. You'll need to 
 have a consistent style from the start. Everyone has to know *where to put files* and *how to name things*.
 
@@ -74,11 +76,11 @@ The high level structure for our SQL Server Database Project uses the [WideWorld
     * `Script.PostDeployment1.sql`
         * Post Deployment Script to execute SQL scripts go here ...
 
-So for the Task Management System we will have a Schema `[Application]` and `[Tasks]`, so the layout looks like this:
+So for the Task Management System we will have a Schema `[Application]` and `[Identity]`, so the layout looks like this:
 
 * `Application`
     * `Indexes`
-        * `UX_Tasks_TaskPriority_Name.sql`
+        * `UX_TaskPriority_Name.sql`
         * ...
     * `Sequences`
         * `sq_Task.sql`
