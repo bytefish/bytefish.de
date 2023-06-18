@@ -6,8 +6,8 @@ slug: relationship_based_acl_with_google_zanzibar
 author: Philipp Wagner
 summary: This article explores Relationship-based Access Control (ReBAC) with Google Zanzibar
 
-I have recently read about a paper on Google Zanzibar, which is Google's 
-solution for providing authorization among its many services:
+I have recently read a paper on Google Zanzibar, which is Google's solution 
+for providing authorization among its many services:
 
 * [https://research.google/pubs/pub48190/](https://research.google/pubs/pub48190/)
 
@@ -51,9 +51,6 @@ paper, for doing a check and to read objects.
 ## Database Project Structure ##
 
 [WideWorldImporters OLTP Database]: https://github.com/microsoft/sql-server-samples/tree/master/samples/databases/wide-world-importers/wwi-ssdt/
-
-Before starting a database application, a team should *agree* on structure and naming conventions. You'll need to 
-have a consistent style from the start. Everyone has to know *where to put files* and *how to name things*.
 
 The high level structure for our SQL Server Database Project uses the [WideWorldImporters OLTP Database] structure:
 
@@ -152,7 +149,7 @@ Where ...
     * `philipp` is a `member` of `org1`
 * `org1#member@hannes`
     * `hannes` is a `member` of `org1`
-* `org2#member@hannes`
+* `org2#member@alexander`
     * `alexander` is a `member` of `org1`
 
 ## Database Design ##
@@ -214,7 +211,7 @@ WHEN NOT MATCHED BY TARGET THEN
         ([Source].[UserID], [Source].[FullName], [Source].[PreferredName], [Source].[IsPermittedToLogon], [Source].[LogonName], [Source].[HashedPassword], [Source].[LastEditedBy], [Source].[ValidFrom], [Source].[ValidTo]);
 ```
 
-#### Relationship Table ####
+### Relationship Table ###
 
 The relationship tuples go into the `[Identity].[RelationTuples]` table. 
 
@@ -272,7 +269,7 @@ Now we can insert the relations for the sample data, which looked like this:
     * `philipp` is a `member` of `org1`
 * `org1#member@hannes`
     * `hannes` is a `member` of `org1`
-* `org2#member@hannes`
+* `org2#member@alexander`
     * `alexander` is a `member` of `org1`
 
 We can insert the relationships with the following Post-Deployment Script:

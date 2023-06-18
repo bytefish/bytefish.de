@@ -48,7 +48,7 @@ Where ...
     * `philipp` is a `member` of `org1`
 * `org1#member@hannes`
     * `hannes` is a `member` of `org1`
-* `org2#member@hannes`
+* `org2#member@alexander`
     * `alexander` is a `member` of `org1`
 
 ## Database Design ##
@@ -468,7 +468,7 @@ namespace AuthorizationExperiment.Api.Models.Application
 }
 ```
 
-### Executing SQL Queries and Stored Procedures using SqlQuery ###
+### Executing SQL Queries with ADO.NET   ###
 
 We need to execute SQL Queries and call into Stored Procedures. Your first insinct is to 
 use EntityFramework Core or Dapper probably. But I think both of them are highly opinionated 
@@ -479,11 +479,12 @@ You don't need any of it.
 This is how I want to execute a Stored Procedure, when using them in a .NET application:
 
 ```csharp
-var table = new SqlQuery(connection, transaction)
+var query = new SqlQuery(connection, transaction)
     .Proc("[usp_MyStoredProcedure")
     .Param("Param1", value1)
     .Param("Param2", value2)
-    .ExecuteDataTableAsync();
+    
+var table = await query.ExecuteDataTableAsync();
     
 var result = ConvertToResult(table);
 
