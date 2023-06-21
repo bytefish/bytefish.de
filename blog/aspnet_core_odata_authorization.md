@@ -409,9 +409,7 @@ namespace ODataAuthorizationDemo
             
             app.UseAuthentication();
             app.UseAuthorization();
-            
-            app.UseODataAuthorization();
-            
+           
             // ...
         }
     }
