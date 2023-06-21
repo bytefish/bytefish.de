@@ -13,7 +13,7 @@ it's worth sharing and making some code available, if someone comes here from Go
 
 ## The Problem ##
 
-There was recently a bug reported in the ODataAuthorization library, that  made 
+There was recently a bug reported in the [ODataAuthorization] library, that made 
 the Authorization failing for multiple requests:
 
 * [https://github.com/bytefish/ODataAuthorization/issues/1](https://github.com/bytefish/ODataAuthorization/issues/1)
@@ -25,8 +25,6 @@ using an `ODataPath` (which is basically the parsed OData URL).
 From these permissions an `AuthorizationPolicy` is built and put into an 
 ASP.NET Core built-in `AuthorizeFilter`. This Filter has then been added 
 to the controller like this:
-
-
 
 ```csharp
 // Licensed under the MIT License.  See License.txt in the project root for license information.
