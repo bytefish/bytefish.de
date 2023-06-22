@@ -234,9 +234,9 @@ foreach ( $request in $requests )
 }
 ```
 
-And we end up with the following output:
+And we end up with the following output (it will be nicely colored in the Terminal):
 
-```
+<pre>
 PS C:\Users\philipp\source\repos\bytefish\ODataAuthorization\samples\JwtAuthenticationExample\PowershellScripts> .\ODataQueries.ps1
 [REQ]
 [REQ] OData Request
@@ -317,4 +317,4 @@ PS C:\Users\philipp\source\repos\bytefish\ODataAuthorization\samples\JwtAuthenti
     }
   }
 ]
-```
+</pre>
