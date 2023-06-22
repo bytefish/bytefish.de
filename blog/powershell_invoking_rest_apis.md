@@ -1,4 +1,4 @@
-title: Inovking a RESTful API with Powershell
+title: Inovking a RESTful API with PowerShell
 date: 2023-06-22 12:22
 tags: powershell, odata
 category: powershell
@@ -8,14 +8,14 @@ summary: This article shows how to secure an ASP.NET Core OData API using the OD
 
 [ODataAuthorization]: https://github.com/bytefish/ODataAuthorization/
 
-In this article we will take a look at invoking a RESTful API with Powershell. We are 
+In this article we will take a look at invoking a RESTful API with PowerShell. We are 
 going to use the `Invoke-RestMethod` cmdlet and learn about its parameters. Maybe it's 
 useful to someone to get going quickly.
 
 ## The Problem ##
 
 There was a bug in the [ODataAuthorization] library, and instead of using 
-Postman I thought it would be nice to learn a little Powershell and execute 
+Postman I thought it would be nice to learn a little PowerShell and execute 
 requests using a Script.
 
 So basically, I want to make a HTTP Post Request to obtain a Json Web Token 
@@ -108,7 +108,7 @@ try {
 
 We will then put all logic for querying the OData Endpoints into a function 
 `Send-ODataRequest`, which can then be called with sample OData Requests. We 
-end up with the following Powershell Script:
+end up with the following PowerShell Script:
 
 ```powershell
 <#
