@@ -2,12 +2,12 @@ title: Implementing a Code Search: Elasticsearch and ASP.NET Core Backend (Part 
 date: 2023-07-20 12:40
 tags: aspnetcore, csharp, elasticsearch
 category: elasticsearch
-slug: elasticsearch_code_search_elasticsearch_aspnet
+slug: elasticsearch_code_search_part1_backend_elasticsearch
 author: Philipp Wagner
 summary: This article shows how to use Elasticsearch and ASP.NET Core to implement a Code Search Service.
 
 I have recently grown very tired of the GitHub Code Search, because it doesn't provide a way to sort search 
-results by last commited date. The search now basically yields outdated results and obsolete code. It's 
+results by last commited date. The search now basically yields outdated results and obsolete code. And it's 
 unlikely to see sorting any time soon, due to the way GitHub currently builds its index.
 
 But what if we could develop our own Code Search and base it on Elasticsearch? Elasticsearch has been used by 
@@ -31,8 +31,8 @@ their repositories.
 Here is an example:
 
 <div style="display:flex; align-items:center; justify-content:center;margin-bottom:15px;">
-    <a href="/static/images/blog/elasticsearch_code_search_elasticsearch_aspnet/ElasticsearchCodeSearch.jpg">
-        <img src="/static/images/blog/elasticsearch_code_search_elasticsearch_aspnet/ElasticsearchCodeSearch.jpg" alt="Final Result for the Code Search Engine">
+    <a href="/static/images/blog/elasticsearch_code_search_part1_backend_elasticsearch/ElasticsearchCodeSearch.jpg">
+        <img src="/static/images/blog/elasticsearch_code_search_part1_backend_elasticsearch/ElasticsearchCodeSearch.jpg" alt="Final Result for the Code Search Engine">
     </a>
 </div>
 
@@ -44,11 +44,10 @@ Here is an example:
 
 ### Code Search Index and Mappings ###
 
-GitLab uses Elasticsearch. GitLab is opensource. So there is a lot in it to learn. Because what works 
-well for GitLab might work well for us, right?  So we'll dive straight into the Elasticsearch `Config` 
-file of GitLab in [config.rb]. 
+GitLab uses Elasticsearch. GitLab is opensource. There's a lot to learn it it and I think it's a good idea 
+to dive straight into the Elasticsearch `Config` file of GitLab. It's located in the file [config.rb]. 
 
-It starts by defining the Elasticsearch analyzers, filters, tokenizers and normalizers used when indexing code:
+The configuration starts by defining the Elasticsearch analyzers, filters, tokenizers and normalizers used when indexing code:
 
 ```ruby
 module Elastic
@@ -1556,6 +1555,13 @@ In this article we have written a Code Search Service, that creates an Elasticse
 allows to bulk index documents. We have also added the functionality to query for code, and return 
 the highlighted match.
 
-You can now open the Swagger page, index and search for documents. But whoops, there is nothing in 
-the index yet! No worries, in the next article we will learn how to write an indexer and feed the 
-Code Search Service with documents.
+You can now open the Swagger page and play around with it:
+
+<div style="display:flex; align-items:center; justify-content:center;margin-bottom:15px;">
+    <a href="/static/images/blog/elasticsearch_code_search_part1_backend_elasticsearch/ElasticsearchCodeSearch_Swagger.jpg">
+        <img src="/static/images/blog/elasticsearch_code_search_part1_backend_elasticsearch/ElasticsearchCodeSearch_Swagger.jpg" alt="Swagger Page for the Code Search Backend">
+    </a>
+</div>
+
+But whoops, there is nothing in the index yet! No worries, in the next article we will learn how to 
+write an indexer and feed the Code Search Service with documents.

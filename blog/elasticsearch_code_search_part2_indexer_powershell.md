@@ -2,7 +2,7 @@ title: Implementing a Code Search: Indexing Git Repositories using PowerShell (P
 date: 2023-07-21 12:42
 tags: aspnetcore, csharp, elasticsearch
 category: elasticsearch
-slug: elasticsearch_code_search_elasticsearch_aspnet
+slug: elasticsearch_code_search_part2_indexer_powershell
 author: Philipp Wagner
 summary: This article shows how to use Elasticsearch and ASP.NET Core to implement a Code Search Service.
 
