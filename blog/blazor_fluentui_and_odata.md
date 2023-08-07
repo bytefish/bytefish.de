@@ -14,6 +14,10 @@ All code in this article can be found at:
 
 * [https://github.com/bytefish/ElasticsearchCodeSearch](https://github.com/bytefish/ElasticsearchCodeSearch)
 
+## Table of contents ##
+
+[TOC]
+
 ## What we are going to build ##
 
 The idea is to use an ASP.NET Core OData for a Backend and a Blazor Frontend, that uses the FluentUI 
@@ -103,7 +107,7 @@ comes with a responsive Navigation Bar and all components (such as Icons) wired 
 
 * [https://github.com/microsoft/fluentui-blazor/tree/main/examples](https://github.com/microsoft/fluentui-blazor/tree/main/examples)
 
-I've actually used the Preview version, but I think it will be released some time soon.
+It's actually the 3.0.0 Preview version, but I think Fluent UI Blazor 3.0.0 will be released some time soon.
 
 ## Generating the OData Client ##
 

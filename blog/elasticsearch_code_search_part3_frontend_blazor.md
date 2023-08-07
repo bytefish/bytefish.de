@@ -14,6 +14,10 @@ All code in this article can be found at:
 
 * [https://github.com/bytefish/ElasticsearchCodeSearch](https://github.com/bytefish/ElasticsearchCodeSearch)
 
+## Table of contents ##
+
+[TOC]
+
 ## What we are going to build ##
 
 The final result is a Search Engine, that allows us to search for code and sort the results by name, date and 
