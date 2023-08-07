@@ -1,10 +1,10 @@
-title: Implementing a Code Search: A Frontend with ASP.NET Core Blazor (Part 3)
-date: 2023-07-23 08:15
-tags: aspnetcore, csharp, blazor
+title: Adding Filtering to a Fluent UI DataGrid with Blazor and OData
+date: 2023-08-07 12:53
+tags: aspnetcore, csharp, blazor, odata
 category: blazor
-slug: elasticsearch_code_search_part3_frontend_blazor
+slug: blazor_fluentui_and_odata
 author: Philipp Wagner
-summary: This article shows how to write a Search Engine Frontend using ASP.NET Core Blazor.
+summary: This article shows how to use Fluent UI Blazor and OData to add Filtering to DataGrid. 
 
 This repository shows how to use Blazor, Fluent UI Blazor and OData to display data 
 in a Fluent UI Data Grid. It uses the WideWorldImporters Backend to provide the 
@@ -84,6 +84,18 @@ When writing some Pseudo-Razor code, before starting, I came up with something s
 In this article I will walk you through building a Blazor Frontend, that enables you to show, filter 
 and sort data in a Data Grid. The Backend is an ASP.NET Core OData-based Webservice, so we have a 
 powerful and standardized language to query data sets.
+
+## Running the OData Backend ##
+
+This article uses an ASP.NET Core OData Backend developed in a previous article, to provide data for the Blazor frontend:
+
+* [https://www.bytefish.de/blog/aspnet_core_odata_example.html](https://www.bytefish.de/blog/aspnet_core_odata_example.html)
+
+In the referenced article you will learn how to create the WideWorldImporters database and start the Backend. 
+
+All code and additional information for the Backend is available at:
+
+* [https://github.com/bytefish/WideWorldImporters](https://github.com/bytefish/WideWorldImporters)
 
 ## Generating the Blazor WebAssembly Project ##
 
