@@ -1,4 +1,4 @@
-title: Adding Filtering to a Fluent UI DataGrid with Blazor and OData
+title: Extending a Fluent UI Blazor DataGrid for Filtering and Sorting with OData
 date: 2023-08-07 12:53
 tags: aspnetcore, csharp, blazor, odata
 category: blazor
