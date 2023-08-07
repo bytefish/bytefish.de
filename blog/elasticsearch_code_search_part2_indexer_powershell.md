@@ -37,8 +37,8 @@ other fields. The idea is to index all repositories of an owner, such as Microso
 their repositories.
 
 <div style="display:flex; align-items:center; justify-content:center;margin-bottom:15px;">
-    <a href="/static/images/blog/elasticsearch_code_search_elasticsearch_aspnet/ElasticsearchCodeSearch.jpg">
-        <img src="/static/images/blog/elasticsearch_code_search_elasticsearch_aspnet/ElasticsearchCodeSearch.jpg" alt="Final Result for the Code Search Engine">
+    <a href="/static/images/blog/elasticsearch_code_search_part1_backend_elasticsearch/ElasticsearchCodeSearch.jpg">
+        <img src="/static/images/blog/elasticsearch_code_search_part1_backend_elasticsearch/ElasticsearchCodeSearch.jpg" alt="Final Result for the Code Search Engine">
     </a>
 </div>
 
@@ -182,7 +182,7 @@ git --git-dir "$repositoryDirectory\.git" log --pretty=format:"%H" -n 1
 ```
 
 If you are reading the content of a file in PowerShell with `Get-Content` it's building a list, instead 
-of reading it as a single string. So you have to also use the `-Raw` parameter to get the results as a list:
+of reading it as a single string. So you have to also use the `-Raw` parameter to get the results as a string:
 
 ```powershell
 Get-Content -Path <filename> -Raw

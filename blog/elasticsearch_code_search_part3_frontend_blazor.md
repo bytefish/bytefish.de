@@ -26,7 +26,7 @@ their repositories.
     </a>
 </div>
 
-## Querying the Backend: CodeSearchService Client to  ##
+## Querying the Backend: ElasticsearchCodeSearchService ##
 
 Something could go wrong when calling the Backend, so we are adding an `ApiException` first:
 

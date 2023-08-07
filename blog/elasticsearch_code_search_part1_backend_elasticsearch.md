@@ -28,8 +28,6 @@ The final result is a Search Engine, that allows us to search for code and sort 
 other fields. The idea is to index all repositories of an owner, such as Microsoft, and search code through 
 their repositories.
 
-Here is an example:
-
 <div style="display:flex; align-items:center; justify-content:center;margin-bottom:15px;">
     <a href="/static/images/blog/elasticsearch_code_search_part1_backend_elasticsearch/ElasticsearchCodeSearch.jpg">
         <img src="/static/images/blog/elasticsearch_code_search_part1_backend_elasticsearch/ElasticsearchCodeSearch.jpg" alt="Final Result for the Code Search Engine">
@@ -455,7 +453,7 @@ namespace ElasticsearchCodeSearch.Models
 
 And the sort order can either be ascending or descending, which is given in a `SortOrderEnum`:
 
-```
+```csharp
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 namespace ElasticsearchCodeSearch.Models
@@ -527,7 +525,7 @@ The Options are going to be injected to a `ElasticCodeSearchClient`, which takes
 to Elasticsearch. It will create the index, send queries and bulk index requests. So first of all 
 we inject the options as a `IOptions<ElasticCodeSearchOptions>`.
 
-```
+```csharp
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 // ...
