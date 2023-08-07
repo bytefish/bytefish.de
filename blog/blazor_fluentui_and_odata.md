@@ -12,7 +12,7 @@ data.
 
 All code in this article can be found at:
 
-* [https://github.com/bytefish/ElasticsearchCodeSearch](https://github.com/bytefish/ElasticsearchCodeSearch)
+* [https://github.com/bytefish/BlazorDataGridExample](https://github.com/bytefish/BlazorDataGridExample)
 
 ## Table of contents ##
 
