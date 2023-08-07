@@ -20,8 +20,8 @@ All code in this article can be found at:
 
 ## What we are going to build ##
 
-The idea is to use an ASP.NET Core OData for a Backend and a Blazor Frontend, that uses the FluentUI 
-Components. FluentUI provides a nice and extensible DataGrid component, which we are going to add 
+The idea is to use an ASP.NET Core OData for a Backend and a Blazor Frontend, that uses the Fluent UI 
+Components. Fluent UI Blazor provides a nice and extensible DataGrid component, which we are going to add 
 components to. The result is going to look like this:
 
 <div style="display:flex; align-items:center; justify-content:center;margin-bottom:15px;">
@@ -30,11 +30,11 @@ components to. The result is going to look like this:
     </a>
 </div>
 
-It's possible to provide filters for each column, we can for example set a filter on text:
+It's possible to provide filters for each column, we can for example set a filter for a number range:
 
 <div style="display:flex; align-items:center; justify-content:center;margin-bottom:15px;">
-    <a href="/static/images/blog/blazor_fluentui_and_odata/Customer_Grid_ColumnFilter_String.jpg">
-        <img src="/static/images/blog/blazor_fluentui_and_odata/Customer_Grid_ColumnFilter_String.jpg" alt="Final Result for the Data Grid">
+    <a href="/static/images/blog/blazor_fluentui_and_odata/Customer_Grid_ColumnFilter_Numeric.jpg">
+        <img src="/static/images/blog/blazor_fluentui_and_odata/Customer_Grid_ColumnFilter_Numeric.jpg" alt="Final Result for the Data Grid">
     </a>
 </div>
 
@@ -42,11 +42,11 @@ It's possible to provide filters for each column, we can for example set a filte
 
 Everyone has a plan, and so do I.
 
-It's obvious from my previous articles, that I really like the Blazor FluentUI component library. The library 
-is actively maintained by Microsoft and it allows you to build Blazor Frontends, that looks and behaves similar 
-to the Windows 11 User Interface.
+It's obvious from my previous articles, that I really like the Fluent UI Blazor component library. The library 
+is actively maintained by Microsoft and it allows you to build Blazor Frontends, that look and behave like the 
+Windows 11 User Interface.
 
-A lot of applications I am working on need Data Grids and the FluentUI library contains a great Data Grid. But 
+A lot of applications I am working on need Data Grids and Fluent UI Blazor contains a great Data Grid. But 
 it lacks components to filter for data and this is a must have for a lot of applications. I understand the reasons 
 for not having built-in filters, because everyone expects something different.
 
@@ -926,7 +926,7 @@ namespace BlazorDataGridExample.Components
 
 #### StringFilter ####
 
-The new FluentUI Blazor components come with a `FluentGrid`, which allows us to easily build 
+The new Fluent UI Blazor components come with a `FluentGrid`, which allows us to easily build 
 responsive designs. I previously played around with a CSS Grid, but why though? We can define 
 all of it with Razor Components.
 
@@ -1106,7 +1106,7 @@ The `NumericFilter` allows to filter for numeric values or a range of values. It
 ```
 
 The Code-Behind is nothing special, all parsing and conversion to the `TItem` is already 
-handled by the `FluentNumberField` component, that's built into FluentUI Blazor. Thanks!
+handled by the `FluentNumberField` component, that's built into Fluent UI Blazor. Thanks!
 
 ```csharp
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
@@ -1231,7 +1231,7 @@ Although the column type is a `DateTime`, your users often want to filter by a d
 in the time component. So we will have `DateFilter` and a `DateTimeFilter` component, so you can chose which 
 filter to use, based on the use case.
 
-The `FluentDatePicker` is a new FluentUI component, that allows to either enter the date by hand or select it 
+The `FluentDatePicker` is a new Fluent UI Blazor component, that allows to either enter the date by hand or select it 
 from a calendar view. 
 
 `FluentDatePicker` 
@@ -1758,8 +1758,8 @@ components.
 
 ### The Customer Data Grid ###
 
-We are very close to *finally* display the FluentUI Data Grid and use our Filter components. The best place to understand 
-how a FluentUI Data Grid works is the Demo pages over at:
+We are very close to *finally* display the Fluent UI Data Grid and use our Filter components. The best place to understand 
+how the Data Grid works is the Demo page over at:
 
 * [https://www.fluentui-blazor.net/DataGrid](https://www.fluentui-blazor.net/DataGrid)
 
@@ -1949,15 +1949,14 @@ You now have a good idea how to add a powerful Data Grid to your Blazor applicat
 own filter components and integrate them into it. If you come up with a better API surface and extensibility 
 I'd be glad to update the code.
 
-My personal opinion is, that Microsoft is sitting on something great with Blazor FluentUI and OData. In this 
+My personal opinion is, that Microsoft is sitting on something great with Fluent UI Blazor and OData. In this 
 article and my previous articles on OData Authorization and Relationship-based Access Control, you see me 
-trying to connect the dots.
+trying to connect the dots for Rapid Application Development.
 
 By using OData you have a standardized and documented language. There is simply *no need* for (esoteric) 
-discussions about "RESTfuly-ness" of an API and a lot of problems have been solved for you (filtering, batching, 
-error models, ...). A lot of Restful APIs these days end up re-inventing an undocumented OData specification.
+discussions about "RESTfuly-ness" of an API. A lot of problems have been solved for you (filtering, batching, 
+error models, ...)! 
 
 The `OData Connected Service 2022+` extension can be used to generate a high-quality service client. And nothing 
 needs to be handwritten. I want to update the Contracts? It's as simple as a right click to refresh my Connected 
-Service and I don't need to leave Visual Studio at all. 
-
+Service and I don't need to leave Visual Studio at all.
