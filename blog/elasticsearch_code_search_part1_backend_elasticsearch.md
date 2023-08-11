@@ -32,11 +32,22 @@ The final result is a Search Engine, that allows us to search for code and sort 
 other fields. The idea is to index all repositories of an owner, such as Microsoft, and search code through 
 their repositories.
 
+There is an overview, which shows the Cluster Health ...
+
 <div style="display:flex; align-items:center; justify-content:center;margin-bottom:15px;">
-    <a href="/static/images/blog/elasticsearch_code_search_part1_backend_elasticsearch/ElasticsearchCodeSearch.jpg">
-        <img src="/static/images/blog/elasticsearch_code_search_part1_backend_elasticsearch/ElasticsearchCodeSearch.jpg" alt="Final Result for the Code Search Engine">
+    <a href="/static/images/blog/elasticsearch_code_search_part1_backend_elasticsearch/ElasticsearchCodeSearch_Home_Light.jpg">
+        <img src="/static/images/blog/elasticsearch_code_search_part1_backend_elasticsearch/ElasticsearchCodeSearch_Home_Light.jpg" alt="Home Overview for the Code Search Engine">
     </a>
 </div>
+
+And a Search page to query the Elasticsearch Cluster ...
+
+<div style="display:flex; align-items:center; justify-content:center;margin-bottom:15px;">
+    <a href="/static/images/blog/elasticsearch_code_search_part1_backend_elasticsearch/ElasticsearchCodeSearch_Search_Light.jpg">
+        <img src="/static/images/blog/elasticsearch_code_search_part1_backend_elasticsearch/ElasticsearchCodeSearch_Search_Light.jpg" alt="Home Overview for the Code Search Engine as Dark Mode">
+    </a>
+</div>
+
 
 ## Researching Elasticsearch ##
 
