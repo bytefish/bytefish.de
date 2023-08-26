@@ -1,10 +1,10 @@
-title: Executing git Commands from .NET
+title: Executing GIT Commands from .NET using a Process
 date: 2023-08-26 10:21
 tags: dotnet, csharp, git
 category: dotnet
 slug: executing_git_commands_dotnet
 author: Philipp Wagner
-summary: This article shows how to execute GIT commands from .NET
+summary: This article shows how to execute GIT commands from .NET using a Process.
 
 I recently needed some metadata off of `git` repositories, like a list of indexed files. I 
 initially tried to use LibGit2Sharp, but it often failed to return file information for 
