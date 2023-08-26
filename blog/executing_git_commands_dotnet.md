@@ -20,9 +20,11 @@ to do the same, so I am sharing it here.
 
 ## Executing Git Commands: The GitExecutor ##
 
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+We start by defining a `GitException`, which will be thrown, when an error occurs:
 
 ```csharp
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
 namespace ElasticsearchCodeSearch.Indexer.Git.Exceptions
 {
     public class GitException : Exception
@@ -38,6 +40,9 @@ namespace ElasticsearchCodeSearch.Indexer.Git.Exceptions
     }
 }
 ```
+
+And then we can use the `System.Diagnostics.Process` class to execute the `git` executable and return 
+the results:
 
 ```csharp
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
