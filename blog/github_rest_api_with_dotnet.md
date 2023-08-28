@@ -1,10 +1,10 @@
-title: Executing GIT Commands from .NET using a Process
-date: 2023-08-26 10:21
+title: Using the GitHub REST API with .NET
+date: 2023-08-28 09:31
 tags: dotnet, csharp, git
 category: dotnet
 slug: github_rest_api_with_dotnet
 author: Philipp Wagner
-summary: This article shows how to execute GIT commands from .NET using a Process.
+summary: This article shows how to use the GitHub REST API from .NET.
 
 In this article I will show how to query the GitHub REST API from your .NET application. It's 
 not really complicated, but I thought it's worth sharing code.
