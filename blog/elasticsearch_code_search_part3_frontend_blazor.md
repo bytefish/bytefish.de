@@ -12,7 +12,7 @@ enables us to share code and avoid the JavaScript ecosysten.
 
 All code in this article can be found at:
 
-* [https://github.com/bytefish/ElasticsearchCodeSearch](https://github.com/bytefish/ElasticsearchCodeSearch)
+* [https://codeberg.org/bytefish/ElasticsearchCodeSearch](https://codeberg.org/bytefish/ElasticsearchCodeSearch)
 
 ## Table of contents ##
 

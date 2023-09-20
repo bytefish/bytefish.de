@@ -87,7 +87,7 @@ In this example we will take a look at different ways to get the correct results
 
 All code can be found in a GitHub repository at:
 
-* [https://github.com/bytefish/TypeScriptExperiments](https://github.com/bytefish/TypeScriptExperiments)
+* [https://codeberg.org/bytefish/TypeScriptExperiments](https://codeberg.org/bytefish/TypeScriptExperiments)
 
 ## Solving the Problem ##
 

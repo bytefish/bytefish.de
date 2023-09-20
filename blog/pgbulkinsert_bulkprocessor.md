@@ -25,7 +25,7 @@ of entities or after a given time period.
 
 [PgBulkInsert] is released under terms of the MIT License:
 
-* [https://github.com/bytefish/PgBulkInsert](https://github.com/bytefish/PgBulkInsert)
+* [https://codeberg.org/bytefish/PgBulkInsert](https://codeberg.org/bytefish/PgBulkInsert)
 
 You can add the following dependencies to your ``pom.xml`` to include [PgBulkInsert] in your project:
 
@@ -257,5 +257,5 @@ public class BulkProcessorApp {
 
 [COPY command]: http://www.postgresql.org/docs/current/static/sql-copy.html
 [DBCP2]: https://commons.apache.org/proper/commons-dbcp/
-[PgBulkInsert]: https://github.com/bytefish/PgBulkInsert
-[JTinyCsvParser]: https://github.com/bytefish/JTinyCsvParser
+[PgBulkInsert]: https://codeberg.org/bytefish/PgBulkInsert
+[JTinyCsvParser]: https://codeberg.org/bytefish/JTinyCsvParser

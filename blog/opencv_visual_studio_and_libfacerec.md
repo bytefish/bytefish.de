@@ -67,7 +67,7 @@ Next you'll need to download libfacerec, which is available from:
 
 If you don't know how to clone a github repository with git, then you can download the source from:
 
-* [https://github.com/bytefish/libfacerec/downloads](https://github.com/bytefish/libfacerec/downloads) ([as zip](https://github.com/bytefish/libfacerec/zipball/master), [as tar](https://github.com/bytefish/libfacerec/tarball/master))
+* [https://codeberg.org/bytefish/libfacerec/downloads](https://codeberg.org/bytefish/libfacerec/downloads) ([as zip](https://codeberg.org/bytefish/libfacerec/zipball/master), [as tar](https://codeberg.org/bytefish/libfacerec/tarball/master))
 
 Then extract the zip or tar.gz file to a folder of your choice, I am using ``D:\downloads\libfacerec`` in this tutorial. If you are using an other folder, then just keep it consistent.
 
@@ -156,7 +156,7 @@ ping me about it. Basically all the CSV file needs to contain are lines composed
 
 Think of the ``label`` as the subject (the person) this image belongs to, so same subjects (persons) should have the same ``label``. So let's make up an example. 
 Download the AT&T Facedatabase from [AT&T Facedatabase](http://www.cl.cam.ac.uk/research/dtg/attarchive/facedatabase.html) and the corresponding CSV file from 
-[at.txt](https://github.com/bytefish/opencv/blob/master/eigenfaces/at.txt), which looks like this (file is without ``...`` of course):
+[at.txt](https://codeberg.org/bytefish/opencv/blob/master/eigenfaces/at.txt), which looks like this (file is without ``...`` of course):
 
 ```
 ./at/s1/1.pgm;0

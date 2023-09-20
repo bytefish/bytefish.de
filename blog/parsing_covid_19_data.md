@@ -30,7 +30,7 @@ Excel, R and so on.
 
 All code in this article can be found at:
 
-* [https://github.com/bytefish/ExampleDataAnalysis](https://github.com/bytefish/ExampleDataAnalysis)
+* [https://codeberg.org/bytefish/ExampleDataAnalysis](https://codeberg.org/bytefish/ExampleDataAnalysis)
 
 So let's start!
 
@@ -723,6 +723,6 @@ namespace ExampleDataAnalysis
 
 And that's it. We now have the dataset in a Relational Database and can use it to easily process it in other systems.  
 
-[TinyCsvParser]: https://github.com/bytefish/TinyCsvParser
+[TinyCsvParser]: https://codeberg.org/bytefish/TinyCsvParser
 [John Hopkins University]: [https://systems.jhu.edu/]
 [COVID-19]: https://en.wikipedia.org/wiki/2019-nCoV_acute_respiratory_disease

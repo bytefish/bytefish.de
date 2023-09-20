@@ -14,7 +14,7 @@ In this article we are taking the next step and build a Frontend for displaying 
 
 All code can be found at:
 
-* [https://github.com/bytefish/WideWorldImporters](https://github.com/bytefish/WideWorldImporters)
+* [https://codeberg.org/bytefish/WideWorldImporters](https://codeberg.org/bytefish/WideWorldImporters)
 
 ## Table of contents ##
 

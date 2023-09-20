@@ -10,7 +10,7 @@ summary: This article describes how to serialize and deserialize enums with Json
 [StringEnumConverter]: http://www.newtonsoft.com/json/help/html/t_newtonsoft_json_converters_stringenumconverter.htm
 [JsonConverter]: http://www.newtonsoft.com/json/help/html/T_Newtonsoft_Json_JsonConverter.htm
 [JsonConverter attribute]: http://www.newtonsoft.com/json/help/html/T_Newtonsoft_Json_JsonConverterAttribute.htm
-[GcmSharp]: https://github.com/bytefish/GcmSharp
+[GcmSharp]: https://codeberg.org/bytefish/GcmSharp
 [MIT License]: https://opensource.org/licenses/MIT
 
 This article shows you how to serialize and deserialize enums with [Json.NET]. 
@@ -18,9 +18,9 @@ This article shows you how to serialize and deserialize enums with [Json.NET].
 If you write a client for a RESTful API, then you often have to deal with error codes. In a typed language like C# you should never throw strings at the 
 user of your API client (for your users sanity), so error codes need to be converted from their string representation into an enumeration of your library.
 
-Some time ago I have written [GcmSharp], which is a client for the Google Cloud Messaging (GCM) API. This example is based on the implementation at:
+Some time ago I have written [FcmSharp], which is a client for the Google Cloud Messaging (GCM) API. This example is based on the implementation at:
 
-* [https://github.com/bytefish/GcmSharp](https://github.com/bytefish/GcmSharp)
+* [https://codeberg.org/bytefish/FcmSharp](https://codeberg.org/bytefish/FcmSharp)
 
 The error codes for the Google Cloud Messaging API are described in the [HTTP Server Reference: Error Codes](https://developers.google.com/cloud-messaging/http-server-ref#error-codes).
 

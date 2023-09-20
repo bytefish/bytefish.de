@@ -15,7 +15,7 @@ private repository, so I decided to share it.
 
 The whole project can be found at:
 
-* [https://github.com/bytefish/PostgresTimeseriesAnalysis](https://github.com/bytefish/PostgresTimeseriesAnalysis)
+* [https://codeberg.org/bytefish/PostgresTimeseriesAnalysis](https://codeberg.org/bytefish/PostgresTimeseriesAnalysis)
 
 The code is heavily based on a great article by [Caleb Welton](https://github.com/cwelton):
 
@@ -248,15 +248,14 @@ postgres=# CREATE DATABASE sampledb WITH OWNER philipp;
 
 There are two scripts to create the database in the following folder of the project:
 
-* [PostgresTimeseriesAnalysis/sql]
+* `PostgresTimeseriesAnalysis/sql`
 
 To create the database execute the ``create_database.bat`` (Windows) or ``create_database.sh`` (Linux).
 
 Alternatively you can simply copy and paste [10_create_database.sql] and [20_sample_data.sql] into an editor of your choice and execute it.
 
-[PostgresTimeseriesAnalysis/sql]: https://github.com/bytefish/PostgresTimeseriesAnalysis/tree/master/PostgresTimeseriesAnalysis/sql
-[10_create_database.sql]: https://github.com/bytefish/PostgresTimeseriesAnalysis/blob/master/PostgresTimeseriesAnalysis/sql/sql/10_create_database.sql
-[20_sample_data.sql]: https://github.com/bytefish/PostgresTimeseriesAnalysis/blob/master/PostgresTimeseriesAnalysis/sql/sql/20_sample_data.sql
+[10_create_database.sql]: https://codeberg.org/bytefish/PostgresTimeseriesAnalysis/blob/master/PostgresTimeseriesAnalysis/sql/sql/10_create_database.sql
+[20_sample_data.sql]: https://codeberg.org/bytefish/PostgresTimeseriesAnalysis/blob/master/PostgresTimeseriesAnalysis/sql/sql/20_sample_data.sql
 
 #### Enable PostgreSQL Statistics ####
 
@@ -343,7 +342,7 @@ final Path csvLocalWeatherDataFilePath = FileSystems.getDefault().getPath("D:\\d
 
 Once executed the application parses the CSV files and writes the data into the specified database.
 
-[WeatherDataStreamingExample.java]: https://github.com/bytefish/PostgresTimeseriesAnalysis/blob/master/PostgresTimeseriesAnalysis/src/main/java/app/WeatherDataStreamingExample.java
+[WeatherDataStreamingExample.java]: https://codeberg.org/bytefish/PostgresTimeseriesAnalysis/blob/master/PostgresTimeseriesAnalysis/src/main/java/app/WeatherDataStreamingExample.java
 [jOOQ]: https://www.jooq.org/
 [Using IGNORE NULLS With SQL Window Functions to Fill Gaps]: https://blog.jooq.org/2019/04/24/using-ignore-nulls-with-sql-window-functions-to-fill-gaps/
 [Time Series Analysis Part 3: Resampling and Interpolation]: https://content.pivotal.io/blog/time-series-analysis-part-3-resampling-and-interpolation

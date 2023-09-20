@@ -16,7 +16,7 @@ The file upload will be sent as a HTTP POST request with ``multipart/form-data``
 
 You can find the sample application at:
 
-* [https://github.com/bytefish/NancyFileUpload](https://github.com/bytefish/NancyFileUpload)
+* [https://codeberg.org/bytefish/NancyFileUpload](https://codeberg.org/bytefish/NancyFileUpload)
 
 ## Application Settings ##
 

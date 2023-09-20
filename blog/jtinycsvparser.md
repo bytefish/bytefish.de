@@ -7,14 +7,14 @@ author: Philipp Wagner
 summary: This article introduces JTinyCsvParser, which is a Java 1.8 Framework for CSV parsing.
 
 [MIT License]: https://opensource.org/licenses/MIT
-[JTinyCsvParser]: https://github.com/bytefish/JTinyCsvParser
-[TinyCsvParser]: https://github.com/bytefish/TinyCsvParser
+[JTinyCsvParser]: https://codeberg.org/bytefish/JTinyCsvParser
+[TinyCsvParser]: https://codeberg.org/bytefish/TinyCsvParser
 [Parallel Streams]: https://docs.oracle.com/javase/tutorial/collections/streams/parallelism.html
 
 I wanted to learn Java 1.8 and about its new Features: Lambda Functions and Streams. So I have ported [TinyCsvParser] over to Java and 
 named it [JTinyCsvParser]. The library makes mapping between a CSV file and a Java class very easy and provides a nice Streaming API:
 
-* [https://github.com/bytefish/JTinyCsvParser](https://github.com/bytefish/JTinyCsvParser)
+* [https://codeberg.org/bytefish/JTinyCsvParser](https://codeberg.org/bytefish/JTinyCsvParser)
 
 It should be one of the fastest CSV Parsers in Java 1.8, although I didn't run benchmarks against any of the available solutions. The parser is able 
 to read and map ``4.5`` **Million** lines in ``12`` seconds (and I didn't optimize anything yet). That means [JTinyCsvParser] for Java is as fast as 

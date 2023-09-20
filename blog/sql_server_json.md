@@ -16,7 +16,7 @@ the `FOR JSON PATH` expression and learn how to query it in a C# application usi
 
 All code can be found in a GitHub repository at:
 
-* [https://github.com/bytefish/SqlQueryMapper](https://github.com/bytefish/SqlQueryMapper)
+* [https://codeberg.org/bytefish/SqlQueryMapper](https://codeberg.org/bytefish/SqlQueryMapper)
 
 ## Table of contents ##
 

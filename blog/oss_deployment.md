@@ -69,7 +69,7 @@ For a more detailed writeup I suggest to read the Sonatype documentation on [Wor
 The next step is to create the Project Object Model (POM) for your project. A POM file is used by Maven to build a Java project and it also contains the projects 
 metadata (Project Name, Authors, Licenses, Dependencies, ...). The full list of required tags can be found at the Central Repository guide on [Requirements].
 
-Here is the POM file for my [PgBulkInsert](https://github.com/bytefish/PgBulkInsert) project:
+Here is the POM file for my [PgBulkInsert](https://codeberg.org/bytefish/PgBulkInsert) project:
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -96,7 +96,7 @@ Here is the POM file for my [PgBulkInsert](https://github.com/bytefish/PgBulkIns
         </license>
     </licenses>
     <scm>
-        <url>https://github.com/bytefish/PgBulkInsert</url>
+        <url>https://codeberg.org/bytefish/PgBulkInsert</url>
         <connection>scm:git:git://github.com/bytefish/PgBulkInsert.git</connection>
         <developerConnection>scm:git:git@github.com:bytefish/PgBulkInsert.git</developerConnection>
     </scm>

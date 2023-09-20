@@ -20,7 +20,7 @@ So in recent years I have switched to using Stored Procedures and passing Table-
 of the performance critical SQL Server work I am doing. It's not really obvious with the Microsoft SQL Server 
 JDBC driver, so I made up an example here:
 
-* [https://github.com/bytefish/SqlServerTvpExample](https://github.com/bytefish/SqlServerTvpExample)
+* [https://codeberg.org/bytefish/SqlServerTvpExample](https://codeberg.org/bytefish/SqlServerTvpExample)
 
 ## The Scenario: Handling Device Measurements ##
 

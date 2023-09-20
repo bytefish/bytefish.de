@@ -17,7 +17,7 @@ to show some SQL and play with ideas.
 
 All code can be found in a GitHub repository at:
 
-* [https://github.com/bytefish/AuthorizationExperiments](https://github.com/bytefish/AuthorizationExperiments)
+* [https://codeberg.org/bytefish/AuthorizationExperiments](https://codeberg.org/bytefish/AuthorizationExperiments)
 
 ## Table of contents ##
 

@@ -6,15 +6,15 @@ slug: jsqlserverbulkinsert
 author: Philipp Wagner
 summary: This article shows how to do bulk inserts to SQL Server using JSqlServerBulkInsert.
 
-[SqlServerBulkInsert]: https://github.com/bytefish/SqlServerBulkInsert
-[JSqlServerBulkInsert]: https://github.com/bytefish/JSqlServerBulkInsert
+[SqlServerBulkInsert]: https://codeberg.org/bytefish/SqlServerBulkInsert
+[JSqlServerBulkInsert]: https://codeberg.org/bytefish/JSqlServerBulkInsert
 [MIT License]: https://opensource.org/licenses/MIT
 
 In my last post I have shared [SqlServerBulkInsert], which is a .NET library to Bulk Insert data to an SQL Server. I had the 
 code for doing the same in Java in a private repository for some years, so I thought I clean it up now and share it. And so 
 here it is as [JSqlServerBulkInsert]:
 
-* [https://github.com/bytefish/SqlServerBulkInsert](https://github.com/bytefish/SqlServerBulkInsert)
+* [https://codeberg.org/bytefish/SqlServerBulkInsert](https://codeberg.org/bytefish/SqlServerBulkInsert)
 
 [JSqlServerBulkInsert] is a library to simplify Bulk Inserts to the SQL Server. It wraps the ``SQLServerBulkCopy`` behind a nice API.
 

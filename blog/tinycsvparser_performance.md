@@ -9,7 +9,7 @@ summary: This article benchmarks TinyCsvParser on a large file.
 [FluentValidation]: https://github.com/JeremySkinner/FluentValidation
 [CsvHelper]: https://github.com/JoshClose/CsvHelper
 [FileHelpers]: http://www.filehelpers.net
-[TinyCsvParser]: https://github.com/bytefish/TinyCsvParser
+[TinyCsvParser]: https://codeberg.org/bytefish/TinyCsvParser
 [NUnit]: http://www.nunit.org
 [MIT License]: https://opensource.org/licenses/MIT
 

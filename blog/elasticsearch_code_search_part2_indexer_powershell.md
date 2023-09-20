@@ -28,7 +28,7 @@ We will write a small PowerShell script for it.
 
 All code in this article can be found at:
 
-* [https://github.com/bytefish/ElasticsearchCodeSearch](https://github.com/bytefish/ElasticsearchCodeSearch)
+* [https://codeberg.org/bytefish/ElasticsearchCodeSearch](https://codeberg.org/bytefish/ElasticsearchCodeSearch)
 
 ## Table of contents ##
 

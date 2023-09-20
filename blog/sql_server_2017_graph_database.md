@@ -14,7 +14,7 @@ query the Graph Database using the SQL Server 2017 ``MATCH`` operation.
 
 The source code for this article can be found in my GitHub repository at:
 
-* [https://github.com/bytefish/SqlServer2017GraphDatabase](https://github.com/bytefish/SqlServer2017GraphDatabase)
+* [https://codeberg.org/bytefish/SqlServer2017GraphDatabase](https://codeberg.org/bytefish/SqlServer2017GraphDatabase)
 
 ## Table of contents ##
 
@@ -363,6 +363,6 @@ in my Neo4j Cypher Queries is horribly wrong. I am open for any feedback or help
 
 [Nicole White]: https://nicolewhite.github.io/
 [Revolution Analytics dataset repository]: https://packages.revolutionanalytics.com/datasets/AirOnTime87to12/
-[TinyCsvParser]: https://github.com/bytefish/TinyCsvParser
+[TinyCsvParser]: https://codeberg.org/bytefish/TinyCsvParser
 [Reactive Extensions]: https://github.com/Reactive-Extensions/Rx.NET
 [Airline On-Time Performance Dataset]: https://www.transtats.bts.gov/Tables.asp?DB_ID=120&DB_Name=Airline%20On-Time%20Performance%20Data&DB_Short_Name=On-Time

@@ -20,7 +20,7 @@ In this post I want to show how to detect gaps and interpolate values using [Inf
 
 All code for this article is available at:
 
-* [https://github.com/bytefish/InfluxTimeseriesAnalysis](https://github.com/bytefish/InfluxTimeseriesAnalysis)
+* [https://codeberg.org/bytefish/InfluxTimeseriesAnalysis](https://codeberg.org/bytefish/InfluxTimeseriesAnalysis)
 
 ## What is InfluxDB? ##
 
@@ -184,7 +184,7 @@ We can compare this with the PostgreSQL version and see, that we have interpolat
 </a>
 
 
-[WeatherDataStreamingExample.java]: https://github.com/bytefish/PostgresTimeseriesAnalysis/blob/master/PostgresTimeseriesAnalysis/src/main/java/app/WeatherDataStreamingExample.java
+[WeatherDataStreamingExample.java]: https://codeberg.org/bytefish/PostgresTimeseriesAnalysis/blob/master/PostgresTimeseriesAnalysis/src/main/java/app/WeatherDataStreamingExample.java
 [jOOQ]: https://www.jooq.org/
 [Using IGNORE NULLS With SQL Window Functions to Fill Gaps]: https://blog.jooq.org/2019/04/24/using-ignore-nulls-with-sql-window-functions-to-fill-gaps/
 [Time Series Analysis Part 3: Resampling and Interpolation]: https://content.pivotal.io/blog/time-series-analysis-part-3-resampling-and-interpolation
@@ -205,9 +205,9 @@ We can compare this with the PostgreSQL version and see, that we have interpolat
 [Part 1]: /blog/timeseries_databases_1_dataset
 [StringSplitTokenizer]: http://bytefish.github.io/TinyCsvParser/sections/userguide/tokenizer.html#stringsplittokenizer
 [Deep Learning]: https://en.wikipedia.org/wiki/Deep_learning
-[PostgreSQLCopyHelper]: https://github.com/bytefish/PostgreSQLCopyHelper
+[PostgreSQLCopyHelper]: https://codeberg.org/bytefish/PostgreSQLCopyHelper
 [Npgsql]: https://github.com/npgsql/npgsql
-[TinyCsvParser]: https://github.com/bytefish/TinyCsvParser
+[TinyCsvParser]: https://codeberg.org/bytefish/TinyCsvParser
 [Columnstore indexes]: https://docs.microsoft.com/en-us/sql/relational-databases/indexes/columnstore-indexes-overview
 [timescaledb-tune]: https://github.com/timescale/timescaledb-tune
 [The world's most valuable resource is no longer oil, but data]: https://www.economist.com/leaders/2017/05/06/the-worlds-most-valuable-resource-is-no-longer-oil-but-data
@@ -219,4 +219,4 @@ We can compare this with the PostgreSQL version and see, that we have interpolat
 [InfluxDB]: https://www.influxdata.com/time-series-platform/influxdb/
 [DWD Open Data]: https://opendata.dwd.de/
 [Deutscher Wetterdienst (DWD)]: https://www.dwd.de
-[GermanWeatherDataExample/Resources/files.md]: https://github.com/bytefish/GermanWeatherDataExample/blob/master/GermanWeatherData/Resources/files.md
+[GermanWeatherDataExample/Resources/files.md]: https://codeberg.org/bytefish/GermanWeatherDataExample/blob/master/GermanWeatherData/Resources/files.md

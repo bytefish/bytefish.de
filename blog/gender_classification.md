@@ -23,7 +23,7 @@ You can get the code from github by either cloning the repository:
 $ git clone git@github.com:bytefish/facerec.git
 ```
 
-or downloading the latest version as a [tar](https://github.com/bytefish/facerec/tarball/master) or [zip](https://github.com/bytefish/facerec/zipball/master) archive.
+or downloading the latest version as a [tar](https://codeberg.org/bytefish/facerec/tarball/master) or [zip](https://codeberg.org/bytefish/facerec/zipball/master) archive.
 
 Then startup Octave and make the functions available:
 
@@ -92,8 +92,8 @@ philipp@mango:~/facerec/data/gender$ tree .
 ```
 
 The function for reading the dataset needs to return both, the group and the subject of each observation. The cross-validation then predicts on the groups and leaves one subject 
-out in each iteration. [read_images.m](https://github.com/bytefish/facerec/blob/master/m/util/read_images.m) can be easily extended to [read_groups.m](https://github.com/bytefish/facerec/blob/master/m/util/read_groups.m) 
-and a simple [subject-independent cross-validation](https://github.com/bytefish/facerec/blob/master/m/validation/LeaveOneClassOutCV.m) is quickly written.
+out in each iteration. [read_images.m](https://codeberg.org/bytefish/facerec/blob/master/m/util/read_images.m) can be easily extended to [read_groups.m](https://codeberg.org/bytefish/facerec/blob/master/m/util/read_groups.m) 
+and a simple [subject-independent cross-validation](https://codeberg.org/bytefish/facerec/blob/master/m/validation/LeaveOneClassOutCV.m) is quickly written.
 
 On a subject-independent cross-validation the Fisherfaces method is able to predict 128 out of 130 gender correctly, which is a recognition rate of 98%:
 

@@ -100,6 +100,6 @@ Microsoft Excel makes it easy to build simple visualizations of the [COVID-19] d
 any energy into programming or data shaping. You can jump through any point in time using the 3D Map time 
 slicer and run a tour, to see how the distribution evolves.
 
-[TinyCsvParser]: https://github.com/bytefish/TinyCsvParser
+[TinyCsvParser]: https://codeberg.org/bytefish/TinyCsvParser
 [John Hopkins University]: [https://systems.jhu.edu/]
 [COVID-19]: https://en.wikipedia.org/wiki/2019-nCoV_acute_respiratory_disease

@@ -19,7 +19,7 @@ Machine Learning is a branch of Artificial Intelligence and concerned with the q
 
 Finding simple examples to get started is difficult, so I wrote a document and a program for the C++ Machine Learning API of OpenCV. You can download it from my github account at:
 
-* [https://github.com/bytefish/opencv](https://github.com/bytefish/opencv)
+* [https://codeberg.org/bytefish/opencv](https://codeberg.org/bytefish/opencv)
 
 ## Sourcecode ##
 

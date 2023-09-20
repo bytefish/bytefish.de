@@ -58,7 +58,7 @@ I want to show you how to create visualizations of the air temperature in German
 
 As usual all code to reproduce the article can be found in my GitHub repository at:
 
-* [https://github.com/bytefish/GermanWeatherDataExample](https://github.com/bytefish/GermanWeatherDataExample)
+* [https://codeberg.org/bytefish/GermanWeatherDataExample](https://codeberg.org/bytefish/GermanWeatherDataExample)
 
 ### The Dataset ###
 
@@ -80,9 +80,7 @@ The ArcGis documentation writes on the shapefile format:
 
 The [Esri Open Data Portal] provides access to Open Data shapefiles, that can be used, re-used and redistributed freely.
 
-For this post I am going to use the [Zensus 2011] shapefile, which contains the federal states of Germany:
-
-* [https://github.com/bytefish/GermanWeatherDataExample/tree/master/GermanWeatherData/TimescaleDB/R/shapes](https://github.com/bytefish/GermanWeatherDataExample/tree/master/GermanWeatherData/TimescaleDB/R/shapes)
+For this post I am going to use the [Zensus 2011] shapefile, which contains the federal states of Germany.
 
 ## Generating Maps with R ##
 

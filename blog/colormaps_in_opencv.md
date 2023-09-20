@@ -11,9 +11,9 @@ summary: Using colormaps with OpenCV.
 Yesterday I needed to visualize some data in [OpenCV](http://opencv.org). It's easy to apply a colormap in [MATLAB](http://www.mathworks.de/index.html), but [OpenCV](http://opencv.org) doesn't 
 come with predefined colormaps. So I simply took the interpolation steps from the [GNU Octave](http://www.gnu.org/software/octave/) colormaps and turned them into C++ classes. 
 
-The source code is on github:
+The source code is on:
 
-* [https://github.com/bytefish/colormaps-opencv](https://github.com/bytefish/colormaps-opencv)
+* [https://codeberg.org/bytefish/colormaps-opencv](https://codeberg.org/bytefish/colormaps-opencv)
 
 ## Using the code ##
 
@@ -110,7 +110,7 @@ And here are the scales corresponding to each of the maps, so you know what they
 
 The demo coming with the ``cv::applyColorMap`` shows how to use the colormaps and how I've created the scales you have seen:
 
-* [https://github.com/bytefish/colormaps-opencv/blob/master/src/main.cpp](https://github.com/bytefish/colormaps-opencv/blob/master/src/main.cpp)
+* [https://codeberg.org/bytefish/colormaps-opencv/src/branch/master/src/main.cpp](https://codeberg.org/bytefish/colormaps-opencv/src/branch/master/src/main.cpp)
 
 If you want to apply a Jet colormap on a given image, then call the demo with:
 

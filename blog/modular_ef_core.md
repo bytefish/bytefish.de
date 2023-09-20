@@ -12,7 +12,7 @@ It's something I have been playing around for quite some time and it would be a 
 
 So I thought I share it over at:
 
-* [https://github.com/bytefish/ModularEfCore](https://github.com/bytefish/ModularEfCore)
+* [https://codeberg.org/bytefish/ModularEfCore](https://codeberg.org/bytefish/ModularEfCore)
 
 ## What is this whole post about? ##
 

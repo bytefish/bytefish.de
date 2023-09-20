@@ -9,8 +9,8 @@ summary: This article shows how to build an import pipeline with JTinyCsvParser 
 [MIT License]: https://opensource.org/licenses/MIT
 [COPY command]: http://www.postgresql.org/docs/current/static/sql-copy.html
 [Npgsql documentation]: http://www.npgsql.org/doc/copy.html
-[PgBulkInsert]: https://github.com/bytefish/PgBulkInsert
-[JTinyCsvParser]: https://github.com/bytefish/JTinyCsvParser
+[PgBulkInsert]: https://codeberg.org/bytefish/PgBulkInsert
+[JTinyCsvParser]: https://codeberg.org/bytefish/JTinyCsvParser
 
 In my professional life I have often seen large CSV files, which need to be imported as efficient as possible. 
 That's why I have developed [JTinyCsvParser] and [PgBulkInsert] for Java 1.8. Both provide a Streaming API 

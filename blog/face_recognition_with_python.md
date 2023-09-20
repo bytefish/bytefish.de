@@ -6,7 +6,7 @@ slug: face_recognition_with_opencv2
 author: Philipp Wagner
 summary: This post presents you the guide I've wished for, when I was working myself into face recognition. The Eigenfaces and Fisherfaces method are explained in detail and implemented with Python and GNU Octave/MATLAB. The code and document is released under a BSD license, so feel free to use it for your commercial and academic projects.
 
-I've recently pushed some code to perform face recognition with OpenCV2 into [my github repository](http://www.github.com/bytefish). If you've ever researched on face recognition I am pretty sure you've noticed: there's a [gigantic number of publications](http://scholar.google.de/scholar?q=face+recognition), but source code is almost always kept like a secret. Since I've got some positive feedback on [Machine Learning with OpenCV2](https://www.bytefish.de/pdf/machinelearning.pdf), I thought I write a document on:
+I've recently pushed some code to perform face recognition with OpenCV2 into [my github repository](https://codeberg.org/bytefish). If you've ever researched on face recognition I am pretty sure you've noticed: there's a [gigantic number of publications](http://scholar.google.de/scholar?q=face+recognition), but source code is almost always kept like a secret. Since I've got some positive feedback on [Machine Learning with OpenCV2](https://www.bytefish.de/pdf/machinelearning.pdf), I thought I write a document on:
 
 * [Face Recognition with OpenCV2 (Python version, pdf)](https://www.bytefish.de/pdf/facerec_python.pdf)
 * [Face Recognition with OpenCV2 (GNU Octave/MATLAB version, pdf)](https://www.bytefish.de/pdf/facerec_octave.pdf)
@@ -15,7 +15,7 @@ It's the kind of guide I've wished for, when I was working myself into face reco
 
 Note: the latest version of the document and code can be obtained from the projects github repository:
 
-* [http://www.github.com/bytefish/facerecognition_guide](http://www.github.com/bytefish/facerecognition_guide)
+* [https://codeberg.org/bytefish/facerecognition_guide](http://www.github.com/bytefish/facerecognition_guide)
 
 ## Getting & Working with the Code ##
 
@@ -26,7 +26,7 @@ I've got some mails and comments on how to acquire and use the code in the docum
 So the first thing you need to do is to get the code. Since I have git installed on my machine I simply clone the github repository:
 
 ```
-philipp@mango:~/github$ git clone https://github.com/bytefish/facerecognition_guide.git
+philipp@mango:~/github$ git clone https://codeberg.org/bytefish/facerecognition_guide.git
 ```
 
 This will check out the latest Face Recognition Guide from the github repository, with all source code examples included in the document. You'll see something like this as output:
@@ -42,7 +42,7 @@ Resolving deltas: 100% (82/82), done.
 
 If you have troubles using [git](http://git-scm.org), then you can also download the entire repository as a zip (or tar.gz) from:
 
-* https://github.com/bytefish/facerecognition_guide/downloads
+* https://codeberg.org/bytefish/facerecognition_guide/downloads
 
 Once downloaded (or unzipped) the directory has the following content:
 

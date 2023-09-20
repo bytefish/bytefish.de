@@ -20,7 +20,7 @@ also shows how to work with Temporal tables instead.
  
 Please feel free to make a PR to the repository and fix this issue, because I don't know of a EntityFramework Core-based solution:
 
-* [https://github.com/bytefish/EFCoreExperiments](https://github.com/bytefish/EFCoreExperiments)
+* [https://codeberg.org/bytefish/EFCoreExperiments](https://codeberg.org/bytefish/EFCoreExperiments)
 
 ## Table of contents ##
 

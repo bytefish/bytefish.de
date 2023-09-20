@@ -28,7 +28,7 @@ So all credit goes to them!
 
 All code can be found at:
 
-* [https://github.com/bytefish/ODataAuthorization](https://github.com/bytefish/ODataAuthorization)
+* [https://codeberg.org/bytefish/ODataAuthorization](https://codeberg.org/bytefish/ODataAuthorization)
 
 [WebApiAuthorization]: https://github.com/OData/WebApiAuthorization
 
@@ -61,7 +61,7 @@ The Postman application is used to query the Web API, which is ...
 
 You can use the Postman collections provided in the `/samples` folder of the project to get started:
 
-* [https://github.com/bytefish/ODataAuthorization/tree/main/samples](https://github.com/bytefish/ODataAuthorization/tree/main/samples)
+* [https://codeberg.org/bytefish/ODataAuthorization/src/branch/main/samples](https://codeberg.org/bytefish/ODataAuthorization/src/branch/main/samples)
 
 ## CookieAuthenticationSample ##
 
@@ -206,7 +206,7 @@ namespace ODataAuthorizationDemo.Controllers
 
 Now download the Postman Collection for the CookieAuthenticationSample and import it to Postman:
 
-* [https://github.com/bytefish/ODataAuthorization/blob/main/samples/CookieAuthenticationSample.postman_collection.json](https://github.com/bytefish/ODataAuthorization/blob/main/samples/CookieAuthenticationSample.postman_collection.json)
+* https://codeberg.org/bytefish/ODataAuthorization/src/branch/main/samples/CookieAuthenticationSample.postman_collection.json](https://codeberg.org/bytefish/ODataAuthorization/src/branch/main/samples/CookieAuthenticationSample.postman_collection.json)
 
 And executing the `/auth/login` endpoint shows, that the response contains a Cookie named `.AspNetCore.Cookies` with some Base64 value:
 

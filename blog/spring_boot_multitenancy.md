@@ -62,7 +62,7 @@ is by far the simplest model to implement.
 
 The GitHub repository for this post can be found at:
 
-* [https://github.com/bytefish/SpringBootMultiTenancy](https://github.com/bytefish/SpringBootMultiTenancy)
+* [https://codeberg.org/bytefish/SpringBootMultiTenancy](https://codeberg.org/bytefish/SpringBootMultiTenancy)
 
 In this example we are going to develop a multitenant application to manage customers.
 
@@ -108,7 +108,7 @@ CREATE DATABASE
 
 The GitHub sample has a Batch Script (Windows users) and a Shell Script (Mac / Linux Users) to create the schemas and tables:
 
-* [SpringBootMultiTenancy/sql](https://github.com/bytefish/SpringBootMultiTenancy/tree/master/SpringBootMultiTenancy/sql)
+* `SpringBootMultiTenancy/sql`
 
 You simply need to exectute the script and enter the database name and credentials details.
 

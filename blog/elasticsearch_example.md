@@ -23,17 +23,13 @@ data, and makes it possible to efficiently query the large datasets. In order to
 
 You can find the full source code example in my git repository at:
 
-* [https://github.com/bytefish/ElasticSearchExperiment](https://github.com/bytefish/ElasticSearchExperiment)
+* [https://codeberg.org/bytefish/ElasticSearchExperiment](https://codeberg.org/bytefish/ElasticSearchExperiment)
 
 This post was based on Elasticsearch 2, but the example is available for:
 
 * Elasticsearch 2
 * Elasticsearch 6
 * Elasticsearch 7
-
-Please see the Releases at: 
-
-* [https://github.com/bytefish/ElasticSearchExperiment/releases](https://github.com/bytefish/ElasticSearchExperiment/releases)
 
 ## What we are going to build ##
 
@@ -683,7 +679,7 @@ create simple visualizations, such as a tile map.
 [Apache Lucene]: https://lucene.apache.org/
 [Elasticsearch]: https://www.elastic.co/products/elasticsearch
 [Kibana]: https://www.elastic.co/products/kibana
-[TinyCsvParser]: https://github.com/bytefish/TinyCsvParser/
+[TinyCsvParser]: https://codeberg.org/bytefish/TinyCsvParser/
 [Quality Controlled Local Climatological Data (QCLCD)]: https://www.ncdc.noaa.gov/data-access/land-based-station-data/land-based-datasets/quality-controlled-local-climatological-data-qclcd
 [Query DSL]: https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl.html
 [Introducing the Query Language]: https://www.elastic.co/guide/en/elasticsearch/reference/current/_introducing_the_query_language.html

@@ -10,7 +10,7 @@ These days high performance Java services are written with Spring Boot WebFlux, 
 reactive and non-blocking web application framework. So I decided to update the Multitenancy with Spring 
 Boot example and provide a Spring Boot WebFlux implementation at:
 
-* [https://github.com/bytefish/SpringBootMultiTenancy_WebFlux](https://github.com/bytefish/SpringBootMultiTenancy_WebFlux)
+* [https://codeberg.org/bytefish/SpringBootMultiTenancy_WebFlux](https://codeberg.org/bytefish/SpringBootMultiTenancy_WebFlux)
 
 The GitHub repository contains all SQL scripts necessary to create the database used in this article.
 

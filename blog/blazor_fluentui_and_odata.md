@@ -12,7 +12,7 @@ data.
 
 All code in this article can be found at:
 
-* [https://github.com/bytefish/BlazorDataGridExample](https://github.com/bytefish/BlazorDataGridExample)
+* [https://codeberg.org/bytefish/WideWorldImporters/src/branch/main/Frontend/Blazor](https://codeberg.org/bytefish/WideWorldImporters/src/branch/main/Frontend/Blazor)
 
 ## Table of contents ##
 
@@ -95,7 +95,7 @@ In the referenced article you will learn how to create the WideWorldImporters da
 
 All code and additional information for the Backend is available at:
 
-* [https://github.com/bytefish/WideWorldImporters](https://github.com/bytefish/WideWorldImporters)
+* [https://codeberg.org/bytefish/WideWorldImporters](https://codeberg.org/bytefish/WideWorldImporters)
 
 ## Generating the Blazor WebAssembly Project ##
 

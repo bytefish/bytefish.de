@@ -6,7 +6,7 @@ slug: fcmsharp_getting_started
 author: Philipp Wagner
 summary: This article shows how to do bulk inserts to SQL Server using JSqlServerBulkInsert.
 
-[FcmSharp]: https://github.com/bytefish/JSqlServerBulkInsert
+[FcmSharp]: https://codeberg.org/bytefish/JSqlServerBulkInsert
 [MIT License]: https://opensource.org/licenses/MIT
 
 [FcmSharp] is a library for sending push messages with the Firebase Cloud Messaging services. A lot of 
@@ -80,9 +80,9 @@ I have stored the Private Key to ``D:\serviceAccountKey.json``.
 
 ### Preparing the FcmSharp.Example project ###
 
-I have added an example project for [FcmSharp] to its GitHub repository at:
+I have added an example project for [FcmSharp] to its repository at:
 
-* [https://github.com/bytefish/FcmSharp/tree/master/FcmSharp/Examples](https://github.com/bytefish/FcmSharp/tree/master/FcmSharp/Examples)
+* [https://codeberg.org/bytefish/FcmSharp](https://codeberg.org/bytefish/FcmSharp)
 
 In the example you need to set your Projects ID, when creating the FcmSharp Settings. To find out your Project ID, in the [Firebase Console] 
 select the **Project Settings** and copy the Project ID in the **General** Tab. Then in the sample replace ``your_project_id`` with your 

@@ -15,7 +15,7 @@ In this article I want to see how to import larger datasets to Neo4j and see how
 
 The source code for this article can be found in my GitHub repository at:
 
-* [https://github.com/bytefish/LearningNeo4jAtScale](https://github.com/bytefish/LearningNeo4jAtScale)
+* [https://codeberg.org/bytefish/LearningNeo4jAtScale](https://codeberg.org/bytefish/LearningNeo4jAtScale)
 
 ## The Plan: Analyzing the Airline On Time Performance ##
 
@@ -283,6 +283,6 @@ FOREACH (o IN CASE WHEN r IS NOT NULL THEN [r] ELSE [] END |
 
 [Nicole White]: https://nicolewhite.github.io/
 [Revolution Analytics dataset repository]: https://packages.revolutionanalytics.com/datasets/AirOnTime87to12/
-[TinyCsvParser]: https://github.com/bytefish/TinyCsvParser
+[TinyCsvParser]: https://codeberg.org/bytefish/TinyCsvParser
 [Reactive Extensions]: https://github.com/Reactive-Extensions/Rx.NET
 [Airline On-Time Performance Dataset]: https://www.transtats.bts.gov/Tables.asp?DB_ID=120&DB_Name=Airline%20On-Time%20Performance%20Data&DB_Short_Name=On-Time

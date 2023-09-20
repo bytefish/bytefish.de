@@ -28,7 +28,7 @@ You will learn how to extend [Nancy], so that all your exceptions are converted 
 
 You can find the full source code example in my git repository at:
 
-* [https://github.com/bytefish/NancySamples/tree/master/ErrorHandling](https://github.com/bytefish/NancySamples/tree/master/ErrorHandling)
+* [https://codeberg.org/bytefish/NancySamples](https://codeberg.org/bytefish/NancySamples)
 
 ## Error Model ##
 

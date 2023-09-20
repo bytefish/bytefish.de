@@ -7,7 +7,7 @@ author: Philipp Wagner
 summary: This article shows how to implement and use a Tokenizer in TinyCsvParser.
 
 [MIT License]: https://opensource.org/licenses/MIT
-[TinyCsvParser]: https://github.com/bytefish/TinyCsvParser
+[TinyCsvParser]: https://codeberg.org/bytefish/TinyCsvParser
 
 I have been working on [TinyCsvParser] lately, which is a library to parse CSV data in an easy and fun 
 way, while offering high performance (probably the fastest .NET CSV reader around) and a very clean API.

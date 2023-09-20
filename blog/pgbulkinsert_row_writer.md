@@ -9,7 +9,7 @@ summary: This article introduces PgBulkInsert, which is a library for efficient 
 [MIT License]: https://opensource.org/licenses/MIT
 [COPY command]: http://www.postgresql.org/docs/current/static/sql-copy.html
 [Npgsql documentation]: http://www.npgsql.org/doc/copy.html
-[PgBulkInsert]: https://github.com/bytefish/PgBulkInsert
+[PgBulkInsert]: https://codeberg.org/bytefish/PgBulkInsert
 
 [PgBulkInsert] is a small Java library for bulk inserts with PostgreSQL using the Binary COPY Protocol:
 
@@ -82,7 +82,7 @@ writer.close();
 
 ### The Complete Example ###
 
-[here]: https://github.com/bytefish/PgBulkInsert/blob/master/PgBulkInsert/src/test/java/de/bytefish/pgbulkinsert/rows/SimpleRowWriterTest.java
+[here]: https://codeberg.org/bytefish/PgBulkInsert/blob/master/PgBulkInsert/src/test/java/de/bytefish/pgbulkinsert/rows/SimpleRowWriterTest.java
 
 The complete code can be found [here]:
 
@@ -142,6 +142,6 @@ public class SimpleRowWriterTest extends TransactionalTestBase {
 ## Conclusion ##
 
 [@skunkiferous]: https://github.com/skunkiferous
-[raising the issue]: https://github.com/bytefish/PgBulkInsert/issues/46
+[raising the issue]: https://codeberg.org/bytefish/PgBulkInsert/issues/46
 
 I think the ``SimpleRowWriter`` is a great addition to [PgBulkInsert], and many thanks to [@skunkiferous] for [raising the issue].

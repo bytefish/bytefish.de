@@ -58,7 +58,7 @@ The implementation idea is based on a great article by the Amazon Team:
 
 The GitHub repository for this post can be found at:
 
-* [https://github.com/bytefish/SpringBootMultiTenancyUsingRowLevelSecurity](https://github.com/bytefish/SpringBootMultiTenancyUsingRowLevelSecurity)
+* [https://codeberg.org/bytefish/SpringBootMultiTenancyUsingRowLevelSecurity](https://codeberg.org/bytefish/SpringBootMultiTenancyUsingRowLevelSecurity)
 
 In this example we are going to develop a multitenant application to manage customers.
 

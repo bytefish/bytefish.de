@@ -20,7 +20,7 @@ A custom data sink for Apache Flink needs to implement the [SinkFunction] interf
 
 You can find the full source code for the example in my git repository at:
 
-* [https://github.com/bytefish/FlinkExperiments](https://github.com/bytefish/FlinkExperiments)
+* [https://codeberg.org/bytefish/FlinkExperiments](https://codeberg.org/bytefish/FlinkExperiments)
 
 ## PostgreSQL SinkFunction ##
 
@@ -537,9 +537,9 @@ writing into an [Elasticsearch] database and visualize the results with [Kibana]
 [Apache Flink]: https://flink.apache.org/
 [Elasticsearch]: https://www.elastic.co
 [Kibana]: https://www.elastic.co/products/kibana
-[ElasticUtils]: https://github.com/bytefish/ElasticUtils
-[JTinyCsvParser]: https://github.com/bytefish/JTinyCsvParser
-[PgBulkInsert]: https://github.com/bytefish/PgBulkInsert
+[ElasticUtils]: https://codeberg.org/bytefish/ElasticUtils
+[JTinyCsvParser]: https://codeberg.org/bytefish/JTinyCsvParser
+[PgBulkInsert]: https://codeberg.org/bytefish/PgBulkInsert
 [Quality Controlled Local Climatological Data (QCLCD)]: https://www.ncdc.noaa.gov/data-access/land-based-station-data/land-based-datasets/quality-controlled-local-climatological-data-qclcd
 [DataStream]: https://ci.apache.org/projects/flink/flink-docs-master/apis/streaming/index.html
 [KeyedStream]: https://ci.apache.org/projects/flink/flink-docs-master/apis/streaming/windows.html

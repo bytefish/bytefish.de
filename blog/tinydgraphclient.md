@@ -8,7 +8,7 @@ summary: This article introduces TinyDgraphClient, which is a library for workin
 
 [MIT License]: https://opensource.org/licenses/MIT
 [DGraph Dart Client]: https://github.com/marceloneppel/dgraph
-[TinyDgraphClient]: https://github.com/bytefish/TinyDgraphClient
+[TinyDgraphClient]: https://codeberg.org/bytefish/TinyDgraphClient
 [Dgraph]: https://dgraph.io/
 [Protobuf Schema provided by the Dgraph Team]: https://github.com/dgraph-io/dgo/blob/master/protos/api.proto
 
@@ -96,4 +96,4 @@ await transaction.MutateAsync(mutation, cancellationToken);
 
 The library is released under terms of the [MIT License]:
 
-* [https://github.com/bytefish/TinyDgraphClient](https://github.com/bytefish/TinyDgraphClient)
+* [https://codeberg.org/bytefish/TinyDgraphClient](https://codeberg.org/bytefish/TinyDgraphClient)

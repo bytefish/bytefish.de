@@ -36,7 +36,7 @@ is to use a [Triplestore] to infer knowledge about Aviation data, using informat
 
 You can find all code and a guide on how to build the datasets in my GitHub Repository at:
 
-* [https://github.com/bytefish/ApacheJenaSample/](https://github.com/bytefish/ApacheJenaSample/)
+* [https://codeberg.org/bytefish/ApacheJenaSample/](https://codeberg.org/bytefish/ApacheJenaSample/)
 
 [German Kinderlieder]: https://de.wikipedia.org/wiki/Fuchs,_du_hast_die_Gans_gestohlen
 [https://programminghistorian.org]: https://programminghistorian.org/
@@ -99,7 +99,7 @@ In this article I will use several open datasets and show how to parse and impor
 unable to share the entire dataset, but I have described all steps neccessary to reproduce the article in the 
 subfolders of:
 
-* [https://github.com/bytefish/ApacheJenaSample/tree/master/Dataset/Data](https://github.com/bytefish/ApacheJenaSample/tree/master/Dataset/Data) 
+* [https://codeberg.org/bytefish/ApacheJenaSample/src/branch/master/Dataset/Data](https://codeberg.org/bytefish/ApacheJenaSample/src/branch/master/Dataset/Data) 
 
 I am using data from 2014, because this allows me to draw conclusions against the following previous Graph Database articles:
 
@@ -180,7 +180,7 @@ But while browsing the internet I found a list of stations, that contains all in
 am allowed to use it with the permission of the author. I uploaded the latest version of June 2019 into 
 my GitHub repository, because I needed to make very minor modifications to the original file:
 
-* [https://github.com/bytefish/ApacheJenaSample/blob/master/Dataset/Data/NCAR](https://github.com/bytefish/ApacheJenaSample/blob/master/Dataset/Data/NCAR)
+* [https://codeberg.org/bytefish/ApacheJenaSample/src/branch/master/Dataset/Data/NCAR](https://codeberg.org/bytefish/ApacheJenaSample/src/branch/master/Dataset/Data/NCAR)
 
 [Historical Observing Metadata Repository]: https://www.ncdc.noaa.gov/homr/reports/platforms
 
@@ -215,7 +215,7 @@ It is available at:
 I have used some Excel-magic to join the several files into one and export a CSV File, that strips all 
 sensitive data off and could be parsed easily:
 
-* [https://github.com/bytefish/ApacheJenaSample/tree/master/Dataset/Resources/FAA](https://github.com/bytefish/ApacheJenaSample/tree/master/Dataset/Resources/FAA)
+* [https://codeberg.org/bytefish/ApacheJenaSample/src/branch/master/Dataset/Resources/FAA](https://codeberg.org/bytefish/ApacheJenaSample/src/branch/master/Dataset/Resources/FAA)
 
 [N-Number]: https://en.wikipedia.org/wiki/Aircraft_registration
 [FAA]: https://www.faa.gov/

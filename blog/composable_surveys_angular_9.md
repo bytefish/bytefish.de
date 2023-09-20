@@ -60,7 +60,7 @@ You can play with the result here:
 
 As always all code can be found in a Github repository at:
 
-* [https://github.com/bytefish/TinyQuestionnaire](https://github.com/bytefish/TinyQuestionnaire)
+* [https://codeberg.org/bytefish/TinyQuestionnaire](https://codeberg.org/bytefish/TinyQuestionnaire)
 
 ## The Implementation ##
 

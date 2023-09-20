@@ -16,7 +16,7 @@ You will see how to use the [DataStream] API for applying operators on the strea
 
 You can find the full source code for the example in my git repository at:
 
-* [https://github.com/bytefish/FlinkExperiments](https://github.com/bytefish/FlinkExperiments)
+* [https://codeberg.org/bytefish/FlinkExperiments](https://codeberg.org/bytefish/FlinkExperiments)
 
 ## DataStream API ##
 
@@ -129,4 +129,4 @@ The next part of the series shows how to write a custom [SinkFunction] for writi
 [KeyedStream]: https://ci.apache.org/projects/flink/flink-docs-master/apis/streaming/windows.html
 [SourceFunction]: https://ci.apache.org/projects/flink/flink-docs-master/apis/streaming/#data-sources
 [SinkFunction]: https://ci.apache.org/projects/flink/flink-docs-master/apis/streaming/#data-sinks
-[PgBulkInsert]: https://github.com/bytefish/PgBulkInsert
+[PgBulkInsert]: https://codeberg.org/bytefish/PgBulkInsert

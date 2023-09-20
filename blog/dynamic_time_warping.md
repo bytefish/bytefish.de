@@ -207,12 +207,3 @@ namespace {
 	}
 }
 ```
-
-
-## notes ##
-
-You can obtain the sourcecode from my github page at:
-
-* [http://github.com/bytefish/timeseries](http://github.com/bytefish/timeseries)
-
-To find the minimum warp path between two sequences, you can use a greedy strategy from ``cost[m][n]`` to ``cost[0][0]`` by picking the minimum of the three adjacenct values.

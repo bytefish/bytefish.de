@@ -16,7 +16,7 @@ Every page now contains a "How To Contribute" section, which explains how to ask
 
 This is possible, because this page is a GitHub repository at:
 
-* <a href="https://github.com/bytefish/bytefish.de">https://github.com/bytefish/bytefish.de</a>
+* <a href="https://codeberg.org/bytefish/bytefish.de">https://codeberg.org/bytefish/bytefish.de</a>
 
 You can use the GitHub issue page for general discussions and feedback on articles. At the moment I have no intentions 
 to automate the process or automatically include the discussions on the pages. If it all turns out to be too messy, I 

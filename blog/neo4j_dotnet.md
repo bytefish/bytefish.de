@@ -31,7 +31,7 @@ your relational data model with the best tools and data representations for the 
 [Common Table Expressions]: https://en.wikipedia.org/wiki/Hierarchical_and_recursive_queries_in_SQL#Common_table_expression
 [Stream Data Processing with Apache Flink]: https://bytefish.de/blog/stream_data_processing_flink/
 [Complex Event Processing]: https://bytefish.de/blog/apache_flink_series_5/
-[SQL Server Column Store]: https://github.com/bytefish/WeatherDataColumnStore
+[SQL Server Column Store]: https://codeberg.org/bytefish/WeatherDataColumnStore
 
 ## Enter Graph Databases ##
 
@@ -124,7 +124,7 @@ In this article I will you show how to bulk insert data with the Neo4j .NET driv
 
 The Source Code for this project can be found at:
 
-* [https://github.com/bytefish/Neo4JSample/](https://github.com/bytefish/Neo4JSample/)
+* [https://codeberg.org/bytefish/Neo4JSample/](https://codeberg.org/bytefish/Neo4JSample/)
 
 ## Database Schema ##
 

@@ -12,7 +12,7 @@ project, and this post is no exception.
 
 The GitHub repository for this post can be found at:
 
-* [https://github.com/bytefish/JerseyFileUploadExample](https://github.com/bytefish/JerseyFileUploadExample)
+* [https://codeberg.org/bytefish/JerseyFileUploadExample](https://codeberg.org/bytefish/JerseyFileUploadExample)
 
 ## Dependencies ##
 

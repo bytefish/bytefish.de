@@ -11,10 +11,6 @@ extract and parse these formats probably saves you a lot of time and headaches.
 
 In this post I will show how to use the XML Mapping functionality to export data from Microsoft Excel.
 
-All code is available in a GitHub repository at:
-
-* [https://github.com/bytefish/ExcelInteropSample](https://github.com/bytefish/ExcelInteropSample)
-
 ## Why XML Maps? ##
 
 Now there are many, many ways to extract data from Microsoft Excel.

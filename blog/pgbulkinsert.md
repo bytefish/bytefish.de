@@ -9,7 +9,7 @@ summary: This article introduces PgBulkInsert, which is a library for efficient 
 [MIT License]: https://opensource.org/licenses/MIT
 [COPY command]: http://www.postgresql.org/docs/current/static/sql-copy.html
 [Npgsql documentation]: http://www.npgsql.org/doc/copy.html
-[PgBulkInsert]: https://github.com/bytefish/PgBulkInsert
+[PgBulkInsert]: https://codeberg.org/bytefish/PgBulkInsert
 
 [PgBulkInsert] is a small Java 1.8 library for bulk inserts with PostgreSQL.
 
@@ -21,7 +21,7 @@ It provides a wrapper around the PostgreSQL [Copy command]:
 
 [PgBulkInsert] is released with under terms of the [MIT License]:
 
-* [https://github.com/bytefish/PgBulkInsert](https://github.com/bytefish/PgBulkInsert)
+* [https://codeberg.org/bytefish/PgBulkInsert](https://codeberg.org/bytefish/PgBulkInsert)
 
 ## PgBulkInsert ##
 
@@ -113,7 +113,7 @@ public class PersonMapping extends AbstractMapping<Person>
 
 ### Using the Bulk Inserter ###
 
-And finally we can write a Unit Test to insert ``100000`` Persons into the database. You can find the entire Unit Test on GitHub: [IntegrationTest.java](https://github.com/bytefish/PgBulkInsert/blob/master/PgBulkInsert/src/test/de/bytefish/pgbulkinsert/de/bytefish/pgbulkinsert/IntegrationTest.java). 
+And finally we can write a Unit Test to insert ``100000`` Persons into the database. You can find the entire Unit Test on GitHub: [IntegrationTest.java](https://codeberg.org/bytefish/PgBulkInsert/blob/master/PgBulkInsert/src/test/de/bytefish/pgbulkinsert/de/bytefish/pgbulkinsert/IntegrationTest.java). 
 
 ```java
 @Test

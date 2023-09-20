@@ -16,7 +16,7 @@ So how simple is it really to work with SignalR?
 
 The GitHub repository for this article can be found at:
 
-* [https://github.com/bytefish/SignalRSample](https://github.com/bytefish/SignalRSample)
+* [https://codeberg.org/bytefish/SignalRSample](https://codeberg.org/bytefish/SignalRSample)
 
 [recently been announced by Microsoft]: https://blogs.msdn.microsoft.com/webdev/2017/09/14/announcing-signalr-for-asp-net-core-2-0/
 

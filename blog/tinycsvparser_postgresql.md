@@ -8,7 +8,7 @@ summary: This article shows how to insert a large CSV dataset into PostgreSQL wi
 
 [Npgsql]: https://github.com/npgsql
 [PostgreSQL]: http://www.postgresql.org
-[TinyCsvParser]: https://github.com/bytefish/TinyCsvParser
+[TinyCsvParser]: https://codeberg.org/bytefish/TinyCsvParser
 [MIT License]: https://opensource.org/licenses/MIT
 
 In my last post you have seen how to use [TinyCsvParser] for reading a large dataset into memory, but actually there are 
@@ -69,7 +69,7 @@ I am a *huge* fan of useful APIs, so I have written a small wrapper called ``Pos
 behind a nice Fluent API. It doesn't implement every data type at the moment. It would be great if extensions are streamed back into the 
 repository, which can be found at:
 
-* [https://github.com/bytefish/PostgreSQLCopyHelper](https://github.com/bytefish/PostgreSQLCopyHelper)
+* [https://codeberg.org/bytefish/PostgreSQLCopyHelper](https://codeberg.org/bytefish/PostgreSQLCopyHelper)
 
 The mapping between the domain model and database table can now be defined with the ``PostgreSQLCopyHelper``.
 

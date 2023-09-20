@@ -96,7 +96,7 @@ feature and makes it very simple to distribute the library.
     ],
     "tags": [ "csv", "csv parser" ],
     "requireLicenseAcceptance": false,
-    "projectUrl": "https://github.com/bytefish/TinyCsvParser",
+    "projectUrl": "https://codeberg.org/bytefish/TinyCsvParser",
     "summary": "An easy to use and high-performance library for CSV parsing.",
     "licenseUrl": "https://opensource.org/licenses/MIT",
     "repository": {
@@ -224,7 +224,7 @@ me it's natural, that a lot of things are still in flux. It was fun to work the 
 integration in [Visual Studio] is great.
 
 [.NET Platform Standard]: https://github.com/dotnet/corefx/blob/master/Documentation/architecture/net-platform-standard.md
-[TinyCsvParser]: https://github.com/bytefish/TinyCsvParser
+[TinyCsvParser]: https://codeberg.org/bytefish/TinyCsvParser
 [Changes to Project.json]: https://blogs.msdn.microsoft.com/dotnet/2016/05/23/changes-to-project-json/
 [project.json]: https://docs.microsoft.com/en-us/dotnet/articles/core/tools/project-json
 [global.json]: https://docs.microsoft.com/en-us/dotnet/articles/core/tools/global-json

@@ -12,7 +12,7 @@ In this post I will show you how to provide versioning and auditing with [Hibern
 
 It was quite hard to get everything right with [Hibernate Envers], so I am sharing a sample application at:
 
-* [https://github.com/bytefish/VersioningWithEnvers](https://github.com/bytefish/VersioningWithEnvers)
+* [https://codeberg.org/bytefish/VersioningWithEnvers](https://codeberg.org/bytefish/VersioningWithEnvers)
 
 This article explains the concepts behind the application.
 
@@ -41,9 +41,9 @@ CREATE DATABASE
 
 ### Creating the Schema and Tables ###
 
-The GitHub sample has a Batch Script (Windows users) and a Shell Script (Mac / Linux Users) to create the schemas and tables:
+The Codeberg Repository has a Batch Script (Windows users) and a Shell Script (Mac / Linux Users) to create the schemas and tables:
 
-* [VersioningWithEnvers/sql](https://github.com/bytefish/VersioningWithEnvers/tree/master/VersioningWithEnvers/sql)
+* `VersioningWithEnvers/sql`
 
 You simply need to exectute the script and enter the database name ``sampledb`` and the user credentials.
 

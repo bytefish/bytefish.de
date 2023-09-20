@@ -14,9 +14,9 @@ does not support it out of the box, but the question makes a very nice excuse to
 [Quartz.NET] in .NET Core. ::smiling_face_with_halo::
 
 In this post I want to show how to schedule Firebase Push Messages using Quartz.NET. As usual all code 
-to reproduce this post can be found in my GitHub repository at:
+to reproduce this post can be found in the repository at:
 
-* [https://github.com/bytefish/FcmSharp/tree/master/FcmSharp/Examples/CSharp/FcmSharp.Scheduler.Quartz](https://github.com/bytefish/FcmSharp/tree/master/FcmSharp/Examples/CSharp/FcmSharp.Scheduler.Quartz)
+* [https://codeberg.org/bytefish/FcmSharp](https://codeberg.org/bytefish/FcmSharp)
 
 ## Table of contents ##
 
@@ -313,7 +313,7 @@ namespace FcmSharp.Scheduler.Quartz.Extensions
 [Dependency Injection]: https://en.wikipedia.org/wiki/Dependency_injection
 [Constructor Injection]: http://misko.hevery.com/2009/02/19/constructor-injection-vs-setter-injection/
 [ILogger]: https://docs.microsoft.com/en-us/aspnet/core/fundamentals/logging/?view=aspnetcore-2.2
-[IFcmClient]: https://github.com/bytefish/FcmSharp#sending-a-notification
+[IFcmClient]: https://codeberg.org/bytefish/FcmSharp#sending-a-notification
 
 I will now define a ``MessagingService``, that is used to send a Push Message. The ``MessageService`` gets an [ILogger] 
 and an [IFcmClient] injected. See I use [Dependency Injection] a lot in projects and when I do it, I do it the right 
@@ -1051,4 +1051,4 @@ And that's it. You can now boot the service and schedule Firebase messages by po
 [SQLite]: https://www.sqlite.org
 [Entity Framework Core]: https://docs.microsoft.com/en-us/ef/core/
 [Quartz.NET]: https://github.com/quartznet/quartznet
-[FcmSharp]: https://github.com/bytefish/FcmSharp
+[FcmSharp]: https://codeberg.org/bytefish/FcmSharp

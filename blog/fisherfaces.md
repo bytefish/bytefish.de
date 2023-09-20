@@ -18,7 +18,7 @@ You seldomly see something explained with code and examples, so I thought I'll c
 
 * [https://www.github.com/bytefish/facerec](https://www.github.com/bytefish/facerec) 
 
-I've put all the code under a BSD License, so feel free to use it for your projects. While this post is based on the very first [version number 0.1](https://github.com/bytefish/facerec/tags) of the framework, it still outlines the concepts in detail. You won't have any troubles to reproduce the results with the latest sources, I've added a comprehensive README to the project.
+I've put all the code under a BSD License, so feel free to use it for your projects. While this post is based on the very first [version number 0.1](https://codeberg.org/bytefish/facerec/tags) of the framework, it still outlines the concepts in detail. You won't have any troubles to reproduce the results with the latest sources, I've added a comprehensive README to the project.
 
 There's also a much simpler implementation in the documents over at:
 
@@ -27,7 +27,7 @@ There's also a much simpler implementation in the documents over at:
 
 You'll find all code shown in these documents in the projects github repository:
 
-* [https://github.com/bytefish/facerecognition_guide](https://github.com/bytefish/facerecognition_guide)
+* [https://codeberg.org/bytefish/facerecognition_guide](https://codeberg.org/bytefish/facerecognition_guide)
   
 ## Algorithmic Description ##
 
@@ -211,7 +211,7 @@ The first database I will evaluate is the Yale Facedatabase A. It consists of 15
 
 ### Data Preprocessing ###
 
-Unfortunately the images in this database are not aligned, so the faces may be at different positions in the image. For the Eigenfaces and Fisherfaces method the images need to be preprocessed, since both methods are sensible to rotation and scale. You don't want to do this manually, so I have written a function [crop.m](https://github.com/bytefish/facerec/blob/master/m/scripts/crop.m)/[crop_face.py](https://github.com/bytefish/facerec/blob/master/py/apps/scripts/crop_face.py) for this, which has the following description:
+Unfortunately the images in this database are not aligned, so the faces may be at different positions in the image. For the Eigenfaces and Fisherfaces method the images need to be preprocessed, since both methods are sensible to rotation and scale. You don't want to do this manually, so I have written a function [crop.m](https://codeberg.org/bytefish/facerec/blob/master/m/scripts/crop.m)/[crop_face.py](https://codeberg.org/bytefish/facerec/blob/master/py/apps/scripts/crop_face.py) for this, which has the following description:
 
 ```matlab
 function crop(filename, eye0, eye1, top, left, dsize)
@@ -237,9 +237,9 @@ function crop(filename, eye0, eye1, top, left, dsize)
 	%% (2*0.2*70=28px).
 ```
 
-I specify the dimensions of the cropped image to be ``(100,130)`` for this database. ``top`` is the vertical offset, which specifies how much of the image is above the eyes, 40% seems to be a good value for these images. ``left`` specifies the horizontal offset, how much space is left from an eye to the border, 30% is a good value. The image is then rotated by the eye positions. If it's not desired to align all images at the eyes, scale or rotate them, please adjust the script to your needs. [batch_crop.m](https://github.com/bytefish/facerec/blob/master/m/scripts/batch_crop.m) is a simple script to crop images given by their filename and associated eye coordinates. Feel free to translate it to Python.
+I specify the dimensions of the cropped image to be ``(100,130)`` for this database. ``top`` is the vertical offset, which specifies how much of the image is above the eyes, 40% seems to be a good value for these images. ``left`` specifies the horizontal offset, how much space is left from an eye to the border, 30% is a good value. The image is then rotated by the eye positions. If it's not desired to align all images at the eyes, scale or rotate them, please adjust the script to your needs. [batch_crop.m](https://codeberg.org/bytefish/facerec/blob/master/m/scripts/batch_crop.m) is a simple script to crop images given by their filename and associated eye coordinates. Feel free to translate it to Python.
 
-After having preprocessed the images ([coordinates for this database are given here](https://github.com/bytefish/facerec/blob/master/m/scripts/files2.txt)) you'll end up with subsets for each person like this ([function used to create the gallery of images](https://github.com/bytefish/facerec/blob/master/m/scripts/gallery.m)):
+After having preprocessed the images ([coordinates for this database are given here](https://codeberg.org/bytefish/facerec/blob/master/m/scripts/files2.txt)) you'll end up with subsets for each person like this ([function used to create the gallery of images](https://codeberg.org/bytefish/facerec/blob/master/m/scripts/gallery.m)):
 
 <a href="/static/images/blog/fisherfaces/yale_s01.png"><img src="/static/images/blog/fisherfaces/thumbs/yale_s01.jpg" alt="Subject 01 in Yale Facedatabase A" class="mediacenter" /></a> 
 
@@ -592,7 +592,7 @@ While the Fisherfaces identify regions:
 
 <a href="/static/images/blog/fisherfaces/9_celebrity_fisherfaces.png"><img src="/static/images/blog/fisherfaces/thumbs/9_celebrity_fisherfaces.jpg" class="mediacenter" alt="The 9 Fisherfaces of the Celebrity Dataset" /></a>
 
-By using two and three components, we can see how the faces are distributed (using GNU Octave, see [fisherfaces_example.m](https://github.com/bytefish/facerec/blob/master/m/fisherfaces_example.m)). I'll use just one example per class for a better overview:
+By using two and three components, we can see how the faces are distributed (using GNU Octave, see [fisherfaces_example.m](https://codeberg.org/bytefish/facerec/blob/master/m/fisherfaces_example.m)). I'll use just one example per class for a better overview:
 
 ```
 octave:1> addpath (genpath ("."));
@@ -686,7 +686,7 @@ The GNU Octave version is just as simple to use as the Python version. I think t
 addpath (genpath ("."));
 ```
 
-This makes all function definition in the subfolders available to GNU Octave (see the examples in [facerec](https://github.com/bytefish/facerec)) and now you can read in the dataset:
+This makes all function definition in the subfolders available to GNU Octave (see the examples in [facerec](https://codeberg.org/bytefish/facerec)) and now you can read in the dataset:
 
 ```matlab
 % load data
@@ -727,7 +727,7 @@ cv1 = KFoldCV(X,y,10,fun_eigenface, fun_predict,1)
 cv2 = KFoldCV(X,y,3,fun_eigenface, fun_predict,1)
 ```
 
-From these results you can gather the same statistics I have used in the Python version. I hope you acknowledge that this version is just as easy to use as the Python version. There are some additional parameters for the functions, so please read the function definition files or the [examples](https://github.com/bytefish/facerec/tree/master/m) to understand those. For further questions, simply comment below.
+From these results you can gather the same statistics I have used in the Python version. I hope you acknowledge that this version is just as easy to use as the Python version. There are some additional parameters for the functions, so please read the function definition files or the `examples` to understand those. For further questions, simply comment below.
 
 ## Conclusion and Lessons learned ##
 
