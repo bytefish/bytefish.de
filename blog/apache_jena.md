@@ -386,7 +386,7 @@ This leads to a nice separation of concerns:
         * Is a ``string.Split(...)`` sufficient for the data (saves CPU cycles)?
         * Is it a fixed-width format? 
 
-[TinyCsvParser]: https://github.com/bytefish/TinyCsvParser
+[TinyCsvParser]: https://codeberg.org/bytefish/TinyCsvParser
 [eat your own dogfood]: https://en.wikipedia.org/wiki/Eating_your_own_dog_food
 
 ### From .NET to RDF ###
