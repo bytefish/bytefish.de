@@ -1,4 +1,4 @@
-title: Analyzing Weather Data with .NET and SQL Server 2022+
+title: Analyzing German Weather Data using Open Data, .NET and SQL
 date: 2023-09-21 14:45
 tags: timeseries, sqlserver, adonet, weather, dwd
 category: timeseries
@@ -13,7 +13,7 @@ The Deutsche Wetterdienst (DWD) has recently shared an interesting quote, which 
 
 > Kein Grund zum Jubeln in Zeiten der #Klimakrise: "Sieben Hitzetage am Stück: 
 > September-Rekord an NRW-Stationen" bestätigt der DWD der Süddeutschen 
-> Zeitung. ([[Link DWD]])
+> Zeitung. ([Link DWD])
 
 This literally means September was a record month in Germany, with 7 consecutive days 
 of severe heat. In the referenced article at Süddeutsche Zeitung (SZ) we can find the 
