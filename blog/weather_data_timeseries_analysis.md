@@ -49,8 +49,11 @@ All code can be found in the Git Repository at:
 
 * [https://codeberg.org/bytefish/DwdAnalysis](https://codeberg.org/bytefish/DwdAnalysis)
 
-
 ## Using SQL to find the Consecutive Heat Days ##
+
+In the following section we can see how to import the data using the DWD Open Data and .NET, but 
+to not get lost in technical details, let's assume the hardest part of writing the data to the 
+RDBMS is done.
 
 ### Understanding the Database Schema ##
 
