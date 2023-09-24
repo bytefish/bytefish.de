@@ -178,7 +178,7 @@ indeed a record year, with only 2016 having a streak of at least 7 days.
 
 If you have ideas for more queries, let me know.
 
-## Open Data, SQL Server and .NET ## 
+## Open Data, SQL Server and .NET ##
 
 In this section we will see how to import the DWD Open Data using an SQL Server and .NET.
 
