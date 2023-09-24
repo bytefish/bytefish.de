@@ -51,11 +51,7 @@ All code can be found in the Git Repository at:
 
 ## Using SQL to find the Consecutive Heat Days ##
 
-In the following section we can see how to import the data using the DWD Open Data and .NET, but 
-to not get lost in technical details, let's assume the hardest part of writing the data to the 
-RDBMS is done.
-
-### Understanding the Database Schema ##
+Let's assume the hardest part of writing the data to the RDBMS is done.
 
 The database is going to have two tables 
 
@@ -96,12 +92,9 @@ CREATE TABLE [dbo].[Messwert](
 ) ON [PRIMARY]
 ```
 
-In the following section we can see how to import the data using the DWD Open Data and .NET, 
-but to not get lost in technical details, let's assume the hardest part of writing the data 
-to the RDBMS is done. 
+We can now have fun with the data. 
 
-We can now have fun with the data, Common Table Expressions (CTE) and WINDOW functions allow 
-to write a very clean query to identify heat streaks.
+Common Table Expressions (CTE) and WINDOW functions allow to write a very clean query to identify heat streaks.
 
 I came up with the following SQL:
 
@@ -179,12 +172,11 @@ Weilerswist-Lommersum           01327            7                2023-09-05    
 
 ### Conclusion ###
 
-We have been able to identify the consecutive days of extreme heat in September for the Stations 
+So we have been able to identify the consecutive days of extreme heat in September for the Stations 
 *Bochum*, *Tönisvorst* and *Weilerswist-Lommersum*. We can also see in the data, that 2023 is 
 indeed a record year, with only 2016 having a streak of at least 7 days.
 
 If you have ideas for more queries, let me know.
-
 
 ## Open Data, SQL Server and .NET ## 
 
