@@ -34,7 +34,7 @@ There was no .NET Client to query the [Article Retrieval API], so I wrote the [E
 [COVID-19]: https://en.wikipedia.org/wiki/Coronavirus_disease_2019
 [Article (Full Text) Retrieval API]: https://dev.elsevier.com/documentation/ArticleRetrievalAPI.wadl
 [Article Retrieval API]: https://dev.elsevier.com/documentation/ArticleRetrievalAPI.wadl
-[ElsevierFulltextApi]: https://codeberg.org/bytefish/ElsevierFulltextApi
+[ElsevierFulltextApi]: https://github.com/bytefish/ElsevierFulltextApi
 
 ## Usage ##
 

@@ -18,7 +18,7 @@ Edge Constraints finally make it possible to query the for Graph Schema, so I wa
 
 The source code for this article can be found in my GitHub repository at:
 
-* [https://codeberg.org/bytefish/SqlServer2019GraphDatabase/](https://codeberg.org/bytefish/SqlServer2019GraphDatabase/)
+* [https://github.com/bytefish/SqlServer2019GraphDatabase/](https://github.com/bytefish/SqlServer2019GraphDatabase/)
 
 ## What we are going to build ##
 

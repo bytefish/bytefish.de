@@ -30,7 +30,7 @@ The application should generate weather warnings from a Stream of incoming measu
 
 You can find the full source code for the example in my git repository at:
 
-* [https://codeberg.org/bytefish/FlinkExperiments](https://codeberg.org/bytefish/FlinkExperiments)
+* [https://github.com/bytefish/FlinkExperiments](https://github.com/bytefish/FlinkExperiments)
 
 ## Warnings and Patterns ##
 
@@ -362,4 +362,4 @@ public class WeatherDataComplexEventProcessingExample {
 [KeyedStream]: https://ci.apache.org/projects/flink/flink-docs-master/apis/streaming/windows.html
 [SourceFunction]: https://ci.apache.org/projects/flink/flink-docs-master/apis/streaming/#data-sources
 [SinkFunction]: https://ci.apache.org/projects/flink/flink-docs-master/apis/streaming/#data-sinks
-[PgBulkInsert]: https://codeberg.org/bytefish/PgBulkInsert
+[PgBulkInsert]: https://github.com/bytefish/PgBulkInsert

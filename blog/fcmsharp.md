@@ -8,7 +8,7 @@ summary: This article shows how to work with FcmSharp for Firebase Cloud Messagi
 
 For one of my .NET projects I needed a simple way to send Push Messages with Firebase Cloud Messaging (FCM), so I wrote [FcmSharp]:
 
-* [https://codeberg.org/bytefish/FcmSharp](https://codeberg.org/bytefish/FcmSharp)
+* [https://github.com/bytefish/FcmSharp](https://github.com/bytefish/FcmSharp)
 
 [FcmSharp] implements the Firebase Cloud Messaging HTTP v1 API:
 
@@ -94,7 +94,7 @@ call into a synchronous one:
 var result = client.SendAsync(message, cts.Token).GetAwaiter().GetResult();
 ```
 
-[FcmSharp]: https://codeberg.org/bytefish/FcmSharp
+[FcmSharp]: https://github.com/bytefish/FcmSharp
 [Firebase Quickstart with Android]: https://github.com/firebase/quickstart-android/tree/master/messaging
 [Firebase Cloud Messaging (FCM) API]: https://firebase.google.com
 [Firebase Cloud Messaging HTTP Protocol]: https://firebase.google.com/docs/cloud-messaging/http-server-ref

@@ -7,7 +7,7 @@ author: Philipp Wagner
 summary: The stream of File.lines has a problem when being read in parallel, this post explains why.
 
 [MIT License]: https://opensource.org/licenses/MIT
-[JTinyCsvParser]: https://codeberg.org/bytefish/JTinyCsvParser
+[JTinyCsvParser]: https://github.com/bytefish/JTinyCsvParser
 [Parallel Streams]: https://docs.oracle.com/javase/tutorial/collections/streams/parallelism.html
 
 The ``Files.lines`` method in Java 1.8 yields a very bad performance, when processing the Stream in parallel. I have 

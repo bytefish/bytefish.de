@@ -13,7 +13,7 @@ come with predefined colormaps. So I simply took the interpolation steps from th
 
 The source code is on:
 
-* [https://codeberg.org/bytefish/colormaps-opencv](https://codeberg.org/bytefish/colormaps-opencv)
+* [https://github.com/bytefish/colormaps-opencv](https://github.com/bytefish/colormaps-opencv)
 
 ## Using the code ##
 
@@ -110,7 +110,7 @@ And here are the scales corresponding to each of the maps, so you know what they
 
 The demo coming with the ``cv::applyColorMap`` shows how to use the colormaps and how I've created the scales you have seen:
 
-* [https://codeberg.org/bytefish/colormaps-opencv/src/branch/master/src/main.cpp](https://codeberg.org/bytefish/colormaps-opencv/src/branch/master/src/main.cpp)
+* [https://github.com/bytefish/colormaps-opencv/blob/master/src/main.cpp](https://github.com/bytefish/colormaps-opencv/blob/master/src/main.cpp)
 
 If you want to apply a Jet colormap on a given image, then call the demo with:
 

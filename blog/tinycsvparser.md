@@ -6,7 +6,7 @@ slug: tinycsvparser
 author: Philipp Wagner
 summary: This article describes how to parse CSV data with C#.
 
-[TinyCsvParser]: https://codeberg.org/bytefish/TinyCsvParser
+[TinyCsvParser]: https://github.com/bytefish/TinyCsvParser
 [MIT License]: https://opensource.org/licenses/MIT
 
 A lot of us have to import CSV data into their systems. What sounds simple often turns into a huge mess. 
@@ -21,7 +21,7 @@ Here is [TinyCsvParser], which is my attempt to build a clean, easy to use and h
 
 I have released it under terms of the [MIT License]:
 
-* [https://codeberg.org/bytefish/TinyCsvParser](https://codeberg.org/bytefish/TinyCsvParser)
+* [https://github.com/bytefish/TinyCsvParser](https://github.com/bytefish/TinyCsvParser)
 
 You can also use the [NuGet](https://www.nuget.org) package. To install [TinyCsvParser], run the following 
 command in the [Package Manager Console](http://docs.nuget.org/consume/package-manager-console).

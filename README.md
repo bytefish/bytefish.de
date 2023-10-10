@@ -22,11 +22,3 @@ pelican -s settings/settings_dev.py .
 ```
 
 The output will be written to the folder ``settings/output/DEV``.
-
-## Moving from GitHub to Codeberg ##
-
-Please note, that my main development is now happening at:
-
-* [https://codeberg.org/bytefish](https://codeberg.org/bytefish)
-
-The GitHub Repository is now a Push Mirror.

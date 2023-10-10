@@ -8,7 +8,7 @@ summary: This article introduces TinySqlMapper, which makes querying a database 
 
 [PostgreSQL]: http://www.postgresql.org
 [MIT License]: https://opensource.org/licenses/MIT
-[TinySqlMapper]: https://codeberg.org/bytefish/TinySqlMapper
+[TinySqlMapper]: https://github.com/bytefish/TinySqlMapper
 [the TinySqlMapper NuGet package]: https://www.nuget.org/packages/TinySqlMapper
 
 It may be a surprise to read .NET articles on my site. A lot of articles in the past have 
@@ -25,7 +25,7 @@ I have the opinion, that a library should do only one thing and it should do it 
 
 I have released [TinySqlMapper] under terms of the [MIT License]:
 
-* [https://codeberg.org/bytefish/TinySqlMapper](https://codeberg.org/bytefish/TinySqlMapper)
+* [https://github.com/bytefish/TinySqlMapper](https://github.com/bytefish/TinySqlMapper)
 
 You can also use [the TinySqlMapper NuGet package]. To install the library, run the following 
 command in the [Package Manager Console](http://docs.nuget.org/consume/package-manager-console).

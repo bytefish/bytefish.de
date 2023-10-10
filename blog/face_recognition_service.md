@@ -9,7 +9,7 @@ summary: Implementing a Face Recognition Web service with Flask.
 This article deals with writing a RESTful Web service for Face Recognition. It's something a 
 lot of people have asked me for, and it isn't hard to implement with [Python](http://www.python.org).
 
-The [facerec framework](https://codeberg.org/bytefish/facerec) needs to be extended a little and 
+The [facerec framework](https://github.com/bytefish/facerec) needs to be extended a little and 
 then we are going to use it in a small Web service. I am going to explain how to implement the 
 API with [Flask](http://flask.pocoo.org/docs/), which is a great project. The Web service doesn't 
 have any security measures yet, so please do not use it in production. It doesn't support any rate 
@@ -17,11 +17,11 @@ limiting, authentification or any other important aspects of a real web applicat
 
 There's a lot of room for improvement and ideas. I would love to hear your feedback and merge pull
 requests to the repository. In the next article I will show how to write an Android app to consume 
-the API. You can see the current state of the code in [my github repository](https://codeberg.org/bytefish/facerec).
+the API. You can see the current state of the code in [my github repository](https://github.com/bytefish/facerec).
 
 The full server implementation used in this article can be found in:
 
-* [https://codeberg.org/bytefish/facerec](https://codeberg.org/bytefish/facerec)
+* [https://github.com/bytefish/facerec](https://github.com/bytefish/facerec)
 
 All code is put under a BSD License, so feel free to use it for your projects.
 
@@ -31,7 +31,7 @@ All code is put under a BSD License, so feel free to use it for your projects.
 
 First of all you have to install the facerec framework, which is available at:
 
-* [https://codeberg.org/bytefish/facerec](https://codeberg.org/bytefish/facerec)
+* [https://github.com/bytefish/facerec](https://github.com/bytefish/facerec)
 
 The project comes with a ``setup.py`` file, which is located in the ``py`` folder of the project.
 
@@ -44,7 +44,7 @@ python setup.py install
 ### Dependencies ###
 
 
-[facerec](https://codeberg.org/bytefish/facerec) has dependencies to:
+[facerec](https://github.com/bytefish/facerec) has dependencies to:
 
 * [PIL](http://www.pythonware.com/products/pil)
 * [NumPy](http://www.numpy.org)

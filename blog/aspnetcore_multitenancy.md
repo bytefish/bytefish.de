@@ -13,7 +13,7 @@ So it's interesting to see how to provide Multitenancy with ASP.NET Core and Ent
 In this article we are building a simple CRUD application to create, read and update customers. PostgreSQL Row Level 
 Security is used to provide data isolation for multiple Tenants of the application:
 
-* [https://codeberg.org/bytefish/AspNetCoreMultitenancy](https://codeberg.org/bytefish/AspNetCoreMultitenancy)
+* [https://github.com/bytefish/AspNetCoreMultitenancy](https://github.com/bytefish/AspNetCoreMultitenancy)
 
 I've found most of the example implementations to be overly complicated. 
 

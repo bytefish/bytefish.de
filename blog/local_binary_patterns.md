@@ -10,7 +10,7 @@ My website recently saw a lot of hits for a [tiny wiki page on Local Binary Patt
 
 All source code in this post is available at:
 
-* [https://codeberg.org/bytefish/opencv](https://codeberg.org/bytefish/opencv)
+* [https://github.com/bytefish/opencv](https://github.com/bytefish/opencv)
 
 It comes as a [CMake](http://www.cmake.org) project, so to build and run it simply type:
 
@@ -21,9 +21,9 @@ philipp@mango:~/some/dir/build$ make
 philipp@mango:~/some/dir/build$ ./lbp <device id (default 0)> 
 ```
 
-Python and MATLAB implementations can be obtained from the [facerec](https://codeberg.org/bytefish/facerec) project at:
+Python and MATLAB implementations can be obtained from the [facerec](https://github.com/bytefish/facerec) project at:
 
-* [https://codeberg.org/bytefish/facerec](https://codeberg.org/bytefish/facerec)
+* [https://github.com/bytefish/facerec](https://github.com/bytefish/facerec)
 
 If I forgot anything important, I am sure the great [Scholarpedia page on Local Binary Patterns](http://www.scholarpedia.org/article/Local_Binary_Patterns) answers your questions.
 
@@ -200,13 +200,13 @@ Then by concatenating the histograms the spatial information is encoded (*not me
 
 This informal description translates to OpenCV as:
 
-* [https://codeberg.org/bytefish/libfacerec/blob/master/src/lbp.cpp](https://codeberg.org/bytefish/libfacerec/blob/master/src/lbp.cpp)
+* [https://github.com/bytefish/libfacerec/blob/master/src/lbp.cpp](https://github.com/bytefish/libfacerec/blob/master/src/lbp.cpp)
 
 And here's the Local Binary Patterns Histograms Face Recognizer:
 
-* [https://codeberg.org/bytefish/libfacerec/blob/master/src/facerec.cpp](https://codeberg.org/bytefish/libfacerec/blob/master/src/facerec.cpp)
+* [https://github.com/bytefish/libfacerec/blob/master/src/facerec.cpp](https://github.com/bytefish/libfacerec/blob/master/src/facerec.cpp)
 
 ## Notes ##
 
-The experiment was done with [facerec version number 0.1](https://codeberg.org/bytefish/facerec/tags). If you want to recreate them you either 
+The experiment was done with [facerec version number 0.1](https://github.com/bytefish/facerec/tags). If you want to recreate them you either 
 download the tag or you adapt the script to the most recent version (which should be very easy).

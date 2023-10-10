@@ -24,7 +24,7 @@ New faces can then be projected into the linear subspace and the nearest neighbo
 
 Let's start! The first thing you'll need to do is reading the images. I assume the simple folder structure of ``<dataset>/<subject>/<image>``. This function is very basic and does no error checking at all. You probably need to add code for checking if the file is a valid image, if size/width of all images are equal and if the image is grayscale. Anyway here it goes:
 
-* [read_images.m](https://codeberg.org/bytefish/facerec/src/branch/master/m/util/read_images.m)
+* [read_images.m](https://github.com/bytefish/facerec/blob/master/m/util/read_images.m)
 
 Now we can read the Image matrix of a dataset with:
 
@@ -112,9 +112,9 @@ you can see that the faces are well seperated:
 
 ## Accuracy ##
 
-If you want to know the performance of the model I suggest using my framework at [https://www.codeberg.org/bytefish/facerec](https://www.codeberg.org/bytefish/facerec). There are functions for performing cross validations, see [validation_example.m](https://codeberg.org/bytefish/facerec/blob/master/m/validation_example.m) for their usage. The accuracy on the AT&T database is 96.25% with 30 eigenvectors. 
+If you want to know the performance of the model I suggest using my framework at [https://github.com/bytefish/facerec](https://www.codeberg.org/bytefish/facerec). There are functions for performing cross validations, see [validation_example.m](https://github.com/bytefish/facerec/blob/master/m/validation_example.m) for their usage. The accuracy on the AT&T database is 96.25% with 30 eigenvectors. 
 
-If you want to calculate it yourself, here is how I did it with [facerec](https://www.codeberg.org/bytefish/facerec):
+If you want to calculate it yourself, here is how I did it with [facerec](https://github.com/bytefish/facerec):
 
 ```matlab
 % load function files from subfolders aswell

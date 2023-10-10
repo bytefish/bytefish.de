@@ -6,8 +6,8 @@ slug: sqlserverbulkinsert
 author: Philipp Wagner
 summary: This article shows how to stream bulk insert data to an SQL Server.
 
-[FcmSharp]: https://codeberg.org/bytefish/FcmSharp
-[SqlServerBulkInsert]: https://codeberg.org/bytefish/SqlServerBulkInsert
+[FcmSharp]: https://github.com/bytefish/FcmSharp
+[SqlServerBulkInsert]: https://github.com/bytefish/SqlServerBulkInsert
 [Quality Controlled Local Climatological Data]: https://www.ncdc.noaa.gov/data-access/land-based-station-data/land-based-datasets/quality-controlled-local-climatological-data-qclcd
 [Airline On-Time Performance Dataset]: https://www.transtats.bts.gov/Tables.asp?DB_ID=120&DB_Name=Airline%20On-Time%20Performance%20Data&DB_Short_Name=On-Time
 
@@ -27,7 +27,7 @@ PM> Install-Package SqlServerBulkInsert
 
 ## Benchmark Results ##
 
-[Benchmark]: https://codeberg.org/bytefish/SqlServerBulkInsert/blob/master/SqlServerBulkInsert/SqlServerBulkInsert/SqlServerBulkInsert.Test/Integration/BatchSizeIntegrationTest.cs
+[Benchmark]: https://github.com/bytefish/SqlServerBulkInsert/blob/master/SqlServerBulkInsert/SqlServerBulkInsert/SqlServerBulkInsert.Test/Integration/BatchSizeIntegrationTest.cs
 
 The [Benchmark] bulk writes 1000000 entities to an SQL Server 2017 database and measures the elapsed time.
 

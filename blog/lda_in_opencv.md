@@ -12,4 +12,4 @@ There was a question on [stackoverflow](http://stackoverflow.com) on:
 
 So I wrote a class to perform a Linear Discriminant Analysis with OpenCV, which is available at:
 
-* [https://codeberg.org/bytefish/opencv](https://codeberg.org/bytefish/opencv)
+* [https://github.com/bytefish/opencv](https://github.com/bytefish/opencv)

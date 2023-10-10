@@ -10,7 +10,7 @@ summary: This article shows how to bulk insert data into PostgreSQL from .NET.
 [PostgreSQL]: http://www.postgresql.org
 [COPY command]: http://www.postgresql.org/docs/current/static/sql-copy.html
 [MIT License]: https://opensource.org/licenses/MIT
-[PostgreSQLCopyHelper]: https://codeberg.org/bytefish/PostgreSQLCopyHelper
+[PostgreSQLCopyHelper]: https://github.com/bytefish/PostgreSQLCopyHelper
 [Npgsql documentation]: http://www.npgsql.org/doc/copy.html
 
 In my last post I have introduced [PostgreSQLCopyHelper], which is a small library to wrap the [Npgsql] 
@@ -24,7 +24,7 @@ From the good [Npgsql documentation]:
 
 [PostgreSQLCopyHelper] is released with under terms of the [MIT License]:
 
-* [https://codeberg.org/bytefish/PostgreSQLCopyHelper](https://codeberg.org/bytefish/PostgreSQLCopyHelper)
+* [https://github.com/bytefish/PostgreSQLCopyHelper](https://github.com/bytefish/PostgreSQLCopyHelper)
 
 It can be installed with [NuGet](https://www.nuget.org/) with the following command in the 
 [Package Manager Console](http://docs.nuget.org/consume/package-manager-console):

@@ -14,7 +14,7 @@ Although this article uses an OData EDM model, it will also work just fine with 
 
 All code can be found in a GitHub repository at:
 
-* [https://codeberg.org/bytefish/WideWorldImporters/blob/main/Backend/WideWorldImporters.ModelGenerator](https://codeberg.org/bytefish/WideWorldImporters/blob/main/Backend/WideWorldImporters.ModelGenerator)
+* [https://github.com/bytefish/WideWorldImporters/blob/main/Backend/WideWorldImporters.ModelGenerator](https://github.com/bytefish/WideWorldImporters/blob/main/Backend/WideWorldImporters.ModelGenerator)
 
 ## Table of contents ##
 

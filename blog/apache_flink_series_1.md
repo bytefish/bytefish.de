@@ -21,7 +21,7 @@ Sink functions for writing to PostgreSQL and Elasticsearch.
 
 You can find the full source code for the example in my git repository at:
 
-* [https://codeberg.org/bytefish/FlinkExperiments](https://codeberg.org/bytefish/FlinkExperiments)
+* [https://github.com/bytefish/FlinkExperiments](https://github.com/bytefish/FlinkExperiments)
 
 ## Dependencies ##
 
@@ -777,7 +777,7 @@ The next part of the series shows how to write a source function for emitting th
 
 [Apache Flink]: https://flink.apache.org/
 [Elasticsearch]: https://www.elastic.co
-[ElasticUtils]: https://codeberg.org/bytefish/ElasticUtils
-[JTinyCsvParser]: https://codeberg.org/bytefish/JTinyCsvParser
+[ElasticUtils]: https://github.com/bytefish/ElasticUtils
+[JTinyCsvParser]: https://github.com/bytefish/JTinyCsvParser
 [Quality Controlled Local Climatological Data (QCLCD)]: https://www.ncdc.noaa.gov/data-access/land-based-station-data/land-based-datasets/quality-controlled-local-climatological-data-qclcd
-[PgBulkInsert]: https://codeberg.org/bytefish/PgBulkInsert
+[PgBulkInsert]: https://github.com/bytefish/PgBulkInsert

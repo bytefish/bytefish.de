@@ -7,7 +7,7 @@ author: Philipp Wagner
 summary: This article describes how to implement a spliterator for the Java ResultSet.
 
 [MIT License]: https://opensource.org/licenses/MIT
-[SqlMapper]: https://codeberg.org/bytefish/SqlMapper
+[SqlMapper]: https://github.com/bytefish/SqlMapper
 [Spliterator]: https://docs.oracle.com/javase/8/docs/api/java/util/Spliterator.html
 [ResultSet]: https://docs.oracle.com/javase/8/docs/api/java/sql/ResultSet.html
 

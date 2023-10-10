@@ -6,7 +6,7 @@ slug: aspnet_core_adding_dynamic_filters
 author: Philipp Wagner
 summary: This article shows how to secure an ASP.NET Core OData API using the ODataAuthorization library.
 
-[ODataAuthorization]: https://codeberg.org/bytefish/ODataAuthorization/
+[ODataAuthorization]: https://github.com/bytefish/ODataAuthorization/
 
 In this article we will take a look at a bugfix for the [ODataAuthorization] library. I think 
 it's worth sharing and making some code available, if someone comes here from Google.
@@ -16,7 +16,7 @@ it's worth sharing and making some code available, if someone comes here from Go
 There was recently a bug reported in the [ODataAuthorization] library, that made 
 the Authorization failing for multiple requests:
 
-* [https://codeberg.org/bytefish/ODataAuthorization/issues/1](https://codeberg.org/bytefish/ODataAuthorization/issues/1)
+* [https://github.com/bytefish/ODataAuthorization/issues/1](https://github.com/bytefish/ODataAuthorization/issues/1)
 
 The [ODataAuthorization] library basically works like this... From an incoming 
 `HttpRequest` the `IEdmModel` is resolved, then the permissions are resolved 

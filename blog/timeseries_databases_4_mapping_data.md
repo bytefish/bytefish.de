@@ -58,7 +58,7 @@ I want to show you how to create visualizations of the air temperature in German
 
 As usual all code to reproduce the article can be found in my GitHub repository at:
 
-* [https://codeberg.org/bytefish/GermanWeatherDataExample](https://codeberg.org/bytefish/GermanWeatherDataExample)
+* [https://github.com/bytefish/GermanWeatherDataExample](https://github.com/bytefish/GermanWeatherDataExample)
 
 ### The Dataset ###
 

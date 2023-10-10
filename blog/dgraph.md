@@ -25,7 +25,7 @@ of it all, I now have a RDF dataset for Dgraph.
 
 You can find all code and a guide on how to build the datasets in my GitHub Repository at:
 
-* [https://codeberg.org/bytefish/DGraphSample/](https://codeberg.org/bytefish/DGraphSample/)
+* [https://github.com/bytefish/DGraphSample/](https://github.com/bytefish/DGraphSample/)
 
 ## So what is DGraph? ##
 
@@ -48,7 +48,7 @@ so the idea is to use a [Dgraph] to query Aviation data, using information from:
 
 You can find all code and a guide on how to build the datasets in my GitHub Repository at:
 
-* [https://codeberg.org/bytefish/DGraphSample/](https://codeberg.org/bytefish/DGraphSample/)
+* [https://github.com/bytefish/DGraphSample/](https://github.com/bytefish/DGraphSample/)
 
 ### What this Project is about ###
 
@@ -174,7 +174,7 @@ But while browsing the internet I found a list of stations, that contains all in
 am allowed to use it with the permission of the author. I uploaded the latest version of June 2019 into 
 my GitHub repository, because I needed to make very minor modifications to the original file:
 
-* [https://codeberg.org/bytefish/DGraphSample/src/branch/master/Dataset/Data/NCAR](https://codeberg.org/bytefish/DGraphSample/src/branch/master/Dataset/Data/NCAR)
+* [https://github.com/bytefish/DGraphSample/blob/master/Dataset/Data/NCAR](https://github.com/bytefish/DGraphSample/blob/master/Dataset/Data/NCAR)
 
 [Historical Observing Metadata Repository]: https://www.ncdc.noaa.gov/homr/reports/platforms
 
@@ -209,7 +209,7 @@ It is available at:
 I have used some Excel-magic to join the several files into one and export a CSV File, that strips all 
 sensitive data off and could be parsed easily:
 
-* [https://codeberg.org/bytefish/DGraphSample/src/branch/master/Dataset/Data/FAA](https://codeberg.org/bytefish/DGraphSample/src/branch/master/Dataset/Resources/FAA)
+* [https://github.com/bytefish/DGraphSample/blob/master/Dataset/Data/FAA](https://github.com/bytefish/DGraphSample/blob/master/Dataset/Resources/FAA)
 
 ## Parsing the Datasets ##
 
@@ -265,7 +265,7 @@ This leads to a nice separation of concerns:
         * Is a ``string.Split(...)`` sufficient for the data (saves CPU cycles)?
         * Is it a fixed-width format? 
 
-[TinyCsvParser]: https://codeberg.org/bytefish/TinyCsvParser
+[TinyCsvParser]: https://github.com/bytefish/TinyCsvParser
 [eat your own dogfood]: https://en.wikipedia.org/wiki/Eating_your_own_dog_food
 
 
@@ -420,7 +420,7 @@ The Dgraph documentation has a section on Schema definition:
 
 The Aviation Schema for this sample is available here:
 
-* [https://codeberg.org/bytefish/DGraphSample/src/branch/master/Scripts/res/schema.txt](https://codeberg.org/bytefish/DGraphSample/src/branch/master/Scripts/res/schema.txt)
+* [https://github.com/bytefish/DGraphSample/blob/master/Scripts/res/schema.txt](https://github.com/bytefish/DGraphSample/blob/master/Scripts/res/schema.txt)
 
 #### About Predicates ####
 
@@ -710,7 +710,7 @@ The final ``p`` directory in the ``out`` folder has a size of 19.5 GB.
 
 In the following section I will recreate the SPARQL queries of my Apache Jena project:
 
-* [https://codeberg.org/bytefish/ApacheJenaSample/](https://codeberg.org/bytefish/ApacheJenaSample/)
+* [https://github.com/bytefish/ApacheJenaSample/](https://github.com/bytefish/ApacheJenaSample/)
 
 ### Get all reachable Nodes for a given Flight ###
 
@@ -1502,4 +1502,4 @@ There is so much more to explore with Dgraph, but time is so limited.
 [Power Query M formula language]: https://docs.microsoft.com/en-us/powerquery-m/power-query-m-reference
 [Dgraph]: https://dgraph.io/
 [dotNetRDF]: https://www.dotnetrdf.org/
-[TinyDgraphClient]: https://codeberg.org/bytefish/TinyDgraphClient/
+[TinyDgraphClient]: https://github.com/bytefish/TinyDgraphClient/

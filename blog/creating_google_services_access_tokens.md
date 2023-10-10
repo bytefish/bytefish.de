@@ -103,5 +103,5 @@ public class FcmHttpClient : IFcmHttpClient
 }
 ```
 
-[FcmSharp]: https://codeberg.org/bytefish/FcmSharp
+[FcmSharp]: https://github.com/bytefish/FcmSharp
 [Authorize Send Requests]: https://firebase.google.com/docs/cloud-messaging/auth-server

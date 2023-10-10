@@ -7,7 +7,7 @@ author: Philipp Wagner
 summary: This article introduces the TinyCsvParser documentation.
 
 [MIT License]: https://opensource.org/licenses/MIT
-[TinyCsvParser]: https://codeberg.org/bytefish/TinyCsvParser
+[TinyCsvParser]: https://github.com/bytefish/TinyCsvParser
 
 I have been working on the documentation for [TinyCsvParser] lately, which is a .NET library to parse CSV data in an easy 
 and fun way. It is probably the fastest .NET CSV reader around (see [Benchmark](http://bytefish.github.io/TinyCsvParser/sections/benchmark.html)) 

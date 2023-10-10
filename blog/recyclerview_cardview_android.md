@@ -12,7 +12,7 @@ summary: Simple Example for using the Android CardView and RecyclerView.
 I have struggled to find a simple example for using the Android [RecyclerView] and [CardView], so I 
 have uploaded my sample project to:
 
-* [https://codeberg.org/bytefish/RecyclerViewExample](https://codeberg.org/bytefish/RecyclerViewExample)
+* [https://github.com/bytefish/RecyclerViewExample](https://github.com/bytefish/RecyclerViewExample)
 
 The app in the example is going to look like this:
 

@@ -7,7 +7,7 @@ author: Philipp Wagner
 summary: This article introduces SqlMapper, which is Java 1.8 library to map between a JDBC ResultSet and Java Beans.
 
 [MIT License]: https://opensource.org/licenses/MIT
-[SqlMapper]: https://codeberg.org/bytefish/SqlMapper
+[SqlMapper]: https://github.com/bytefish/SqlMapper
 [ResultSet]: https://docs.oracle.com/javase/8/docs/api/java/sql/ResultSet.html
 [NPoco]: https://github.com/schotime/NPoco/
 [Dapper]: https://github.com/StackExchange/dapper-dot-net
@@ -17,7 +17,7 @@ summary: This article introduces SqlMapper, which is Java 1.8 library to map bet
 simple way, while Java is lacking small libraries. [SqlMapper] is a wrapper over the JDBC [ResultSet], 
 and makes it very easy to map between Java Beans and a database table:
 
-* [https://codeberg.org/bytefish/SqlMapper](https://codeberg.org/bytefish/SqlMapper)
+* [https://github.com/bytefish/SqlMapper](https://github.com/bytefish/SqlMapper)
 
 ## Basic Usage ##
 

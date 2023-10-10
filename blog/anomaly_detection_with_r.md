@@ -15,7 +15,7 @@ Store Indices for speeding up queries.
 
 You can see the work in progress here:
 
-* [https://codeberg.org/bytefish/WeatherDataColumnStore/](https://codeberg.org/bytefish/WeatherDataColumnStore/)
+* [https://github.com/bytefish/WeatherDataColumnStore/](https://github.com/bytefish/WeatherDataColumnStore/)
 
 ## About the Dataset ##
 

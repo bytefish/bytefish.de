@@ -47,7 +47,7 @@ record streaks.
 
 All code can be found in the Git Repository at:
 
-* [https://codeberg.org/bytefish/DwdAnalysis](https://codeberg.org/bytefish/DwdAnalysis)
+* [https://github.com/bytefish/DwdAnalysis](https://github.com/bytefish/DwdAnalysis)
 
 ## Using SQL to find the Consecutive Heat Days ##
 

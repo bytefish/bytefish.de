@@ -9,7 +9,7 @@ summary: This article shows how to work with Firebase Cloud Messaging in Java.
 Some time ago I needed a simple way to send Push Messages with Firebase Cloud Messaging (FCM), so I 
 wrote [FcmJava]:
 
-* [https://codeberg.org/bytefish/FcmJava](https://codeberg.org/bytefish/FcmJava)
+* [https://github.com/bytefish/FcmJava](https://github.com/bytefish/FcmJava)
 
 [FcmJava] implements the entire [Firebase Cloud Messaging HTTP Protocol] and supports:
 
@@ -295,13 +295,13 @@ I have written an example Weather Warning Application using FcmJava.
 
 The Android Application can be found at:
 
-* [https://codeberg.org/bytefish/WeatherWarningApp](https://codeberg.org/bytefish/WeatherWarningApp)
+* [https://github.com/bytefish/WeatherWarningApp](https://github.com/bytefish/WeatherWarningApp)
 
 The server-side using [FcmJava] can be found at:
 
-* [https://codeberg.org/bytefish/FcmJava/....](https://codeberg.org/bytefish/FcmJava/blob/master/FcmJava/fcmjava-client/src/test/java/de/bytefish/fcmjava/client/tests/integration/WeatherWarningIntegrationTest.java)
+* [https://github.com/bytefish/FcmJava/....](https://github.com/bytefish/FcmJava/blob/master/FcmJava/fcmjava-client/src/test/java/de/bytefish/fcmjava/client/tests/integration/WeatherWarningIntegrationTest.java)
 
-[FcmJava]: https://codeberg.org/bytefish/FcmJava
+[FcmJava]: https://github.com/bytefish/FcmJava
 [Firebase Quickstart with Android]: https://github.com/firebase/quickstart-android/tree/master/messaging
 [Firebase Cloud Messaging (FCM) API]: https://firebase.google.com
 [Firebase Cloud Messaging HTTP Protocol]: https://firebase.google.com/docs/cloud-messaging/http-server-ref

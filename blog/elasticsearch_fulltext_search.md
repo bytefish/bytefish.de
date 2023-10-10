@@ -18,7 +18,7 @@ and iterate on ideas.
 
 You can find all code in my GitHub repository at:
 
-* [https://codeberg.org/bytefish/ElasticsearchFulltextExample](https://codeberg.org/bytefish/ElasticsearchFulltextExample)
+* [https://github.com/bytefish/ElasticsearchFulltextExample](https://github.com/bytefish/ElasticsearchFulltextExample)
 
 ## Table of contents ##
 

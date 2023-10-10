@@ -16,7 +16,7 @@ work with.
 
 The Repository for importing the [Airline On-Time Performance Dataset] into an SQL Server can be found at:
 
-* [https://codeberg.org/bytefish/AirlineOnTimePerformance](https://codeberg.org/bytefish/AirlineOnTimePerformance)
+* [https://github.com/bytefish/AirlineOnTimePerformance](https://github.com/bytefish/AirlineOnTimePerformance)
 
 ## Dataset ##
 
@@ -38,6 +38,6 @@ a ZIP File with the CSV data from 1987 to 2012.
 * [Combine ScaleR and SparkR in HDInsight](https://docs.microsoft.com/en-us/azure/hdinsight/hdinsight-hadoop-r-scaler-sparkr)
 
 [Revolution Analytics dataset repository]: https://packages.revolutionanalytics.com/datasets/AirOnTime87to12/
-[TinyCsvParser]: https://codeberg.org/bytefish/TinyCsvParser
+[TinyCsvParser]: https://github.com/bytefish/TinyCsvParser
 [Reactive Extensions]: https://github.com/Reactive-Extensions/Rx.NET
 [Airline On-Time Performance Dataset]: https://www.transtats.bts.gov/Tables.asp?DB_ID=120&DB_Name=Airline%20On-Time%20Performance%20Data&DB_Short_Name=On-Time

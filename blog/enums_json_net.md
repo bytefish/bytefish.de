@@ -10,7 +10,7 @@ summary: This article describes how to serialize and deserialize enums with Json
 [StringEnumConverter]: http://www.newtonsoft.com/json/help/html/t_newtonsoft_json_converters_stringenumconverter.htm
 [JsonConverter]: http://www.newtonsoft.com/json/help/html/T_Newtonsoft_Json_JsonConverter.htm
 [JsonConverter attribute]: http://www.newtonsoft.com/json/help/html/T_Newtonsoft_Json_JsonConverterAttribute.htm
-[GcmSharp]: https://codeberg.org/bytefish/GcmSharp
+[GcmSharp]: https://github.com/bytefish/GcmSharp
 [MIT License]: https://opensource.org/licenses/MIT
 
 This article shows you how to serialize and deserialize enums with [Json.NET]. 
@@ -20,7 +20,7 @@ user of your API client (for your users sanity), so error codes need to be conve
 
 Some time ago I have written [FcmSharp], which is a client for the Google Cloud Messaging (GCM) API. This example is based on the implementation at:
 
-* [https://codeberg.org/bytefish/FcmSharp](https://codeberg.org/bytefish/FcmSharp)
+* [https://github.com/bytefish/FcmSharp](https://github.com/bytefish/FcmSharp)
 
 The error codes for the Google Cloud Messaging API are described in the [HTTP Server Reference: Error Codes](https://developers.google.com/cloud-messaging/http-server-ref#error-codes).
 

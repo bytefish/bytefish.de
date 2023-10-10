@@ -12,7 +12,7 @@ In this article I am going to show you how to work with [Elasticsearch] in Java.
 
 You can find the full source code for the example in my git repository at:
 
-* [https://codeberg.org/bytefish/JavaElasticSearchExperiment](https://codeberg.org/bytefish/JavaElasticSearchExperiment)
+* [https://github.com/bytefish/JavaElasticSearchExperiment](https://github.com/bytefish/JavaElasticSearchExperiment)
 
 ## What we are going to build ##
 
@@ -32,7 +32,7 @@ Insert API.
 
 [ElasticUtils] is released under terms of the MIT License:
 
-* [https://codeberg.org/bytefish/ElasticUtils](https://codeberg.org/bytefish/ElasticUtils)
+* [https://github.com/bytefish/ElasticUtils](https://github.com/bytefish/ElasticUtils)
 
 You can add the following dependencies to your ``pom.xml`` to include [ElasticUtils] in your project:
 
@@ -837,9 +837,9 @@ I hope you had fun reading this article, and it gave you some insight on how to 
 [MIT License]: https://opensource.org/licenses/MIT
 [Apache Lucene]: https://lucene.apache.org/
 [Elasticsearch]: https://www.elastic.co/products/elasticsearch
-[JTinyCsvParser]: https://codeberg.org/bytefish/JTinyCsvParser/
+[JTinyCsvParser]: https://github.com/bytefish/JTinyCsvParser/
 [Quality Controlled Local Climatological Data (QCLCD)]: https://www.ncdc.noaa.gov/data-access/land-based-station-data/land-based-datasets/quality-controlled-local-climatological-data-qclcd
 [Query DSL]: https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl.html
 [Introducing the Query Language]: https://www.elastic.co/guide/en/elasticsearch/reference/current/_introducing_the_query_language.html
-[ElasticUtils]: https://codeberg.org/bytefish/ElasticUtils
+[ElasticUtils]: https://github.com/bytefish/ElasticUtils
 [Jackson]: https://github.com/FasterXML/jackson

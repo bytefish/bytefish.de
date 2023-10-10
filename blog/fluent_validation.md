@@ -7,7 +7,7 @@ author: Philipp Wagner
 summary: This article describes how to validate data with TinyCsvParser and FluentValidation.
 
 [FluentValidation]: https://github.com/JeremySkinner/FluentValidation
-[TinyCsvParser]: https://codeberg.org/bytefish/TinyCsvParser
+[TinyCsvParser]: https://github.com/bytefish/TinyCsvParser
 [NUnit]: http://www.nunit.org
 [MIT License]: https://opensource.org/licenses/MIT
 

@@ -39,4 +39,4 @@ git merge -X theirs -X subtree=JTinyCsvParser/documentation/build/html master
 git push -u origin gh-pages
 ```
 
-[JTinyCsvParser]: https://codeberg.org/bytefish/JTinyCsvParser
+[JTinyCsvParser]: https://github.com/bytefish/JTinyCsvParser

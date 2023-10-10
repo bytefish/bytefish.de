@@ -20,7 +20,7 @@ In [Part 1] of the series I have shown how to parse the [DWD Open Data] dataset,
 
 All code to reproduce the article can be found in my GitHub repository at:
 
-* [https://codeberg.org/bytefish/GermanWeatherDataExample](https://codeberg.org/bytefish/GermanWeatherDataExample)
+* [https://github.com/bytefish/GermanWeatherDataExample](https://github.com/bytefish/GermanWeatherDataExample)
 
 ## The Dataset ##
 
@@ -289,9 +289,9 @@ In a later post we will look at the read behavior of InfluxDB.
 [Part 1]: /blog/timeseries_databases_1_dataset
 [StringSplitTokenizer]: http://bytefish.github.io/TinyCsvParser/sections/userguide/tokenizer.html#stringsplittokenizer
 [Deep Learning]: https://en.wikipedia.org/wiki/Deep_learning
-[PostgreSQLCopyHelper]: https://codeberg.org/bytefish/PostgreSQLCopyHelper
+[PostgreSQLCopyHelper]: https://github.com/bytefish/PostgreSQLCopyHelper
 [Npgsql]: https://github.com/npgsql/npgsql
-[TinyCsvParser]: https://codeberg.org/bytefish/TinyCsvParser
+[TinyCsvParser]: https://github.com/bytefish/TinyCsvParser
 [Columnstore indexes]: https://docs.microsoft.com/en-us/sql/relational-databases/indexes/columnstore-indexes-overview
 [timescaledb-tune]: https://github.com/timescale/timescaledb-tune
 [The world's most valuable resource is no longer oil, but data]: https://www.economist.com/leaders/2017/05/06/the-worlds-most-valuable-resource-is-no-longer-oil-but-data
@@ -303,4 +303,4 @@ In a later post we will look at the read behavior of InfluxDB.
 [InfluxDB]: https://www.influxdata.com/time-series-platform/influxdb/
 [DWD Open Data]: https://opendata.dwd.de/
 [Deutscher Wetterdienst (DWD)]: https://www.dwd.de
-[GermanWeatherDataExample/Resources/files.md]: https://codeberg.org/bytefish/GermanWeatherDataExample/blob/master/GermanWeatherData/Resources/files.md
+[GermanWeatherDataExample/Resources/files.md]: https://github.com/bytefish/GermanWeatherDataExample/blob/master/GermanWeatherData/Resources/files.md

@@ -22,7 +22,7 @@ And in this article I want to show you how to generate choropleth maps in R.
 
 All scripts, queries and resources used in this post can be found at:
 
-* [https://codeberg.org/bytefish/WeatherDataColumnStore/](https://codeberg.org/bytefish/WeatherDataColumnStore/)
+* [https://github.com/bytefish/WeatherDataColumnStore/](https://github.com/bytefish/WeatherDataColumnStore/)
 
 ## Visualizing Temperatures ##
 

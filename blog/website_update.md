@@ -10,7 +10,7 @@ It's finally time to make a change, so these pages are now built by [Pelican](ht
 
 Most of my private work is open source, so are the sources and content of this page:
 
-* [https://codeberg.org/bytefish/bytefish.de](https://codeberg.org/bytefish/bytefish.de)
+* [https://github.com/bytefish/bytefish.de](https://github.com/bytefish/bytefish.de)
 
 The theme should also enhance the readability on mobile devices. It is fit to my needs, so please have a look at the settings before using it.
 

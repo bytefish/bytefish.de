@@ -62,7 +62,7 @@ is by far the simplest model to implement.
 
 The GitHub repository for this post can be found at:
 
-* [https://codeberg.org/bytefish/SpringBootMultiTenancy](https://codeberg.org/bytefish/SpringBootMultiTenancy)
+* [https://github.com/bytefish/SpringBootMultiTenancy](https://github.com/bytefish/SpringBootMultiTenancy)
 
 In this example we are going to develop a multitenant application to manage customers.
 

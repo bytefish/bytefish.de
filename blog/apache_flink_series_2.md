@@ -19,7 +19,7 @@ used to transform the CSV objects into the domain model, which is the emitted to
 
 You can find the full source code for the example in my git repository at:
 
-* [https://codeberg.org/bytefish/FlinkExperiments](https://codeberg.org/bytefish/FlinkExperiments)
+* [https://github.com/bytefish/FlinkExperiments](https://github.com/bytefish/FlinkExperiments)
 
 ## LocalWeatherDataSourceFunction ##
 
@@ -132,4 +132,4 @@ The next part of the series shows how to utilize the [SourceFunction] to serve a
 [KeyedStream]: https://ci.apache.org/projects/flink/flink-docs-master/apis/streaming/windows.html
 [SourceFunction]: https://ci.apache.org/projects/flink/flink-docs-master/apis/streaming/#data-sources
 [SinkFunction]: https://ci.apache.org/projects/flink/flink-docs-master/apis/streaming/#data-sinks
-[PgBulkInsert]: https://codeberg.org/bytefish/PgBulkInsert
+[PgBulkInsert]: https://github.com/bytefish/PgBulkInsert

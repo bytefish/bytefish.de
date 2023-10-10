@@ -6,7 +6,7 @@ slug: powershell_invoking_rest_apis
 author: Philipp Wagner
 summary: This article shows how to secure an ASP.NET Core OData API using the ODataAuthorization library.
 
-[ODataAuthorization]: https://codeberg.org/bytefish/ODataAuthorization/
+[ODataAuthorization]: https://github.com/bytefish/ODataAuthorization/
 
 In this article we will take a look at invoking a RESTful API with PowerShell. We are 
 going to use the `Invoke-RestMethod` cmdlet and learn about its parameters. Maybe it's 

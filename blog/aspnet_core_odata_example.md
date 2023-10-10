@@ -16,7 +16,7 @@ This article deals with the Backend with ASP.NET Core OData, the article for the
 
 All code can be found at:
 
-* [https://codeberg.org/bytefish/WideWorldImporters](https://codeberg.org/bytefish/WideWorldImporters)
+* [https://github.com/bytefish/WideWorldImporters](https://github.com/bytefish/WideWorldImporters)
 
 ## Table of contents ##
 

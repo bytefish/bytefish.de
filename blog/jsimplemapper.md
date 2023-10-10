@@ -7,7 +7,7 @@ author: Philipp Wagner
 summary: This article introduces JSimpleMapper for mapping between Java Beans.
 
 [MIT License]: https://opensource.org/licenses/MIT
-[JSimpleMapper]: https://codeberg.org/bytefish/JSimpleMapper
+[JSimpleMapper]: https://github.com/bytefish/JSimpleMapper
 [Oracle Documentation]: http://www.oracle.com/technetwork/java/javase/documentation/spec-136004.html
 
 [JSimpleMapper] is a small library for mapping between Java beans. It makes use of Java 1.8 lambda functions and doesn't use any reflection.

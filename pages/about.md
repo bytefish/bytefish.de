@@ -17,9 +17,8 @@ summary: About this page.
 
 *(in (almost) no special order)*
 
-* [https://codeberg.org](http://codeberg.org)
-    * [https://codeberg.org/bytefish](https://codeberg.org/bytefish)
 * [http://www.github.com](http://www.github.com)
+    * [https://github.com/bytefish](https://github.com/bytefish)    
     * [https://github.com/chsc](https://github.com/chsc)
     * [https://github.com/m4dm4x](https://github.com/m4dm4x)
 * [http://www.martinovsky.net](http://www.martinovsky.net)

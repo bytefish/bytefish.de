@@ -7,8 +7,8 @@ author: Philipp Wagner
 summary: This article explains how to use Mono on Ubuntu 14.04.3.
 
 [MIT License]: https://opensource.org/licenses/MIT
-[JTinyCsvParser]: https://codeberg.org/bytefish/JTinyCsvParser
-[TinyCsvParser]: https://codeberg.org/bytefish/TinyCsvParser
+[JTinyCsvParser]: https://github.com/bytefish/JTinyCsvParser
+[TinyCsvParser]: https://github.com/bytefish/TinyCsvParser
 [Parallel Streams]: https://docs.oracle.com/javase/tutorial/collections/streams/parallelism.html
 [Ubuntu]: http://www.ubuntu.com/
 [Mono]: http://www.mono-project.com/
