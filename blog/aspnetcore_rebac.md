@@ -6,15 +6,17 @@ slug: aspnetcore_rebac
 author: Philipp Wagner
 summary: This article shows a way to implement a Relationship-based Access Control in ASP.NET Core and SQL.
 
+[written an article about the Google Zanzibar Data Model]: https://www.bytefish.de/blog/relationship_based_acl_with_google_zanzibar.html
+
 You are opening your Google Drive app, and a moment later *your files* appear. It's magic. But 
 have you ever wondered what's *your files* actually? How do these services actually know, which 
-files you are allowed to see?
+files *you are allowed* to see?
 
-Are you part of an *Organization*, that is allowed to *view* all files of the *Organization* 
-itself? Have you been assigned to a *Team*, that's allowed to *view* or *edit* files? Has 
-someone shared *their files* with *you* as a *User*?
+Are you part of an *Organization* and you are allowed to *view* all their files? Have you been 
+assigned to a *Team*, that's allowed to *view* or *edit* files? Has someone shared *their files* 
+with *you* as a *User*?
 
-In 2019 Google has published a paper on "Google Zanzibar", which is Google's central solution 
+So in 2019 Google has published a paper on "Google Zanzibar", which is Google's central solution 
 for providing authorization among its many services:
 
 * [https://research.google/pubs/pub48190/](https://research.google/pubs/pub48190/)
@@ -24,12 +26,12 @@ The keyword here is *Relationship-based Access Control*, which is ...
 > [...] an authorization paradigm where a subject's permission to access a resource is defined by the 
 > presence of relationships between those subjects and resources.
 
-So let's find out about it! 
+Let's find out about it! 
 
 I have previously [written an article about the Google Zanzibar Data Model], and also wrote some 
-pretty nice SQL statements to make sense of the it. This article will make use of the queries 
-and takes a look at implementing Relationship-based Access Control using Microsoft SQL Server 
-and ASP.NET Core.
+pretty nice SQL statements to make sense of the it. This article will make use of the ideas, queries 
+and takes a look at implementing Relationship-based Access Control using Microsoft SQL Server and 
+ASP.NET Core.
 
 All code in this article can be found in a repository at:
 
@@ -39,7 +41,7 @@ All code in this article can be found in a repository at:
 
 [TOC]
 
-## What we are going to build ##
+## Role-based and Relationship-based ACL ##
 
 We are going to build out a tiny part of a Task Management system. Why? Because tasks are basically 
 everywhere in an organization, such as having tasks for signing documents, calling back customers or 
@@ -51,28 +53,35 @@ quickly escalate into a chaos, if we don't authorize users.
 
 ### Role-based Access Control (RBAC) ###
 
-One way to authorize users is Role-based Access Control.
+[Authoring an RBAC API for your application (by Stewart Adam)]: https://devblogs.microsoft.com/ise/2023/10/12/rbac-api-for-your-application/
 
 Role-based Access Control is definitely among the most popular models for defining permissions and 
 authorizing access to an organizations resources, such as our tasks. Highly simplified, a user is 
 being assigned a set of roles, where each role represents the users role within the organization.
 
-So a regular user of our fictional task management system might be able to view, edit and close 
-tasks, while it requires elevated rights to actually delete a task. Likewise a user being assigned 
-to the role *Software Development* should probably not be permitted to view or edit tasks created 
-by the *Human Resources* department.
+Back to our Task Management system, a regular user might be able to view, edit and close tasks, while 
+it requires elevated rights to actually delete a task. Likewise a user being assigned to the role 
+*Software Development* should probably not be permitted to view or edit tasks created by the 
+*Human Resources* people.
 
 There was recently a great Microsoft DevBlogs article by Stewart Adam, that discusses designing Role-based 
-Access Control for applications and it's a great read:
+Access Control for applications and it's a great read. It discusses quite a similar use case and comes up 
+with solutions:
 
-* [Authoring an RBAC API for your application (by Stewart Adam)](https://devblogs.microsoft.com/ise/2023/10/12/rbac-api-for-your-application/)
+* [Authoring an RBAC API for your application (by Stewart Adam)]
 
-And as you can see in the article, a Role-based Access Control can get very complex, very quickly. We have 
+As you can see in the article, a Role-based Access Control can get very complex, very quickly. We have 
 "Subtree grants", "Entity Graph Scopes", "Nested Roles", "Permission Wildcards", ... and sadly none of 
-it is illustrated with *actual code*.
+it is illustrated with *actual code*, none of this exists in ASP.NET Core.
 
-In my experience Role-based Access Control can take you very far, but as soon you need more fine-grained 
-control, you are most probably out of luck. 
+In my experience Role-based Access Control can take you very, very far. And it works great, as long as 
+an organization strictly adheres to the roles defined. But as soon you need a more fine-grained control, 
+you are most probably out of luck. 
+
+And in so many projects I've learnt, that *there is always a special snowflake*, that doesn't fit the 
+roles and needs a special role. This *may* lead to an explosion in roles, or you apply the compensation 
+mentioned in [Authoring an RBAC API for your application (by Stewart Adam)] (oh, or you just give up 
+and grant the user elevated rights).
 
 ### Relationship-based Access Control (ReBAC) ###
 
@@ -133,10 +142,18 @@ it's something, that's often done in these systems. It's already been noted in t
 
 > [...] A number of Zanzibar clients have implemented RBAC policies on top of Zanzibar’s namespace configuration language. [...]
 
-### RASP.NET Core 
+So using Role-based Access Control and Relationship-based Access Control is not a mutually exclusive decision. You can 
+easily build Role-based Access Control upon the Google Zanzibar data model and use the Access Control system, that 
+works best for your use case. 
 
-At the end of this article we will have a RESTful API, that secures it's endpoint using Relationship-based 
-Access Control. 
+## What we are going to build ##
+
+We will build a small part of a Task Management System using ASP.NET Core and EntityFramework Core. The idea is 
+to wrap the Check API and ListObjects API developed in the previous Google Zanzibar article with EntityFramework 
+Core and integrate it into the ASP.NET Core pipeline. 
+
+At the end of this article we will have a RESTful API, that's authorizes a user using a Relationship-based 
+Access Control, based on the Google Zanzibar data model. Here is the Swagger Overview.
 
 <div style="display:flex; align-items:center; justify-content:center;margin-bottom:15px;">
     <a href="/static/images/blog/aspnetcore_rebac/swagger_endpoints.jpg">
@@ -144,8 +161,9 @@ Access Control.
     </a>
 </div>
 
+Maybe in a later article we will develop a Blazor application to query it.
 
-## Designing the Database ##
+## Database Design ##
 
 If you are going to work with a relational database you should put all your database objects in version control. The 
 best example for a SQL Server Database Project (SSDP) available out there is the [WideWorldImporters OLTP Database] 
@@ -230,12 +248,6 @@ For SQL Server the following table is a good start.
 |  Table-Valued Function                   | PascalCase |    128 | No     | `tvf_`  | No        | `tvf_FunctionLogicalName`                                |
 |  Sequence                                | PascalCase |    128 | No     | `sq_`   | No        | `sq_TableName`                                           |
 
-### Natural vs. Surrogate Primary Keys ###
-
-In our application we want to make assumptions about the tables, so we set the convention to always 
-set a Surrogate Primary Key. So a Table like `User` is going to have a `UserID` Primary Key, no 
-matter if there are suitable natural Primary Keys.
-
 ### Auditing and Optimistic Locking ###
 
 In my experience every database table should support optimistic locking and auditing baked in from the 
@@ -254,8 +266,11 @@ So as a convention *every* table in our application gets the following 4 additio
 |  ValidFrom      | `DATETIME2(7)`  | No         | Period start column: The system records the start time for the row in this column   |
 |  ValidTo        | `DATETIME2(7)`  | No         | Period end column: The system records the end time for the row in this column       |
 
-They don't hurt and they bring a lot of usefulness to the table. And if you don't need a history, just deactivate 
-the Temporal Table and call it a day.
+They don't hurt and they might turn out very useful. And if you don't need a history? 🤷, just deactivate the Temporal Table and call it a day!
+
+Do Temporal Tables solve all problems? Oh, for sure they don't and they are a trade-off, like everything in software 
+development. You might run into problems on high volume data, you have to deactivate temporal tables before 
+migrations and need to set 
 
 ### Temporal Tables ###
 
@@ -300,6 +315,176 @@ CREATE TABLE [Application].[UserTask](
 You can learn everything about Temporal Tables in the SQL Server documentation at:
 
 * [https://learn.microsoft.com/en-us/sql/relational-databases/tables/temporal-tables](https://learn.microsoft.com/en-us/sql/relational-databases/tables/temporal-tables)
+
+#### Short Story on Auditing with EntityFramework Core ####
+
+The canonical EntityFramework Core example you'll find for auditing, usually works by overriding the 
+`DbContext#SaveChanges` method or intercepting its call, and then inspect the `DbContext` Change 
+Tracker for changes.
+
+This is illustrated by the following code snippet, which implements a `SaveChangesInterceptor`.
+
+```csharp
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+using EfCoreAudit.Model;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
+
+namespace EfCoreAudit.Database.Interceptors
+{
+    /// <summary>
+    /// A <see cref="SaveChangesInterceptor"/> for adding auditing metadata.
+    /// </summary>
+    internal class AuditingInterceptor : SaveChangesInterceptor
+    {
+        public override ValueTask<InterceptionResult<int>> SavingChangesAsync(DbContextEventData eventData, InterceptionResult<int> result, CancellationToken cancellationToken = default)
+        {
+            DbContext ctx = eventData.Context!;
+
+            if (ctx == null)
+            {
+                return base.SavingChangesAsync(eventData, result, cancellationToken);
+            }
+
+            var auditableEntities = ctx.ChangeTracker.Entries<AuditableEntity>().ToList();
+
+            foreach (var auditableEntity in auditableEntities)
+            {
+
+                if (auditableEntity.State == EntityState.Added)
+                {
+                    auditableEntity.Property(x => x.CreatedDateTime).CurrentValue = DateTime.UtcNow;
+                }
+
+                if (auditableEntity.State == EntityState.Modified)
+                {
+                    auditableEntity.Property(x => x.ModifiedDateTime).CurrentValue = DateTime.UtcNow;
+                }
+            }
+
+            return base.SavingChangesAsync(eventData, result, cancellationToken);
+        }
+    }
+}
+```
+
+It's a bad advice, because it works only as long as all your entities are tracked, but a Change Tracker is an expensive 
+thing... and more importantly, as soon as you are using the modern `DbSet<T>#ExecuteUpdateAsync` you are out of luck 
+with this approach. And what about Stored Procedures? One-Time Scripts? Migrations? 
+
+Just let your (very) expensive database handle it!
+
+### Schemas ###
+
+Now the wall of text is over. 
+
+Let's get to actual code!
+
+We have two schemas named `[Identity]` and `[Application]`. The `[Identity]` schema, surprise, is going to hold all 
+identity related stuff, such as a `User`, a `Role` and the `RelationTuple` for defining the permissions. It's also 
+going to hold the functions to list objects and check for permissions. 
+
+The `[Application]` schema is going to hold everything not directly related to the Identity management, such as `UserTask`, 
+`Organization`, `Team`, ... entities.  
+
+#### Tables ####
+
+The application has a very simple `User` model for now. A user may be permitted to Logon using a Logon Name, 
+which is going to be unique among all users. The password hashing needs to be done in the application, when 
+adding a user to the system.
+
+```sql
+CREATE TABLE [Identity].[User](
+    [UserID]                INT                                         CONSTRAINT [DF_Identity_User_UserID] DEFAULT (NEXT VALUE FOR [Identity].[sq_User]) NOT NULL,
+    [FullName]              NVARCHAR(50)                                NOT NULL,
+    [PreferredName]         NVARCHAR(50)                                NULL,
+    [IsPermittedToLogon]    BIT                                         NOT NULL,
+    [LogonName]             NVARCHAR (256)                              NULL,
+    [HashedPassword]        NVARCHAR (MAX)                              NULL,
+    [RowVersion]            ROWVERSION                                  NULL,
+    [LastEditedBy]          INT                                         NOT NULL,
+    [ValidFrom]             DATETIME2 (7) GENERATED ALWAYS AS ROW START NOT NULL,
+    [ValidTo]               DATETIME2 (7) GENERATED ALWAYS AS ROW END   NOT NULL,
+    CONSTRAINT [PK_User] PRIMARY KEY ([UserID]),
+    CONSTRAINT [FK_User_LastEditedBy_User_UserID] FOREIGN KEY ([LastEditedBy]) REFERENCES [Identity].[User] ([UserID]),
+    PERIOD FOR SYSTEM_TIME (ValidFrom, ValidTo)
+) WITH (SYSTEM_VERSIONING = ON (HISTORY_TABLE = [Identity].[UserHistory]));
+```
+
+We want to build Role-based Access Control on top of the relationship model, so we add a table `[Identity].[Role]` to hold the roles in our system.
+
+```sql
+CREATE TABLE [Identity].[Role](
+    [RoleID]                INT                                         CONSTRAINT [DF_Identity_Role_RoleID] DEFAULT (NEXT VALUE FOR [Identity].[sq_Role]) NOT NULL,
+    [Name]                  NVARCHAR(255)                               NOT NULL,
+    [Description]           NVARCHAR(2000)                              NULL,
+    [RowVersion]            ROWVERSION                                  NULL,
+    [LastEditedBy]          INT                                         NOT NULL,
+    [ValidFrom]             DATETIME2 (7) GENERATED ALWAYS AS ROW START NOT NULL,
+    [ValidTo]               DATETIME2 (7) GENERATED ALWAYS AS ROW END   NOT NULL,
+    CONSTRAINT [PK_Role] PRIMARY KEY ([RoleID]),
+    CONSTRAINT [FK_Role_LastEditedBy_User_UserID] FOREIGN KEY ([LastEditedBy]) REFERENCES [Identity].[User] ([UserID]),
+    PERIOD FOR SYSTEM_TIME (ValidFrom, ValidTo)
+) WITH (SYSTEM_VERSIONING = ON (HISTORY_TABLE = [Identity].[RoleHistory]));
+```
+
+
+
+```sql
+CREATE TABLE [Identity].[RelationTuple](
+    [RelationTupleID]       INT                                         CONSTRAINT [DF_Identity_RelationTuple_RelationTupleID] DEFAULT (NEXT VALUE FOR [Identity].[sq_RelationTuple]) NOT NULL,
+    [ObjectKey]             INT                                         NOT NULL,
+    [ObjectNamespace]       NVARCHAR(50)                                NOT NULL,
+    [ObjectRelation]        NVARCHAR(50)                                NOT NULL,
+    [SubjectKey]            INT                                         NOT NULL,
+    [SubjectNamespace]      NVARCHAR(50)                                NOT NULL,
+    [SubjectRelation]       NVARCHAR(50)                                NULL,
+    [RowVersion]            ROWVERSION                                  NULL,
+    [LastEditedBy]          INT                                         NOT NULL,
+    [ValidFrom]             DATETIME2 (7) GENERATED ALWAYS AS ROW START NOT NULL,
+    [ValidTo]               DATETIME2 (7) GENERATED ALWAYS AS ROW END   NOT NULL,
+    CONSTRAINT [PK_RelationTupleID] PRIMARY KEY ([RelationTupleID]),
+    CONSTRAINT [FK_RelationTuple_LastEditedBy_User_UserID] FOREIGN KEY ([LastEditedBy]) REFERENCES [Identity].[User] ([UserID]),
+    PERIOD FOR SYSTEM_TIME (ValidFrom, ValidTo)
+) WITH (SYSTEM_VERSIONING = ON (HISTORY_TABLE = [Identity].[RelationTupleHistory]));
+```
+
+### Post Deployment Scripts ###
+
+We can use Post-Deployment Scripts to insert initial data, 
+
+```sql
+PRINT 'Inserting [Identity].[User] ...'
+
+-----------------------------------------------
+-- Global Parameters
+-----------------------------------------------
+DECLARE @ValidFrom datetime2(7) = '20130101'
+DECLARE @ValidTo datetime2(7) =  '99991231 23:59:59.9999999'
+
+-----------------------------------------------
+-- [Identity].[User]
+-----------------------------------------------
+MERGE INTO [Identity].[User] AS [Target]
+USING (VALUES 
+     (1, 'Data Conversion Only', 'Data Conversion Only', 0, NULL, NULL, 1, @ValidFrom, @ValidTo)
+    ,(2, 'Philipp Wagner',  'Philipp Wagner',   1, 'philipp@bytefish.de',   'AQAAAAIAAYagAAAAELbMFL9utkwA7FK4QoUCZEK/jPiHhTMzuFllrszW7FuCJBHjLVBCWXJCuFFJyRllYg==', 1, @ValidFrom, @ValidTo) --5!F25GbKwU3P
+    ,(3, 'John Doe',        'John Doe',         0, 'john@doe.localhost',    NULL, 1, @ValidFrom, @ValidTo)
+    ,(4, 'Max Powers',      'Max Powers',       0, 'max@powers.localhost',  NULL, 1, @ValidFrom, @ValidTo)
+    ,(5, 'James Bond',      '007',              0, 'james@bond.localhost',  NULL, 1, @ValidFrom, @ValidTo)
+    ,(6, 'John Connor',     'John Connor',      0, 'john@connor.localhost', NULL, 1, @ValidFrom, @ValidTo)
+) AS [Source]([UserID], [FullName], [PreferredName], [IsPermittedToLogon], [LogonName], [HashedPassword], [LastEditedBy], [ValidFrom], [ValidTo])
+ON ([Target].[UserID] = [Source].[UserID])
+WHEN NOT MATCHED BY TARGET THEN
+    INSERT 
+        ([UserID], [FullName], [PreferredName], [IsPermittedToLogon], [LogonName], [HashedPassword], [LastEditedBy], [ValidFrom], [ValidTo])
+    VALUES 
+        ([Source].[UserID], [Source].[FullName], [Source].[PreferredName], [Source].[IsPermittedToLogon], [Source].[LogonName], [Source].[HashedPassword], [Source].[LastEditedBy], [Source].[ValidFrom], [Source].[ValidTo]);
+
+```
+
+
 
 ## Errors, Exceptions, ... ##
 
@@ -452,8 +637,567 @@ namespace RebacExperiments.Server.Api.Tests
 }
 ```
 
+## ASP.NET Core ##
 
+### Integrating the ListObjects API ###
 
+We have written a Table-Valued Function `[Identity].[tvf_RelationTuples_ListObjects]` to list all objects a user 
+has access to. Let's copy and paste it from the previous article, so you don't have to jump back and forth.
+
+```sql
+CREATE FUNCTION [Identity].[tvf_RelationTuples_ListObjects]
+(
+     @ObjectNamespace NVARCHAR(50) 
+    ,@ObjectRelation NVARCHAR(50)
+    ,@SubjectNamespace NVARCHAR(50)
+    ,@SubjectKey INT
+)
+RETURNS @returntable TABLE
+(
+
+     [RelationTupleID]   INT
+    ,[ObjectNamespace]   NVARCHAR(50)
+    ,[ObjectKey]         INT
+    ,[ObjectRelation]    NVARCHAR(50)
+    ,[SubjectNamespace]  NVARCHAR(50)
+    ,[SubjectKey]        INT
+    ,[SubjectRelation]   NVARCHAR(50)
+)
+AS
+BEGIN
+
+    WITH RelationTuples AS
+    (
+       SELECT
+	       [RelationTupleID]
+          ,[ObjectNamespace]
+          ,[ObjectKey]
+          ,[ObjectRelation]
+          ,[SubjectNamespace]
+          ,[SubjectKey]
+          ,[SubjectRelation]
+	      , 0 AS [HierarchyLevel]
+        FROM
+          [Identity].[RelationTuple]
+        WHERE
+		    [SubjectNamespace] = @SubjectNamespace AND [SubjectKey] = @SubjectKey
+	  
+	    UNION All
+	
+	    SELECT        
+	       r.[RelationTupleID]
+	      ,r.[ObjectNamespace]
+          ,r.[ObjectKey]
+          ,r.[ObjectRelation]
+          ,r.[SubjectNamespace]
+          ,r.[SubjectKey]
+          ,r.[SubjectRelation]
+	      ,[HierarchyLevel] + 1 AS [HierarchyLevel]
+      FROM 
+	    [Identity].[RelationTuple] r, [RelationTuples] cte
+      WHERE 
+	    cte.[ObjectKey] = r.[SubjectKey] 
+		    AND cte.[ObjectNamespace] = r.[SubjectNamespace] 
+		    AND cte.[ObjectRelation] = r.[SubjectRelation]
+    )
+    INSERT 
+        @returntable
+    SELECT DISTINCT 
+	    [RelationTupleID], [ObjectNamespace], [ObjectKey], [ObjectRelation], [SubjectNamespace], [SubjectKey], [SubjectRelation]
+    FROM 
+	    [RelationTuples] 
+    WHERE
+	    [ObjectNamespace] = @ObjectNamespace AND [ObjectRelation] = @ObjectRelation;
+
+    RETURN;
+
+END
+```
+
+We have previously defined a `RelationTuple` entity, that maps just fine to the function.
+
+```csharp
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+namespace RebacExperiments.Server.Api.Models
+{
+    public class RelationTuple : Entity
+    {
+        /// <summary>
+        /// Gets or sets the ObjectKey.
+        /// </summary>
+        public int ObjectKey { get; set; }
+
+        /// <summary>
+        /// Gets or sets the ObjectNamespace.
+        /// </summary>
+        public required string ObjectNamespace { get; set; }
+
+        /// <summary>
+        /// Gets or sets the ObjectRelation.
+        /// </summary>
+        public required string ObjectRelation { get; set; }
+
+        /// <summary>
+        /// Gets or sets the SubjectKey.
+        /// </summary>
+        public required int SubjectKey { get; set; }
+
+        /// <summary>
+        /// Gets or sets the SubjectNamespace.
+        /// </summary>
+        public string? SubjectNamespace { get; set; }
+
+        /// <summary>
+        /// Gets or sets the SubjectRelation.
+        /// </summary>
+        public string? SubjectRelation { get; set; }
+    }
+}
+```
+
+What's left is mapping the Table-Valued Function in the `ApplicationDbContext` as the `ListObjects` method.
+
+```csharp
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+using Microsoft.EntityFrameworkCore;
+using RebacExperiments.Server.Api.Models;
+
+namespace RebacExperiments.Server.Api.Infrastructure.Database
+{
+    /// <summary>
+    /// A <see cref="DbContext"/> to query the database.
+    /// </summary>
+    public class ApplicationDbContext : DbContext
+    {
+        /// <summary>
+        /// Logger.
+        /// </summary>
+        internal ILogger<ApplicationDbContext> Logger { get; }
+
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        /// <param name="options">Options to configure the base <see cref="DbContext"/></param>
+        public ApplicationDbContext(ILogger<ApplicationDbContext> logger, DbContextOptions<ApplicationDbContext> options)
+            : base(options)
+        {
+            Logger = logger;
+        }
+        
+        // ...
+
+        /// <summary>
+        /// List Objects.
+        /// </summary>
+        /// <param name="objectNamespace">Object Namespace</param>
+        /// <param name="objectRelation">Object Relation</param>
+        /// <param name="subjectNamespace">Subject Namespace</param>
+        /// <param name="subjectKey">Subject Key</param>
+        /// <returns></returns>
+        public IQueryable<RelationTuple> ListObjects(string objectNamespace, string objectRelation, string subjectNamespace, int subjectKey)
+            => FromExpression(() => ListObjects(objectNamespace, objectRelation, subjectNamespace, subjectKey));
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            // Add ListObjects Function, so we can use it in LINQ:
+            modelBuilder
+                .HasDbFunction(
+                    methodInfo: typeof(ApplicationDbContext).GetMethod(nameof(ListObjects), new[] { typeof(string), typeof(string), typeof(string), typeof(int) })!,
+                    builderAction: builder => builder
+                        .HasSchema("Identity")
+                        .HasName("tvf_RelationTuples_ListObjects"));
+                        
+            // ...
+            
+            base.OnModelCreating(modelBuilder);
+        }
+    }
+}
+```
+
+And that's it!
+
+#### Extension Methods to simplify the ListObjects API ####
+
+As of now the `ListObjects` expects us to pass `string` values and an `integer` for the subject key. We want to simplify 
+this, and I want to have a method I can call like this:
+
+```csharp
+// Get all owned UserTasks for a given user:
+var userTasks = _applicationDbContext
+    .ListUserObjects<UserTask>(user.Id, Relations.Owner)
+    .AsNoTracking()
+    .ToList();
+    
+// Get all Organizations and explicitly define the Object and Subject:
+var organizations = _applicationDbContext
+    .ListObjects<Organization, User>(user.Id, Relations.Member)
+    .AsNoTracking()
+    .ToList();
+    
+// Get all viewable or owned UserTasks for a given user:
+var userTasksAsViewerOrOwner = _applicationDbContext
+    .ListUserObjects<UserTask>(user.Id, Relations.Viewer, Relations.Owner)
+    .AsNoTracking()
+    .ToList();
+```
+
+We don't put these methods directly into the `ApplicationDbContext`, but define them as Extension methods in 
+a static class we call `ApplicationDbContextExtensions`.
+
+```csharp
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+using Microsoft.EntityFrameworkCore;
+using RebacExperiments.Server.Api.Infrastructure.Logging;
+using RebacExperiments.Server.Api.Models;
+
+namespace RebacExperiments.Server.Api.Infrastructure.Database
+{
+    /// <summary>
+    /// Extensions on the <see cref="ApplicationDbContext"/> to allow Relationship-based ACL.
+    /// </summary>
+    public static class ApplicationDbContextExtensions
+    {
+        /// <summary>
+        /// Checks if a <see cref="User"/> is authorized to access an <typeparamref name="TObjectType"/>. 
+        /// </summary>
+        /// <typeparam name="TObjectType">Object Type</typeparam>
+        /// <param name="context">DbContext</param>
+        /// <param name="objectId">Object Key</param>
+        /// <param name="relation">Relation</param>
+        /// <param name="cancellationToken">Cancellation Token</param>
+        /// <returns><see cref="true"/>, if the <typeparamref name="TSubjectType"/> is authorized; else <see cref="false"/></returns>
+        public static Task<bool> CheckUserObject<TObjectType>(this ApplicationDbContext context, int userId, TObjectType @object, string relation, CancellationToken cancellationToken)
+            where TObjectType : Entity
+        {
+            context.Logger.TraceMethodEntry();
+
+            return CheckObject<TObjectType, User>(context, @object.Id, relation, userId, cancellationToken);
+        }
+
+        /// <summary>
+        /// Returns all <typeparamref name="TObjectType"/> for a given <typeparamref name="TSubjectType"/> and <paramref name="relation"/>.
+        /// </summary>
+        /// <param name="subjectId">Subject Key to resolve</param>
+        /// <param name="relation">Relation between the Object and Subject</param>
+        /// <returns>All <typeparamref name="TEntityType"/> the user is related to</returns>
+        public static IQueryable<TObjectType> ListObjects<TObjectType, TSubjectType>(this ApplicationDbContext context, int subjectId, string relation)
+            where TObjectType : Entity
+            where TSubjectType : Entity
+        {
+            context.Logger.TraceMethodEntry();
+
+            return
+                from entity in context.Set<TObjectType>()
+                join objects in context.ListObjects(typeof(TObjectType).Name, relation, typeof(TSubjectType).Name, subjectId)
+                    on entity.Id equals objects.ObjectKey
+                select entity;
+        }
+
+        /// <summary>
+        /// Returns all <typeparamref name="TObjectType"/> for a given <typeparamref name="TSubjectType"/> and a list of Relations.
+        /// </summary>
+        /// <param name="subjectId">Subject Key to resolve</param>
+        /// <param name="relation">Relation between the Object and Subject</param>
+        /// <returns>All <typeparamref name="TEntityType"/> the user is related to</returns>
+        public static IQueryable<TObjectType> ListObjects<TObjectType, TSubjectType>(this ApplicationDbContext context, int subjectId, string[] relations)
+            where TObjectType : Entity
+            where TSubjectType : Entity
+        {
+            context.Logger.TraceMethodEntry();
+
+            return relations
+                .Select(relation => ListObjects<TObjectType, TSubjectType>(context, subjectId, relation))
+                .Aggregate((current, next) => current.Union(next));
+        }
+
+        /// <summary>
+        /// Returns all <typeparamref name="TEntityType"/> for a given <paramref name="userId"/> and <paramref name="relation"/>.
+        /// </summary>
+        /// <param name="userId">UserID</param>
+        /// <param name="relation">Relation between the User and a <typeparamref name="TEntityType"/></param>
+        /// <returns>All <typeparamref name="TEntityType"/> the user is related to</returns>
+        public static IQueryable<TEntityType> ListUserObjects<TEntityType>(this ApplicationDbContext context, int userId, string relation)
+            where TEntityType : Entity
+        {
+            context.Logger.TraceMethodEntry();
+
+            return context.ListObjects<TEntityType, User>(userId, relation);
+        }
+
+        /// <summary>
+        /// Returns all <typeparamref name="TEntityType"/> for a given <paramref name="userId"/> and <paramref name="relation"/>.
+        /// </summary>
+        /// <param name="userId">UserID</param>
+        /// <param name="relation">Relation between the User and a <typeparamref name="TEntityType"/></param>
+        /// <returns>All <typeparamref name="TEntityType"/> the user is related to</returns>
+        public static IQueryable<TEntityType> ListUserObjects<TEntityType>(this ApplicationDbContext context, int userId, string[] relations)
+            where TEntityType : Entity
+        {
+            context.Logger.TraceMethodEntry();
+
+            return context.ListObjects<TEntityType, User>(userId, relations);
+        }
+
+        /// <summary>
+        /// Creates a Relationship between a <typeparamref name="TObjectType"/> and a <typeparamref name="TSubjectType"/>.
+        /// </summary>
+        /// <typeparam name="TObjectType">Type of the Object</typeparam>
+        /// <typeparam name="TSubjectType">Type of the Subject</typeparam>
+        /// <param name="context">DbContext</param>
+        /// <param name="object">Object Entity</param>
+        /// <param name="relation">Relation between Object and Subject</param>
+        /// <param name="subject">Subject Entity</param>
+        /// <param name="subjectRelation">Relation to the Subject</param>
+        /// <param name="cancellationToken">Cancellation Token</param>
+        /// <returns></returns>
+        public static async Task AddRelationshipAsync<TObjectType, TSubjectType>(this ApplicationDbContext context, TObjectType @object, string relation, TSubjectType subject, string? subjectRelation, int lastEditedBy, CancellationToken cancellationToken = default)
+            where TObjectType : Entity
+            where TSubjectType : Entity
+        {
+            context.Logger.TraceMethodEntry();
+
+            var relationTuple = new RelationTuple
+            {
+                ObjectNamespace = typeof(TObjectType).Name,
+                ObjectKey = @object.Id,
+                ObjectRelation = relation,
+                SubjectNamespace = typeof(TSubjectType).Name,
+                SubjectKey = subject.Id,
+                SubjectRelation = subjectRelation,
+                LastEditedBy = lastEditedBy
+            };
+
+            await context.Set<RelationTuple>().AddAsync(relationTuple, cancellationToken);
+        }
+
+        /// <summary>
+        /// Creates a Relationship between a <typeparamref name="TObjectType"/> and a <typeparamref name="TSubjectType"/>.
+        /// </summary>
+        /// <typeparam name="TObjectType">Type of the Object</typeparam>
+        /// <typeparam name="TSubjectType">Type of the Subject</typeparam>
+        /// <param name="context">DbContext</param>
+        /// <param name="objectId">Object Entity</param>
+        /// <param name="relation">Relation between Object and Subject</param>
+        /// <param name="subjectId">Subject Entity</param>
+        /// <param name="subjectRelation">Relation to the Subject</param>
+        /// <param name="cancellationToken">Cancellation Token</param>
+        /// <returns></returns>
+        public static async Task AddRelationshipAsync<TObjectType, TSubjectType>(this ApplicationDbContext context, int objectId, string relation, int subjectId, string? subjectRelation, int lastEditedBy, CancellationToken cancellationToken = default)
+            where TObjectType : Entity
+            where TSubjectType : Entity
+        {
+            context.Logger.TraceMethodEntry();
+
+            var relationTuple = new RelationTuple
+            {
+                ObjectNamespace = typeof(TObjectType).Name,
+                ObjectKey = objectId,
+                ObjectRelation = relation,
+                SubjectNamespace = typeof(TSubjectType).Name,
+                SubjectKey = subjectId,
+                SubjectRelation = subjectRelation,
+                LastEditedBy = lastEditedBy
+            };
+
+            await context.Set<RelationTuple>().AddAsync(relationTuple, cancellationToken);
+        }
+    }
+}
+```
+
+#### Integration Tests for the ListObjects API ####
+
+What's left is to write some tests for the `ListUserObjects<TObjectType>` methods. We follow the classic 
+Arrange-Act-Assert pattern for these tests. It's important for these tests to have an extensive description, 
+because while they are pretty short it takes quite some mental overhead to digest the relationships.
+
+```csharp
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+using Microsoft.EntityFrameworkCore;
+using NUnit.Framework;
+using RebacExperiments.Server.Api.Infrastructure.Constants;
+using RebacExperiments.Server.Api.Infrastructure.Database;
+using RebacExperiments.Server.Api.Models;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace RebacExperiments.Server.Api.Tests
+{
+    public class ListUserObjectsTests : TransactionalTestBase
+    {
+        /// <summary>
+        /// In this test we create a <see cref="User"/> (user) and a <see cref="UserTask"/> (task). The 'user' is member of 
+        /// a <see cref="Team"/> (team). The 'user' is also a member of an <see cref="Organization"/> (oganization). Members 
+        /// of the 'organization' are viewers of the 'task' and members of the 'team' are owners of the 'task'.
+        /// 
+        /// The Relationship-Table is given below.
+        /// 
+        /// ObjectKey           |  ObjectNamespace  |   ObjectRelation  |   SubjectKey          |   SubjectNamespace    |   SubjectRelation
+        /// --------------------|-------------------|-------------------|-----------------------|-----------------------|-------------------
+        /// :team.id:           |   Team            |       member      |   :user.id:           |       User            |   NULL
+        /// :organization.id:   |   Organization    |       member      |   :user.id:           |       User            |   NULL
+        /// :task.id:           |   UserTask        |       viewer      |   :organization.id:   |       Organization    |   member
+        /// :task.id:           |   UserTask        |       owner       |   :team.id:           |       Team            |   member
+        /// </summary>
+        [Test]
+        public async Task ListUserObjects_OneUserTaskAssignedThroughOrganizationAndTeam()
+        {
+            // Arrange
+            var user = new User
+            {
+                FullName = "Test-User",
+                PreferredName = "Test-User",
+                IsPermittedToLogon = false,
+                LastEditedBy = 1,
+                LogonName = "test-user@test-user.localhost"
+            };
+
+            await _applicationDbContext.AddAsync(user);
+            await _applicationDbContext.SaveChangesAsync();
+
+            var organization = new Organization
+            {
+                Name = "Test-Organization",
+                Description = "Organization for Unit Test",
+                LastEditedBy = user.Id
+            };
+
+            await _applicationDbContext.AddAsync(organization);
+            await _applicationDbContext.SaveChangesAsync();
+
+            var team = new Team
+            {
+                Name = "Test-Team",
+                Description = "Team for Unit Test",
+                LastEditedBy = user.Id
+            };
+
+            await _applicationDbContext.AddAsync(team);
+            await _applicationDbContext.SaveChangesAsync();
+
+            var task = new UserTask
+            {
+                Title = "Test-Task",
+                Description = "My Test-Task",
+                LastEditedBy = user.Id,
+                UserTaskPriority = UserTaskPriorityEnum.High,
+                UserTaskStatus = UserTaskStatusEnum.InProgress
+            };
+
+            await _applicationDbContext.AddAsync(task);
+            await _applicationDbContext.SaveChangesAsync();
+
+            await _applicationDbContext.AddRelationshipAsync(team, Relations.Member, user, null, user.Id);
+            await _applicationDbContext.AddRelationshipAsync(organization, Relations.Member, user, null, user.Id);
+            await _applicationDbContext.AddRelationshipAsync(task, Relations.Viewer, organization, Relations.Member, user.Id);
+            await _applicationDbContext.AddRelationshipAsync(task, Relations.Owner, team, Relations.Member, user.Id);
+            await _applicationDbContext.SaveChangesAsync();
+
+            // Act
+            var userTasks_Owner = _applicationDbContext
+                .ListUserObjects<UserTask>(user.Id, Relations.Owner)
+                .AsNoTracking()
+                .ToList();
+
+            var userTasks_Viewer = _applicationDbContext
+                .ListUserObjects<UserTask>(user.Id, Relations.Viewer)
+                .AsNoTracking()
+                .ToList();
+
+            var team_Member = _applicationDbContext
+                .ListUserObjects<Team>(user.Id, Relations.Member)
+                .AsNoTracking()
+                .ToList();
+
+            var organization_Member = _applicationDbContext
+                .ListUserObjects<Organization>(user.Id, Relations.Member)
+                .AsNoTracking()
+                .ToList();
+
+            // Assert
+            Assert.AreEqual(1, userTasks_Owner.Count);
+            Assert.AreEqual(task.Id, userTasks_Owner[0].Id);
+
+            Assert.AreEqual(1, userTasks_Viewer.Count);
+            Assert.AreEqual(task.Id, userTasks_Viewer[0].Id);
+
+            Assert.AreEqual(1, team_Member.Count);
+            Assert.AreEqual(team.Id, team_Member[0].Id);
+
+            Assert.AreEqual(1, organization_Member.Count);
+            Assert.AreEqual(organization.Id, organization_Member[0].Id);
+        }
+
+        /// <summary>
+        /// In this test we create a <see cref="User"/> (user) and assign two <see cref="UserTask"/> (tas1, task2). The 'user' 
+        /// is 'viewer' for 'task1' and an 'owner' for 'task2'.
+        /// 
+        /// The Relationship-Table is given below.
+        /// 
+        /// ObjectKey           |  ObjectNamespace  |   ObjectRelation  |   SubjectKey          |   SubjectNamespace    |   SubjectRelation
+        /// --------------------|-------------------|-------------------|-----------------------|-----------------------|-------------------
+        /// :task1.id:          |   UserTask        |       viewer      |   :user.id:           |       User            |   NULL
+        /// :task2.id:          |   UserTask        |       owner       |   :user.id:           |       User            |   NULL
+        /// </summary>
+        [Test]
+        public async Task ListUserObjects_TwoUserTasksAssignedToOrganizationAndTeam()
+        {
+            // Arrange
+            var user = new User
+            {
+                FullName = "Test-User",
+                PreferredName = "Test-User",
+                IsPermittedToLogon = false,
+                LastEditedBy = 1,
+                LogonName = "test-user@test-user.localhost"
+            };
+
+            await _applicationDbContext.AddAsync(user);
+            await _applicationDbContext.SaveChangesAsync();
+
+            var task1 = new UserTask
+            {
+                Title = "Task 1",
+                Description = "Task 1",
+                LastEditedBy = user.Id,
+                UserTaskPriority = UserTaskPriorityEnum.High,
+                UserTaskStatus = UserTaskStatusEnum.InProgress
+            };
+            
+            var task2 = new UserTask
+            {
+                Title = "Task2",
+                Description = "Task2",
+                LastEditedBy = user.Id,
+                UserTaskPriority = UserTaskPriorityEnum.High,
+                UserTaskStatus = UserTaskStatusEnum.InProgress
+            };
+
+            await _applicationDbContext.AddRangeAsync(new[] { task1, task2 });
+            await _applicationDbContext.SaveChangesAsync();
+
+            await _applicationDbContext.AddRelationshipAsync(task1, Relations.Viewer, user, null, user.Id);
+            await _applicationDbContext.AddRelationshipAsync(task2, Relations.Owner, user, null, user.Id);
+            await _applicationDbContext.SaveChangesAsync();
+
+            // Act
+            var userTasks = _applicationDbContext
+                .ListUserObjects<UserTask>(user.Id, new[] { Relations.Viewer, Relations.Owner })
+                .AsNoTracking()
+                .ToList();
+
+            Assert.AreEqual(2, userTasks.Count);
+            Assert.IsTrue(userTasks.Any(x => x.Id == task1.Id));
+            Assert.IsTrue(userTasks.Any(x => x.Id == task2.Id));
+        }
+    }
+}
+```
 
 ## Running an Example ##
 
