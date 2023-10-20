@@ -373,13 +373,13 @@ It's a bad advice, because it works only as long as all your entities are tracke
 thing... and more importantly, as soon as you are using the modern `DbSet<T>#ExecuteUpdateAsync` you are out of luck 
 with this approach. And what about Stored Procedures? One-Time Scripts? Migrations? 
 
-Just let your (very) expensive database handle it!
+Just let your (very) expensive database handle it and use Temporal Tables. And by the way, I've asked the .NET community 
+on Mastodon, what's their strategy for auditing changes to their database and Change Data Capture (CDC) came up, so this 
+might also a path.
 
 ### Schemas ###
 
-Now the wall of text is over. 
-
-Let's get to actual code!
+Now the wall of text is over. Let's get to actual code!
 
 We have two schemas named `[Identity]` and `[Application]`. The `[Identity]` schema, surprise, is going to hold all 
 identity related stuff, such as a `User`, a `Role` and the `RelationTuple` for defining the permissions. It's also 
@@ -388,11 +388,45 @@ going to hold the functions to list objects and check for permissions.
 The `[Application]` schema is going to hold everything not directly related to the Identity management, such as `UserTask`, 
 `Organization`, `Team`, ... entities.  
 
+
+#### Sequences ####
+
+By using Sequences offer several advantadges over an Auto-Incrementing Primary Key. We can set the start value and 
+increment values of the Sequence, which is useful when inserting the initial data with fixed IDs and 
+having it automatically incrementing right after. 
+
+And what's particularly interesting to us is, that we can use it to implement the Hi-Lo Pattern. The EntityFramework 
+documentation has the following to say about the Hi/Lo Algorithm:
+
+> The Hi/Lo algorithm is useful when you need unique keys before committing changes. As a summary, the Hi-Lo 
+> algorithm assigns unique identifiers to table rows while not depending on storing the row in the database 
+> immediately. This lets you start using the identifiers right away, as happens with regular sequential 
+> database IDs.
+
+So we define our sequences for all tables.
+
+```sql
+CREATE SEQUENCE [Identity].[sq_User]
+    AS INT
+    START WITH 38187
+    INCREMENT BY 1;
+    
+CREATE SEQUENCE [Identity].[sq_Role]
+    AS INT
+    START WITH 38187
+    INCREMENT BY 1;
+    
+CREATE SEQUENCE [Identity].[sq_RelationTuple]
+    AS INT
+    START WITH 38187
+    INCREMENT BY 1;
+```
+
 #### Tables ####
 
 The application has a very simple `User` model for now. A user may be permitted to Logon using a Logon Name, 
-which is going to be unique among all users. The password hashing needs to be done in the application, when 
-adding a user to the system.
+the Logon Name is unique among all users. The password hashing needs to be done in the application, when adding 
+a user to the system.
 
 ```sql
 CREATE TABLE [Identity].[User](
@@ -412,7 +446,7 @@ CREATE TABLE [Identity].[User](
 ) WITH (SYSTEM_VERSIONING = ON (HISTORY_TABLE = [Identity].[UserHistory]));
 ```
 
-We want to build Role-based Access Control on top of the relationship model, so we add a table `[Identity].[Role]` to hold the roles in our system.
+To build a Role-based Access Control on top of the Relationship-based model, we add a table `[Identity].[Role]` to hold the roles in our system.
 
 ```sql
 CREATE TABLE [Identity].[Role](
@@ -429,7 +463,7 @@ CREATE TABLE [Identity].[Role](
 ) WITH (SYSTEM_VERSIONING = ON (HISTORY_TABLE = [Identity].[RoleHistory]));
 ```
 
-
+The table `[Identity].[RelationTuple]` is the secret sauce here, that's going to be at the heart of the Relationship-based Access Control.
 
 ```sql
 CREATE TABLE [Identity].[RelationTuple](
@@ -450,9 +484,446 @@ CREATE TABLE [Identity].[RelationTuple](
 ) WITH (SYSTEM_VERSIONING = ON (HISTORY_TABLE = [Identity].[RelationTupleHistory]));
 ```
 
+#### Functions ####
+
+[Exploring Relationship-based Access Control (ReBAC) with Google Zanzibar]: https://www.bytefish.de/blog/relationship_based_acl_with_google_zanzibar.html
+
+The Google Zanzibar Check API is implemented by the User Defined Function `[Identity].[udf_RelationTuples_Check]`, which 
+is explained in great detail in my article [Exploring Relationship-based Access Control (ReBAC) with Google Zanzibar].
+
+```sql
+CREATE FUNCTION [Identity].[udf_RelationTuples_Check]
+(
+     @ObjectNamespace NVARCHAR(50)
+    ,@ObjectKey INT
+    ,@ObjectRelation NVARCHAR(50)
+    ,@SubjectNamespace NVARCHAR(50)
+    ,@SubjectKey INT
+)
+RETURNS BIT
+AS
+BEGIN
+
+    DECLARE @IsAuthorized BIT = 0;
+
+    WITH RelationTuples AS
+    (
+       SELECT
+    	   [RelationTupleID]
+          ,[ObjectNamespace]
+          ,[ObjectKey]
+          ,[ObjectRelation]
+          ,[SubjectNamespace]
+          ,[SubjectKey]
+          ,[SubjectRelation]
+    	  , 0 AS [HierarchyLevel]
+        FROM
+          [Identity].[RelationTuple]
+        WHERE
+    		[ObjectNamespace] = @ObjectNamespace AND [ObjectKey] = @ObjectKey AND [ObjectRelation] = @ObjectRelation
+    	  
+    	UNION All
+    	
+    	SELECT        
+    	   r.[RelationTupleID]
+    	  ,r.[ObjectNamespace]
+          ,r.[ObjectKey]
+          ,r.[ObjectRelation]
+          ,r.[SubjectNamespace]
+          ,r.[SubjectKey]
+          ,r.[SubjectRelation]
+    	  ,[HierarchyLevel] + 1 AS [HierarchyLevel]
+      FROM 
+    	[Identity].[RelationTuple] r, [RelationTuples] cte
+      WHERE 
+    	cte.[SubjectKey] = r.[ObjectKey] 
+    		AND cte.[SubjectNamespace] = r.[ObjectNamespace] 
+    		AND cte.[SubjectRelation] = r.[ObjectRelation]
+    )
+    SELECT @IsAuthorized =
+    	CASE
+    		WHEN EXISTS(SELECT 1 FROM [RelationTuples] WHERE [SubjectNamespace] = @SubjectNamespace AND [SubjectKey] = @SubjectKey) 
+    			THEN 1
+    		ELSE 0
+    	END;
+
+    RETURN @IsAuthorized;
+END
+```
+
+You want to answer questions like "What Tasks is a User allowed to see?", "What Organizations is a User 
+member of?". This can be done by using the ListObjects function, that has been written in a previous 
+article.
+
+```sql
+CREATE FUNCTION [Identity].[tvf_RelationTuples_ListObjects]
+(
+     @ObjectNamespace NVARCHAR(50) 
+    ,@ObjectRelation NVARCHAR(50)
+    ,@SubjectNamespace NVARCHAR(50)
+    ,@SubjectKey INT
+)
+RETURNS @returntable TABLE
+(
+
+     [RelationTupleID]   INT
+    ,[ObjectNamespace]   NVARCHAR(50)
+    ,[ObjectKey]         INT
+    ,[ObjectRelation]    NVARCHAR(50)
+    ,[SubjectNamespace]  NVARCHAR(50)
+    ,[SubjectKey]        INT
+    ,[SubjectRelation]   NVARCHAR(50)
+)
+AS
+BEGIN
+
+    WITH RelationTuples AS
+    (
+       SELECT
+	       [RelationTupleID]
+          ,[ObjectNamespace]
+          ,[ObjectKey]
+          ,[ObjectRelation]
+          ,[SubjectNamespace]
+          ,[SubjectKey]
+          ,[SubjectRelation]
+	      , 0 AS [HierarchyLevel]
+        FROM
+          [Identity].[RelationTuple]
+        WHERE
+		    [SubjectNamespace] = @SubjectNamespace AND [SubjectKey] = @SubjectKey
+	  
+	    UNION All
+	
+	    SELECT        
+	       r.[RelationTupleID]
+	      ,r.[ObjectNamespace]
+          ,r.[ObjectKey]
+          ,r.[ObjectRelation]
+          ,r.[SubjectNamespace]
+          ,r.[SubjectKey]
+          ,r.[SubjectRelation]
+	      ,[HierarchyLevel] + 1 AS [HierarchyLevel]
+      FROM 
+	    [Identity].[RelationTuple] r, [RelationTuples] cte
+      WHERE 
+	    cte.[ObjectKey] = r.[SubjectKey] 
+		    AND cte.[ObjectNamespace] = r.[SubjectNamespace] 
+		    AND cte.[ObjectRelation] = r.[SubjectRelation]
+    )
+    INSERT 
+        @returntable
+    SELECT DISTINCT 
+	    [RelationTupleID], [ObjectNamespace], [ObjectKey], [ObjectRelation], [SubjectNamespace], [SubjectKey], [SubjectRelation]
+    FROM 
+	    [RelationTuples] 
+    WHERE
+	    [ObjectNamespace] = @ObjectNamespace AND [ObjectRelation] = @ObjectRelation;
+
+    RETURN;
+
+END
+```
+
+#### Stored Procedures ####
+
+The tables are system versioned, but for inserting the initial data we need to turn it off. So 
+we are adding a Stored Procedure `[Identity].[usp_TemporalTables_DeactivateTemporalTables]` to 
+deactivate the versioning.
+
+```sql
+CREATE PROCEDURE [Identity].[usp_TemporalTables_DeactivateTemporalTables]
+AS BEGIN
+	IF OBJECTPROPERTY(OBJECT_ID('[Identity].[User]'), 'TableTemporalType') = 2
+	BEGIN
+		PRINT 'Deactivate Temporal Table for [Identity].[User]'
+
+		ALTER TABLE [Identity].[User] SET (SYSTEM_VERSIONING = OFF);
+		ALTER TABLE [Identity].[User] DROP PERIOD FOR SYSTEM_TIME;
+	END
+
+    IF OBJECTPROPERTY(OBJECT_ID('[Identity].[Role]'), 'TableTemporalType') = 2
+	BEGIN
+		PRINT 'Deactivate Temporal Table for [Identity].[Role]'
+
+		ALTER TABLE [Identity].[Role] SET (SYSTEM_VERSIONING = OFF);
+		ALTER TABLE [Identity].[Role] DROP PERIOD FOR SYSTEM_TIME;
+	END
+
+
+	IF OBJECTPROPERTY(OBJECT_ID('[Identity].[RelationTuple]'), 'TableTemporalType') = 2
+	BEGIN
+		PRINT 'Deactivate Temporal Table for [Identity].[RelationTuple]'
+
+		ALTER TABLE [Identity].[RelationTuple] SET (SYSTEM_VERSIONING = OFF);
+		ALTER TABLE [Identity].[RelationTuple] DROP PERIOD FOR SYSTEM_TIME;
+	END
+
+END
+```
+
+After the data has been inserted, we want to reactivate the versioning again. So we are adding 
+a Stored Procedure `[Identity].[usp_TemporalTables_ReactivateTemporalTables]`, that restores 
+the system versioning.
+
+```sql
+CREATE PROCEDURE [Identity].[usp_TemporalTables_ReactivateTemporalTables]
+AS BEGIN
+
+	IF OBJECTPROPERTY(OBJECT_ID('[Identity].[User]'), 'TableTemporalType') = 0
+	BEGIN
+		PRINT 'Reactivate Temporal Table for [Identity].[User]'
+
+		ALTER TABLE [Identity].[User] ADD PERIOD FOR SYSTEM_TIME([ValidFrom], [ValidTo]);
+		ALTER TABLE [Identity].[User] SET (SYSTEM_VERSIONING = ON (HISTORY_TABLE = [Identity].[UserHistory], DATA_CONSISTENCY_CHECK = ON));
+	END
+
+	IF OBJECTPROPERTY(OBJECT_ID('[Identity].[Role]'), 'TableTemporalType') = 0
+	BEGIN
+		PRINT 'Reactivate Temporal Table for [Identity].[Role]'
+
+		ALTER TABLE [Identity].[Role] ADD PERIOD FOR SYSTEM_TIME([ValidFrom], [ValidTo]);
+		ALTER TABLE [Identity].[Role] SET (SYSTEM_VERSIONING = ON (HISTORY_TABLE = [Identity].[RoleHistory], DATA_CONSISTENCY_CHECK = ON));
+	END
+
+	IF OBJECTPROPERTY(OBJECT_ID('[Identity].[RelationTuple]'), 'TableTemporalType') = 0
+	BEGIN
+		PRINT 'Reactivate Temporal Table for [Identity].[RelationTuple]'
+
+		ALTER TABLE [Identity].[RelationTuple] ADD PERIOD FOR SYSTEM_TIME([ValidFrom], [ValidTo]);
+		ALTER TABLE [Identity].[RelationTuple] SET (SYSTEM_VERSIONING = ON (HISTORY_TABLE = [Identity].[RelationTupleHistory], DATA_CONSISTENCY_CHECK = ON));
+	END
+    
+END
+```
+
+### Schema: Application ###
+
+#### Tables ####
+
+```sql
+CREATE TABLE [Application].[UserTask](
+    [UserTaskID]            INT                                         CONSTRAINT [DF_Application_UserTask_UserTaskID] DEFAULT (NEXT VALUE FOR [Application].[sq_UserTask]) NOT NULL,
+    [Title]                 NVARCHAR(50)                                NOT NULL,
+    [Description]           NVARCHAR(2000)                              NOT NULL,
+    [DueDateTime]           DATETIME2(7)                                NULL,
+    [ReminderDateTime]      DATETIME2(7)                                NULL,
+    [CompletedDateTime]     DATETIME2(7)                                NULL,
+    [AssignedTo]            INT                                         NULL,
+    [UserTaskPriorityID]    INT                                         NOT NULL,
+    [UserTaskStatusID]      INT                                         NOT NULL,
+    [RowVersion]            ROWVERSION                                  NULL,
+    [LastEditedBy]          INT                                         NOT NULL,
+    [ValidFrom]             DATETIME2 (7) GENERATED ALWAYS AS ROW START NOT NULL,
+    [ValidTo]               DATETIME2 (7) GENERATED ALWAYS AS ROW END   NOT NULL,
+    CONSTRAINT [PK_UserTask] PRIMARY KEY ([UserTaskID]),
+    CONSTRAINT [FK_UserTask_UserTaskPriority_UserTaskPriorityID] FOREIGN KEY ([UserTaskPriorityID]) REFERENCES [Application].[UserTaskPriority] ([UserTaskPriorityID]),
+    CONSTRAINT [FK_UserTask_UserTaskStatus_UserTaskStatusID] FOREIGN KEY ([UserTaskStatusID]) REFERENCES [Application].[UserTaskStatus] ([UserTaskStatusID]),
+    CONSTRAINT [FK_UserTask_User_LastEditedBy] FOREIGN KEY ([LastEditedBy]) REFERENCES [Identity].[User] ([UserID]),
+    CONSTRAINT [FK_UserTask_User_AssignedTo] FOREIGN KEY ([AssignedTo]) REFERENCES [Identity].[User] ([UserID]),
+    PERIOD FOR SYSTEM_TIME (ValidFrom, ValidTo)
+) WITH (SYSTEM_VERSIONING = ON (HISTORY_TABLE = [Application].[UserTaskHistory]));
+```
+
+```sql
+CREATE TABLE [Application].[UserTaskPriority](
+    [UserTaskPriorityID]    INT                                         NOT NULL,
+    [Name]                  NVARCHAR(50)                                NOT NULL,
+    [RowVersion]            ROWVERSION                                  NULL,
+    [LastEditedBy]          INT                                         NOT NULL,
+    [ValidFrom]             DATETIME2 (7) GENERATED ALWAYS AS ROW START NOT NULL,
+    [ValidTo]               DATETIME2 (7) GENERATED ALWAYS AS ROW END   NOT NULL,
+    CONSTRAINT [PK_UserTaskPriority] PRIMARY KEY ([UserTaskPriorityID]),
+    CONSTRAINT [FK_UserTaskPriority_User_LastEditedBy] FOREIGN KEY ([LastEditedBy]) REFERENCES [Identity].[User] ([UserID]),
+    PERIOD FOR SYSTEM_TIME (ValidFrom, ValidTo)
+) WITH (SYSTEM_VERSIONING = ON (HISTORY_TABLE = [Application].[UserTaskPriorityHistory]));
+```
+
+```sql
+
+```
+
+#### Stored Procedures ####
+
+As discussed, all our tables are system-versioned, and we need to deactivate them before running our initial 
+inserts. So we add a Stored Procedure `[Application].[usp_TemporalTables_DeactivateTemporalTables]` to deactivate 
+the versioning.
+
+```sql
+CREATE PROCEDURE [Application].[usp_TemporalTables_DeactivateTemporalTables]
+AS BEGIN
+	IF OBJECTPROPERTY(OBJECT_ID('[Application].[UserTask]'), 'TableTemporalType') = 2
+	BEGIN
+		PRINT 'Deactivate Temporal Table for [Application].[UserTask]'
+
+		ALTER TABLE [Application].[UserTask] SET (SYSTEM_VERSIONING = OFF);
+		ALTER TABLE [Application].[UserTask] DROP PERIOD FOR SYSTEM_TIME;
+	END
+
+	IF OBJECTPROPERTY(OBJECT_ID('[Application].[UserTaskPriority]'), 'TableTemporalType') = 2
+	BEGIN
+		PRINT 'Deactivate Temporal Table for [Application].[UserTaskPriority]'
+
+		ALTER TABLE [Application].[UserTaskPriority] SET (SYSTEM_VERSIONING = OFF);
+		ALTER TABLE [Application].[UserTaskPriority] DROP PERIOD FOR SYSTEM_TIME;
+	END
+
+	IF OBJECTPROPERTY(OBJECT_ID('[Application].[UserTaskStatus]'), 'TableTemporalType') = 2
+	BEGIN
+		PRINT 'Deactivate Temporal Table for [Application].[UserTaskStatus]'
+
+		ALTER TABLE [Application].[UserTaskStatus] SET (SYSTEM_VERSIONING = OFF);
+		ALTER TABLE [Application].[UserTaskStatus] DROP PERIOD FOR SYSTEM_TIME;
+	END
+    
+	IF OBJECTPROPERTY(OBJECT_ID('[Application].[Organization]'), 'TableTemporalType') = 2
+	BEGIN
+		PRINT 'Deactivate Temporal Table for [Application].[Organization]'
+
+		ALTER TABLE [Application].[Organization] SET (SYSTEM_VERSIONING = OFF);
+		ALTER TABLE [Application].[Organization] DROP PERIOD FOR SYSTEM_TIME;
+	END
+
+	IF OBJECTPROPERTY(OBJECT_ID('[Application].[Team]'), 'TableTemporalType') = 2
+	BEGIN
+		PRINT 'Deactivate Temporal Table for [Application].[Team]'
+
+		ALTER TABLE [Application].[Team] SET (SYSTEM_VERSIONING = OFF);
+		ALTER TABLE [Application].[Team] DROP PERIOD FOR SYSTEM_TIME;
+	END
+
+END
+```
+
+After running the Post-Deployment Scripts, we are reactivating the System-Versioning by executing 
+the Stored Procedure `[Application].[usp_TemporalTables_ReactivateTemporalTables]`.
+
+```sql
+CREATE PROCEDURE [Application].[usp_TemporalTables_ReactivateTemporalTables]
+AS BEGIN
+
+	IF OBJECTPROPERTY(OBJECT_ID('[Application].[UserTask]'), 'TableTemporalType') = 0
+	BEGIN
+		PRINT 'Reactivate Temporal Table for [Application].[UserTask]'
+
+		ALTER TABLE [Application].[UserTask] ADD PERIOD FOR SYSTEM_TIME([ValidFrom], [ValidTo]);
+		ALTER TABLE [Application].[UserTask] SET (SYSTEM_VERSIONING = ON (HISTORY_TABLE = [Application].[UserTaskHistory], DATA_CONSISTENCY_CHECK = ON));
+	END
+
+	IF OBJECTPROPERTY(OBJECT_ID('[Application].[UserTaskPriority]'), 'TableTemporalType') = 0
+	BEGIN
+		PRINT 'Reactivate Temporal Table for [Application].[UserTaskPriority]'
+
+		ALTER TABLE [Application].[UserTaskPriority] ADD PERIOD FOR SYSTEM_TIME([ValidFrom], [ValidTo]);
+		ALTER TABLE [Application].[UserTaskPriority] SET (SYSTEM_VERSIONING = ON (HISTORY_TABLE = [Application].[UserTaskPriorityHistory], DATA_CONSISTENCY_CHECK = ON));
+	END
+
+	IF OBJECTPROPERTY(OBJECT_ID('[Application].[UserTaskStatus]'), 'TableTemporalType') = 0
+	BEGIN
+		PRINT 'Reactivate Temporal Table for [Application].[UserTaskStatus]'
+
+		ALTER TABLE [Application].[UserTaskStatus] ADD PERIOD FOR SYSTEM_TIME([ValidFrom], [ValidTo]);
+		ALTER TABLE [Application].[UserTaskStatus] SET (SYSTEM_VERSIONING = ON (HISTORY_TABLE = [Application].[UserTaskStatusHistory], DATA_CONSISTENCY_CHECK = ON));
+	END
+    
+	IF OBJECTPROPERTY(OBJECT_ID('[Application].[Organization]'), 'TableTemporalType') = 0
+	BEGIN
+		PRINT 'Reactivate Temporal Table for [Application].[Organization]'
+
+		ALTER TABLE [Application].[Organization] ADD PERIOD FOR SYSTEM_TIME([ValidFrom], [ValidTo]);
+		ALTER TABLE [Application].[Organization] SET (SYSTEM_VERSIONING = ON (HISTORY_TABLE = [Application].[OrganizationHistory], DATA_CONSISTENCY_CHECK = ON));
+	END
+    
+	IF OBJECTPROPERTY(OBJECT_ID('[Application].[Team]'), 'TableTemporalType') = 0
+	BEGIN
+		PRINT 'Reactivate Temporal Table for [Application].[Team]'
+
+		ALTER TABLE [Application].[Team] ADD PERIOD FOR SYSTEM_TIME([ValidFrom], [ValidTo]);
+		ALTER TABLE [Application].[Team] SET (SYSTEM_VERSIONING = ON (HISTORY_TABLE = [Application].[TeamHistory], DATA_CONSISTENCY_CHECK = ON));
+	END
+    
+END
+```
+
 ### Post Deployment Scripts ###
 
-We can use Post-Deployment Scripts to insert initial data, 
+Post-Deployment Scripts are used to insert the initial data. A `User` is needed to do anything in our system, a `UserTaskPriority` 
+table needs to have some values, that map to an applications enumeration. 
+
+<div style="display:flex; align-items:center; justify-content:center;margin-bottom:15px;">
+    <a href="/static/images/blog/aspnetcore_rebac/post_deployment_scripts.jpg">
+        <img src="/static/images/blog/aspnetcore_rebac/post_deployment_scripts.jpg" alt="Post Deployment Scripts Folder Overview">
+    </a>
+</div>
+
+The `Script.PostDeployment1.sql` script starts by deactivating the System-Versioning on the tables and then runs 
+the scripts for creating data in the `[Identity]` and `[Application]` schema.
+
+```powershell
+/*
+Post-Deployment Script Template                            
+--------------------------------------------------------------------------------------
+ This file contains SQL statements that will be appended to the build script.        
+ Use SQLCMD syntax to include a file in the post-deployment script.            
+ Example:      :r .\myfile.sql                                
+ Use SQLCMD syntax to reference a variable in the post-deployment script.        
+ Example:      :setvar TableName MyTable                            
+               SELECT * FROM [$(TableName)]                    
+--------------------------------------------------------------------------------------
+*/
+
+/*
+  We need to deactivate all Temporal Tables before the initial data load.
+*/
+
+EXEC [Identity].[usp_TemporalTables_DeactivateTemporalTables]
+GO
+
+EXEC [Application].[usp_TemporalTables_DeactivateTemporalTables]
+GO
+
+/* 
+    Set the initial data for the [Identity] schema
+*/
+:r .\Identity\pds-100-ins-identity-users.sql
+GO
+
+:r .\Identity\pds-110-ins-identity-roles.sql
+GO
+
+:r .\Identity\pds-120-ins-identity-relation-tuples.sql
+GO
+
+/* 
+    Set the initial data for the [Application] schema
+*/
+:r .\Application\pds-100-ins-application-task-priority.sql
+GO
+
+:r .\Application\pds-110-ins-application-task-status.sql
+GO
+
+:r .\Application\pds-120-ins-application-user-task.sql
+GO
+
+:r .\Application\pds-130-ins-application-organization.sql
+GO
+
+:r .\Application\pds-140-ins-application-team.sql
+GO
+
+/*
+  We need to reactivate all Temporal Tables after the initial data load.
+*/
+EXEC [Identity].[usp_TemporalTables_ReactivateTemporalTables]
+GO
+
+EXEC [Application].[usp_TemporalTables_ReactivateTemporalTables]
+GO
+```
+
+We want to be able to re-run the Post-Deployment Scripts on every deployment, without running into constraint 
+violations. So we are using a `MERGE` statement, to only insert data, if it doesn't exist yet.
 
 ```sql
 PRINT 'Inserting [Identity].[User] ...'
@@ -484,11 +955,54 @@ WHEN NOT MATCHED BY TARGET THEN
 
 ```
 
+### Deploying the Database ###
 
+The database is done, so we can now deploy it.
 
-## Errors, Exceptions, ... ##
+You start by doing a Right Click on the database project and select `Publish ...`.
 
+<div style="display:flex; align-items:center; justify-content:center;margin-bottom:15px;">
+    <a href="/static/images/blog/aspnetcore_rebac/database_deployment_001_publish.jpg">
+        <img src="/static/images/blog/aspnetcore_rebac/database_deployment_001_publish.jpg" alt="Step 1: Publish the SSDT Project by Right Click and selecting Publish">
+    </a>
+</div>
 
+In the dialog we can see, that the Target Database Connection is empty, and we don't have a database yet. So we 
+create one by clicking the `Edit ...` button.
+
+<div style="display:flex; align-items:center; justify-content:center;margin-bottom:15px;">
+    <a href="/static/images/blog/aspnetcore_rebac/database_deployment_002_edit_connections.jpg">
+        <img src="/static/images/blog/aspnetcore_rebac/database_deployment_002_edit_connections.jpg" alt="Step 2: Click Edit in the Dialog to add a Target Database">
+    </a>
+</div>
+
+I want to have it running on a local database, so I am selecting `Local` in the Tree View, and select the SQLEXPRESS 
+instance. The Server Name and so on gets automatically filled, and we just need to set our database name. I have named 
+it `ZanzibarExperiments`, but feel free to select any database name you like.
+
+<div style="display:flex; align-items:center; justify-content:center;margin-bottom:15px;">
+    <a href="/static/images/blog/aspnetcore_rebac/database_deployment_003_add_database.jpg">
+        <img src="/static/images/blog/aspnetcore_rebac/database_deployment_003_add_database.jpg" alt="Step 3: Select the SQL Server and enter a Database name">
+    </a>
+</div>
+
+As we can see, the Target Database Connection is now automatically set, and we just need to click the `Publish` button.
+
+<div style="display:flex; align-items:center; justify-content:center;margin-bottom:15px;">
+    <a href="/static/images/blog/aspnetcore_rebac/database_deployment_004_run_publish.jpg">
+        <img src="/static/images/blog/aspnetcore_rebac/database_deployment_004_run_publish.jpg" alt="Step 4: Run Publish on the Target Database">
+    </a>
+</div>
+
+The database is now being published and we can inspect the `Data Tools Operation` pane, to see if it worked.
+
+<div style="display:flex; align-items:center; justify-content:center;margin-bottom:15px;">
+    <a href="/static/images/blog/aspnetcore_rebac/database_deployment_005_data_tools_operation_output.jpg">
+        <img src="/static/images/blog/aspnetcore_rebac/database_deployment_005_data_tools_operation_output.jpg" alt="Step 5: Check the Data Tools Operations Output Window">
+    </a>
+</div>
+
+Congratulations!
 
 ## Integration Tests ##
 
