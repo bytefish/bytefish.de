@@ -922,8 +922,11 @@ EXEC [Application].[usp_TemporalTables_ReactivateTemporalTables]
 GO
 ```
 
-We want to be able to re-run the Post-Deployment Scripts on every deployment, without running into constraint 
-violations. So we are using a `MERGE` statement, to only insert data, if it doesn't exist yet.
+We want to be able to re-run the Post-Deployment Scripts as often as you want, without running 
+into constraint violations, such as Primary Key conflicts. So we are using a `MERGE` statement, 
+to only insert data, if it doesn't exist yet.
+
+An example is the initial data for the `[Identity].[User]` table.
 
 ```sql
 PRINT 'Inserting [Identity].[User] ...'
@@ -1004,271 +1007,599 @@ The database is now being published and we can inspect the `Data Tools Operation
 
 Congratulations!
 
-## Integration Tests ##
+## .NET Backend with ReBAC ACL ##
 
-For integration tests we are writing a `TransactionalTestBase` class, which basically opens a `System.Transaction.TransactionScope` 
-before executing a test and disposes it, when tearing it down. This will reset your database back into a consistent state for the 
-next test to execute. 
+
+
+### Logging ###
+
+ASP.NET Core comes with the `Microsoft.Extensions.Logging` abstractions, so you can plug in any logging framework you 
+like. I like Serilog a lot and use it in this example, but I've also had a good experience with NLog. By using the 
+`Microsoft.Extensions.Logging` we can swap the Logging framework anyways, if we want to switch.
+
+For Serilog we start by adding the Serilog core its `Microsoft.Extensions.Logging` integration.
+
+```xml
+<PackageReference Include="Serilog.Extensions.Logging" Version="7.0.0" />
+```
+
+At the beginning of the `Program.cs` (or where your Startup is) you configure and create a `Log.Logger` instance.
+
+```csharp
+// We will log to %LocalAppData%/RebacExperiments to store the Logs, so it doesn't need to be configured 
+// to a different path, when you run it on your machine.
+string logDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "RebacExperiments");
+
+// We are writing with RollingFileAppender using a daily rotation, and we want to have the filename as 
+// as "LogRebacExperiments-{Date}.log", the "{Date}" placeholder will be replaced by Serilog itself.
+string logFilePath = Path.Combine(logDirectory, "LogRebacExperiments-.log");
+
+// Configure the Serilog Logger. This Serilog Logger will be passed 
+// to the Microsoft.Extensions.Logging LoggingBuilder using the 
+// LoggingBuilder#AddSerilog(...) extension.
+Log.Logger = new LoggerConfiguration()
+    .Enrich.FromLogContext()
+    .Enrich.WithMachineName()
+    .Enrich.WithEnvironmentName()
+    .WriteTo.Console(theme: AnsiConsoleTheme.Code)
+    .WriteTo.File(logFilePath, rollingInterval: RollingInterval.Day)
+    .CreateLogger();
+```
+
+In this example we configured a Console (with nice colors) and a File sink (with a daily rotation scheme), so 
+we also need to add the following NuGet packages:
+
+```xml
+<PackageReference Include="Serilog.Sinks.Console" Version="4.1.0" />
+<PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
+```
+
+And we want to enrich the Logs with the Machine and Environment Name, so we are adding a dependency on:
+
+```xml
+<PackageReference Include="Serilog.Enrichers.Environment" Version="2.3.0" />
+```
+
+We can then use the `LoggingBuilder#AddSerilog` extension method to register Serilog with the `Microsoft.Extensions.Logging` framework.
+
+```csharp
+// Logging
+builder.Services.AddLogging(loggingBuilder => loggingBuilder.AddSerilog(dispose: true));
+```
+
+I suggest to wrap the entire Starup code inside a `try` block, so any error, that throws up is caught and logged to a console or the file appender.
+
+```csharp
+
+// ...
+
+try
+{
+    var builder = WebApplication.CreateBuilder(args);
+
+    // Add services to the container
+    builder.Services.AddSingleton<IUserService, UserService>();
+    
+    // ...
+    
+    var app = builder.Build();
+
+    // Configure the HTTP request pipeline.
+    app.UseHttpsRedirection();
+    
+    // ...
+
+    app.Run();
+} 
+catch(Exception exception)
+{
+    Log.Fatal(exception, "An unhandeled exception occured.");
+}
+finally
+{
+    // Wait 0.5 seconds before closing and flushing, to gather the last few logs.
+    await Task.Delay(TimeSpan.FromMilliseconds(500));
+    await Log.CloseAndFlushAsync();
+}
+```
+
+In your application you would then inject a `Microsoft.Extensions.Logging.ILogger` abstraction to your services, which 
+is going to be created by the dependency injection container for you.
 
 ```csharp
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 // ...
 
-namespace RebacExperiments.Server.Api.Tests
+namespace RebacExperiments.Server.Api.Controllers
 {
-    /// <summary>
-    /// Will be used by all integration tests, that need an <see cref="ApplicationDbContext"/>.
-    /// </summary>
-    public class TransactionalTestBase
+    public class AuthenticationController : ControllerBase
     {
-        /// <summary>
-        /// We can assume the Configuration has been initialized, when the Tests 
-        /// are run. So we inform the compiler, that this field is intentionally 
-        /// left uninitialized.
-        /// </summary>
-        protected IConfiguration _configuration = null!;
+        private readonly ILogger<AuthenticationController> _logger;
 
-        /// <summary>
-        /// We can assume the DbContext has been initialized, when the Tests 
-        /// are run. So we inform the compiler, that this field is intentionally 
-        /// left uninitialized.
-        /// </summary>
-        protected ApplicationDbContext _applicationDbContext = null!;
-
-        public TransactionalTestBase()
+        public AuthenticationController(ILogger<AuthenticationController> logger)
         {
-            _configuration = ReadConfiguration();
-            _applicationDbContext = GetApplicationDbContext(_configuration);
+            _logger = logger;
         }
-
-        /// <summary>
-        /// Read the appsettings.json for the Test.
-        /// </summary>
-        /// <returns></returns>
-        private IConfiguration ReadConfiguration()
-        {
-            return new ConfigurationBuilder()
-                .AddJsonFile("appsettings.json")
-                .Build();
-        }
-
-        /// <summary>
-        /// The SetUp called by NUnit to start the transaction.
-        /// </summary>
-        /// <returns>An awaitable Task</returns>
-        [SetUp]
-        protected async Task Setup()
-        {
-            await OnSetupBeforeTransaction();
-            await _applicationDbContext.Database.BeginTransactionAsync(IsolationLevel.ReadCommitted, default);
-            await OnSetupInTransaction();
-        }
-
-        /// <summary>
-        /// The TearDown called by NUnit to rollback the transaction.
-        /// </summary>
-        /// <returns>An awaitable Task</returns>
-        [TearDown]
-        protected async Task Teardown()
-        {
-            await OnTearDownInTransaction();
-            await _applicationDbContext.Database.RollbackTransactionAsync(default);
-            await OnTearDownAfterTransaction();
-        }
-
-        /// <summary>
-        /// Called before the transaction starts.
-        /// </summary>
-        /// <returns>An awaitable task</returns>
-        public virtual Task OnSetupBeforeTransaction()
-        {
-            return Task.CompletedTask;
-        }
-
-        /// <summary>
-        /// Called inside the transaction.
-        /// </summary>
-        /// <returns>An awaitable task</returns>
-        public virtual Task OnSetupInTransaction()
-        {
-            return Task.CompletedTask;
-        }
-
-        /// <summary>
-        /// Called before rolling back the transaction.
-        /// </summary>
-        /// <returns>An awaitable task</returns>
-        public virtual Task OnTearDownInTransaction()
-        {
-            return Task.CompletedTask;
-        }
-
-        /// <summary>
-        /// Called after transaction has been rolled back.
-        /// </summary>
-        /// <returns>An awaitable task</returns>
-        public virtual Task OnTearDownAfterTransaction()
-        {
-            return Task.CompletedTask;
-        }
-
-        /// <summary>
-        /// Builds an <see cref="ApplicationDbContext"/> based on a given Configuration. We 
-        /// expect the Configuration to have a Connection String "ApplicationDatabase" to 
-        /// be defined.
-        /// </summary>
-        /// <param name="configuration">A configuration provided by the appsettings.json</param>
-        /// <returns>An initialized <see cref="ApplicationDbContext"/></returns>
-        /// <exception cref="InvalidOperationException">Thrown when no Connection String "ApplicationDatabase" was found</exception>
-        private ApplicationDbContext GetApplicationDbContext(IConfiguration configuration)
-        {
-            var connectionString = configuration.GetConnectionString("ApplicationDatabase");
-
-            if (connectionString == null)
-            {
-                throw new InvalidOperationException($"No Connection String named 'ApplicationDatabase' found in appsettings.json");
-            }
-
-            return GetApplicationDbContext(connectionString);
-        }
-
-        /// <summary>
-        /// Builds an <see cref="ApplicationDbContext"/> based on a given Connection String 
-        /// and enables sensitive data logging for eventual debugging. 
-        /// </summary>
-        /// <param name="connectionString">Connection String to the Test database</param>
-        /// <returns>An initialized <see cref="ApplicationDbContext"/></returns>
-        private ApplicationDbContext GetApplicationDbContext(string connectionString)
-        {
-            var dbContextOptionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>().UseSqlServer(connectionString);
-
-            return new ApplicationDbContext(
-                logger: new NullLogger<ApplicationDbContext>(), 
-                options: dbContextOptionsBuilder.Options);
-        }
+        
+        // ... 
     }
 }
 ```
 
-## ASP.NET Core ##
+You shouldn't use the `Log.Logger` singleton directly in your code, as this would make you take a hard dependency on Serilog. Just know, 
+that it's totally possible to do so, if you ever need to take a shortcut for your logging or need features only the Serilog logger 
+provides.
 
-### Integrating the ListObjects API ###
+#### Logging Extensions ####
 
-We have written a Table-Valued Function `[Identity].[tvf_RelationTuples_ListObjects]` to list all objects a user 
-has access to. Let's copy and paste it from the previous article, so you don't have to jump back and forth.
+I have once worked in a .NET Framework project, which used log4net. And the log4net `ILog` abstraction comes with 
+properties like `IsDebugEnabled` or `IsErrorEnabled` to check the Log Level. That's useful, because you sometimes 
+need to prepare a log message, like transforming a list of objects into something human readable, only in a 
+`Debug` log level.
 
-```sql
-CREATE FUNCTION [Identity].[tvf_RelationTuples_ListObjects]
-(
-     @ObjectNamespace NVARCHAR(50) 
-    ,@ObjectRelation NVARCHAR(50)
-    ,@SubjectNamespace NVARCHAR(50)
-    ,@SubjectKey INT
-)
-RETURNS @returntable TABLE
-(
-
-     [RelationTupleID]   INT
-    ,[ObjectNamespace]   NVARCHAR(50)
-    ,[ObjectKey]         INT
-    ,[ObjectRelation]    NVARCHAR(50)
-    ,[SubjectNamespace]  NVARCHAR(50)
-    ,[SubjectKey]        INT
-    ,[SubjectRelation]   NVARCHAR(50)
-)
-AS
-BEGIN
-
-    WITH RelationTuples AS
-    (
-       SELECT
-	       [RelationTupleID]
-          ,[ObjectNamespace]
-          ,[ObjectKey]
-          ,[ObjectRelation]
-          ,[SubjectNamespace]
-          ,[SubjectKey]
-          ,[SubjectRelation]
-	      , 0 AS [HierarchyLevel]
-        FROM
-          [Identity].[RelationTuple]
-        WHERE
-		    [SubjectNamespace] = @SubjectNamespace AND [SubjectKey] = @SubjectKey
-	  
-	    UNION All
-	
-	    SELECT        
-	       r.[RelationTupleID]
-	      ,r.[ObjectNamespace]
-          ,r.[ObjectKey]
-          ,r.[ObjectRelation]
-          ,r.[SubjectNamespace]
-          ,r.[SubjectKey]
-          ,r.[SubjectRelation]
-	      ,[HierarchyLevel] + 1 AS [HierarchyLevel]
-      FROM 
-	    [Identity].[RelationTuple] r, [RelationTuples] cte
-      WHERE 
-	    cte.[ObjectKey] = r.[SubjectKey] 
-		    AND cte.[ObjectNamespace] = r.[SubjectNamespace] 
-		    AND cte.[ObjectRelation] = r.[SubjectRelation]
-    )
-    INSERT 
-        @returntable
-    SELECT DISTINCT 
-	    [RelationTupleID], [ObjectNamespace], [ObjectKey], [ObjectRelation], [SubjectNamespace], [SubjectKey], [SubjectRelation]
-    FROM 
-	    [RelationTuples] 
-    WHERE
-	    [ObjectNamespace] = @ObjectNamespace AND [ObjectRelation] = @ObjectRelation;
-
-    RETURN;
-
-END
-```
-
-We have previously defined a `RelationTuple` entity, that maps just fine to the function.
 
 ```csharp
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace RebacExperiments.Server.Api.Models
+using System.Runtime.CompilerServices;
+
+namespace RebacExperiments.Server.Api.Infrastructure.Logging
 {
-    public class RelationTuple : Entity
+    public static class LoggerExtensions
     {
-        /// <summary>
-        /// Gets or sets the ObjectKey.
-        /// </summary>
-        public int ObjectKey { get; set; }
+        public static bool IsDebugEnabled<TLoggerType>(this ILogger<TLoggerType> logger)
+        {
+            return logger.IsEnabled(LogLevel.Debug);
+        }
 
-        /// <summary>
-        /// Gets or sets the ObjectNamespace.
-        /// </summary>
-        public required string ObjectNamespace { get; set; }
+        public static bool IsCriticalEnabled<TLoggerType>(this ILogger<TLoggerType> logger)
+        {
+            return logger.IsEnabled(LogLevel.Critical);
+        }
 
-        /// <summary>
-        /// Gets or sets the ObjectRelation.
-        /// </summary>
-        public required string ObjectRelation { get; set; }
+        public static bool IsErrorEnabled<TLoggerType>(this ILogger<TLoggerType> logger)
+        {
+            return logger.IsEnabled(LogLevel.Error);
+        }
 
-        /// <summary>
-        /// Gets or sets the SubjectKey.
-        /// </summary>
-        public required int SubjectKey { get; set; }
+        public static bool IsInformationEnabled<TLoggerType>(this ILogger<TLoggerType> logger)
+        {
+            return logger.IsEnabled(LogLevel.Information);
+        }
 
-        /// <summary>
-        /// Gets or sets the SubjectNamespace.
-        /// </summary>
-        public string? SubjectNamespace { get; set; }
+        public static bool IsTraceEnabled<TLoggerType>(this ILogger<TLoggerType> logger)
+        {
+            return logger.IsEnabled(LogLevel.Trace);
+        }
 
-        /// <summary>
-        /// Gets or sets the SubjectRelation.
-        /// </summary>
-        public string? SubjectRelation { get; set; }
+        public static bool IsWarningEnabled<TLoggerType>(this ILogger<TLoggerType> logger)
+        {
+            return logger.IsEnabled(LogLevel.Warning);
+        }
+        
+        // ...
     }
 }
 ```
+
+Sometimes you want to understand the flow of your application, when an error occurs... but you can't really debug against the 
+production system. That's where a `ILogger<TLoggerType>#TraceMethodEntry` extension method comes in handy, to temporarily write 
+logs in `Trace` mode and get more information. 
+
+```csharp
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+using System.Runtime.CompilerServices;
+
+namespace RebacExperiments.Server.Api.Infrastructure.Logging
+{
+    public static class LoggerExtensions
+    {
+        // ...
+        
+        public static void TraceMethodEntry<TLoggerType>(this ILogger<TLoggerType> logger, [CallerFilePath] string? callerFilePath = null, [CallerLineNumber] int? callerLineNumber = null, [CallerMemberName] string callerMemberName = "")
+        {
+            if (logger.IsTraceEnabled())
+            {
+                logger.LogTrace("Method Entry (CallerFilePath = {CallerFilePath}, CallerLineNumber = {CallerLineNumber}, CallerMemberName = {CallerMemberName})", 
+                    callerFilePath, callerLineNumber, callerMemberName);
+            }
+        }
+    }
+}
+```
+
+Don't try to be to clever and just add it at the top of every method invocation you'd like to see in `Trace` mode.
+
+```csharp
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+// ...
+
+namespace RebacExperiments.Server.Api.Services
+{
+    public class UserService : IUserService
+    {
+        private readonly ILogger<UserService> _logger;
+        private readonly IPasswordHasher _passwordHasher;
+
+        public UserService(ILogger<UserService> logger, IPasswordHasher passwordHasher)
+        {
+            _logger = logger;
+            _passwordHasher = passwordHasher;
+        }
+
+        public async Task<List<Claim>> GetClaimsAsync(ApplicationDbContext context, string username, string password, CancellationToken cancellationToken)
+        {
+            _logger.TraceMethodEntry();
+         
+            ...
+        }
+    }
+}
+```
+
+That's it for logging.
+
+### Error Handling ###
+
+[You’re better off using Exceptions]: https://eiriktsarpalis.wordpress.com/2017/02/19/youre-better-off-using-exceptions/
+
+A great read on Error Handling is [You’re better off using Exceptions] by Eirik Tsarpali. I think, that 
+using Exceptions should be the preferred way of dealing with Errors in .NET.
+
+So we need some Error Codes, that could be returned to the user such as:
+
+```csharp
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+namespace RebacExperiments.Server.Api.Infrastructure.Errors
+{
+    /// <summary>
+    /// Error Codes used in the Application.
+    /// </summary>
+    public static class ErrorCodes
+    {
+        /// <summary>
+        /// General Authentication Error.
+        /// </summary>
+        public const string AuthenticationFailed = "Auth:000001";
+
+        /// <summary>
+        /// Entity has not been found.
+        /// </summary>
+        public const string EntityNotFound = "Entity:000001";
+
+        /// <summary>
+        /// Access to Entity has been unauthorized.
+        /// </summary>
+        public const string EntityUnauthorized = "Entity:000002";
+
+        /// <summary>
+        /// Entity has been modified concurrently.
+        /// </summary>
+        public const string EntityConcurrencyFailure = "Entity:000003";
+    }
+}
+```
+
+All exceptions in the application then derive from an abstract `ApplicationException`, which requires you 
+to define the Error Code for your type of Exception.
+
+```csharp
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+namespace RebacExperiments.Server.Api.Infrastructure.Exceptions
+{
+    /// <summary>
+    /// Base Exception for the Application.
+    /// </summary>
+    public abstract class ApplicationException : Exception
+    {
+        /// <summary>
+        /// Gets the Error Code.
+        /// </summary>
+        public abstract string ErrorCode { get; }
+
+        /// <summary>
+        /// Gets the Error Message.
+        /// </summary>
+        public abstract string ErrorMessage { get; }
+
+        protected ApplicationException(string? message, Exception? innerException)
+            : base(message, innerException)
+        {
+        }
+    }
+}
+```
+
+An example is the `EntityUnauthorizedAccessException`, which is thrown when you try to access an entity you 
+are not authorized to access. It contains all required data to reconstruct the issue.
+
+```csharp
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+using RebacExperiments.Server.Api.Infrastructure.Errors;
+
+namespace RebacExperiments.Server.Api.Infrastructure.Exceptions
+{
+    public class EntityUnauthorizedAccessException : ApplicationException
+    {
+        /// <summary>
+        /// Gets or sets an error code.
+        /// </summary>
+        public override string ErrorCode => ErrorCodes.EntityNotFound;
+
+        /// <summary>
+        /// Gets or sets an error code.
+        /// </summary>
+        public override string ErrorMessage => $"EntityUnauthorizedAccess (User = {UserId}, Entity = {EntityName}, EntityID = {EntityId})";
+
+        /// <summary>
+        /// Gets or sets the User ID.
+        /// </summary>
+        public required int UserId { get; set; }
+
+        /// <summary>
+        /// Gets or sets the Entity Name.
+        /// </summary>
+        public required string EntityName { get; set; }
+
+        /// <summary>
+        /// Gets or sets the EntityId.
+        /// </summary>
+        public required int EntityId { get; set; }
+
+        /// <summary>
+        /// Creates a new <see cref="EntityNotFoundException"/>.
+        /// </summary>
+        /// <param name="message">Error Message</param>
+        /// <param name="innerException">Reference to the Inner Exception</param>
+        public EntityUnauthorizedAccessException(string? message = null, Exception? innerException = null)
+            : base(message, innerException)
+        {
+        }
+    }
+}
+```
+
+[RFC 7807]: https://datatracker.ietf.org/doc/html/rfc7807
+
+ASP.NET Core comes with `ProblemDetails` and its surrounding infrastructure. The `ProblemDetails` stems from the 
+[RFC 7807], which tries to define *[...]  a "problem detail" as a way to carry machine-readable details of 
+errors in a HTTP response to avoid the need to define new error response formats for HTTP APIs.*
+
+And while I understand the reasoning for a `ProblemDetailsFactory`, `ProblemDetailsService`, some Exception Handler 
+Lambdas and Middleware, the upcoming `IExceptionHandler` and `IProblemDetailsService` and whatnot..., I find the 
+current state highly confusing and rather not deal with it.
+
+I think for the application we can get away with an `ApplicationErrorHandler`. A younger me would have tried 
+to make it as generic as possible. These days, I prefer doing the stuff in the most straightforward way and 
+
+```csharp
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+// ...
+
+namespace RebacExperiments.Server.Api.Infrastructure.Errors
+{
+    /// <summary>
+    /// Options for the <see cref="ApplicationErrorHandler"/>.
+    /// </summary>
+    public class ApplicationErrorHandlerOptions
+    {
+        /// <summary>
+        /// Gets or sets the option to include the Exception Details in the response.
+        /// </summary>
+        public bool IncludeExceptionDetails { get; set; } = false;
+    }
+
+    /// <summary>
+    /// Handles errors returned by the application.
+    /// </summary>
+    public class ApplicationErrorHandler
+    {
+        private readonly ILogger<ApplicationErrorHandler> _logger;
+        
+        private readonly ApplicationErrorHandlerOptions _options;
+
+        public ApplicationErrorHandler(ILogger<ApplicationErrorHandler> logger, IOptions<ApplicationErrorHandlerOptions> options) 
+        { 
+            _logger = logger;
+            _options = options.Value;
+        }
+
+        public ObjectResult HandleInvalidModelState(HttpContext httpContext, ModelStateDictionary modelStateDictionary)
+        {
+            _logger.TraceMethodEntry();
+
+            var details = new ValidationProblemDetails(modelStateDictionary)
+            {
+                Title = "Validation Failed",
+                Type = "ValidationError",
+                Status = (int)HttpStatusCode.BadRequest,
+                Instance = httpContext.Request.Path,
+            };
+
+            details.Extensions.Add("error-code", ErrorCodes.ValidationFailed);
+            details.Extensions.Add("trace-id", httpContext.TraceIdentifier);
+
+            return new ObjectResult(details)
+            {
+                ContentTypes = { "application/problem+json" },
+                StatusCode = (int)HttpStatusCode.BadRequest,
+            };
+        }
+
+        public ObjectResult HandleException(HttpContext httpContext, Exception exception)
+        {
+            _logger.TraceMethodEntry();
+
+            _logger.LogError(exception, "Call to '{RequestPath}' failed due to an Exception", httpContext.Request.Path);
+
+            return exception switch
+            {
+                AuthenticationFailedException e => HandleAuthenticationException(httpContext, e),
+                EntityConcurrencyException e => HandleEntityConcurrencyException(httpContext, e),
+                EntityNotFoundException e => HandleEntityNotFoundException(httpContext, e),
+                EntityUnauthorizedAccessException e => HandleEntityUnauthorizedException(httpContext, e),
+                Exception e => HandleSystemException(httpContext, e),
+            };
+         }
+
+        private ObjectResult HandleAuthenticationException(HttpContext httpContext, AuthenticationFailedException e)
+        {
+            _logger.TraceMethodEntry();
+
+            var details = new ProblemDetails
+            {
+                Title = e.ErrorMessage,
+                Type = nameof(AuthenticationFailedException),
+                Status = (int)HttpStatusCode.Unauthorized,
+                Instance = httpContext.Request.Path,
+            };
+
+            details.Extensions.Add("error-code", ErrorCodes.AuthenticationFailed);
+            details.Extensions.Add("trace-id", httpContext.TraceIdentifier);
+
+            AddExceptionDetails(details, e);
+
+            return new ObjectResult(details)
+            {
+                ContentTypes = { "application/problem+json" },
+                StatusCode = (int)HttpStatusCode.Unauthorized,
+            };
+        }
+        
+        // ...
+
+        private ObjectResult HandleSystemException(HttpContext httpContext, Exception e)
+        {
+            _logger.TraceMethodEntry();
+
+            var details = new ProblemDetails
+            {
+                Title = "An Internal Server Error occured",
+                Status = (int)HttpStatusCode.InternalServerError,
+                Instance = httpContext.Request.Path,
+            };
+
+            details.Extensions.Add("error-code", ErrorCodes.InternalServerError);
+            details.Extensions.Add("trace-id", httpContext.TraceIdentifier);
+
+            AddExceptionDetails(details, e);
+
+            return new ObjectResult(details)
+            {
+                ContentTypes = { "application/problem+json" },
+                StatusCode = (int)HttpStatusCode.InternalServerError,
+            };
+        }
+
+        private void AddExceptionDetails(ProblemDetails details, Exception e)
+        {
+            _logger.TraceMethodEntry();
+
+            if(_options.IncludeExceptionDetails)
+            {
+                details.Extensions.Add("exception", e.ToString());
+            }
+        }
+    }
+}
+```
+
+In the Controller we can then pass the `ApplicationErrorHandler` to the Constructor and use it to 
+handle an invalid `ModelState` and any `Exception`, that's being thrown.
+
+```csharp
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+// ...
+
+namespace RebacExperiments.Server.Api.Controllers
+{
+    [Route("UserTasks")]
+    public class UserTasksController : ControllerBase
+    {
+        private readonly ILogger<UserTasksController> _logger;
+        private readonly ApplicationErrorHandler _applicationErrorHandler;
+
+        public UserTasksController(ILogger<UserTasksController> logger, ApplicationErrorHandler applicationErrorHandler)
+        {
+            _logger = logger;
+            _applicationErrorHandler = applicationErrorHandler;
+        }
+
+        [HttpPut]
+        [Route("{id}")]
+        [Authorize(Policy = Policies.RequireUserRole)]
+        [EnableRateLimiting(Policies.PerUserRatelimit)]
+        public async Task<IActionResult> PutUserTask([FromServices] ApplicationDbContext context, [FromServices] IUserTaskService userTaskService, [FromBody] UserTask userTask, CancellationToken cancellationToken)
+        {
+            _logger.TraceMethodEntry();
+
+            if (!ModelState.IsValid)
+            {
+                return _applicationErrorHandler.HandleInvalidModelState(HttpContext, ModelState);
+            }
+
+            try
+            {
+                await userTaskService.UpdateUserTaskAsync(context, userTask, User.GetUserId(), cancellationToken);
+
+                return Ok(userTask);
+            }
+            catch (Exception ex)
+            {
+                return _applicationErrorHandler.HandleException(HttpContext, ex);
+            }
+        }
+        
+        // ...
+    }
+}
+```
+
+### Authentication ###
+
+#### Password Hashing ####
+
+#### Cookie Authentication ####
+
+While most articles use JSON Web Tokens, I think for our Backend a Cookie Authentication is totally sufficient. 
+
+```csharp
+// Cookie Authentication
+builder.Services
+    .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.Cookie.HttpOnly = true;
+        options.Cookie.SameSite = SameSiteMode.Lax; // We don't want to deal with CSRF Tokens
+
+        options.Events.OnRedirectToAccessDenied = (context) =>
+        {
+            context.Response.StatusCode = StatusCodes.Status403Forbidden;
+
+            return Task.CompletedTask;
+        };
+
+        options.Events.OnRedirectToLogin = (context) =>
+        {
+            context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+
+            return Task.CompletedTask;
+        };
+    });
+
+```
+
+### Integrating the ListObjects API ###
+
+The crucial part 
 
 What's left is mapping the Table-Valued Function in the `ApplicationDbContext` as the `ListObjects` method.
 
@@ -1712,6 +2043,158 @@ namespace RebacExperiments.Server.Api.Tests
     }
 }
 ```
+
+
+
+## Integration Tests ##
+
+For integration tests we are writing a `TransactionalTestBase` class, which basically opens a `System.Transaction.TransactionScope` 
+before executing a test and disposes it, when tearing it down. This will reset your database back into a consistent state for the 
+next test to execute. 
+
+```csharp
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+// ...
+
+namespace RebacExperiments.Server.Api.Tests
+{
+    /// <summary>
+    /// Will be used by all integration tests, that need an <see cref="ApplicationDbContext"/>.
+    /// </summary>
+    public class TransactionalTestBase
+    {
+        /// <summary>
+        /// We can assume the Configuration has been initialized, when the Tests 
+        /// are run. So we inform the compiler, that this field is intentionally 
+        /// left uninitialized.
+        /// </summary>
+        protected IConfiguration _configuration = null!;
+
+        /// <summary>
+        /// We can assume the DbContext has been initialized, when the Tests 
+        /// are run. So we inform the compiler, that this field is intentionally 
+        /// left uninitialized.
+        /// </summary>
+        protected ApplicationDbContext _applicationDbContext = null!;
+
+        public TransactionalTestBase()
+        {
+            _configuration = ReadConfiguration();
+            _applicationDbContext = GetApplicationDbContext(_configuration);
+        }
+
+        /// <summary>
+        /// Read the appsettings.json for the Test.
+        /// </summary>
+        /// <returns></returns>
+        private IConfiguration ReadConfiguration()
+        {
+            return new ConfigurationBuilder()
+                .AddJsonFile("appsettings.json")
+                .Build();
+        }
+
+        /// <summary>
+        /// The SetUp called by NUnit to start the transaction.
+        /// </summary>
+        /// <returns>An awaitable Task</returns>
+        [SetUp]
+        protected async Task Setup()
+        {
+            await OnSetupBeforeTransaction();
+            await _applicationDbContext.Database.BeginTransactionAsync(IsolationLevel.ReadCommitted, default);
+            await OnSetupInTransaction();
+        }
+
+        /// <summary>
+        /// The TearDown called by NUnit to rollback the transaction.
+        /// </summary>
+        /// <returns>An awaitable Task</returns>
+        [TearDown]
+        protected async Task Teardown()
+        {
+            await OnTearDownInTransaction();
+            await _applicationDbContext.Database.RollbackTransactionAsync(default);
+            await OnTearDownAfterTransaction();
+        }
+
+        /// <summary>
+        /// Called before the transaction starts.
+        /// </summary>
+        /// <returns>An awaitable task</returns>
+        public virtual Task OnSetupBeforeTransaction()
+        {
+            return Task.CompletedTask;
+        }
+
+        /// <summary>
+        /// Called inside the transaction.
+        /// </summary>
+        /// <returns>An awaitable task</returns>
+        public virtual Task OnSetupInTransaction()
+        {
+            return Task.CompletedTask;
+        }
+
+        /// <summary>
+        /// Called before rolling back the transaction.
+        /// </summary>
+        /// <returns>An awaitable task</returns>
+        public virtual Task OnTearDownInTransaction()
+        {
+            return Task.CompletedTask;
+        }
+
+        /// <summary>
+        /// Called after transaction has been rolled back.
+        /// </summary>
+        /// <returns>An awaitable task</returns>
+        public virtual Task OnTearDownAfterTransaction()
+        {
+            return Task.CompletedTask;
+        }
+
+        /// <summary>
+        /// Builds an <see cref="ApplicationDbContext"/> based on a given Configuration. We 
+        /// expect the Configuration to have a Connection String "ApplicationDatabase" to 
+        /// be defined.
+        /// </summary>
+        /// <param name="configuration">A configuration provided by the appsettings.json</param>
+        /// <returns>An initialized <see cref="ApplicationDbContext"/></returns>
+        /// <exception cref="InvalidOperationException">Thrown when no Connection String "ApplicationDatabase" was found</exception>
+        private ApplicationDbContext GetApplicationDbContext(IConfiguration configuration)
+        {
+            var connectionString = configuration.GetConnectionString("ApplicationDatabase");
+
+            if (connectionString == null)
+            {
+                throw new InvalidOperationException($"No Connection String named 'ApplicationDatabase' found in appsettings.json");
+            }
+
+            return GetApplicationDbContext(connectionString);
+        }
+
+        /// <summary>
+        /// Builds an <see cref="ApplicationDbContext"/> based on a given Connection String 
+        /// and enables sensitive data logging for eventual debugging. 
+        /// </summary>
+        /// <param name="connectionString">Connection String to the Test database</param>
+        /// <returns>An initialized <see cref="ApplicationDbContext"/></returns>
+        private ApplicationDbContext GetApplicationDbContext(string connectionString)
+        {
+            var dbContextOptionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>().UseSqlServer(connectionString);
+
+            return new ApplicationDbContext(
+                logger: new NullLogger<ApplicationDbContext>(), 
+                options: dbContextOptionsBuilder.Options);
+        }
+    }
+}
+```
+
+## ASP.NET Core ##
+
 
 ## Running an Example ##
 
