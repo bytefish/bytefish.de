@@ -8,16 +8,16 @@ summary: This article shows a way to implement a Relationship-based Access Contr
 
 [written an article about the Google Zanzibar Data Model]: https://www.bytefish.de/blog/relationship_based_acl_with_google_zanzibar.html
 
-You are opening your Google Drive app, and a moment later *your files* appear. It's magic. But 
-have you ever wondered what's *your files* actually? How do these services actually know, which 
-files *you are allowed* to see?
+The Google Drive app starts and a moment later *your files* appear. It's magic. But have you 
+ever wondered what's *your files* actually? How do these services actually know, which files 
+*you are allowed* to see?
 
 Are you part of an *Organization* and you are allowed to *view* all their files? Have you been 
 assigned to a *Team*, that's allowed to *view* or *edit* files? Has someone shared *their files* 
 with *you* as a *User*?
 
-So in 2019 Google has published a paper on "Google Zanzibar", which is Google's central solution 
-for providing authorization among its many services:
+In 2019 Google has lifted the curtain and has published a paper on *Google Zanzibar*, which 
+is Google's central solution for providing authorization among its many services:
 
 * [https://research.google/pubs/pub48190/](https://research.google/pubs/pub48190/)
 
@@ -26,12 +26,10 @@ The keyword here is *Relationship-based Access Control*, which is ...
 > [...] an authorization paradigm where a subject's permission to access a resource is defined by the 
 > presence of relationships between those subjects and resources.
 
-Let's find out about it! 
-
 I have previously [written an article about the Google Zanzibar Data Model], and also wrote some 
-pretty nice SQL statements to make sense of the it. This article will make use of the ideas, queries 
-and takes a look at implementing Relationship-based Access Control using Microsoft SQL Server and 
-ASP.NET Core.
+pretty nice SQL statements to make sense of the it. This article will make use of the ideas and 
+queries, and takes a look at implementing Relationship-based Access Control using Microsoft 
+SQL Server and ASP.NET Core.
 
 All code in this article can be found in a repository at:
 
@@ -43,58 +41,59 @@ All code in this article can be found in a repository at:
 
 ## Role-based and Relationship-based ACL ##
 
-We are going to build out a tiny part of a Task Management system. Why? Because tasks are basically 
-everywhere in an organization, such as having tasks for signing documents, calling back customers or 
-reminders to write invoices. They are a good example use case for authorization.
+We are going to build a tiny part of a Task Management system. Why? Because tasks are basically everywhere 
+in an organization, such as having tasks for signing documents, calling back customers or reminders to 
+write invoices. They are a good example use case for authorization.
 
-The situation is now somewhat similar to the Google Drive example. You obviously don't want an entire 
-organization to view, edit, delete or close all tasks. Given a sufficiently large headcount it would 
-quickly escalate into a chaos, if we don't authorize users.
+The situation for such a Task Management system somewhat similar to the Google Drive example. You obviously 
+don't want an entire organization to view, edit, delete or close all tasks. Given a sufficiently large 
+headcount it would quickly escalate into a chaos, if we don't authorize users.
 
 ### Role-based Access Control (RBAC) ###
 
 [Authoring an RBAC API for your application (by Stewart Adam)]: https://devblogs.microsoft.com/ise/2023/10/12/rbac-api-for-your-application/
 
+One way to authorize a user is by using Role-based Access Control (RBAC).
+
 Role-based Access Control is definitely among the most popular models for defining permissions and 
 authorizing access to an organizations resources, such as our tasks. Highly simplified, a user is 
 being assigned a set of roles, where each role represents the users role within the organization.
 
-Back to our Task Management system, a regular user might be able to view, edit and close tasks, while 
+In to our Task Management system, a regular user might be able to view, edit and close tasks, while 
 it requires elevated rights to actually delete a task. Likewise a user being assigned to the role 
 *Software Development* should probably not be permitted to view or edit tasks created by the 
 *Human Resources* people.
 
 There was recently a great Microsoft DevBlogs article by Stewart Adam, that discusses designing Role-based 
 Access Control for applications and it's a great read. It discusses quite a similar use case and comes up 
-with solutions:
+with some solutions:
 
 * [Authoring an RBAC API for your application (by Stewart Adam)]
 
-As you can see in the article, a Role-based Access Control can get very complex, very quickly. We have 
-"Subtree grants", "Entity Graph Scopes", "Nested Roles", "Permission Wildcards", ... and sadly none of 
-it is illustrated with *actual code*, none of this exists in ASP.NET Core.
+As you can see in the article, a Role-based Access Control can get very complex, very quickly. "Subtree grants", 
+"Entity Graph Scopes", "Nested Roles", "Permission Wildcards", ... and sadly none of it is illustrated with 
+actual code, and none of this exists in ASP.NET Core.
 
 In my experience Role-based Access Control can take you very, very far. And it works great, as long as 
 an organization strictly adheres to the roles defined. But as soon you need a more fine-grained control, 
-you are most probably out of luck. 
+you are out of luck.
 
-And in so many projects I've learnt, that *there is always a special snowflake*, that doesn't fit the 
-roles and needs a special role. This *may* lead to an explosion in roles, or you apply the compensation 
-mentioned in [Authoring an RBAC API for your application (by Stewart Adam)] (oh, or you just give up 
-and grant the user elevated rights).
+And many projects taught me, that *there is always a special snowflake*, that doesn't fit the roles and 
+needs a special role. This *may* lead to an explosion in roles, or you apply the compensation mentioned 
+in [Authoring an RBAC API for your application (by Stewart Adam)].
 
 ### Relationship-based Access Control (ReBAC) ###
 
-Google Zanzibar was described by Google in a 2019 paper called "Zanzibar: Google’s Consistent, Global Authorization 
-System" and the paper is available for download at:
+Google Zanzibar was described by Google in a 2019 paper called *Zanzibar: Google’s Consistent, Global Authorization System* 
+and the paper is available for download at:
 
 * [https://research.google/pubs/pub48190/](https://research.google/pubs/pub48190/)
 
 It describes the Google's motivation for building a unified authorization system and describes the 
 data model, language and its API. After publishing the paper various vendors and open source 
-implementations have materialized, like Permify, OSO or SpiceDB, ... to name a few.
+implementations have materialized.
 
-There are many excellent sources, that explain Google Zanzibar in detail and help you learning 
+I think there are many excellent sources, that explain Google Zanzibar in detail and help you learning 
 about it. I've basically consulted the following articles to get started and :
 
 * [Exploring Google Zanzibar: A Demonstration of Its Basics (by Ege Aytin)](https://www.permify.co/post/exploring-google-zanzibar-a-demonstration-of-its-basics)
@@ -104,11 +103,10 @@ about it. I've basically consulted the following articles to get started and :
 Highly, highly simplified, Google Zanzibar models relationships between `Objects` and `Subjects` using the following notation:
 
 ```
-<object>#<relation>@<subject> 
+<object>#<relation>@<subject>#<subject_relation>
 ```
 
-This allows Google Zanzibar to model relationships between an `Object` and a `Subject`. Say we have our system to manage 
-tasks, then we could make up relations like this with the Google Zanzibar syntax:
+Say we have our system to manage tasks, then we could make up relations like this with the Google Zanzibar syntax:
 
 ```
 task323#owner@philipp
@@ -136,15 +134,15 @@ Where ...
     * `hannes` is a `member` of `org1`
 * `org2#member@alexander`
     * `alexander` is a `member` of `org1`
-    
-As you can see, it's pretty easy to build a Role-based Access Control upon the Google Zanzibar data model. And 
-it's something, that's often done in these systems. It's already been noted in the original paper, that ...
+
+We could build a Role-based Access Control upon the Google Zanzibar data model. And it's something, that's often done 
+in these systems, as it's already been noted in Google's original paper ...
 
 > [...] A number of Zanzibar clients have implemented RBAC policies on top of Zanzibar’s namespace configuration language. [...]
 
 So using Role-based Access Control and Relationship-based Access Control is not a mutually exclusive decision. You can 
-easily build Role-based Access Control upon the Google Zanzibar data model and use the Access Control system, that 
-works best for your use case. 
+easily build a Role-based Access Control model upon the Google Zanzibar data model and combine it with Relationship-based 
+Access Control... use what's best for your use case. 
 
 ## What we are going to build ##
 
@@ -171,7 +169,9 @@ example provided in the SQL Server examples repository:
 
 * [https://github.com/microsoft/sql-server-samples/tree/master/samples/databases/wide-world-importers/wwi-ssdt](https://github.com/microsoft/sql-server-samples/tree/master/samples/databases/wide-world-importers/wwi-ssdt)
 
-### Project Structure ###
+### Prerequisites ###
+
+#### Project Structure ####
 
 Before starting any database application, a team should *agree* on structure and naming conventions. You'll need to 
 have a consistent style from the very start. Everyone has to know *where to put files* and the naming conventions to 
@@ -200,11 +200,11 @@ The high level structure for our SQL Server Database Project uses the [WideWorld
     * `Script.PostDeployment1.sql`
         * Post Deployment Script to execute SQL scripts go here ...
 
-### SQL Server Object Name Convention ###
+#### SQL Server Object Name Convention ####
 
 [Naming convention]: https://en.wikipedia.org/wiki/Naming_convention_(programming)
 
-What's that "*Naming Conventions*" I am talking about?
+What's a "*Naming Convention*"?
 
 A [Naming convention] is a set of rules for choosing the character sequence to be used for 
 identifiers which denote variables, types, functions, and other entities in source code 
@@ -248,7 +248,7 @@ For SQL Server the following table is a good start.
 |  Table-Valued Function                   | PascalCase |    128 | No     | `tvf_`  | No        | `tvf_FunctionLogicalName`                                |
 |  Sequence                                | PascalCase |    128 | No     | `sq_`   | No        | `sq_TableName`                                           |
 
-### Auditing and Optimistic Locking ###
+#### Auditing and Optimistic Locking ####
 
 In my experience every database table should support optimistic locking and auditing baked in from the 
 start, because:
@@ -266,13 +266,9 @@ So as a convention *every* table in our application gets the following 4 additio
 |  ValidFrom      | `DATETIME2(7)`  | No         | Period start column: The system records the start time for the row in this column   |
 |  ValidTo        | `DATETIME2(7)`  | No         | Period end column: The system records the end time for the row in this column       |
 
-They don't hurt and they might turn out very useful. And if you don't need a history? 🤷, just deactivate the Temporal Table and call it a day!
+They don't hurt and they might turn out very useful. And if you don't need a history? Then just deactivate the Temporal Table and call it a day!
 
-Do Temporal Tables solve all problems? Oh, for sure they don't and they are a trade-off, like everything in software 
-development. You might run into problems on high volume data, you have to deactivate temporal tables before 
-migrations and need to set 
-
-### Temporal Tables ###
+#### Temporal Tables ####
 
 Few developers know about Temporal tables, also known as ...
 
@@ -316,94 +312,45 @@ You can learn everything about Temporal Tables in the SQL Server documentation a
 
 * [https://learn.microsoft.com/en-us/sql/relational-databases/tables/temporal-tables](https://learn.microsoft.com/en-us/sql/relational-databases/tables/temporal-tables)
 
-#### Short Story on Auditing with EntityFramework Core ####
+Like everything in software engineering, temporal tables do not magically solve all problems and are a trade-off. You might run into 
+problems on high volume datasets. You have to deactivate temporal tables before migrations and probably need to put it into single user 
+mode during schema migrations.
 
-The canonical EntityFramework Core example you'll find for auditing, usually works by overriding the 
-`DbContext#SaveChanges` method or intercepting its call, and then inspect the `DbContext` Change 
-Tracker for changes.
+### Database Project Overview ###
 
-This is illustrated by the following code snippet, which implements a `SaveChangesInterceptor`.
+It's a good idea to get an overview first. We create a SQL Server Database Project (SSDP), call it `RebacExperiments.Server.SSDT` 
+and put all our Database Objects and Scripts into it.
 
-```csharp
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+<div style="display:flex; align-items:center; justify-content:center;margin-bottom:15px;">
+    <a href="/static/images/blog/aspnetcore_rebac/database_project_overview.jpg">
+        <img src="/static/images/blog/aspnetcore_rebac/database_project_overview.jpg" alt="Database Project Overview">
+    </a>
+</div>
 
-using EfCoreAudit.Model;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Diagnostics;
-
-namespace EfCoreAudit.Database.Interceptors
-{
-    /// <summary>
-    /// A <see cref="SaveChangesInterceptor"/> for adding auditing metadata.
-    /// </summary>
-    internal class AuditingInterceptor : SaveChangesInterceptor
-    {
-        public override ValueTask<InterceptionResult<int>> SavingChangesAsync(DbContextEventData eventData, InterceptionResult<int> result, CancellationToken cancellationToken = default)
-        {
-            DbContext ctx = eventData.Context!;
-
-            if (ctx == null)
-            {
-                return base.SavingChangesAsync(eventData, result, cancellationToken);
-            }
-
-            var auditableEntities = ctx.ChangeTracker.Entries<AuditableEntity>().ToList();
-
-            foreach (var auditableEntity in auditableEntities)
-            {
-
-                if (auditableEntity.State == EntityState.Added)
-                {
-                    auditableEntity.Property(x => x.CreatedDateTime).CurrentValue = DateTime.UtcNow;
-                }
-
-                if (auditableEntity.State == EntityState.Modified)
-                {
-                    auditableEntity.Property(x => x.ModifiedDateTime).CurrentValue = DateTime.UtcNow;
-                }
-            }
-
-            return base.SavingChangesAsync(eventData, result, cancellationToken);
-        }
-    }
-}
-```
-
-It's a bad advice, because it works only as long as all your entities are tracked, but a Change Tracker is an expensive 
-thing... and more importantly, as soon as you are using the modern `DbSet<T>#ExecuteUpdateAsync` you are out of luck 
-with this approach. And what about Stored Procedures? One-Time Scripts? Migrations? 
-
-Just let your (very) expensive database handle it and use Temporal Tables. And by the way, I've asked the .NET community 
-on Mastodon, what's their strategy for auditing changes to their database and Change Data Capture (CDC) came up, so this 
-might also a path.
-
-### Schemas ###
-
-Now the wall of text is over. Let's get to actual code!
 
 We have two schemas named `[Identity]` and `[Application]`. The `[Identity]` schema, surprise, is going to hold all 
 identity related stuff, such as a `User`, a `Role` and the `RelationTuple` for defining the permissions. It's also 
-going to hold the functions to list objects and check for permissions. 
+going to hold the functions to list objects and check for permissions.
 
 The `[Application]` schema is going to hold everything not directly related to the Identity management, such as `UserTask`, 
 `Organization`, `Team`, ... entities.  
 
+### Schema "Identity"  ###
 
 #### Sequences ####
 
-By using Sequences offer several advantadges over an Auto-Incrementing Primary Key. We can set the start value and 
-increment values of the Sequence, which is useful when inserting the initial data with fixed IDs and 
-having it automatically incrementing right after. 
+We are using Sequences instead of an Auto-Incrementing Primary Key. A Sequence has some advantadges, such as setting 
+explicit start and increment values. And what's particularly interesting to us is, that we can use the Sequence to 
+implement the Hi-Lo Pattern in code. 
 
-And what's particularly interesting to us is, that we can use it to implement the Hi-Lo Pattern. The EntityFramework 
-documentation has the following to say about the Hi/Lo Algorithm:
+The EntityFramework documentation has the following to say about the Hi/Lo Algorithm:
 
 > The Hi/Lo algorithm is useful when you need unique keys before committing changes. As a summary, the Hi-Lo 
 > algorithm assigns unique identifiers to table rows while not depending on storing the row in the database 
 > immediately. This lets you start using the identifiers right away, as happens with regular sequential 
 > database IDs.
 
-So we define our sequences for all tables.
+We define our sequences for all tables in their respective files as:
 
 ```sql
 CREATE SEQUENCE [Identity].[sq_User]
@@ -424,9 +371,9 @@ CREATE SEQUENCE [Identity].[sq_RelationTuple]
 
 #### Tables ####
 
-The application has a very simple `User` model for now. A user may be permitted to Logon using a Logon Name, 
-the Logon Name is unique among all users. The password hashing needs to be done in the application, when adding 
-a user to the system.
+The application has a very simple `User` model. A user may be permitted to Logon using a Logon Name, the Logon Name 
+is unique among all users. The password hashing needs to be done in the application, when adding a user to the 
+system.
 
 ```sql
 CREATE TABLE [Identity].[User](
@@ -463,7 +410,8 @@ CREATE TABLE [Identity].[Role](
 ) WITH (SYSTEM_VERSIONING = ON (HISTORY_TABLE = [Identity].[RoleHistory]));
 ```
 
-The table `[Identity].[RelationTuple]` is the secret sauce here, that's going to be at the heart of the Relationship-based Access Control.
+The table `[Identity].[RelationTuple]` is the secret sauce here, that's going to be at the heart of the Relationship-based Access Control. As 
+you can see, the `[ObjectKey]` has been defined as an `INT` column type, so all Objects need to have a Surrogate Integer Primary Key. 
 
 ```sql
 CREATE TABLE [Identity].[RelationTuple](
@@ -488,7 +436,7 @@ CREATE TABLE [Identity].[RelationTuple](
 
 [Exploring Relationship-based Access Control (ReBAC) with Google Zanzibar]: https://www.bytefish.de/blog/relationship_based_acl_with_google_zanzibar.html
 
-The Google Zanzibar Check API is implemented by the User Defined Function `[Identity].[udf_RelationTuples_Check]`, which 
+The Google Zanzibar "Check API" is implemented by the User Defined Function `[Identity].[udf_RelationTuples_Check]`, which 
 is explained in great detail in my article [Exploring Relationship-based Access Control (ReBAC) with Google Zanzibar].
 
 ```sql
@@ -551,8 +499,8 @@ BEGIN
 END
 ```
 
-You want to answer questions like "What Tasks is a User allowed to see?", "What Organizations is a User 
-member of?". This can be done by using the ListObjects function, that has been written in a previous 
+And you want to answer questions like "What Tasks is a User allowed to see?", "What Organizations is a User 
+member of?". This can be done by using the `ListObjects` function, that has been written in a previous 
 article.
 
 ```sql
@@ -627,8 +575,8 @@ END
 
 #### Stored Procedures ####
 
-The tables are system versioned, but for inserting the initial data we need to turn it off. So 
-we are adding a Stored Procedure `[Identity].[usp_TemporalTables_DeactivateTemporalTables]` to 
+The tables are system versioned, but for inserting the initial data with explicit `ValidFrom` and `ValidTo` values, 
+we need to turn the versioning off. So we are adding a Stored Procedure `[Identity].[usp_TemporalTables_DeactivateTemporalTables]` to 
 deactivate the versioning.
 
 ```sql
@@ -662,9 +610,8 @@ AS BEGIN
 END
 ```
 
-After the data has been inserted, we want to reactivate the versioning again. So we are adding 
-a Stored Procedure `[Identity].[usp_TemporalTables_ReactivateTemporalTables]`, that restores 
-the system versioning.
+After the data has been inserted, we want to reactivate the versioning again. So we are also adding a Stored Procedure 
+`[Identity].[usp_TemporalTables_ReactivateTemporalTables]`, that restores the system versioning.
 
 ```sql
 CREATE PROCEDURE [Identity].[usp_TemporalTables_ReactivateTemporalTables]
@@ -701,6 +648,9 @@ END
 
 #### Tables ####
 
+The Task Management Application deals with... Tasks. I named this a *UserTask* for the sole reason, that *Task* is 
+too ambigous in .NET and you'll often accidentally refer to a `System.Threading.Task`... without noticing.
+
 ```sql
 CREATE TABLE [Application].[UserTask](
     [UserTaskID]            INT                                         CONSTRAINT [DF_Application_UserTask_UserTaskID] DEFAULT (NEXT VALUE FOR [Application].[sq_UserTask]) NOT NULL,
@@ -725,6 +675,10 @@ CREATE TABLE [Application].[UserTask](
 ) WITH (SYSTEM_VERSIONING = ON (HISTORY_TABLE = [Application].[UserTaskHistory]));
 ```
 
+A `UserTask` always has a priority assigned, so you know which task needs to be processed. 
+
+We add a table `[Application].[UserTaskPriority]`.
+
 ```sql
 CREATE TABLE [Application].[UserTaskPriority](
     [UserTaskPriorityID]    INT                                         NOT NULL,
@@ -739,13 +693,63 @@ CREATE TABLE [Application].[UserTaskPriority](
 ) WITH (SYSTEM_VERSIONING = ON (HISTORY_TABLE = [Application].[UserTaskPriorityHistory]));
 ```
 
-```sql
+A `UserTask` needs a status. Has the `UserTask` been assigned? Is it waiting for others? Has it been defered? Has it been 
+completed? We add a table `[Application].[UserTaskStatus]`.
 
+```sql
+CREATE TABLE [Application].[UserTaskStatus](
+    [UserTaskStatusID]      INT                                         NOT NULL,
+    [Name]                  NVARCHAR(50)                                NOT NULL,
+    [RowVersion]            ROWVERSION                                  NULL,
+    [LastEditedBy]          INT                                         NOT NULL,
+    [ValidFrom]             DATETIME2 (7) GENERATED ALWAYS AS ROW START NOT NULL,
+    [ValidTo]               DATETIME2 (7) GENERATED ALWAYS AS ROW END   NOT NULL,
+    CONSTRAINT [PK_UserTaskStatus] PRIMARY KEY ([UserTaskStatusID]),
+    CONSTRAINT [FK_UserTaskStatus_User_LastEditedBy] FOREIGN KEY ([LastEditedBy]) REFERENCES [Identity].[User] ([UserID]),
+    PERIOD FOR SYSTEM_TIME (ValidFrom, ValidTo)
+) WITH (SYSTEM_VERSIONING = ON (HISTORY_TABLE = [Application].[UserTaskStatusHistory]));
+```
+
+A user may be part of a `Team`, so we can for example make a `User` a member of a `Team`, and we can 
+assign a `viewer` permission from a `Team` to a `UserTask`.
+
+```sql
+CREATE TABLE [Application].[Team](
+    [TeamID]                INT                                         CONSTRAINT [DF_Application_Team_TeamID] DEFAULT (NEXT VALUE FOR [Application].[sq_Team]) NOT NULL,
+    [Name]                  NVARCHAR(255)                               NOT NULL,
+    [Description]           NVARCHAR(2000)                              NOT NULL,
+    [RowVersion]            ROWVERSION                                  NULL,
+    [LastEditedBy]          INT                                         NOT NULL,
+    [ValidFrom]             DATETIME2 (7) GENERATED ALWAYS AS ROW START NOT NULL,
+    [ValidTo]               DATETIME2 (7) GENERATED ALWAYS AS ROW END   NOT NULL,
+    CONSTRAINT [PK_Team] PRIMARY KEY ([TeamID]),
+    CONSTRAINT [FK_Team_User_LastEditedBy] FOREIGN KEY ([LastEditedBy]) REFERENCES [Identity].[User] ([UserID]),
+    PERIOD FOR SYSTEM_TIME (ValidFrom, ValidTo)
+) WITH (SYSTEM_VERSIONING = ON (HISTORY_TABLE = [Application].[TeamHistory]));
+```
+
+A user may also be part of an `Organization`, so we can for example make a `User` a member of an `Organization`, and we can 
+assign a `viewer` permission from an `Organization` to a `UserTask`.
+
+
+```sql
+CREATE TABLE [Application].[Organization](
+    [OrganizationID]        INT                                         CONSTRAINT [DF_Application_Organization_OrganizationID] DEFAULT (NEXT VALUE FOR [Application].[sq_Organization]) NOT NULL,
+    [Name]                  NVARCHAR(255)                               NOT NULL,
+    [Description]           NVARCHAR(2000)                              NOT NULL,
+    [RowVersion]            ROWVERSION                                  NULL,
+    [LastEditedBy]          INT                                         NOT NULL,
+    [ValidFrom]             DATETIME2 (7) GENERATED ALWAYS AS ROW START NOT NULL,
+    [ValidTo]               DATETIME2 (7) GENERATED ALWAYS AS ROW END   NOT NULL,
+    CONSTRAINT [PK_Organization] PRIMARY KEY ([OrganizationID]),
+    CONSTRAINT [FK_Organization_User_LastEditedBy] FOREIGN KEY ([LastEditedBy]) REFERENCES [Identity].[User] ([UserID]),
+    PERIOD FOR SYSTEM_TIME (ValidFrom, ValidTo)
+) WITH (SYSTEM_VERSIONING = ON (HISTORY_TABLE = [Application].[OrganizationHistory]));
 ```
 
 #### Stored Procedures ####
 
-As discussed, all our tables are system-versioned, and we need to deactivate them before running our initial 
+As mentioned, all our tables are system-versioned, and we need to deactivate them before running our initial 
 inserts. So we add a Stored Procedure `[Application].[usp_TemporalTables_DeactivateTemporalTables]` to deactivate 
 the versioning.
 
@@ -847,8 +851,8 @@ END
 
 ### Post Deployment Scripts ###
 
-Post-Deployment Scripts are used to insert the initial data. A `User` is needed to do anything in our system, a `UserTaskPriority` 
-table needs to have some values, that map to an applications enumeration. 
+Post-Deployment Scripts are used to seed the database with initial data. A `User` is needed to do anything in our system, 
+the `UserTaskPriority` and `UserTaskStatus` tables need to have values, that map to an applications enumeration. 
 
 <div style="display:flex; align-items:center; justify-content:center;margin-bottom:15px;">
     <a href="/static/images/blog/aspnetcore_rebac/post_deployment_scripts.jpg">
@@ -922,9 +926,8 @@ EXEC [Application].[usp_TemporalTables_ReactivateTemporalTables]
 GO
 ```
 
-We want to be able to re-run the Post-Deployment Scripts as often as you want, without running 
-into constraint violations, such as Primary Key conflicts. So we are using a `MERGE` statement, 
-to only insert data, if it doesn't exist yet.
+We want to be able to re-run the Post-Deployment Scripts, without running into constraint violations, such 
+as Primary Key conflicts. So we are using a `MERGE` statement, to only insert data, if it doesn't exist yet.
 
 An example is the initial data for the `[Identity].[User]` table.
 
@@ -955,7 +958,6 @@ WHEN NOT MATCHED BY TARGET THEN
         ([UserID], [FullName], [PreferredName], [IsPermittedToLogon], [LogonName], [HashedPassword], [LastEditedBy], [ValidFrom], [ValidTo])
     VALUES 
         ([Source].[UserID], [Source].[FullName], [Source].[PreferredName], [Source].[IsPermittedToLogon], [Source].[LogonName], [Source].[HashedPassword], [Source].[LastEditedBy], [Source].[ValidFrom], [Source].[ValidTo]);
-
 ```
 
 ### Deploying the Database ###
@@ -1009,9 +1011,9 @@ Congratulations!
 
 ## .NET Backend with ReBAC ACL ##
 
+### Prerequisites ###
 
-
-### Logging ###
+#### Logging ####
 
 ASP.NET Core comes with the `Microsoft.Extensions.Logging` abstractions, so you can plug in any logging framework you 
 like. I like Serilog a lot and use it in this example, but I've also had a good experience with NLog. By using the 
@@ -1131,8 +1133,6 @@ You shouldn't use the `Log.Logger` singleton directly in your code, as this woul
 that it's totally possible to do so, if you ever need to take a shortcut for your logging or need features only the Serilog logger 
 provides.
 
-#### Logging Extensions ####
-
 I have once worked in a .NET Framework project, which used log4net. And the log4net `ILog` abstraction comes with 
 properties like `IsDebugEnabled` or `IsErrorEnabled` to check the Log Level. That's useful, because you sometimes 
 need to prepare a log message, like transforming a list of objects into something human readable, only in a 
@@ -1242,14 +1242,15 @@ namespace RebacExperiments.Server.Api.Services
 
 That's it for logging.
 
-### Error Handling ###
+#### Error Handling ####
 
 [You’re better off using Exceptions]: https://eiriktsarpalis.wordpress.com/2017/02/19/youre-better-off-using-exceptions/
 
-A great read on Error Handling is [You’re better off using Exceptions] by Eirik Tsarpali. I think, that 
-using Exceptions should be the preferred way of dealing with Errors in .NET.
+Something, that you should decide on early in a project is your error handling. How do you want to communicate 
+errors to the programmer and the user? I think, that using Exceptions should be the preferred way of dealing 
+with Errors in .NET. 
 
-So we need some Error Codes, that could be returned to the user such as:
+For a User to make sense of errors, we need `ErrorCodes` to be returned to the consumer of our system.
 
 ```csharp
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
@@ -1284,7 +1285,7 @@ namespace RebacExperiments.Server.Api.Infrastructure.Errors
 }
 ```
 
-All exceptions in the application then derive from an abstract `ApplicationException`, which requires you 
+All exceptions in the application then derive from an abstract `ApplicationErrorException`, which requires you 
 to define the Error Code for your type of Exception.
 
 ```csharp
@@ -1295,7 +1296,7 @@ namespace RebacExperiments.Server.Api.Infrastructure.Exceptions
     /// <summary>
     /// Base Exception for the Application.
     /// </summary>
-    public abstract class ApplicationException : Exception
+    public abstract class ApplicationErrorException : Exception
     {
         /// <summary>
         /// Gets the Error Code.
@@ -1307,7 +1308,7 @@ namespace RebacExperiments.Server.Api.Infrastructure.Exceptions
         /// </summary>
         public abstract string ErrorMessage { get; }
 
-        protected ApplicationException(string? message, Exception? innerException)
+        protected ApplicationErrorException(string? message, Exception? innerException)
             : base(message, innerException)
         {
         }
@@ -1315,8 +1316,10 @@ namespace RebacExperiments.Server.Api.Infrastructure.Exceptions
 }
 ```
 
-An example is the `EntityUnauthorizedAccessException`, which is thrown when you try to access an entity you 
-are not authorized to access. It contains all required data to reconstruct the issue.
+All specific exceptions should then derive from the `ApplicationErrorException`, such as the `EntityUnauthorizedAccessException`. 
+
+The `EntityUnauthorizedAccessException` is thrown when you try to access an entity you are not authorized to access. To investigate 
+such issues, the exception contains all required data, such as the Entity to be accessed and the User ID.
 
 ```csharp
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
@@ -1325,7 +1328,7 @@ using RebacExperiments.Server.Api.Infrastructure.Errors;
 
 namespace RebacExperiments.Server.Api.Infrastructure.Exceptions
 {
-    public class EntityUnauthorizedAccessException : ApplicationException
+    public class EntityUnauthorizedAccessException : ApplicationErrorException
     {
         /// <summary>
         /// Gets or sets an error code.
@@ -1367,16 +1370,21 @@ namespace RebacExperiments.Server.Api.Infrastructure.Exceptions
 
 [RFC 7807]: https://datatracker.ietf.org/doc/html/rfc7807
 
+And how do you return the Errors to the caller of the API?
+
 ASP.NET Core comes with `ProblemDetails` and its surrounding infrastructure. The `ProblemDetails` stems from the 
 [RFC 7807], which tries to define *[...]  a "problem detail" as a way to carry machine-readable details of 
 errors in a HTTP response to avoid the need to define new error response formats for HTTP APIs.*
 
-And while I understand the reasoning for a `ProblemDetailsFactory`, `ProblemDetailsService`, some Exception Handler 
-Lambdas and Middleware, the upcoming `IExceptionHandler` and `IProblemDetailsService` and whatnot..., I find the 
-current state highly confusing and rather not deal with it.
+I would suggest to use them.
 
-I think for the application we can get away with an `ApplicationErrorHandler`. A younger me would have tried 
-to make it as generic as possible. These days, I prefer doing the stuff in the most straightforward way and 
+Now while I understand the reasoning for a `ProblemDetailsFactory`, `ProblemDetailsService`, some "Exception Handler 
+Lambdas" and `ErrorHandlerMiddleware`, the upcoming `IExceptionHandler` and `IProblemDetailsService` and whatnot..., 
+I find the current state in .NET 7 highly confusing... and prefer to not deal with it.
+
+I think for this application we can get away with an `ApplicationErrorHandler`, that handles the specific exceptions 
+and transforms them into an `ObjectResult` to return. A younger me would have tried to make it as generic as 
+possible. These days, I prefer doing the stuff in the most straightforward way.
 
 ```csharp
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
@@ -1511,8 +1519,8 @@ namespace RebacExperiments.Server.Api.Infrastructure.Errors
 }
 ```
 
-In the Controller we can then pass the `ApplicationErrorHandler` to the Constructor and use it to 
-handle an invalid `ModelState` and any `Exception`, that's being thrown.
+In the Controllers we then pass the `ApplicationErrorHandler` to the Constructor and can use it to handle an 
+invalid `ModelState` and handle any `Exception`, that's being thrown.
 
 ```csharp
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
@@ -1563,13 +1571,376 @@ namespace RebacExperiments.Server.Api.Controllers
 }
 ```
 
+#### Integration Tests with EntityFramework Core and a Database ####
+
+Generations of Software developers have learnt, that tests are important. And if you follow a Test-Driven Development approach 
+you are probably trying to write as much Unit Tests as possible. I feel into the trap thinking, that everything needs an 
+`interface` and everything needs to be mocked. 
+
+These days I think what really matters are Integration Tests. Is the data actually written to the database? Did EntityFramework 
+Core translate the `IQueryable` correctly? Did it map the results correctly back and forth between a function and the 
+application?
+
+I think the easiest way to write Integration Tests with EntityFramework Core is to use something like the 
+`TransactionalTestBase` from below. The idea is to start the Transaction in the setup for a test and to 
+dispose it in the teardown, without a commit.
+
+This leaves your database in a consistent state, with all changes being rolled back at the end of each test. 
+
+```csharp
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+// ...
+
+namespace RebacExperiments.Server.Api.Tests
+{
+    /// <summary>
+    /// Will be used by all integration tests, that need an <see cref="ApplicationDbContext"/>.
+    /// </summary>
+    public class TransactionalTestBase
+    {
+        /// <summary>
+        /// We can assume the Configuration has been initialized, when the Tests 
+        /// are run. So we inform the compiler, that this field is intentionally 
+        /// left uninitialized.
+        /// </summary>
+        protected IConfiguration _configuration = null!;
+
+        /// <summary>
+        /// We can assume the DbContext has been initialized, when the Tests 
+        /// are run. So we inform the compiler, that this field is intentionally 
+        /// left uninitialized.
+        /// </summary>
+        protected ApplicationDbContext _applicationDbContext = null!;
+
+        public TransactionalTestBase()
+        {
+            _configuration = ReadConfiguration();
+        }
+
+        /// <summary>
+        /// Read the appsettings.json for the Test.
+        /// </summary>
+        /// <returns></returns>
+        private IConfiguration ReadConfiguration()
+        {
+            return new ConfigurationBuilder()
+                .AddJsonFile("appsettings.json")
+                .Build();
+        }
+
+        /// <summary>
+        /// The SetUp called by NUnit to start the transaction.
+        /// </summary>
+        /// <returns>An awaitable Task</returns>
+        [SetUp]
+        protected async Task Setup()
+        {
+            // Create a fresh DbContext for each test, because you don't want the 
+            // Change Tracker to cache entities and pollute the test.
+            _applicationDbContext = GetApplicationDbContext(_configuration);
+
+            await OnSetupBeforeTransaction();
+            await _applicationDbContext.Database.BeginTransactionAsync(IsolationLevel.ReadCommitted, default);
+            await OnSetupInTransaction();
+        }
+
+        /// <summary>
+        /// The TearDown called by NUnit to rollback the transaction.
+        /// </summary>
+        /// <returns>An awaitable Task</returns>
+        [TearDown]
+        protected async Task Teardown()
+        {
+            await OnTearDownInTransaction();
+            await _applicationDbContext.Database.RollbackTransactionAsync(default);
+            await OnTearDownAfterTransaction();
+            await _applicationDbContext.DisposeAsync();
+        }
+
+        /// <summary>
+        /// Called before the transaction starts.
+        /// </summary>
+        /// <returns>An awaitable task</returns>
+        public virtual Task OnSetupBeforeTransaction()
+        {
+            return Task.CompletedTask;
+        }
+
+        /// <summary>
+        /// Called inside the transaction.
+        /// </summary>
+        /// <returns>An awaitable task</returns>
+        public virtual Task OnSetupInTransaction()
+        {
+            return Task.CompletedTask;
+        }
+
+        /// <summary>
+        /// Called before rolling back the transaction.
+        /// </summary>
+        /// <returns>An awaitable task</returns>
+        public virtual Task OnTearDownInTransaction()
+        {
+            return Task.CompletedTask;
+        }
+
+        /// <summary>
+        /// Called after transaction has been rolled back.
+        /// </summary>
+        /// <returns>An awaitable task</returns>
+        public virtual Task OnTearDownAfterTransaction()
+        {
+            return Task.CompletedTask;
+        }
+
+        /// <summary>
+        /// Builds an <see cref="ApplicationDbContext"/> based on a given Configuration. We 
+        /// expect the Configuration to have a Connection String "ApplicationDatabase" to 
+        /// be defined.
+        /// </summary>
+        /// <param name="configuration">A configuration provided by the appsettings.json</param>
+        /// <returns>An initialized <see cref="ApplicationDbContext"/></returns>
+        /// <exception cref="InvalidOperationException">Thrown when no Connection String "ApplicationDatabase" was found</exception>
+        private ApplicationDbContext GetApplicationDbContext(IConfiguration configuration)
+        {
+            var connectionString = configuration.GetConnectionString("ApplicationDatabase");
+
+            if (connectionString == null)
+            {
+                throw new InvalidOperationException($"No Connection String named 'ApplicationDatabase' found in appsettings.json");
+            }
+
+            return GetApplicationDbContext(connectionString);
+        }
+
+        /// <summary>
+        /// Builds an <see cref="ApplicationDbContext"/> based on a given Connection String 
+        /// and enables sensitive data logging for eventual debugging. 
+        /// </summary>
+        /// <param name="connectionString">Connection String to the Test database</param>
+        /// <returns>An initialized <see cref="ApplicationDbContext"/></returns>
+        private ApplicationDbContext GetApplicationDbContext(string connectionString)
+        {
+            var dbContextOptionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>().UseSqlServer(connectionString);
+
+            return new ApplicationDbContext(
+                logger: new NullLogger<ApplicationDbContext>(), 
+                options: dbContextOptionsBuilder.Options);
+        }
+    }
+}
+```
+
+### EntityFramework Core Database Mapping ###
+
+The Go-To Data Access Framework for .NET is EntityFramework Core. There are strong opinions on EntityFramework Core and 
+OR-Mappers in general, I will keep mine to myself and use EntityFramework Core in this example. 
+
+So here is what the `DbContext` for the application looks like. I am calling it an `ApplicationDbContext`.
+
+```csharp
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+using Microsoft.EntityFrameworkCore;
+using RebacExperiments.Server.Api.Models;
+
+namespace RebacExperiments.Server.Api.Infrastructure.Database
+{
+    /// <summary>
+    /// A <see cref="DbContext"/> to query the database.
+    /// </summary>
+    public class ApplicationDbContext : DbContext
+    {
+        /// <summary>
+        /// Logger.
+        /// </summary>
+        internal ILogger<ApplicationDbContext> Logger { get; }
+
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        /// <param name="options">Options to configure the base <see cref="DbContext"/></param>
+        public ApplicationDbContext(ILogger<ApplicationDbContext> logger, DbContextOptions<ApplicationDbContext> options)
+            : base(options)
+        {
+            Logger = logger;
+        }
+
+        /// <summary>
+        /// Gets or sets the Users.
+        /// </summary>
+        public DbSet<User> Users { get; set; } = null!;
+
+        /// <summary>
+        /// Gets or sets the Roles.
+        /// </summary>
+        public DbSet<Role> Roles { get; set; } = null!;
+
+        /// <summary>
+        /// Gets or sets the UserTasks.
+        /// </summary>
+        public DbSet<UserTask> UserTasks { get; set; } = null!;
+
+        /// <summary>
+        /// Gets or sets the UserTasks.
+        /// </summary>
+        public DbSet<Team> Teams { get; set; } = null!;
+
+        /// <summary>
+        /// Gets or sets the UserTasks.
+        /// </summary>
+        public DbSet<Organization> Organizations { get; set; } = null!;
+
+        /// <summary>
+        /// Gets or sets the UserTasks.
+        /// </summary>
+        public DbSet<RelationTuple> RelationTuples { get; set; } = null!;
+
+        /// <summary>
+        /// List Objects.
+        /// </summary>
+        /// <param name="objectNamespace">Object Namespace</param>
+        /// <param name="objectRelation">Object Relation</param>
+        /// <param name="subjectNamespace">Subject Namespace</param>
+        /// <param name="subjectKey">Subject Key</param>
+        /// <returns></returns>
+        public IQueryable<RelationTuple> ListObjects(string objectNamespace, string objectRelation, string subjectNamespace, int subjectKey)
+            => FromExpression(() => ListObjects(objectNamespace, objectRelation, subjectNamespace, subjectKey));
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            // Add ListObjects Function, so we can use it in LINQ:
+            modelBuilder
+                .HasDbFunction(
+                    methodInfo: typeof(ApplicationDbContext).GetMethod(nameof(ListObjects), new[] { typeof(string), typeof(string), typeof(string), typeof(int) })!,
+                    builderAction: builder => builder
+                        .HasSchema("Identity")
+                        .HasName("tvf_RelationTuples_ListObjects"));
+
+            // Map the Sequences and Tables here ...
+        }
+    }
+}
+```
+
+We will register the `ApplicationDbContext` in the `Program.cs` using the `AddDbContext<TDbContext>` extension:
+
+```sql
+// Database
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+{
+    var connectionString = builder.Configuration.GetConnectionString("ApplicationDatabase");
+
+    if (connectionString == null)
+    {
+        throw new InvalidOperationException("No ConnectionString named 'ApplicationDatabase' was found");
+    }
+
+    options
+        .EnableSensitiveDataLogging().UseSqlServer(connectionString);
+});
+```
+
 ### Authentication ###
 
-#### Password Hashing ####
+We start by creating a `UserService`, which is used to create the Claims for given credentials. All passwords in the database 
+are hashed using a `PasswordHasher`. The `PasswordHasher` is a one to one adaption of the ASP.NET Core Identity package. And 
+as you can see, I am passing the `ApplicationDbContext` as a method parameter. 
 
-#### Cookie Authentication ####
+The reasoning is simple: I want a simple life and register all Services as a Singleton. I don't want to materialize the 
+EntityFramework Core `DbContext` out of thin air, like so many tutorials suggest you to do, and deal with lifetimes 
+dictated by a Dependency Injection container.
 
-While most articles use JSON Web Tokens, I think for our Backend a Cookie Authentication is totally sufficient. 
+```csharp
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+// ...
+
+namespace RebacExperiments.Server.Api.Services
+{
+    public class UserService : IUserService
+    {
+        private readonly ILogger<UserService> _logger;
+        private readonly IPasswordHasher _passwordHasher;
+
+        public UserService(ILogger<UserService> logger, IPasswordHasher passwordHasher)
+        {
+            _logger = logger;
+            _passwordHasher = passwordHasher;
+        }
+
+        public async Task<List<Claim>> GetClaimsAsync(ApplicationDbContext context, string username, string password, CancellationToken cancellationToken)
+        {
+            _logger.TraceMethodEntry();
+
+            var user = await context.Users
+                .AsNoTracking()
+                .FirstOrDefaultAsync(x => x.LogonName == username, cancellationToken);
+
+            if(user == null)
+            {
+                throw new AuthenticationFailedException();
+            }
+
+            if (!user.IsPermittedToLogon)
+            {
+                throw new AuthenticationFailedException();
+            }
+
+            // Verify hashed password in database against the provided password
+            var isVerifiedPassword = _passwordHasher.VerifyHashedPassword(user.HashedPassword, password);
+
+            if (!isVerifiedPassword)
+            {
+                throw new AuthenticationFailedException();
+            }
+
+            // Load the Roles from the List of Objects
+            var roles = await context
+                .ListUserObjects<Role>(user.Id, Relations.Member)
+                .AsNoTracking()
+                .ToListAsync(cancellationToken);
+
+            // Build the Claims for the ClaimsPrincipal
+            var claims = CreateClaims(user, roles);
+
+            return claims;
+        }
+
+        private List<Claim> CreateClaims(User user, List<Role> roles)
+        {
+            _logger.TraceMethodEntry();
+
+            var claims = new List<Claim>();
+
+            if (user.LogonName != null)
+            {
+                claims.Add(new Claim(ClaimTypes.NameIdentifier, user.LogonName));
+                claims.Add(new Claim(ClaimTypes.Email, user.LogonName));
+            }
+
+            // Default Claims:
+            claims.Add(new Claim(ClaimTypes.Sid, Convert.ToString(user.Id)));
+            claims.Add(new Claim(ClaimTypes.Name, Convert.ToString(user.PreferredName)));
+
+            // Roles:
+            foreach (var role in roles)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, role.Name));
+            }
+
+            return claims;
+        }
+    }
+}
+```
+
+There are many options to send the Claims to the user, a popular one is a JSON Web Token. For our Backend a Cookie Authentication 
+is totally sufficient. You might consider using Windows Authentication or moving that pesky Authentication to an external provider, 
+if you don't want to deal with it yourself.
+
+We need to configure the Cookie Authentication in the `Program.cs`:
 
 ```csharp
 // Cookie Authentication
@@ -1594,14 +1965,352 @@ builder.Services
             return Task.CompletedTask;
         };
     });
-
 ```
 
-### Integrating the ListObjects API ###
+And we can then write a Controller `AuthenticationController`, that exposes a `sign-in` and `sign-out` method 
+to authenticate a user against our database.
 
-The crucial part 
+```csharp
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-What's left is mapping the Table-Valued Function in the `ApplicationDbContext` as the `ListObjects` method.
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Mvc;
+using RebacExperiments.Server.Api.Dto;
+using RebacExperiments.Server.Api.Infrastructure.Database;
+using RebacExperiments.Server.Api.Infrastructure.Errors;
+using RebacExperiments.Server.Api.Infrastructure.Logging;
+using RebacExperiments.Server.Api.Services;
+using System.Security.Claims;
+
+namespace RebacExperiments.Server.Api.Controllers
+{
+    public class AuthenticationController : ControllerBase
+    {
+        private readonly ILogger<AuthenticationController> _logger;
+
+        private readonly ApplicationErrorHandler _applicationErrorHandler;
+
+        public AuthenticationController(ILogger<AuthenticationController> logger, ApplicationErrorHandler applicationErrorHandler)
+        {
+            _logger = logger;
+            _applicationErrorHandler = applicationErrorHandler;
+        }
+
+        [HttpPost]
+        [Route("sign-in")]
+        public async Task<IActionResult> SignInUser([FromServices] ApplicationDbContext context, [FromServices] IUserService userService, [FromBody] CredentialsDto credentials, CancellationToken cancellationToken)
+        {
+            _logger.TraceMethodEntry();
+
+            if (!ModelState.IsValid)
+            {
+                return _applicationErrorHandler.HandleInvalidModelState(HttpContext, ModelState);
+            }
+
+            try
+            {
+                // Create ClaimsPrincipal from Database 
+                var userClaims = await userService.GetClaimsAsync(
+                    context: context,
+                    username: credentials.Username,
+                    password: credentials.Password,
+                    cancellationToken: cancellationToken);
+
+                // Create the ClaimsPrincipal
+                var claimsIdentity = new ClaimsIdentity(userClaims, CookieAuthenticationDefaults.AuthenticationScheme);
+                var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
+
+                // It's a valid ClaimsPrincipal, sign in
+                await HttpContext.SignInAsync(claimsPrincipal, new AuthenticationProperties { IsPersistent = credentials.RememberMe });
+
+                return Ok();
+            } 
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "{ControllerAction} failed due to an Exception", nameof(SignInUser));
+
+                return _applicationErrorHandler.HandleException(HttpContext, ex);
+            }
+        }
+
+        [HttpPost]
+        [Route("sign-out")]
+        public async Task<IActionResult> SignOutUser()
+        {
+            _logger.TraceMethodEntry();
+
+            try
+            {
+                await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            } 
+            catch(Exception ex)
+            {
+                return _applicationErrorHandler.HandleException(HttpContext, ex);
+            }
+
+            return Ok();
+        }
+    }
+}
+```
+
+### Relationship-based Access Control ###
+
+#### CheckObject API ####
+
+The function `[Identity].[udf_RelationTuples_Check]` checks, if a *Subject* (our `User`) is authorized to access an *Object* (our `UserTask`). 
+
+The easiest way to execute the `[Identity].[udf_RelationTuples_Check]` function was using the new `DbContext#SqlQuery(...)` method and 
+to just do a `[Identity].[udf_RelationTuples_Check](...)` SQL Query. We add the call in a static class `ApplicationDbContextExtensions` as 
+extensions methods.
+
+```
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+// ...
+
+namespace RebacExperiments.Server.Api.Infrastructure.Database
+{
+    /// <summary>
+    /// Extensions on the <see cref="ApplicationDbContext"/> to allow Relationship-based ACL.
+    /// </summary>
+    public static class ApplicationDbContextExtensions
+    {
+        /// <summary>
+        /// Checks if a <typeparamref name="TSubjectType"/> is authorized to access an <typeparamref name="TObjectType"/>. 
+        /// </summary>
+        /// <typeparam name="TObjectType">Object Type</typeparam>
+        /// <typeparam name="TSubjectType">Subject Type</typeparam>
+        /// <param name="context">DbContext</param>
+        /// <param name="objectId">Object Key</param>
+        /// <param name="relation">Relation</param>
+        /// <param name="subjectId">SubjectKey</param>
+        /// <param name="cancellationToken">Cancellation Token</param>
+        /// <returns><see cref="true"/>, if the <typeparamref name="TSubjectType"/> is authorized; else <see cref="false"/></returns>
+        public static async Task<bool> CheckObject<TObjectType, TSubjectType>(this ApplicationDbContext context, int objectId, string relation, int subjectId, CancellationToken cancellationToken)
+            where TObjectType : Entity
+            where TSubjectType : Entity
+        {
+            context.Logger.TraceMethodEntry();
+
+            var result = await context.Database
+                .SqlQuery<bool>($"SELECT [Identity].[udf_RelationTuples_Check]({typeof(TObjectType).Name}, {objectId}, {relation}, {typeof(TSubjectType).Name}, {subjectId})")
+                .ToListAsync(cancellationToken);
+
+            return result.First();
+        }
+
+        /// <summary>
+        /// Checks if a <see cref="User"/> is authorized to access an <typeparamref name="TObjectType"/>. 
+        /// </summary>
+        /// <typeparam name="TObjectType">Object Type</typeparam>
+        /// <param name="context">DbContext</param>
+        /// <param name="objectId">Object Key</param>
+        /// <param name="relation">Relation</param>
+        /// <param name="cancellationToken">Cancellation Token</param>
+        /// <returns><see cref="true"/>, if the <typeparamref name="TSubjectType"/> is authorized; else <see cref="false"/></returns>
+        public static Task<bool> CheckUserObject<TObjectType>(this ApplicationDbContext context, int userId, int objectId, string relation, CancellationToken cancellationToken)
+            where TObjectType : Entity
+        {
+            context.Logger.TraceMethodEntry();
+
+            return CheckObject<TObjectType, User>(context, objectId, relation, userId, cancellationToken);
+        }
+
+        /// <summary>
+        /// Checks if a <see cref="User"/> is authorized to access an <typeparamref name="TObjectType"/>. 
+        /// </summary>
+        /// <typeparam name="TObjectType">Object Type</typeparam>
+        /// <param name="context">DbContext</param>
+        /// <param name="objectId">Object Key</param>
+        /// <param name="relation">Relation</param>
+        /// <param name="cancellationToken">Cancellation Token</param>
+        /// <returns><see cref="true"/>, if the <typeparamref name="TSubjectType"/> is authorized; else <see cref="false"/></returns>
+        public static Task<bool> CheckUserObject<TObjectType>(this ApplicationDbContext context, int userId, TObjectType @object, string relation, CancellationToken cancellationToken)
+            where TObjectType : Entity
+        {
+            context.Logger.TraceMethodEntry();
+
+            return CheckObject<TObjectType, User>(context, @object.Id, relation, userId, cancellationToken);
+        }
+    }
+}
+```
+
+#### Integration Tests for the CheckObject API ####
+
+What's left is to write some tests for the `CheckUserObjects<TObjectType>` methods. We follow the classic 
+Arrange-Act-Assert pattern for these tests. It's important for these tests to have an extensive description, 
+because while they are pretty short it takes quite some mental overhead to digest the relationships.
+
+```csharp
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+using Microsoft.EntityFrameworkCore;
+using NUnit.Framework;
+using RebacExperiments.Server.Api.Infrastructure.Constants;
+using RebacExperiments.Server.Api.Infrastructure.Database;
+using RebacExperiments.Server.Api.Models;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace RebacExperiments.Server.Api.Tests
+{
+    public class CheckUserObjectTests : TransactionalTestBase
+    {
+        /// <summary>
+        /// In this test we create a <see cref="User"/> (user) and a <see cref="UserTask"/> (task). The 'user' is member of 
+        /// a <see cref="Team"/> (team). The 'user' is also a member of an <see cref="Organization"/> (oganization). Members 
+        /// of the 'organization' are viewers of the 'task' and members of the 'team' are owners of the 'task'.
+        /// 
+        /// The Relationship-Table is given below.
+        /// 
+        /// ObjectKey           |  ObjectNamespace  |   ObjectRelation  |   SubjectKey          |   SubjectNamespace    |   SubjectRelation
+        /// --------------------|-------------------|-------------------|-----------------------|-----------------------|-------------------
+        /// :team.id:           |   Team            |       member      |   :user.id:           |       User            |   NULL
+        /// :organization.id:   |   Organization    |       member      |   :user.id:           |       User            |   NULL
+        /// :task.id:           |   UserTask        |       viewer      |   :organization.id:   |       Organization    |   member
+        /// :task.id:           |   UserTask        |       owner       |   :team.id:           |       Team            |   member
+        /// </summary>
+        [Test]
+        public async Task CheckUserObject_OneUserTaskAssignedThroughOrganizationAndTeam()
+        {
+            // Arrange
+            var user = new User
+            {
+                FullName = "Test-User",
+                PreferredName = "Test-User",
+                IsPermittedToLogon = false,
+                LastEditedBy = 1,
+                LogonName = "test-user@test-user.localhost"
+            };
+
+            await _applicationDbContext.AddAsync(user);
+            await _applicationDbContext.SaveChangesAsync();
+
+            var organization = new Organization
+            {
+                Name = "Test-Organization",
+                Description = "Organization for Unit Test",
+                LastEditedBy = user.Id
+            };
+
+            await _applicationDbContext.AddAsync(organization);
+            await _applicationDbContext.SaveChangesAsync();
+
+            var team = new Team
+            {
+                Name = "Test-Team",
+                Description = "Team for Unit Test",
+                LastEditedBy = user.Id
+            };
+
+            await _applicationDbContext.AddAsync(team);
+            await _applicationDbContext.SaveChangesAsync();
+
+            var task = new UserTask
+            {
+                Title = "Test-Task",
+                Description = "My Test-Task",
+                LastEditedBy = user.Id,
+                UserTaskPriority = UserTaskPriorityEnum.High,
+                UserTaskStatus = UserTaskStatusEnum.InProgress
+            };
+
+            await _applicationDbContext.AddAsync(task);
+            await _applicationDbContext.SaveChangesAsync();
+
+            await _applicationDbContext.AddRelationshipAsync(team, Relations.Member, user, null, user.Id);
+            await _applicationDbContext.AddRelationshipAsync(organization, Relations.Member, user, null, user.Id);
+            await _applicationDbContext.AddRelationshipAsync(task, Relations.Viewer, organization, Relations.Member, user.Id);
+            await _applicationDbContext.AddRelationshipAsync(task, Relations.Owner, team, Relations.Member, user.Id);
+            await _applicationDbContext.SaveChangesAsync();
+
+            // Act
+            var isOwnerOfTask = await _applicationDbContext.CheckUserObject(user.Id, task, Relations.Owner, default);
+            var isViewerOfTask = await _applicationDbContext.CheckUserObject(user.Id, task, Relations.Viewer, default);
+
+            // Assert
+            Assert.AreEqual(true, isOwnerOfTask);
+            Assert.AreEqual(true, isViewerOfTask);
+        }
+
+        /// <summary>
+        /// In this test we create a <see cref="User"/> (user) and assign two <see cref="UserTask"/> (tas1, task2). The 'user' 
+        /// is 'viewer' for 'task1' and an 'owner' for 'task2'.
+        /// 
+        /// The Relationship-Table is given below.
+        /// 
+        /// ObjectKey           |  ObjectNamespace  |   ObjectRelation  |   SubjectKey          |   SubjectNamespace    |   SubjectRelation
+        /// --------------------|-------------------|-------------------|-----------------------|-----------------------|-------------------
+        /// :task1.id:          |   UserTask        |       viewer      |   :user.id:           |       User            |   NULL
+        /// :task2.id:          |   UserTask        |       owner       |   :user.id:           |       User            |   NULL
+        /// </summary>
+        [Test]
+        public async Task CheckUserObject_TwoUserTasksAssignedToUser()
+        {
+            // Arrange
+            var user = new User
+            {
+                FullName = "Test-User",
+                PreferredName = "Test-User",
+                IsPermittedToLogon = false,
+                LastEditedBy = 1,
+                LogonName = "test-user@test-user.localhost"
+            };
+
+            await _applicationDbContext.AddAsync(user);
+            await _applicationDbContext.SaveChangesAsync();
+
+            var task1 = new UserTask
+            {
+                Title = "Task 1",
+                Description = "Task 1",
+                LastEditedBy = user.Id,
+                UserTaskPriority = UserTaskPriorityEnum.High,
+                UserTaskStatus = UserTaskStatusEnum.InProgress
+            };
+            
+            var task2 = new UserTask
+            {
+                Title = "Task2",
+                Description = "Task2",
+                LastEditedBy = user.Id,
+                UserTaskPriority = UserTaskPriorityEnum.High,
+                UserTaskStatus = UserTaskStatusEnum.InProgress
+            };
+
+            await _applicationDbContext.AddRangeAsync(new[] { task1, task2 });
+            await _applicationDbContext.SaveChangesAsync();
+
+            await _applicationDbContext.AddRelationshipAsync(task1, Relations.Viewer, user, null, user.Id);
+            await _applicationDbContext.AddRelationshipAsync(task2, Relations.Owner, user, null, user.Id);
+            await _applicationDbContext.SaveChangesAsync();
+
+            // Act
+            var isOwnerOfTask1 = await _applicationDbContext.CheckUserObject(user.Id, task1, Relations.Owner, default);
+            var isViewerOfTask1 = await _applicationDbContext.CheckUserObject(user.Id, task1, Relations.Viewer, default);
+            
+            var isOwnerOfTask2 = await _applicationDbContext.CheckUserObject(user.Id, task2, Relations.Owner, default);
+            var isViewerOfTask2 = await _applicationDbContext.CheckUserObject(user.Id, task2, Relations.Viewer, default);
+
+            // Assert
+            Assert.AreEqual(false, isOwnerOfTask1);
+            Assert.AreEqual(true, isViewerOfTask1);  
+            
+            Assert.AreEqual(true, isOwnerOfTask2);
+            Assert.AreEqual(false, isViewerOfTask2);           
+        }
+    }
+}
+```
+
+#### ListObjects API ####
+
+For listing the authorized objects for a user we have mapped the `[Identity].[tvf_RelationTuples_ListObjects]` in the `DbContext`, 
+this can be done using the `ModelBuilder#HasDbFunction(...)` method and tie it to a method `ApplicationDbContext#ListObjects`. The 
+method signature should map to the Table-Value Function.
 
 ```csharp
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
@@ -1662,12 +2371,9 @@ namespace RebacExperiments.Server.Api.Infrastructure.Database
 }
 ```
 
-And that's it!
+As of now the `ListObjects` expects us to pass `string` values and an `integer` for the subject key. 
 
-#### Extension Methods to simplify the ListObjects API ####
-
-As of now the `ListObjects` expects us to pass `string` values and an `integer` for the subject key. We want to simplify 
-this, and I want to have a method I can call like this:
+We want to simplify this and I want to have a nice API like this:
 
 ```csharp
 // Get all owned UserTasks for a given user:
@@ -1689,8 +2395,7 @@ var userTasksAsViewerOrOwner = _applicationDbContext
     .ToList();
 ```
 
-We don't put these methods directly into the `ApplicationDbContext`, but define them as Extension methods in 
-a static class we call `ApplicationDbContextExtensions`.
+We don't put these methods directly into the `ApplicationDbContext`, but define them as Extension methods in a static class we call `ApplicationDbContextExtensions`.
 
 ```csharp
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
@@ -2044,150 +2749,223 @@ namespace RebacExperiments.Server.Api.Tests
 }
 ```
 
+#### Using ####
 
-
-## Integration Tests ##
-
-For integration tests we are writing a `TransactionalTestBase` class, which basically opens a `System.Transaction.TransactionScope` 
-before executing a test and disposes it, when tearing it down. This will reset your database back into a consistent state for the 
-next test to execute. 
+Now let's use the `ListObjects` and `CheckObject` API to provide `UserTask`. We 
 
 ```csharp
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-// ...
+using Microsoft.EntityFrameworkCore;
+using RebacExperiments.Server.Api.Infrastructure.Constants;
+using RebacExperiments.Server.Api.Infrastructure.Database;
+using RebacExperiments.Server.Api.Infrastructure.Exceptions;
+using RebacExperiments.Server.Api.Infrastructure.Logging;
+using RebacExperiments.Server.Api.Models;
 
-namespace RebacExperiments.Server.Api.Tests
+namespace RebacExperiments.Server.Api.Services
 {
-    /// <summary>
-    /// Will be used by all integration tests, that need an <see cref="ApplicationDbContext"/>.
-    /// </summary>
-    public class TransactionalTestBase
+    public class UserTaskService : IUserTaskService
     {
-        /// <summary>
-        /// We can assume the Configuration has been initialized, when the Tests 
-        /// are run. So we inform the compiler, that this field is intentionally 
-        /// left uninitialized.
-        /// </summary>
-        protected IConfiguration _configuration = null!;
+        private readonly ILogger<UserTaskService> _logger;
 
-        /// <summary>
-        /// We can assume the DbContext has been initialized, when the Tests 
-        /// are run. So we inform the compiler, that this field is intentionally 
-        /// left uninitialized.
-        /// </summary>
-        protected ApplicationDbContext _applicationDbContext = null!;
-
-        public TransactionalTestBase()
+        public UserTaskService(ILogger<UserTaskService> logger)
         {
-            _configuration = ReadConfiguration();
-            _applicationDbContext = GetApplicationDbContext(_configuration);
+            _logger = logger;
         }
 
-        /// <summary>
-        /// Read the appsettings.json for the Test.
-        /// </summary>
-        /// <returns></returns>
-        private IConfiguration ReadConfiguration()
+        public async Task<UserTask> CreateUserTaskAsync(ApplicationDbContext context, UserTask userTask, int currentUserId, CancellationToken cancellationToken)
         {
-            return new ConfigurationBuilder()
-                .AddJsonFile("appsettings.json")
-                .Build();
-        }
+            _logger.TraceMethodEntry();
 
-        /// <summary>
-        /// The SetUp called by NUnit to start the transaction.
-        /// </summary>
-        /// <returns>An awaitable Task</returns>
-        [SetUp]
-        protected async Task Setup()
-        {
-            await OnSetupBeforeTransaction();
-            await _applicationDbContext.Database.BeginTransactionAsync(IsolationLevel.ReadCommitted, default);
-            await OnSetupInTransaction();
-        }
-
-        /// <summary>
-        /// The TearDown called by NUnit to rollback the transaction.
-        /// </summary>
-        /// <returns>An awaitable Task</returns>
-        [TearDown]
-        protected async Task Teardown()
-        {
-            await OnTearDownInTransaction();
-            await _applicationDbContext.Database.RollbackTransactionAsync(default);
-            await OnTearDownAfterTransaction();
-        }
-
-        /// <summary>
-        /// Called before the transaction starts.
-        /// </summary>
-        /// <returns>An awaitable task</returns>
-        public virtual Task OnSetupBeforeTransaction()
-        {
-            return Task.CompletedTask;
-        }
-
-        /// <summary>
-        /// Called inside the transaction.
-        /// </summary>
-        /// <returns>An awaitable task</returns>
-        public virtual Task OnSetupInTransaction()
-        {
-            return Task.CompletedTask;
-        }
-
-        /// <summary>
-        /// Called before rolling back the transaction.
-        /// </summary>
-        /// <returns>An awaitable task</returns>
-        public virtual Task OnTearDownInTransaction()
-        {
-            return Task.CompletedTask;
-        }
-
-        /// <summary>
-        /// Called after transaction has been rolled back.
-        /// </summary>
-        /// <returns>An awaitable task</returns>
-        public virtual Task OnTearDownAfterTransaction()
-        {
-            return Task.CompletedTask;
-        }
-
-        /// <summary>
-        /// Builds an <see cref="ApplicationDbContext"/> based on a given Configuration. We 
-        /// expect the Configuration to have a Connection String "ApplicationDatabase" to 
-        /// be defined.
-        /// </summary>
-        /// <param name="configuration">A configuration provided by the appsettings.json</param>
-        /// <returns>An initialized <see cref="ApplicationDbContext"/></returns>
-        /// <exception cref="InvalidOperationException">Thrown when no Connection String "ApplicationDatabase" was found</exception>
-        private ApplicationDbContext GetApplicationDbContext(IConfiguration configuration)
-        {
-            var connectionString = configuration.GetConnectionString("ApplicationDatabase");
-
-            if (connectionString == null)
+            using (var transaction = await context.Database.BeginTransactionAsync(cancellationToken))
             {
-                throw new InvalidOperationException($"No Connection String named 'ApplicationDatabase' found in appsettings.json");
+                // Make sure the Current User is the last editor:
+                userTask.LastEditedBy = currentUserId;
+
+                // Add the new Task, the HiLo Pattern automatically assigns a new Id using the HiLo Pattern
+                await context.AddAsync(userTask, cancellationToken);
+
+                // The User is Viewer and Owner of the Task
+                await context.AddRelationshipAsync<UserTask, User>(userTask.Id, Relations.Viewer, currentUserId, null, currentUserId, cancellationToken);
+                await context.AddRelationshipAsync<UserTask, User>(userTask.Id, Relations.Owner, currentUserId, null, currentUserId, cancellationToken);
+
+                // We want the created task to be visible by all members of the organization the user is in
+                var organizations = await context
+                    .ListUserObjects<Organization>(currentUserId, Relations.Member)
+                    .AsNoTracking()
+                    .ToListAsync(cancellationToken);
+
+                foreach (var organization in organizations)
+                {
+                    await context.AddRelationshipAsync<UserTask, Organization>(userTask.Id, Relations.Viewer, organization.Id, Relations.Member, currentUserId, cancellationToken);
+                }
+
+                await context.SaveChangesAsync(cancellationToken);
+
+                await transaction.CommitAsync(cancellationToken);
             }
 
-            return GetApplicationDbContext(connectionString);
+            return userTask;
         }
 
-        /// <summary>
-        /// Builds an <see cref="ApplicationDbContext"/> based on a given Connection String 
-        /// and enables sensitive data logging for eventual debugging. 
-        /// </summary>
-        /// <param name="connectionString">Connection String to the Test database</param>
-        /// <returns>An initialized <see cref="ApplicationDbContext"/></returns>
-        private ApplicationDbContext GetApplicationDbContext(string connectionString)
+        public async Task<UserTask> GetUserTaskByIdAsync(ApplicationDbContext context, int userTaskId, int currentUserId, CancellationToken cancellationToken)
         {
-            var dbContextOptionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>().UseSqlServer(connectionString);
+            _logger.TraceMethodEntry();
 
-            return new ApplicationDbContext(
-                logger: new NullLogger<ApplicationDbContext>(), 
-                options: dbContextOptionsBuilder.Options);
+            var userTask = await context.UserTasks
+                .AsNoTracking()
+                .FirstOrDefaultAsync(x => x.Id == userTaskId, cancellationToken);
+
+            if(userTask == null)
+            {
+                throw new EntityNotFoundException() 
+                {
+                    EntityName = nameof(UserTask),
+                    EntityId = userTaskId,
+                };
+            }
+
+            bool isAuthorized = await context.CheckUserObject(currentUserId, userTask, Relations.Viewer, cancellationToken);
+
+            if(!isAuthorized)
+            {
+                throw new EntityUnauthorizedAccessException()
+                {
+                    EntityName = nameof(UserTask),
+                    EntityId = userTaskId,
+                    UserId = currentUserId,
+                };
+            }
+
+            return userTask;
+        }
+
+        public async Task<List<UserTask>> GetUserTasksAsync(ApplicationDbContext context, int currentUserId, CancellationToken cancellationToken)
+        {
+            _logger.TraceMethodEntry();
+
+            var userTasks = context
+                .ListUserObjects<UserTask>(currentUserId, new[] { Relations.Viewer, Relations.Owner })
+                .ToListAsync(cancellationToken);
+
+            return await userTasks;
+        }
+
+        public async Task<UserTask> UpdateUserTaskAsync(ApplicationDbContext context, UserTask userTask, int currentUserId, CancellationToken cancellationToken)
+        {
+            _logger.TraceMethodEntry();
+
+            bool isAuthorized = await context.CheckUserObject(currentUserId, userTask, Relations.Owner, cancellationToken);
+
+            if (!isAuthorized)
+            {
+                throw new EntityUnauthorizedAccessException()
+                {
+                    EntityName = nameof(UserTask),
+                    EntityId = userTask.Id,
+                    UserId = currentUserId,
+                };
+            }
+
+            int rowsAffected = await context.UserTasks
+                .Where(t => t.Id == userTask.Id && t.RowVersion == userTask.RowVersion)
+                .ExecuteUpdateAsync(setters => setters
+                    .SetProperty(x => x.Title, userTask.Title)
+                    .SetProperty(x => x.Description, userTask.Description)
+                    .SetProperty(x => x.DueDateTime, userTask.DueDateTime)
+                    .SetProperty(x => x.CompletedDateTime, userTask.CompletedDateTime)
+                    .SetProperty(x => x.ReminderDateTime, userTask.ReminderDateTime)
+                    .SetProperty(x => x.AssignedTo, userTask.AssignedTo)
+                    .SetProperty(x => x.UserTaskPriority, userTask.UserTaskPriority)
+                    .SetProperty(x => x.UserTaskStatus, userTask.UserTaskStatus)
+                    .SetProperty(x => x.LastEditedBy, currentUserId), cancellationToken);
+
+            if(rowsAffected == 0)
+            {
+                throw new EntityConcurrencyException()
+                {
+                    EntityName = nameof(UserTask),
+                    EntityId = userTask.Id,
+                };
+            }
+
+            return userTask;
+        }
+
+        public async Task DeleteUserTaskAsync(ApplicationDbContext context, int userTaskId, int currentUserId, CancellationToken cancellationToken)
+        {
+            _logger.TraceMethodEntry();
+
+            bool isAuthorized = await context.CheckUserObject<UserTask>(currentUserId, userTaskId, Relations.Owner, cancellationToken);
+
+            if (!isAuthorized)
+            {
+                throw new EntityUnauthorizedAccessException()
+                {
+                    EntityName = nameof(UserTask),
+                    EntityId = userTaskId,
+                    UserId = currentUserId,
+                };
+            }
+
+            using (var transaction = await context.Database.BeginTransactionAsync(cancellationToken))
+            {
+                var userTask = await context.UserTasks
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(x => x.Id == userTaskId);
+
+                if (userTask == null)
+                {
+                    throw new EntityNotFoundException()
+                    {
+                        EntityName = nameof(UserTask),
+                        EntityId = userTaskId,
+                    };
+                }
+
+                // Start by deleting all Relationships, where UserTask is the Object ...
+                {
+                    int numRowsDeleted = await context
+                        .RelationTuples.Where(x => x.ObjectNamespace == nameof(UserTask) && x.ObjectKey == userTask.Id)
+                        .ExecuteDeleteAsync(cancellationToken);
+
+                    if (_logger.IsDebugEnabled())
+                    {
+                        _logger.LogDebug("'{NumRowsDeleted}' Relations deleted for Object UserTask (Id = {UserTaskId})", numRowsDeleted, userTaskId);
+                    }
+                }
+
+                // ... then delete all Relationships, where UserTask is the Subject ...
+                {
+                    int numRowsDeleted = await context
+                        .RelationTuples.Where(x => x.SubjectNamespace == nameof(UserTask) && x.SubjectKey == userTask.Id)
+                        .ExecuteDeleteAsync(cancellationToken);
+
+                    if (_logger.IsDebugEnabled())
+                    {
+                        _logger.LogDebug("'{NumRowsDeleted}' Relations deleted for Subject UserTask (Id = {UserTaskId})", numRowsDeleted, userTaskId);
+                    }
+                }
+
+                // After removing all possible references, delete the UserTask itself
+                int rowsAffected = await context.UserTasks
+                    .Where(t => t.Id == userTask.Id)
+                    .ExecuteDeleteAsync(cancellationToken);
+
+                // No Idea if this could happen, because we are in a Transaction and there
+                // is a row, which should be locked. So this shouldn't happen at all...
+                if (rowsAffected == 0)
+                {
+                    throw new EntityConcurrencyException()
+                    {
+                        EntityName = nameof(UserTask),
+                        EntityId = userTaskId,
+                    };
+                }
+
+                await transaction.CommitAsync(cancellationToken);
+            }
         }
     }
 }
