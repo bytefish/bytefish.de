@@ -151,9 +151,9 @@ We will build a small part of a Task Management System using ASP.NET Core and En
 to wrap the Check API and ListObjects API, developed in the previous Google Zanzibar article, with EntityFramework 
 Core and integrate it into the ASP.NET Core pipeline. 
 
-At the end of this article we will have a RESTful API, that's authorizes a user using a Relationship-based 
-Access Control. We will see how to create the database, configure logging, run integration tests and use 
-`.http` files for manual endpoint tests in Visual Studio.
+At the end of this article we will have a RESTful API, that authorizes a user using a Relationship-based Access 
+Control. We will see how to create the database, configure logging, run integration tests and use `.http` files 
+for manual endpoint tests in Visual Studio.
 
 Here is the Swagger Overview for the final API Endpoints. 
 
@@ -166,7 +166,7 @@ Here is the Swagger Overview for the final API Endpoints.
 ## Database Design ##
 
 If you are going to work with a relational database, then you should put all your database objects in version control. The 
-best example for a SQL Server Database Project (SSDP) available out there is the [WideWorldImporters OLTP Database] example 
+best example for a SQL Server Database Project (SSDP) available out there is the "WideWorldImporters OLTP Database" example 
 provided in the SQL Server examples repository:
 
 * [https://github.com/microsoft/sql-server-samples/tree/master/samples/databases/wide-world-importers/wwi-ssdt](https://github.com/microsoft/sql-server-samples/tree/master/samples/databases/wide-world-importers/wwi-ssdt)
@@ -1586,18 +1586,20 @@ And that's it for the Error Handling.
 
 #### Integration Tests with EntityFramework Core and a Database ####
 
-Generations of Software developers have learnt, that tests are important. And if you follow a Test-Driven Development approach 
-you are probably trying to write as much Unit Tests as possible. As a yound developer I fell into a trap, thinking everything 
-needs an `interface` and everything needs to be mocked.
+Generations of Software developers have learnt, that tests are important. And it's right. Tests are your safety net for 
+refactorings, tests make sure you don't accidentally introduce regressions. By all means: Write Tests!
 
-These days I think what really matters are Integration Tests. Is the data I am writing *actually written to the real database*? Did 
-EntityFramework Core translate the `IQueryable` *correctly*? Did it map the results correctly back and forth between the SQL function 
-and the application?
+But as a young software developer I fell into the trap, thinking *everything* needs an `interface`. Everything needs to 
+be mocked. We need to reach our code coverage metrics! This led to what I call "a spider web of unit tests", that tested 
+the codes structure, rather than its functionality. Every refactoring was painful.
+
+These days I think what really matters the most are integration tests. Is the data I am writing *actually written to the real database*? Did 
+EntityFramework Core translate the `IQueryable` *correctly* to SQL? Did it map the results correctly back and forth between the SQL function and 
+the application?
 
 I think the easiest way to write Integration Tests with EntityFramework Core is to use something like the `TransactionalTestBase` from 
-below. The idea is to start the Transaction in the setup for a test and to dispose it in the teardown, without a commit. 
-
-This leaves your database in a consistent state, with all changes being rolled back at the end of each test. 
+below. The idea is to start the Transaction in the setup for a test and to dispose it in the teardown, without a commit. This leaves your 
+database in a consistent state, with all changes being rolled back at the end of each test. 
 
 ```csharp
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
