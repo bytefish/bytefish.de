@@ -989,7 +989,7 @@ create one by clicking the `Edit ...` button.
 
 I want to have it running on a local database, so I am selecting `Local` in the Tree View, and select the SQLEXPRESS 
 instance. The Server Name and so on gets automatically filled, and we just need to set our database name. I have named 
-it `ZanzibarExperiments`, but feel free to select any database name you like.
+it `ZanzibarExperiment`, because it's the applications target database name.
 
 <div style="display:flex; align-items:center; justify-content:center;margin-bottom:15px;">
     <a href="/static/images/blog/aspnetcore_rebac/database_deployment_003_add_database.jpg">
@@ -3234,7 +3234,7 @@ Content-Type: application/json
 }
 ```
 
-And then get all Tasks by querying `/UserTasks` endpoint:
+Then we get all Tasks by querying `/UserTasks` endpoint:
 
 ```
 ### Get all UserTasks
@@ -3242,7 +3242,7 @@ And then get all Tasks by querying `/UserTasks` endpoint:
 GET {{RebacExperiments.Server.Api_HostAddress}}/UserTasks
 ```
 
-As expected by the example setup, we task `152` and `323`:
+As expected by the example setup, the result has the `UserTask` with ID `152` and ID `323` as body:
 
 ```
 [
@@ -3279,7 +3279,7 @@ As expected by the example setup, we task `152` and `323`:
 ]
 ```
 
-We sign out `philipp@bytefish.de`:
+We sign out the user `philipp@bytefish.de`:
 
 ```
 ### Sign Out "philipp@bytefish.de"
@@ -3287,7 +3287,7 @@ We sign out `philipp@bytefish.de`:
 POST {{RebacExperiments.Server.Api_HostAddress}}/Authentication/sign-out
 ```
 
-And trying to query the `/UserTasks`: 
+And we query the `/UserTasks` endpoint to get the list of `UserTask` entities: 
 
 ```
 ### Check for 401 Unauthorized when not Authenticated
@@ -3295,13 +3295,13 @@ And trying to query the `/UserTasks`:
 GET {{RebacExperiments.Server.Api_HostAddress}}/UserTasks
 ```
 
-Returns a `401` Status Code:
+The Backend correctly returns a `401` Status Code, because the user isn't authenticated:
 
 ```
 Status: 401 UnauthorizedTime: 7,48 msSize: 0 bytes
 ```
 
-Next sign in `max@mustermann.local`:
+Then we sign in the user `max@mustermann.local`:
 
 ```
 ### Sign In as "max@mustermann.local"
@@ -3324,7 +3324,7 @@ And querying the `/UserTasks` endpoint:
 GET {{RebacExperiments.Server.Api_HostAddress}}/UserTasks
 ```
 
-Returns only `UserTask` with ID `152` as expected:
+Returns only `UserTask` with ID `152`, as expected:
 
 ```
 [
@@ -3346,7 +3346,7 @@ Returns only `UserTask` with ID `152` as expected:
 ]
 ```
 
-We are not the Owner of the Task, so let's try to delete the task:
+Since we are not the `owner` of the Task `152`, we shouldn't be able to delete it:
 
 ```
 ### Delete UserTask 152 as "max@mustermann.local" (he is not the owner)
@@ -3371,8 +3371,9 @@ application/problem+json; charset=utf-8, 1154 bytes
 }
 ```
 
-The `max@mustermann.local` is allowed to create a `UserTask`. We have seen, that the person creating 
-a `UserTask` is automatically the `owner` of the task and the users entire organization can view it.
+The user `max@mustermann.local` is allowed to create a `UserTask` though. We have seen, that the person 
+creating a `UserTask` is automatically the `owner` of the task and the entire organization of the user 
+can view it.
 
 ```
 ### Create a new UserTask "API HTTP File Example" as "max@mustermann.local"
@@ -3392,7 +3393,7 @@ Content-Type: application/json
 }
 ```
 
-And we get a successful response with the created task as the response payload:
+We get a successful response with the created task as the response payload:
 
 ```
 Status: 200 OKTime: 264,41 msSize: 335 bytes
@@ -3417,7 +3418,6 @@ Status: 200 OKTime: 264,41 msSize: 335 bytes
 If we now sign-in "philipp@bytefish.de":
 
 ```
-
 ### Sign In "philipp@bytefish.de"
 
 POST {{RebacExperiments.Server.Api_HostAddress}}/Authentication/sign-in
@@ -3442,7 +3442,9 @@ We cannot see the "API HTTP File Example" Task created by the other user, becaus
 `philipp@bytefish.de` isn't part of the Organization and has no relationship to the 
 task.
 
-And this is where our example ends. Feel free to play around with the example as much as you like.
+And this is where our example ends. 
+
+Feel free to play around with the example as much as you like!
 
 ## Conclusion ##
 
