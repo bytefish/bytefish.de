@@ -388,45 +388,49 @@ h5 {
 }
 
 h1 {
-	font-size: 26px;
-	line-height: 32px;
-	margin-bottom: 24px;
-	margin-top: 28px;
+    font-size: 34px;
+    line-height: 44px;
+    margin-bottom: 28px;
+    margin-top: 28px;
 }
 
 h2 {
-	font-size: 22px;
-	line-height: 28px;
-	margin-bottom: 24px;
-	margin-top: 28px;
+    font-size: 28px;
+    line-height: 36px;
+    margin-bottom: 28px;
+    margin-top: 28px;
 }
 
 h3 {
-	font-size: 18px;
-	line-height: 24px;
-	margin-bottom: 24px;
-	margin-top: 24px;
+    font-size: 24px;
+    line-height: 30px;
+    margin-bottom: 28px;
+    margin-top: 28px;
+    font-weight: 700;
 }
 
 h4 {
-	font-size: 16px;
-	line-height: 20px;
-	margin-bottom: 12px;
-	margin-top: 24px;
+    font-size: 22px;
+    line-height: 28px;
+    margin-bottom: 28px;
+    margin-top: 28px;
+    font-weight: 700;
 }
 
 h5 {
-	font-size: 14px;
-	line-height: 18px;
-	margin-bottom: 12px;
-	margin-top: 24px;
+    font-size: 20px;
+    line-height: 26px;
+    margin-bottom: 14px;
+    margin-top: 28px;
+    font-weight: 700;
 }
 
 h6 {
-	font-size: 12px;
-	line-height: 16px;
-	margin-bottom: 0;
-	margin-top: 24px;
+    font-size: 18px;
+    line-height: 24px;
+    margin-bottom: 7px;
+    margin-top: 28px;
+    font-weight: 700;
 }
 
 /*
@@ -525,49 +529,6 @@ table {
 		margin-top: 8px;
     }
 
-	h1 {
-		font-size: 34px;
-		line-height: 44px;
-		margin-bottom: 28px;
-		margin-top: 28px;
-	}
-    
-	h2 {
-		font-size: 28px;
-		line-height: 36px;
-		margin-bottom: 28px;
-		margin-top: 28px;
-	}
-    
-	h3 {
-		font-size: 24px;
-		line-height: 30px;
-		margin-bottom: 28px;
-		margin-top: 28px;
-	}
-    
-	h4 {
-		font-size: 22px;
-		line-height: 28px;
-		margin-bottom: 28px;
-		margin-top: 28px;
-	}
-    
-	h5 {
-		font-size: 20px;
-		line-height: 26px;
-		margin-bottom: 14px;
-		margin-top: 28px;
-	}
-    
-	h6 {
-		font-size: 18px;
-		line-height: 24px;
-		margin-bottom: 7px;
-		margin-top: 28px;
-	}
-
-	
 	hr,
 	p,
 	ul,
