@@ -91,10 +91,8 @@ and the paper is available for download at:
 * [https://research.google/pubs/pub48190/](https://research.google/pubs/pub48190/)
 
 It describes the Google's motivation for building a unified authorization system and describes the 
-data model, language and its API. After publishing the paper various vendors and open source 
-implementations have materialized.
-
-I think there are many excellent sources, that explain Google Zanzibar in detail, and much better, than I could:
+data model, language and its API. I think there are many excellent sources, that explain Google Zanzibar 
+in detail and much better, than I could:
 
 * [Exploring Google Zanzibar: A Demonstration of Its Basics (by Ege Aytin)](https://www.permify.co/post/exploring-google-zanzibar-a-demonstration-of-its-basics)
 * [Building Zanzibar from Scratch (by Sam Scott)](https://www.osohq.com/post/zanzibar)
@@ -3151,8 +3149,8 @@ builder.Services.AddAuthorization(options =>
 ## Running an Example with the Sample Data ##
 
 We got everything in place. We can now start the application and use Swagger to query it. But Visual Studio 2022 
-has now comes with the "Endpoints Explorer" to execute HTTP Requests against HTTP endpoints. Though it's not 
-fully-fledged yet, I think it'll improve with time and it already covers a lot of use cases.
+now comes with the "Endpoints Explorer" to execute HTTP Requests against HTTP endpoints. Though it's not fully-fledged 
+yet, I think it'll improve with time and it already covers a lot of use cases.
 
 You can find the Endpoints Explorer at:
 
