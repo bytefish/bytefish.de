@@ -1,10 +1,10 @@
-title: Implementing Relationship-based Access Control with ASP.NET Core and SQL
-date: 2018-01-01 10:24
+title: Relationship-based Access Control with ASP.NET Core, EntityFramework Core and SQL
+date: 2023-10-23 11:10
 tags: aspnetcore, dotnet, csharp, sql, datamining
 category: dotnet
 slug: aspnetcore_rebac
 author: Philipp Wagner
-summary: This article shows a way to implement a Relationship-based Access Control in ASP.NET Core and SQL.
+summary: This article shows a way to implement a Relationship-based Access Control in ASP.NET Core, EntityFramework Core and SQL.
 
 [written an article about the Google Zanzibar Data Model]: https://www.bytefish.de/blog/relationship_based_acl_with_google_zanzibar.html
 
