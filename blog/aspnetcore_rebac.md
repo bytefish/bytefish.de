@@ -75,8 +75,8 @@ As you can see in the article, a Role-based Access Control can get very complex,
 it is illustrated with *actual code*, and more importantly none of this exists in ASP.NET Core.
 
 In my experience Role-based Access Control can take you very, very far. And it works great, as long as 
-an organization strictly adheres to the roles defined. But as soon you need a more fine-grained control, 
-you are out of luck with Roles.
+an organization strictly adheres to the roles defined. But as soon as you need a more fine-grained 
+control, you are out of luck with Roles.
 
 Many, many projects taught me, that *there is always a special snowflake*, that doesn't fit the defined 
 roles and needs a special treatment. This *may* lead to an explosion in roles, if you don't have compensation 
@@ -114,8 +114,8 @@ task323#viewer@org1#member
 task152#viewer@org1#member
 task152#viewer@org2#member
 org1#member@philipp
-org1#member@hannes
-org2#member@alexander
+org1#member@max
+org2#member@james
 ```
 
 Where ...
@@ -130,10 +130,10 @@ Where ...
     * `members` of `org2` are `viewer` of `task323`
 * `org1#member@philipp`
     * `philipp` is a `member` of `org1`
-* `org1#member@hannes`
-    * `hannes` is a `member` of `org1`
-* `org2#member@alexander`
-    * `alexander` is a `member` of `org1`
+* `org1#member@max`
+    * `max` is a `member` of `org1`
+* `org2#member@james`
+    * `james` is a `member` of `org1`
 
 We could build a Role-based Access Control upon the Google Zanzibar data model, something that's already been noted in 
 Google's original paper ...
