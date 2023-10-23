@@ -41,9 +41,10 @@ All code in this article can be found in a repository at:
 
 ## Role-based and Relationship-based ACL ##
 
-We are going to build a tiny part of a Task Management system.Tasks are basically everywhere in an 
-organization, such as having tasks for signing documents, calling back customers or reminders to write 
-invoices. They are a good example use case for authorization.
+We are going to build a tiny part of a Task Management system.
+
+Tasks are basically everywhere in an organization, such as having tasks for signing documents, calling 
+back customers or reminders to write invoices. They are a good example use case for authorization.
 
 The situation for such a Task Management system is somewhat similar to the Google Drive example. You 
 obviously don't want an entire organization to view, edit, delete or close *all* tasks. Given a sufficiently 
@@ -59,9 +60,9 @@ Role-based Access Control is definitely among the most popular models for defini
 authorizing access to an organizations resources, such as our tasks. Highly simplified, a user is 
 being assigned to a set of roles, where each role represents the users role within the organization.
 
-In to our Task Management system, a regular user might be able to view tasks, while it requires elevated 
-rights to actually delete a task. Likewise a user being assigned to the role *Software Development* should 
-probably not be permitted to edit tasks created by the *Human Resources* people.
+In our Task Management system, a regular user might be able to view tasks, while it requires elevated 
+rights to actually delete a task. Likewise a user being assigned to the role *Software Development* 
+should probably not be permitted to update tasks created by the *Human Resources* people.
 
 That said, there was recently a great Microsoft DevBlogs article by Stewart Adam, that discusses designing 
 Role-based Access Control for applications and it's a great read. It discusses quite a similar use case 
@@ -220,34 +221,36 @@ include the following:
 
 For SQL Server the following table is a good start.
 
-| Object                                   | Notation   | Length | Plural | Prefix  | Suffix    | Example                                                  |
-|------------------------------------------| ---------- |-------:|--------|---------|-----------|----------------------------------------------------------|
-|  Database                                | PascalCase |     30 | No     | No      | No        | `MyDatabase`                                             |
-|  Schema                                  | PascalCase |     30 | No     | No      | No        | `MySchema`                                               |
-|  Global Temporary Table                  | PascalCase |    117 | No     | No      | No        | `##MyTable`                                              |
-|  Local Temporary Table                   | PascalCase |    116 | No     | No      | No        | `#MyTable`                                               |
-|  File Table                              | PascalCase |    128 | No     | `FT_`   | No        | `FT_MyTable`                                             |
-|  Temporal Table                          | PascalCase |    128 | No     | No      | `History` | `MyTableHistory`                                         |
-|  Table Column                            | PascalCase |    128 | No     | No      | No        | `MyColumn`                                               |
-|  Columns Check Constraint                | PascalCase |    128 | No     | `CTK_`  | No        | `CTK_MyTable_MyColumn_AnotherColumn`                     |
-|  Column Check Constraint                 | PascalCase |    128 | No     | `CK_`   | No        | `CK_MyTable_MyColumn`                                    |
-|  Column Default Values                   | PascalCase |    128 | No     | `DF_`   | No        | `DF_MyTable_MyColumn`                                    |
-|  Table Primary Key                       | PascalCase |    128 | No     | `PK_`   | No        | `PK_MyTable`                                             |
-|  Table Unique (Alternative) Key          | PascalCase |    128 | No     | `AK_`   | No        | `AK_MyTable_MyColumn_AnotherColumn`                      |
-|  Table Foreign Key                       | PascalCase |    128 | No     | `FK_`   | No        | `FK_MyTable_MyColumn_ReferencedTable_ReferencedColumn`   |
-|  Table Clustered Index                   | PascalCase |    128 | No     | `IXC_`  | No        | `IXC_MyTable_MyColumn_AnotherColumn`                     |
-|  Table Non Clustered Index               | PascalCase |    128 | No     | `IX_`   | No        | `IX_MyTable_MyColumn_AnotherColumn`                      |
-|  Table Unique Index                      | PascalCase |    128 | No     | `UX_`   | No        | `UX_MyTable_MyColumn_AnotherColumn`                      |
-|  DDL Trigger                             | PascalCase |    128 | No     | `TR_`   | `_DDL`    | `TR_LogicalName_DDL`                                     |
-|  DML Trigger                             | PascalCase |    128 | No     | `TR_`   | `_DML`    | `TR_MyTable_LogicalName_DML`                             |
-|  Logon Trigger                           | PascalCase |    128 | No     | `TR_`   | `_LOG`    | `TR_LogicalName_LOG`                                     |
-|  View                                    | PascalCase |    128 | No     | `VI_`   | No        | `VI_LogicalName`                                         |
-|  Indexed View                            | PascalCase |    128 | No     | `VIX_`  | No        | `VIX_LogicalName`                                        |
-|  Statistic                               | PascalCase |    128 | No     | `ST_`   | No        | `ST_MyTable_MyColumn_AnotherColumn`                      |
-|  Stored Procedure                        | PascalCase |    128 | No     | `usp_`  | No        | `usp_LogicalName`                                        |
-|  Scalar User-Defined Function            | PascalCase |    128 | No     | `udf_`  | No        | `udf_FunctionLogicalName`                                |
-|  Table-Valued Function                   | PascalCase |    128 | No     | `tvf_`  | No        | `tvf_FunctionLogicalName`                                |
-|  Sequence                                | PascalCase |    128 | No     | `sq_`   | No        | `sq_TableName`                                           |
+```
+| Object                        | Size | Plural | Prefix  | Suffix    | Example                      |
+|-------------------------------|------|--------|---------|-----------|------------------------------|
+|  Database                     |  30  | No     | No      | No        | `MyDatabase`                 |
+|  Schema                       |  30  | No     | No      | No        | `MySchema`                   |
+|  Global Temporary Table       | 117  | No     | No      | No        | `##MyTable`                  |
+|  Local Temporary Table        | 116  | No     | No      | No        | `#MyTable`                   |
+|  File Table                   | 128  | No     | `FT_`   | No        | `FT_MyTable`                 |
+|  Temporal Table               | 128  | No     | No      | `History` | `MyTableHistory`             |
+|  Table Column                 | 128  | No     | No      | No        | `MyColumn`                   |
+|  Columns Check Constraint     | 128  | No     | `CTK_`  | No        | `CTK_MyTable_Col1_Col2`      |
+|  Column Check Constraint      | 128  | No     | `CK_`   | No        | `CK_MyTable_Col`             |
+|  Column Default Values        | 128  | No     | `DF_`   | No        | `DF_MyTable_Col`             |
+|  Table Primary Key            | 128  | No     | `PK_`   | No        | `PK_MyTable`                 |
+|  Table Alternative Key        | 128  | No     | `AK_`   | No        | `AK_MyTable_Col1_Col2`       |
+|  Table Foreign Key            | 128  | No     | `FK_`   | No        | `FK_MyTable_Col_Table_Col`   |
+|  Table Clustered Index        | 128  | No     | `IXC_`  | No        | `IXC_MyTable_Col1_Col2`      |
+|  Table Non Clustered Index    | 128  | No     | `IX_`   | No        | `IX_MyTable_Col1_Col2`       |
+|  Table Unique Index           | 128  | No     | `UX_`   | No        | `UX_MyTable_Col1_Col2`       |
+|  DDL Trigger                  | 128  | No     | `TR_`   | `_DDL`    | `TR_LogicalName_DDL`         |
+|  DML Trigger                  | 128  | No     | `TR_`   | `_DML`    | `TR_MyTable_LogicalName_DML` |
+|  Logon Trigger                | 128  | No     | `TR_`   | `_LOG`    | `TR_LogicalName_LOG`         |
+|  View                         | 128  | No     | `VI_`   | No        | `VI_LogicalName`             |
+|  Indexed View                 | 128  | No     | `VIX_`  | No        | `VIX_LogicalName`            |
+|  Statistic                    | 128  | No     | `ST_`   | No        | `ST_MyTable_Col1_Col2`       |
+|  Stored Procedure             | 128  | No     | `usp_`  | No        | `usp_LogicalName`            |
+|  Scalar User-Defined Function | 128  | No     | `udf_`  | No        | `udf_FunctionLogicalName`    |
+|  Table-Valued Function        | 128  | No     | `tvf_`  | No        | `tvf_FunctionLogicalName`    |
+|  Sequence                     | 128  | No     | `sq_`   | No        | `sq_TableName`               |
+```
 
 #### Auditing and Optimistic Locking ####
 
