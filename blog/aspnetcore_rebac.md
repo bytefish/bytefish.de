@@ -16,7 +16,7 @@ Are you part of an *Organization* and you are allowed to *view* all their files?
 assigned to a *Team*, that's allowed to *view* or *edit* files? Has someone shared *their files* 
 with *you* as a *User*?
 
-In 2019 Google has lifted the curtain and has published a paper on *Google Zanzibar*, which 
+So in 2019 Google has lifted the curtain and has published a paper on *Google Zanzibar*, which 
 is Google's central solution for providing authorization among its many services:
 
 * [https://research.google/pubs/pub48190/](https://research.google/pubs/pub48190/)
@@ -41,13 +41,13 @@ All code in this article can be found in a repository at:
 
 ## Role-based and Relationship-based ACL ##
 
-We are going to build a tiny part of a Task Management system. Why? Because tasks are basically everywhere 
-in an organization, such as having tasks for signing documents, calling back customers or reminders to 
-write invoices. They are a good example use case for authorization.
+We are going to build a tiny part of a Task Management system.Tasks are basically everywhere in an 
+organization, such as having tasks for signing documents, calling back customers or reminders to write 
+invoices. They are a good example use case for authorization.
 
-The situation for such a Task Management system somewhat similar to the Google Drive example. You obviously 
-don't want an entire organization to view, edit, delete or close all tasks. Given a sufficiently large 
-headcount it would quickly escalate into a chaos, if we don't authorize users.
+The situation for such a Task Management system is somewhat similar to the Google Drive example. You 
+obviously don't want an entire organization to view, edit, delete or close *all* tasks. Given a sufficiently 
+large headcount in a company, unauthorized access would quickly escalate into a chaos.
 
 ### Role-based Access Control (RBAC) ###
 
@@ -57,34 +57,34 @@ One way to authorize a user is by using Role-based Access Control (RBAC).
 
 Role-based Access Control is definitely among the most popular models for defining permissions and 
 authorizing access to an organizations resources, such as our tasks. Highly simplified, a user is 
-being assigned a set of roles, where each role represents the users role within the organization.
+being assigned to a set of roles, where each role represents the users role within the organization.
 
-In to our Task Management system, a regular user might be able to view, edit and close tasks, while 
-it requires elevated rights to actually delete a task. Likewise a user being assigned to the role 
-*Software Development* should probably not be permitted to view or edit tasks created by the 
-*Human Resources* people.
+In to our Task Management system, a regular user might be able to view tasks, while it requires elevated 
+rights to actually delete a task. Likewise a user being assigned to the role *Software Development* should 
+probably not be permitted to edit tasks created by the *Human Resources* people.
 
-There was recently a great Microsoft DevBlogs article by Stewart Adam, that discusses designing Role-based 
-Access Control for applications and it's a great read. It discusses quite a similar use case and comes up 
-with some solutions:
+That said, there was recently a great Microsoft DevBlogs article by Stewart Adam, that discusses designing 
+Role-based Access Control for applications and it's a great read. It discusses quite a similar use case 
+and comes up with some solutions:
 
 * [Authoring an RBAC API for your application (by Stewart Adam)]
 
 As you can see in the article, a Role-based Access Control can get very complex, very quickly. "Subtree grants", 
-"Entity Graph Scopes", "Nested Roles", "Permission Wildcards", ... and sadly none of it is illustrated with 
-actual code, and none of this exists in ASP.NET Core.
+"Entity Graph Scopes", "Nested Roles", "Permission Wildcards", ... it sounds great in theory, but sadly none of 
+it is illustrated with *actual code*, and more importantly none of this exists in ASP.NET Core.
 
 In my experience Role-based Access Control can take you very, very far. And it works great, as long as 
 an organization strictly adheres to the roles defined. But as soon you need a more fine-grained control, 
-you are out of luck.
+you are out of luck with Roles.
 
-And many projects taught me, that *there is always a special snowflake*, that doesn't fit the roles and 
-needs a special role. This *may* lead to an explosion in roles, or you apply the compensation mentioned 
-in [Authoring an RBAC API for your application (by Stewart Adam)].
+Many, many projects taught me, that *there is always a special snowflake*, that doesn't fit the defined 
+roles and needs a special treatment. This *may* lead to an explosion in roles, if you don't have compensation 
+strategies as mentioned in "[Authoring an RBAC API for your application (by Stewart Adam)]".
 
 ### Relationship-based Access Control (ReBAC) ###
 
-Google Zanzibar was described by Google in a 2019 paper called *Zanzibar: Google’s Consistent, Global Authorization System* 
+One way for having fine-grained Access Control is to employ something similar to Google Zanzibar. Google Zanzibar 
+was first described by Google in a 2019 paper called *Zanzibar: Google’s Consistent, Global Authorization System* 
 and the paper is available for download at:
 
 * [https://research.google/pubs/pub48190/](https://research.google/pubs/pub48190/)
@@ -93,8 +93,7 @@ It describes the Google's motivation for building a unified authorization system
 data model, language and its API. After publishing the paper various vendors and open source 
 implementations have materialized.
 
-I think there are many excellent sources, that explain Google Zanzibar in detail and help you learning 
-about it. I've basically consulted the following articles to get started and :
+I think there are many excellent sources, that explain Google Zanzibar in detail, and much better, than I could:
 
 * [Exploring Google Zanzibar: A Demonstration of Its Basics (by Ege Aytin)](https://www.permify.co/post/exploring-google-zanzibar-a-demonstration-of-its-basics)
 * [Building Zanzibar from Scratch (by Sam Scott)](https://www.osohq.com/post/zanzibar)
@@ -135,23 +134,27 @@ Where ...
 * `org2#member@alexander`
     * `alexander` is a `member` of `org1`
 
-We could build a Role-based Access Control upon the Google Zanzibar data model. And it's something, that's often done 
-in these systems, as it's already been noted in Google's original paper ...
+We could build a Role-based Access Control upon the Google Zanzibar data model, something that's already been noted in 
+Google's original paper ...
 
 > [...] A number of Zanzibar clients have implemented RBAC policies on top of Zanzibar’s namespace configuration language. [...]
 
-So using Role-based Access Control and Relationship-based Access Control is not a mutually exclusive decision. You can 
-easily build a Role-based Access Control model upon the Google Zanzibar data model and combine it with Relationship-based 
-Access Control... use what's best for your use case. 
+So using Role-based Access Control and Relationship-based Access Control is by no means a mutually exclusive decision. You can 
+easily build a Role-based Access Control model upon Relationship-based Access Control... use what's best for your use case. As 
+for ASP.NET Core, I imagine protecting the `Controller` with Roles and have Fine-Grained Access Control on Service-Level using 
+Relationships.
 
 ## What we are going to build ##
 
 We will build a small part of a Task Management System using ASP.NET Core and EntityFramework Core. The idea is 
-to wrap the Check API and ListObjects API developed in the previous Google Zanzibar article with EntityFramework 
+to wrap the Check API and ListObjects API, developed in the previous Google Zanzibar article, with EntityFramework 
 Core and integrate it into the ASP.NET Core pipeline. 
 
 At the end of this article we will have a RESTful API, that's authorizes a user using a Relationship-based 
-Access Control, based on the Google Zanzibar data model. Here is the Swagger Overview.
+Access Control. We will see how to create the database, configure logging, run integration tests and use 
+`.http` files for manual endpoint tests in Visual Studio.
+
+Here is the Swagger Overview for the final API Endpoints. 
 
 <div style="display:flex; align-items:center; justify-content:center;margin-bottom:15px;">
     <a href="/static/images/blog/aspnetcore_rebac/swagger_endpoints.jpg">
@@ -159,13 +162,11 @@ Access Control, based on the Google Zanzibar data model. Here is the Swagger Ove
     </a>
 </div>
 
-Maybe in a later article we will develop a Blazor application to query it.
-
 ## Database Design ##
 
-If you are going to work with a relational database you should put all your database objects in version control. The 
-best example for a SQL Server Database Project (SSDP) available out there is the [WideWorldImporters OLTP Database] 
-example provided in the SQL Server examples repository:
+If you are going to work with a relational database, then you should put all your database objects in version control. The 
+best example for a SQL Server Database Project (SSDP) available out there is the [WideWorldImporters OLTP Database] example 
+provided in the SQL Server examples repository:
 
 * [https://github.com/microsoft/sql-server-samples/tree/master/samples/databases/wide-world-importers/wwi-ssdt](https://github.com/microsoft/sql-server-samples/tree/master/samples/databases/wide-world-importers/wwi-ssdt)
 
@@ -318,8 +319,8 @@ mode during schema migrations.
 
 ### Database Project Overview ###
 
-It's a good idea to get an overview first. We create a SQL Server Database Project (SSDP), call it `RebacExperiments.Server.SSDT` 
-and put all our Database Objects and Scripts into it.
+It's a good idea to get an overview for our database project first. We create a SQL Server Database Project (SSDP), call 
+it `RebacExperiments.Server.SSDT` and put all our Database Objects and Scripts into it.
 
 <div style="display:flex; align-items:center; justify-content:center;margin-bottom:15px;">
     <a href="/static/images/blog/aspnetcore_rebac/database_project_overview.jpg">
@@ -327,13 +328,13 @@ and put all our Database Objects and Scripts into it.
     </a>
 </div>
 
-
-We have two schemas named `[Identity]` and `[Application]`. The `[Identity]` schema, surprise, is going to hold all 
-identity related stuff, such as a `User`, a `Role` and the `RelationTuple` for defining the permissions. It's also 
+There are two schemas named `[Identity]` and `[Application]`. The `[Identity]` schema, surprise, is going to hold all identity 
+related stuff, such as a `User`, a `Role` and the `RelationTuple` for defining the relationships between entities. It's also 
 going to hold the functions to list objects and check for permissions.
 
 The `[Application]` schema is going to hold everything not directly related to the Identity management, such as `UserTask`, 
-`Organization`, `Team`, ... entities.  
+`Organization`, `Team`, ... entities. The `[Application]` schema takes a hard dependency on the `[Identity]` schema, because 
+we refer to the `[Identity].[User]` table with a Foreign Key Constraint.
 
 ### Schema "Identity"  ###
 
@@ -341,7 +342,7 @@ The `[Application]` schema is going to hold everything not directly related to t
 
 We are using Sequences instead of an Auto-Incrementing Primary Key. A Sequence has some advantadges, such as setting 
 explicit start and increment values. And what's particularly interesting to us is, that we can use the Sequence to 
-implement the Hi-Lo Pattern in code. 
+implement the Hi-Lo Pattern in code.
 
 The EntityFramework documentation has the following to say about the Hi/Lo Algorithm:
 
@@ -372,8 +373,8 @@ CREATE SEQUENCE [Identity].[sq_RelationTuple]
 #### Tables ####
 
 The application has a very simple `User` model. A user may be permitted to Logon using a Logon Name, the Logon Name 
-is unique among all users. The password hashing needs to be done in the application, when adding a user to the 
-system.
+is unique among all users. The password hashing is done on application-level, when logging into the system or 
+registering users.
 
 ```sql
 CREATE TABLE [Identity].[User](
@@ -393,7 +394,7 @@ CREATE TABLE [Identity].[User](
 ) WITH (SYSTEM_VERSIONING = ON (HISTORY_TABLE = [Identity].[UserHistory]));
 ```
 
-To build a Role-based Access Control on top of the Relationship-based model, we add a table `[Identity].[Role]` to hold the roles in our system.
+To build a Role-based Access Control on top of the Relationship-based model, we add a table `[Identity].[Role]` to hold all roles available in our system.
 
 ```sql
 CREATE TABLE [Identity].[Role](
@@ -411,7 +412,8 @@ CREATE TABLE [Identity].[Role](
 ```
 
 The table `[Identity].[RelationTuple]` is the secret sauce here, that's going to be at the heart of the Relationship-based Access Control. As 
-you can see, the `[ObjectKey]` has been defined as an `INT` column type, so all Objects need to have a Surrogate Integer Primary Key. 
+you can see, the `[ObjectKey]` and `[SubjectKey]` has been defined as an `INT` column type, so we make the assumption, that all tables in our 
+database have `INT` Primary Key. 
 
 ```sql
 CREATE TABLE [Identity].[RelationTuple](
@@ -951,6 +953,7 @@ USING (VALUES
     ,(4, 'Max Powers',      'Max Powers',       0, 'max@powers.localhost',  NULL, 1, @ValidFrom, @ValidTo)
     ,(5, 'James Bond',      '007',              0, 'james@bond.localhost',  NULL, 1, @ValidFrom, @ValidTo)
     ,(6, 'John Connor',     'John Connor',      0, 'john@connor.localhost', NULL, 1, @ValidFrom, @ValidTo)
+    ,(7, 'Max Mustermann',  'Max Mustermann',   1, 'max@mustermann.local',  'AQAAAAIAAYagAAAAELbMFL9utkwA7FK4QoUCZEK/jPiHhTMzuFllrszW7FuCJBHjLVBCWXJCuFFJyRllYg==', 1, @ValidFrom, @ValidTo) --5!F25GbKwU3P
 ) AS [Source]([UserID], [FullName], [PreferredName], [IsPermittedToLogon], [LogonName], [HashedPassword], [LastEditedBy], [ValidFrom], [ValidTo])
 ON ([Target].[UserID] = [Source].[UserID])
 WHEN NOT MATCHED BY TARGET THEN
@@ -1009,21 +1012,43 @@ The database is now being published and we can inspect the `Data Tools Operation
 
 Congratulations!
 
-## .NET Backend with ReBAC ACL ##
+## ASP.NET Core Backend with Relationship-based Access Control ##
 
 ### Prerequisites ###
 
+There are some prerequisites, that we want to take a look at. It's because... for every project I have 
+started I need to gather all the information from Microsoft Learn, GitHub or my previous projects, and 
+its good to have it all here.
+
 #### Logging ####
 
-ASP.NET Core comes with the `Microsoft.Extensions.Logging` abstractions, so you can plug in any logging framework you 
-like. I like Serilog a lot and use it in this example, but I've also had a good experience with NLog. By using the 
-`Microsoft.Extensions.Logging` we can swap the Logging framework anyways, if we want to switch.
+Logging is among the most important things, because *your application will fail* and you really need to be able to investigate 
+the reasons.
 
-For Serilog we start by adding the Serilog core its `Microsoft.Extensions.Logging` integration.
+ASP.NET Core now comes with the `Microsoft.Extensions.Logging` abstractions, so you can plug in any logging framework you 
+like. I like Serilog a lot and use it in this example, but I've also had a good experience with NLog, so pick your 
+favorite framework. By using the `Microsoft.Extensions.Logging` we can swap the Logging framework anyways.
+
+For Serilog we start by adding the Serilog Core and its `Microsoft.Extensions.Logging` integration.
 
 ```xml
+<PackageReference Include="Serilog" Version="3.0.1" />
 <PackageReference Include="Serilog.Extensions.Logging" Version="7.0.0" />
 ```
+
+In this example we configure a Console and a File sink, so we also need to add the following NuGet packages:
+
+```xml
+<PackageReference Include="Serilog.Sinks.Console" Version="4.1.0" />
+<PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
+```
+
+And we want to enrich the Logs with the Machine and Environment Name, so we are adding a dependency on:
+
+```xml
+<PackageReference Include="Serilog.Enrichers.Environment" Version="2.3.0" />
+```
+
 
 At the beginning of the `Program.cs` (or where your Startup is) you configure and create a `Log.Logger` instance.
 
@@ -1048,20 +1073,6 @@ Log.Logger = new LoggerConfiguration()
     .CreateLogger();
 ```
 
-In this example we configured a Console (with nice colors) and a File sink (with a daily rotation scheme), so 
-we also need to add the following NuGet packages:
-
-```xml
-<PackageReference Include="Serilog.Sinks.Console" Version="4.1.0" />
-<PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
-```
-
-And we want to enrich the Logs with the Machine and Environment Name, so we are adding a dependency on:
-
-```xml
-<PackageReference Include="Serilog.Enrichers.Environment" Version="2.3.0" />
-```
-
 We can then use the `LoggingBuilder#AddSerilog` extension method to register Serilog with the `Microsoft.Extensions.Logging` framework.
 
 ```csharp
@@ -1069,10 +1080,10 @@ We can then use the `LoggingBuilder#AddSerilog` extension method to register Ser
 builder.Services.AddLogging(loggingBuilder => loggingBuilder.AddSerilog(dispose: true));
 ```
 
-I suggest to wrap the entire Starup code inside a `try` block, so any error, that throws up is caught and logged to a console or the file appender.
+I suggest to wrap the entire Starup code inside a fat `try` block, so any error throwing during startup is caught and 
+logged to a console or the file sink.
 
 ```csharp
-
 // ...
 
 try
@@ -1138,7 +1149,6 @@ properties like `IsDebugEnabled` or `IsErrorEnabled` to check the Log Level. Tha
 need to prepare a log message, like transforming a list of objects into something human readable, only in a 
 `Debug` log level.
 
-
 ```csharp
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
@@ -1183,9 +1193,9 @@ namespace RebacExperiments.Server.Api.Infrastructure.Logging
 }
 ```
 
-Sometimes you want to understand the flow of your application, when an error occurs... but you can't really debug against the 
-production system. That's where a `ILogger<TLoggerType>#TraceMethodEntry` extension method comes in handy, to temporarily write 
-logs in `Trace` mode and get more information. 
+And sometimes you want to understand the flow of your application, when an error occurs... but you can't really debug against the 
+production system. That's where a `ILogger<TLoggerType>#TraceMethodEntry` extension method comes in handy, to write logs in 
+`Trace` mode and get more information. 
 
 ```csharp
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
@@ -1210,7 +1220,7 @@ namespace RebacExperiments.Server.Api.Infrastructure.Logging
 }
 ```
 
-Don't try to be to clever and just add it at the top of every method invocation you'd like to see in `Trace` mode.
+Don't try to be to clever and just add the method call at the top of every method invocation, that you'd like to see in `Trace` mode. No AOP with me!
 
 ```csharp
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
@@ -1244,13 +1254,11 @@ That's it for logging.
 
 #### Error Handling ####
 
-[You’re better off using Exceptions]: https://eiriktsarpalis.wordpress.com/2017/02/19/youre-better-off-using-exceptions/
-
 Something, that you should decide on early in a project is your error handling. How do you want to communicate 
 errors to the programmer and the user? I think, that using Exceptions should be the preferred way of dealing 
-with Errors in .NET. 
+with Errors in .NET.
 
-For a User to make sense of errors, we need `ErrorCodes` to be returned to the consumer of our system.
+For a user to make sense of errors we need `ErrorCodes`, that can be looked up in a documentation or somewhere.
 
 ```csharp
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
@@ -1286,7 +1294,7 @@ namespace RebacExperiments.Server.Api.Infrastructure.Errors
 ```
 
 All exceptions in the application then derive from an abstract `ApplicationErrorException`, which requires you 
-to define the Error Code for your type of Exception.
+to define the Error Code for the type of Exception.
 
 ```csharp
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
@@ -1316,7 +1324,7 @@ namespace RebacExperiments.Server.Api.Infrastructure.Exceptions
 }
 ```
 
-All specific exceptions should then derive from the `ApplicationErrorException`, such as the `EntityUnauthorizedAccessException`. 
+All specific exceptions in the application then derive from the `ApplicationErrorException`, such as an `EntityUnauthorizedAccessException`. 
 
 The `EntityUnauthorizedAccessException` is thrown when you try to access an entity you are not authorized to access. To investigate 
 such issues, the exception contains all required data, such as the Entity to be accessed and the User ID.
@@ -1378,13 +1386,9 @@ errors in a HTTP response to avoid the need to define new error response formats
 
 I would suggest to use them.
 
-Now while I understand the reasoning for a `ProblemDetailsFactory`, `ProblemDetailsService`, some "Exception Handler 
-Lambdas" and `ErrorHandlerMiddleware`, the upcoming `IExceptionHandler` and `IProblemDetailsService` and whatnot..., 
-I find the current state in .NET 7 highly confusing... and prefer to not deal with it.
-
 I think for this application we can get away with an `ApplicationErrorHandler`, that handles the specific exceptions 
-and transforms them into an `ObjectResult` to return. A younger me would have tried to make it as generic as 
-possible. These days, I prefer doing the stuff in the most straightforward way.
+and transforms them into an `ObjectResult`. A younger me would have tried to make it as generic as possible. These 
+days, I prefer doing the stuff in the most straightforward way.
 
 ```csharp
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
@@ -1519,8 +1523,12 @@ namespace RebacExperiments.Server.Api.Infrastructure.Errors
 }
 ```
 
-In the Controllers we then pass the `ApplicationErrorHandler` to the Constructor and can use it to handle an 
-invalid `ModelState` and handle any `Exception`, that's being thrown.
+"You could have used a `ProblemDetailsFactory`, `Exception Handler Lambdas`!" I hear you say. ASP.NET Core comes with a 
+`ProblemDetailsFactory`, `Exception Handler Lambdas`, `ErrorHandlerMiddleware`, `IExceptionHandler`, a `ProblemDetailsService` 
+and whatnot... I don't understand, what's the best approach and I don't want to deal with it.
+
+In the Controllers we then pass the `ApplicationErrorHandler` to the Constructor and can use it to handle an invalid `ModelState` 
+and handle any `Exception`, that's being thrown.
 
 ```csharp
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
@@ -1571,19 +1579,20 @@ namespace RebacExperiments.Server.Api.Controllers
 }
 ```
 
+And that's it for the Error Handling.
+
 #### Integration Tests with EntityFramework Core and a Database ####
 
 Generations of Software developers have learnt, that tests are important. And if you follow a Test-Driven Development approach 
-you are probably trying to write as much Unit Tests as possible. I feel into the trap thinking, that everything needs an 
-`interface` and everything needs to be mocked. 
+you are probably trying to write as much Unit Tests as possible. As a yound developer I fell into a trap, thinking everything 
+needs an `interface` and everything needs to be mocked.
 
-These days I think what really matters are Integration Tests. Is the data actually written to the database? Did EntityFramework 
-Core translate the `IQueryable` correctly? Did it map the results correctly back and forth between a function and the 
-application?
+These days I think what really matters are Integration Tests. Is the data I am writing *actually written to the real database*? Did 
+EntityFramework Core translate the `IQueryable` *correctly*? Did it map the results correctly back and forth between the SQL function 
+and the application?
 
-I think the easiest way to write Integration Tests with EntityFramework Core is to use something like the 
-`TransactionalTestBase` from below. The idea is to start the Transaction in the setup for a test and to 
-dispose it in the teardown, without a commit.
+I think the easiest way to write Integration Tests with EntityFramework Core is to use something like the `TransactionalTestBase` from 
+below. The idea is to start the Transaction in the setup for a test and to dispose it in the teardown, without a commit. 
 
 This leaves your database in a consistent state, with all changes being rolled back at the end of each test. 
 
@@ -1732,12 +1741,11 @@ namespace RebacExperiments.Server.Api.Tests
 }
 ```
 
-### EntityFramework Core Database Mapping ###
+### Database Access with Entity Framework Core ###
 
 The Go-To Data Access Framework for .NET is EntityFramework Core. There are strong opinions on EntityFramework Core and 
-OR-Mappers in general, I will keep mine to myself and use EntityFramework Core in this example. 
-
-So here is what the `DbContext` for the application looks like. I am calling it an `ApplicationDbContext`.
+OR-Mappers in general, I will keep mine to myself and use EntityFramework Core in this example. So here is what the 
+`DbContext` for the application looks like. I am calling it an `ApplicationDbContext`.
 
 ```csharp
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
@@ -1842,15 +1850,14 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 });
 ```
 
-### Authentication ###
+### Authentication using ASP.NET Core Cookie Authentication ###
 
 We start by creating a `UserService`, which is used to create the Claims for given credentials. All passwords in the database 
-are hashed using a `PasswordHasher`. The `PasswordHasher` is a one to one adaption of the ASP.NET Core Identity package. And 
-as you can see, I am passing the `ApplicationDbContext` as a method parameter. 
+are hashed using a `PasswordHasher`. The `PasswordHasher` is a one to one adaption of the ASP.NET Core Identity package.
 
-The reasoning is simple: I want a simple life and register all Services as a Singleton. I don't want to materialize the 
-EntityFramework Core `DbContext` out of thin air, like so many tutorials suggest you to do, and deal with lifetimes 
-dictated by a Dependency Injection container.
+As you can see in the `UserService`, I am passing the `ApplicationDbContext` as a method parameter. Ugly signatures! But the 
+reasoning for it is simple: I want all my services to register as a Singleton. I don't want to materialize the EntityFramework 
+Core `DbContext` out of thin air, like so many tutorials suggest you to do.
 
 ```csharp
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
@@ -1936,9 +1943,10 @@ namespace RebacExperiments.Server.Api.Services
 }
 ```
 
-There are many options to send the Claims to the user, a popular one is a JSON Web Token. For our Backend a Cookie Authentication 
-is totally sufficient. You might consider using Windows Authentication or moving that pesky Authentication to an external provider, 
-if you don't want to deal with it yourself.
+There are many options to authenticate a user, a popular one is using JSON Web Tokens and have it stateless. For our Backend 
+a Cookie Authentication is simple and totally sufficient, we own both the Server and Clients. But you might want to consider 
+using Windows Authentication or moving that pesky authentication to an external provider, if you don't want to deal with it 
+yourself.
 
 We need to configure the Cookie Authentication in the `Program.cs`:
 
@@ -1985,6 +1993,7 @@ using System.Security.Claims;
 
 namespace RebacExperiments.Server.Api.Controllers
 {
+    [Route("Authentication")]
     public class AuthenticationController : ControllerBase
     {
         private readonly ILogger<AuthenticationController> _logger;
@@ -2055,7 +2064,7 @@ namespace RebacExperiments.Server.Api.Controllers
 }
 ```
 
-### Relationship-based Access Control ###
+### Implementing the Relationship-based Access Control Code ###
 
 #### CheckObject API ####
 
@@ -2749,9 +2758,11 @@ namespace RebacExperiments.Server.Api.Tests
 }
 ```
 
-#### Using ####
+#### Using Relationship-based Access Control in the Application Services ####
 
-Now let's use the `ListObjects` and `CheckObject` API to provide `UserTask`. We 
+Now let's use the `ListObjects` and `CheckObject` API to provide `UserTask`. With the extension methods 
+in place it's really easy to understand what's going on. We basically pass the `ApplicationDbContext` to 
+the Create, Read, Update and Delete methods to check for permissions and list the objects for a user.
 
 ```csharp
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
@@ -2971,14 +2982,246 @@ namespace RebacExperiments.Server.Api.Services
 }
 ```
 
-## ASP.NET Core ##
+The `UserService` is then passed into the Controller methods (using the `[FromServices]` attribute). As you can 
+see, we apply the Role-based Access Control on an endpoint level using the `[Authorize]` attribute combined with 
+a policy. 
 
+```csharp
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-## Running an Example ##
+// ...
 
-First of all we need to sign in, by sending the following JSON Payload to the `sign-in` endpoint:
+namespace RebacExperiments.Server.Api.Controllers
+{
+    [Route("UserTasks")]
+    public class UserTasksController : ControllerBase
+    {
+        private readonly ILogger<UserTasksController> _logger;
+        private readonly ApplicationErrorHandler _applicationErrorHandler;
 
-```json
+        public UserTasksController(ILogger<UserTasksController> logger, ApplicationErrorHandler applicationErrorHandler)
+        {
+            _logger = logger;
+            _applicationErrorHandler = applicationErrorHandler;
+        }
+
+        [HttpGet]
+        [Route("{id}")]
+        [Authorize(Policy = Policies.RequireUserRole)]
+        [EnableRateLimiting(Policies.PerUserRatelimit)]
+        public async Task<IActionResult> GetUserTask([FromServices] ApplicationDbContext context, [FromServices] IUserTaskService userTaskService, [FromRoute(Name = "id")] int userTaskId, CancellationToken cancellationToken)
+        {
+            _logger.TraceMethodEntry();
+
+            if (!ModelState.IsValid)
+            {
+                return _applicationErrorHandler.HandleInvalidModelState(HttpContext, ModelState);
+            }
+
+            try
+            {
+                var userTask = await userTaskService.GetUserTaskByIdAsync(context, userTaskId, User.GetUserId(), cancellationToken);
+
+                return Ok(userTask);
+            }
+            catch (Exception ex)
+            {
+                return _applicationErrorHandler.HandleException(HttpContext, ex);
+            }
+        }
+
+        [HttpGet]
+        [Authorize(Policy = Policies.RequireUserRole)]
+        [EnableRateLimiting(Policies.PerUserRatelimit)]
+        public async Task<IActionResult> GetUserTasks([FromServices] ApplicationDbContext context, [FromServices] IUserTaskService userTaskService, CancellationToken cancellationToken)
+        {
+            _logger.TraceMethodEntry();
+
+            if (!ModelState.IsValid)
+            {
+                return _applicationErrorHandler.HandleInvalidModelState(HttpContext, ModelState);
+            }
+
+            try
+            {
+                var userTasks = await userTaskService.GetUserTasksAsync(context, User.GetUserId(), cancellationToken);
+
+                return Ok(userTasks);
+            }
+            catch (Exception ex)
+            {
+                return _applicationErrorHandler.HandleException(HttpContext, ex);
+            }
+        }
+
+        [HttpPost]
+        [Authorize(Policy = Policies.RequireUserRole)]
+        [EnableRateLimiting(Policies.PerUserRatelimit)]
+        public async Task<IActionResult> PostUserTask([FromServices] ApplicationDbContext context, [FromServices] IUserTaskService userTaskService, [FromBody] UserTask userTask, CancellationToken cancellationToken)
+        {
+            _logger.TraceMethodEntry();
+
+            if (!ModelState.IsValid)
+            {
+                return _applicationErrorHandler.HandleInvalidModelState(HttpContext, ModelState);
+            }
+
+            try
+            {
+                await userTaskService.CreateUserTaskAsync(context, userTask, User.GetUserId(), cancellationToken);
+
+                return Ok(userTask);
+            }
+            catch (Exception ex)
+            {
+                return _applicationErrorHandler.HandleException(HttpContext, ex);
+            }
+        }
+
+        [HttpPut]
+        [Route("{id}")]
+        [Authorize(Policy = Policies.RequireUserRole)]
+        [EnableRateLimiting(Policies.PerUserRatelimit)]
+        public async Task<IActionResult> PutUserTask([FromServices] ApplicationDbContext context, [FromServices] IUserTaskService userTaskService, [FromBody] UserTask userTask, CancellationToken cancellationToken)
+        {
+            _logger.TraceMethodEntry();
+
+            if (!ModelState.IsValid)
+            {
+                return _applicationErrorHandler.HandleInvalidModelState(HttpContext, ModelState);
+            }
+
+            try
+            {
+                await userTaskService.UpdateUserTaskAsync(context, userTask, User.GetUserId(), cancellationToken);
+
+                return Ok(userTask);
+            }
+            catch (Exception ex)
+            {
+                return _applicationErrorHandler.HandleException(HttpContext, ex);
+            }
+        }
+
+        [HttpDelete]
+        [Route("{id}")]
+        [Authorize(Policy = Policies.RequireUserRole)]
+        [EnableRateLimiting(Policies.PerUserRatelimit)]
+        public async Task<IActionResult> DeleteUserTask([FromServices] ApplicationDbContext context, [FromServices] IUserTaskService userTaskService, [FromRoute(Name = "id")] int userTaskId, CancellationToken cancellationToken)
+        {
+            _logger.TraceMethodEntry();
+
+            if (!ModelState.IsValid)
+            {
+                return _applicationErrorHandler.HandleInvalidModelState(HttpContext, ModelState);
+            }
+
+            try
+            {
+                await userTaskService.DeleteUserTaskAsync(context, userTaskId, User.GetUserId(), cancellationToken);
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return _applicationErrorHandler.HandleException(HttpContext, ex);
+            }
+        }
+    }
+}
+```
+
+The Policies have been defined in the `Program.cs` as ...
+
+```csharp
+// Add Policies
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy(Policies.RequireUserRole, policy => policy.RequireRole(Roles.User));
+    options.AddPolicy(Policies.RequireAdminRole, policy => policy.RequireRole(Roles.Administrator));
+});
+
+```
+
+## Running an Example with the Sample Data ##
+
+We got everything in place. We can now start the application and use Swagger to query it. But Visual Studio 2022 
+has now comes with the "Endpoints Explorer" to execute HTTP Requests against HTTP endpoints. Though it's not 
+fully-fledged yet, I think it'll improve with time and it already covers a lot of use cases.
+
+You can find the Endpoints Explorer at:
+
+* `View -> Other Windows -> Endpoints Explorer`
+
+The Endpoints Explorer for our API looks like this:
+
+<div style="display:flex; align-items:center; justify-content:center;margin-bottom:15px;">
+    <a href="/static/images/blog/aspnetcore_rebac/visual_studio_endpoints_explorer.jpg">
+        <img src="/static/images/blog/aspnetcore_rebac/visual_studio_endpoints_explorer.jpg" alt="Endpoints Explorer for the Task Management API">
+    </a>
+</div>
+
+By clicking on `RebacExperiments.Server.Api.http` the HTTP script with the sample requests comes up.
+
+### The Example Setup ###
+
+We have got 2 Tasks:
+
+* `task_152`: "Sign Document"
+* `task 323`: "Call Back Philipp Wagner"
+
+And we have got two users: 
+
+* `user_philipp`: "Philipp Wagner"
+* `user_max`: "Max Mustermann"
+
+Both users are permitted to login, so they are allowed to query for data, given a permitted role and permissions.
+
+There are two Organizations:
+
+* Organization 1: "Organization #1"
+* Organization 2: "Organization #2"
+
+And 2 Roles:
+
+* `role_user`: "User" (Allowed to Query for UserTasks)
+* `role_admin`: "Administrator" (Allowed to Delete a UserTask)
+
+The Relationships between the entities are the following:
+
+```
+The Relationship-Table is given below.
+
+ObjectKey           |  ObjectNamespace  |   ObjectRelation  |   SubjectKey          |   SubjectNamespace    |   SubjectRelation
+--------------------|-------------------|-------------------|-----------------------|-----------------------|-------------------
+:task_323  :        |   UserTask        |       viewer      |   :organization_1:    |       Organization    |   member
+:task_152  :        |   UserTask        |       viewer      |   :organization_1:    |       Organization    |   member
+:task_152  :        |   UserTask        |       viewer      |   :organization_2:    |       Organization    |   member
+:organization_1:    |   Organization    |       member      |   :user_philipp:      |       User            |   NULL
+:organization_2:    |   Organization    |       member      |   :user_max:          |       User            |   NULL
+:role_user:         |   Role            |       member      |   :user_philipp:      |       User            |   NULL
+:role_admin:        |   Role            |       member      |   :user_philipp:      |       User            |   NULL
+:role_user:         |   Role            |       member      |   :user_max:          |       User            |   NULL
+:task_323:          |   UserTask        |       owner       |   :user_2:            |       User            |   member
+```
+
+We can draw the following conclusions here: A `member` of `organization_1` is `viewer` of `task_152` and `task_323`. A `member` 
+of `organization_2` is a `viewer` of `task_152` only. `user_philipp` is member of `organization_1`, so the user is able to see 
+both tasks as `viewer`. `user_max` is member of `organization_2`, so he is a `viewer` of `task_152` only. `user_philipp` has the 
+`User` and `Administrator` roles assigned, so he can create, query and delete a `UserTask`. `user_max` only has the `User` role 
+assigned, so he is not authorized to delete a `UserTask`. Finally `user_philipp` is also the `owner` of `task_323` so he is 
+permitted to update the data of the `UserTask`.
+
+### HTTP Endpoints Explorer Script ###
+
+We start by signing in `philipp@bytefish.de`:
+
+```
+### Sign In "philipp@bytefish.de"
+
+POST {{RebacExperiments.Server.Api_HostAddress}}/Authentication/sign-in
+Content-Type: application/json
+
 {
   "username": "philipp@bytefish.de",
   "password": "5!F25GbKwU3P",
@@ -2986,3 +3229,241 @@ First of all we need to sign in, by sending the following JSON Payload to the `s
 }
 ```
 
+And then get all Tasks by querying `/UserTasks` endpoint:
+
+```
+### Get all UserTasks
+
+GET {{RebacExperiments.Server.Api_HostAddress}}/UserTasks
+```
+
+As expected by the example setup, we task `152` and `323`:
+
+```
+[
+  {
+    "title": "Call Back",
+    "description": "Call Back Philipp Wagner",
+    "dueDateTime": null,
+    "reminderDateTime": null,
+    "completedDateTime": null,
+    "assignedTo": null,
+    "userTaskPriority": 1,
+    "userTaskStatus": 1,
+    "id": 152,
+    "rowVersion": "AAAAAAAAB\u002Bw=",
+    "lastEditedBy": 1,
+    "validFrom": "2013-01-01T00:00:00",
+    "validTo": "9999-12-31T23:59:59.9999999"
+  },
+  {
+    "title": "Sign Document",
+    "description": "You need to Sign a Document",
+    "dueDateTime": null,
+    "reminderDateTime": null,
+    "completedDateTime": null,
+    "assignedTo": null,
+    "userTaskPriority": 2,
+    "userTaskStatus": 2,
+    "id": 323,
+    "rowVersion": "AAAAAAAAB\u002B0=",
+    "lastEditedBy": 1,
+    "validFrom": "2013-01-01T00:00:00",
+    "validTo": "9999-12-31T23:59:59.9999999"
+  }
+]
+```
+
+We sign out `philipp@bytefish.de`:
+
+```
+### Sign Out "philipp@bytefish.de"
+
+POST {{RebacExperiments.Server.Api_HostAddress}}/Authentication/sign-out
+```
+
+And trying to query the `/UserTasks`: 
+
+```
+### Check for 401 Unauthorized when not Authenticated
+
+GET {{RebacExperiments.Server.Api_HostAddress}}/UserTasks
+```
+
+Returns a `401` Status Code:
+
+```
+Status: 401 UnauthorizedTime: 7,48 msSize: 0 bytes
+```
+
+Next sign in `max@mustermann.local`:
+
+```
+### Sign In as "max@mustermann.local"
+
+POST {{RebacExperiments.Server.Api_HostAddress}}/Authentication/sign-in
+Content-Type: application/json
+
+{
+  "username": "max@mustermann.local",
+  "password": "5!F25GbKwU3P",
+  "rememberMe": true
+}
+```
+
+And querying the `/UserTasks` endpoint:
+
+```
+### Get all UserTasks for "max@mustermann.local"
+
+GET {{RebacExperiments.Server.Api_HostAddress}}/UserTasks
+```
+
+Returns only `UserTask` with ID `152` as expected:
+
+```
+[
+  {
+    "title": "Call Back",
+    "description": "Call Back Philipp Wagner",
+    "dueDateTime": null,
+    "reminderDateTime": null,
+    "completedDateTime": null,
+    "assignedTo": null,
+    "userTaskPriority": 1,
+    "userTaskStatus": 1,
+    "id": 152,
+    "rowVersion": "AAAAAAAAB\u002Bw=",
+    "lastEditedBy": 1,
+    "validFrom": "2013-01-01T00:00:00",
+    "validTo": "9999-12-31T23:59:59.9999999"
+  }
+]
+```
+
+We are not the Owner of the Task, so let's try to delete the task:
+
+```
+### Delete UserTask 152 as "max@mustermann.local" (he is not the owner)
+DELETE {{RebacExperiments.Server.Api_HostAddress}}/UserTasks/152
+```
+
+And as expected, we are not permitted to delete the task:
+
+```
+Status: 403 ForbiddenTime: 190,91 msSize: 1154 bytes
+
+application/problem+json; charset=utf-8, 1154 bytes
+
+{
+  "type": "EntityUnauthorizedAccessException",
+  "title": "EntityUnauthorizedAccess (User = 7, Entity = UserTask, EntityID = 152)",
+  "status": 403,
+  "instance": "/UserTasks/152",
+  "error-code": "Entity:000002",
+  "trace-id": "0HMUJJ9QPSEE0:00000001",
+  "exception": "RebacExperiments.Server.Api.Infrastructure.Exceptions.EntityUnauthorizedAccessException: Exception of type \u0027RebacExperiments.Server.Api.Infrastructure.Exceptions.EntityUnauthorizedAccessException\u0027 was thrown.\r\n   at RebacExperiments.Server.Api.Services.UserTaskService.DeleteUserTaskAsync(ApplicationDbContext context, Int32 userTaskId, Int32 currentUserId, CancellationToken cancellationToken) in C:\\Users\\philipp\\source\\repos\\bytefish\\RebacExperiments\\RebacExperiments\\RebacExperiments.Server.Api\\Services\\UserTaskService.cs:line 148\r\n   at RebacExperiments.Server.Api.Controllers.UserTasksController.DeleteUserTask(ApplicationDbContext context, IUserTaskService userTaskService, Int32 userTaskId, CancellationToken cancellationToken) in C:\\Users\\philipp\\source\\repos\\bytefish\\RebacExperiments\\RebacExperiments\\RebacExperiments.Server.Api\\Controllers\\UserTasksController.cs:line 141"
+}
+```
+
+The `max@mustermann.local` is allowed to create a `UserTask`. We have seen, that the person creating 
+a `UserTask` is automatically the `owner` of the task and the users entire organization can view it.
+
+```
+### Create a new UserTask "API HTTP File Example" as "max@mustermann.local"
+
+POST {{RebacExperiments.Server.Api_HostAddress}}/UserTasks
+Content-Type: application/json
+
+{
+    "title": "API HTTP File Example",
+    "description": "API HTTP File Example",
+    "dueDateTime": null,
+    "reminderDateTime": null,
+    "completedDateTime": null,
+    "assignedTo": null,
+    "userTaskPriority": 2,
+    "userTaskStatus": 2
+}
+```
+
+And we get a successful response with the created task as the response payload:
+
+```
+Status: 200 OKTime: 264,41 msSize: 335 bytes
+
+{
+  "title": "API HTTP File Example",
+  "description": "API HTTP File Example",
+  "dueDateTime": null,
+  "reminderDateTime": null,
+  "completedDateTime": null,
+  "assignedTo": null,
+  "userTaskPriority": 2,
+  "userTaskStatus": 2,
+  "id": 38188,
+  "rowVersion": "AAAAAAAAB/k=",
+  "lastEditedBy": 7,
+  "validFrom": "2023-10-23T08:02:41.8051703",
+  "validTo": "9999-12-31T23:59:59.9999999"
+}
+```
+
+If we now sign-in "philipp@bytefish.de":
+
+```
+
+### Sign In "philipp@bytefish.de"
+
+POST {{RebacExperiments.Server.Api_HostAddress}}/Authentication/sign-in
+Content-Type: application/json
+
+{
+  "username": "philipp@bytefish.de",
+  "password": "5!F25GbKwU3P",
+  "rememberMe": true
+}
+```
+
+And query for the `UserTasks`:
+
+```
+### Get all UserTasks for "philipp@bytefish.de"
+
+GET {{RebacExperiments.Server.Api_HostAddress}}/UserTasks
+```
+
+We cannot see the "API HTTP File Example" Task created by the other user, because 
+`philipp@bytefish.de` isn't part of the Organization and has no relationship to the 
+task.
+
+And this is where our example ends. Feel free to play around with the example as much as you like.
+
+## Conclusion ##
+
+And we come to an end here. There are more things to explore in the code, like Rate Limiting!
+
+I didn't want to write such a long post initially and at times it it went off-topic. But I think it's 
+important for the .NET community to give "different ways" of building applications. You don't need to have 
+complex architectures, you don't need a lot of code.
+
+I have used this article to showcase several things.
+
+First of all we have learnt how to design a database project. We have decided on a project structure and naming 
+conventions to use for database objects. It's important to have a consistent approach, because your application 
+will die, but the data (and your database) lives forever.
+
+Then we have taken a look at Logging with ASP.NET Core and have learnt how to add Serilog. Serilog has a 
+wide range of useful Logging Sinks, the example used a File Appender and a Console Logger. If you want to 
+get fancy you could also learn about Structured Logging and Open Telemetry.
+
+EntityFramework Core made it easy to access the data. In this article we opted to map the database 
+manually, but the *EntityFramework Core Power Tools* Extension generates the same code with the 
+press of a button.
+
+We came up with a very nice API for providing Relationship-based Access Control using Extension methods on the 
+EntityFramework Core `DbContext`, and also provided a Role-based Access Control on top. Both have been used in 
+the ASP.NET Core Controllers and the Services.
+
+By using the new Visual Studio 2022 Endpoints Explorer, we have create a `.http` file and have been able to 
+play around with the data and see how everything works out in practice.
