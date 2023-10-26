@@ -583,9 +583,9 @@ namespace RebacExperiments.Server.Api.Controllers
 }
 ```
 
-## ODataControllers ##
+### ODataControllers ###
 
-### ODataController for Authentication ###
+#### ODataController for Authentication ####
 
 We need two Unboundend Actions `SignInUser` to sign-in a `User`, and `SignOutUser` to sign-out the `User`. It basically 
 looks like the AuthenticationController from the previous article, only with the `CredentialsDto` removed and replacing 
@@ -668,7 +668,7 @@ namespace RebacExperiments.Server.Api.Controllers
 }
 ```
 
-### ODataController for UserTasks ###
+#### ODataController for UserTasks ####
 
 We can then finish the `UserTasksController` to provide the CRUD methods.
 
