@@ -94,9 +94,9 @@ EXTRA_PATH_METADATA = {
 # Folders to copy to <output>/static/...:
 STATIC_SAVE_AS = 'static/{path}'
 STATIC_PATHS = ['images', 'apps', 'extra/.htaccess', 'extra/robots.txt', 'extra/favicon.ico']
-# Codeberg Base Path:
-CODEBERG_ISSUE_PATH='https://codeberg.org/bytefish/bytefish.de/issues'
-CODEBERG_SOURCE_PATH='https://codeberg.org/bytefish/bytefish.de/src/branch/master/blog'
+# Github Base Path:
+GITHUB_ISSUE_PATH='https://github.com/bytefish/bytefish.de/issues'
+GITHUB_SOURCE_PATH='https://github.com/bytefish/bytefish.de/blob/master/blog'
 #Sitemap Settings:
 SITEMAP = {
     'format': 'xml',
@@ -112,9 +112,9 @@ SITEMAP = {
 import calendar
 import ntpath
 
-def getCodebergPage(source_file):
+def getGitHubPage(source_file):
     filename = getBasename(source_file)
-    return '{0}/{1}'.format(CODEBERG_SOURCE_PATH, filename)
+    return '{0}/{1}'.format(GITHUB_SOURCE_PATH, filename)
 
 def getBasename(path):
     return ntpath.basename(path)
@@ -138,5 +138,5 @@ JINJA_FILTERS = {
     'sortTupleByIndex': sortTupleByIndex,
     'sortDictByKey': sortDictByKey,
     'basename' : getBasename,
-    'asCodebergPage' : getCodebergPage
+    'asGitHubPage' : getGitHubPage
 }

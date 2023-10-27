@@ -112,7 +112,7 @@ you can see that the faces are well seperated:
 
 ## Accuracy ##
 
-If you want to know the performance of the model I suggest using my framework at [https://github.com/bytefish/facerec](https://www.codeberg.org/bytefish/facerec). There are functions for performing cross validations, see [validation_example.m](https://github.com/bytefish/facerec/blob/master/m/validation_example.m) for their usage. The accuracy on the AT&T database is 96.25% with 30 eigenvectors. 
+If you want to know the performance of the model I suggest using my framework at [https://github.com/bytefish/facerec](https://github.com/bytefish/facerec). There are functions for performing cross validations, see [validation_example.m](https://github.com/bytefish/facerec/blob/master/m/validation_example.m) for their usage. The accuracy on the AT&T database is 96.25% with 30 eigenvectors. 
 
 If you want to calculate it yourself, here is how I did it with [facerec](https://github.com/bytefish/facerec):
 
