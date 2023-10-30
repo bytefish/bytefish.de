@@ -331,57 +331,28 @@ body {
   padding: 2rem;
 }
 
-.container {
-  display: flex;
-  flex: 1 1 auto;
-  flex-direction: column;
-}
+  .container {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    background: #fff;
+    color: #515151;
+  }
+  .container > header {
+    color: #313131;
+    margin: 0;
+  }
+  .container > header h1,
+  .container > header h2 {
+    color: inherit;
+  }
+  .container > header h1:last-child,
+  .container > header h2:last-child {
+    margin-bottom: 0.5rem;
+  }
 .container > .content {
   flex-grow: 1;
   padding-bottom: 4rem;
-}
-
-/* -----------------------------------------------------------
-  Mobile view
------------------------------------------------------------ */
-#sidebar header ~ *,
-#sidebar header ~ nav,
-#sidebar p.lead {
-  display: none;
-}
-
-.container > header {
-  background: transparent;
-  color: #fff;
-  margin: -1.5rem 2rem 2rem;
-}
-.container > header h1,
-.container > header h2 {
-  color: inherit;
-}
-.container > header h1:last-child,
-.container > header h2:last-child {
-  margin-bottom: 0;
-}
-
-/* -----------------------------------------------------------
-  Mobile view for home page)
------------------------------------------------------------ */
-.home #sidebar {
-  text-align: center;
-}
-.home #sidebar .site-title {
-  font-size: 3.25rem;
-}
-.home #sidebar header ~ *,
-.home #sidebar p.lead {
-  display: block;
-}
-.home #sidebar header ~ nav {
-  display: flex;
-}
-.home #sidebar > *:last-child {
-  margin-bottom: 0.5rem;
 }
 
 /* -----------------------------------------------------------
@@ -416,9 +387,7 @@ body {
   #sidebar .site-title {
     font-size: 3.25rem;
   }
-  #sidebar .site-title .back-arrow {
-    display: none;
-  }
+
   #sidebar p.lead,
   #sidebar header ~ * {
     display: block;
@@ -779,4 +748,37 @@ button.disqus-load {
   display: block;
 }
 
-/*# sourceMappingURL=main.css.map */
+/* Archive */
+h2.article-year {
+    text-align: center;
+}
+
+dl {
+  margin-bottom: 1em;
+}
+
+dt.article-date {
+  font-weight: bold;
+  text-align: center;
+  margin-top: 1em;
+}
+
+dd.article-title {
+  margin-left: 1.5em;
+  text-align: center;
+}
+
+
+@media (min-width: 49rem) {
+  h2.article-year {
+      text-align: left;
+  }
+  
+  dt.article-date {
+    text-align: left;
+  }
+  
+  dd.article-title {
+    text-align: left;
+  }
+}

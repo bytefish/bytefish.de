@@ -34,7 +34,7 @@
     <h1 class="post-title">{{ article.title }}</h1>
 </header>
 <div class="content">
-  
+   {% include 'fragments/post-meta.html' %}
   <div class="post-body">
     {{ article.content }}
   </div>
