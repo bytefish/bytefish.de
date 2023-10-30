@@ -30,10 +30,11 @@
 {% block content_title %}{{ article.url }}{% endblock %}
 
 {% block content %}
-<header>
-    <h1 class="post-title">{{ article.title }}</h1>
-</header>
+
 <div class="content">
+    <header>
+        <h1 class="post-title">{{ article.title }}</h1>
+    </header>
    {% include 'fragments/post-meta.html' %}
   <div class="post-body">
     {{ article.content }}
