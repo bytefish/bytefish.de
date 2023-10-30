@@ -38,6 +38,7 @@ section {
 a {
   color: #268bd2;
   text-decoration: none;
+  word-break: break-all;
 }
 a:hover, a:focus {
   text-decoration: underline;
