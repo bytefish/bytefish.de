@@ -18,7 +18,7 @@ TIMEZONE = 'Europe/Paris'
 # Using a simple date format:
 DEFAULT_DATE_FORMAT = ('%d %b %Y')
 # We are using the custom minimal theme:
-THEME = './themes/minimal/'
+THEME = './themes/hydeout/'
 # Probably add rst here:
 MARKUP = ('md',)
 # Markdown Configuration:
@@ -71,12 +71,16 @@ PAGE_PATHS = [ 'pages' ]
 ARTICLE_PATHS = [ 'blog' ]
 # Save index as blog/index.html instead of index.html:
 INDEX_SAVE_AS = 'blog.html'
+# Profiles for the Sidebar
+SOCIAL_MASTODON = 'https://mastodon.social/@bytefish'
+SOCIAL_GITHUB = 'https://github.com/bytefish'
 # Navigation menu:
 SECTIONS = [
   ('blog', '/blog.html'),
   ('about', '/about.html'),
   ('pages', '/pages.html'),
   ('documents', '/documents.html'),]
+
 # Links to display in the footer:
 LINKS = [
   ('bsd', 'http://www.opensource.org/licenses/BSD-3-Clause'),

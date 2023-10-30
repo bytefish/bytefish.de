@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block meta %}
+    <meta name="description" content="Available blog articles on bytefish.de." />
+    <meta name="keywords" content="pages" />
+{% endblock %}
+
+{% block title %}{{ SITEURL }}/blog{% endblock %}
+{% block content_title %}blog{%endblock%}
+
+{% block content %}
+<header>
+    <h1 class="post-title">blog</h1>
+</header>
+<div class="content">
+  
+  <div class="post-body">
+    {% for year, date_year in dates | groupby('date.year') | sort(reverse=True) %}
+      <h2 class="article-year">{{ date_year[0].date.strftime('%Y') }}</h2>
+      <dl>
+        {% for article in date_year | sort(attribute='date', reverse=True) %}
+        <dt class="article-date">{{ article.date.strftime('%B %d, %Y') }}</dt>
+        <dd class="article-title"><a href="/{{ article.url }}">{{ article.title }}</a></dd>
+        {% endfor %}
+      </dl>
+      {% endfor %}
+  </div>
+
+</div>
+{% endblock %}
+

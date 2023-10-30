@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block meta %}
+    {% if page.summary %}
+    <meta name="description" content="{{ page.summary|striptags|escape }}" />
+    {% endif %}
+    {% if page.tags %}
+    <meta name="keywords" content="{{ page.tags|join(',')|striptags }}" />
+    {% endif %}
+{% endblock %}
+
+{% block title %}{{ page.title }}{% endblock %}
+
+{% block content_title %}{{ page.url }}{%endblock%}
+
+{% block content %}
+  <header>
+    <h1 class="page-title">{{ page.title }}</h1>
+  </header>
+  <div class="content">
+    {{ page.content }}
+  
+  </div>
+{% endblock %}

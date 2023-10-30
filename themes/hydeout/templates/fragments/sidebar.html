@@ -1,0 +1,17 @@
+<div id="sidebar">
+  <header>
+    <h1 class="site-title">
+      <a href="{{ SITEURL }}/">bytefish.de</a>
+    </h1>
+    <p class="lead">Description</p>
+  </header>
+
+    <nav id="sidebar-nav-links">
+        {% for title, link in SECTIONS %}
+            <a class="page-link" href="{{ link }}" >{{ title }}</a>
+        {% endfor %} 
+    </nav>
+
+  {% include 'fragments/sidebar-icon-links.html' %}
+  {% include 'fragments/copyright.html' %}
+</div>

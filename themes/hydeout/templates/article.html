@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %}{{ article.title }}{% endblock %}
+
+{% block meta %}
+    {% if article.summary %}
+    <meta name="description" content="{{ article.summary|striptags|escape }}" />
+    {% endif %}
+    {% if article.tags %}
+    <meta name="keywords" content="{{ article.tags|join(',')|striptags }}" />
+    {% endif %}
+{% endblock %}
+
+{% block json_ld %}
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      "headline": "{{ article.title }}",
+      "datePublished": "{{ article.date.strftime('%Y-%m-%dT%H:%M:%S%z') }}",
+      "author": [{
+          "@type": "Person",
+          "name": "{{ article.author }}",
+          "url": "{{ SITEURL }}/{{article.author.url}}"
+        }]
+    }
+    </script>
+{% endblock %}
+
+{% block content_title %}{{ article.url }}{% endblock %}
+
+{% block content %}
+<header>
+    <h1 class="post-title">{{ article.title }}</h1>
+</header>
+<div class="content">
+  
+  <div class="post-body">
+    {{ article.content }}
+  </div>
+
+</div>
+{% endblock %}

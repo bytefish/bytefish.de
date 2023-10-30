@@ -1,0 +1,32 @@
+<head>
+  <link href="https://gmpg.org/xfn/11" rel="profile" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <!-- Enable responsiveness on mobile devices-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+
+  {% block meta %}{% endblock %}
+  
+  <!-- Favicons -->
+  <link rel="apple-touch-icon" sizes="180x180" href="/static/images/favicon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/static/images/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/static/images/favicon/favicon-16x16.png">
+
+  <!-- CSS -->
+  <link rel="stylesheet" type="text/css" href="{{ SITEURL }}/theme/css/hydeout.css" />
+  <link rel="stylesheet" type="text/css" href="{{ SITEURL }}/theme/css/pygments.css" />
+  
+  <!-- Social -->
+  <link rel="me" href="https://mastodon.social/@bytefish">
+  
+  <!-- RSS -->
+{% if FEED_ATOM %}
+  <link href="{{ FEED_DOMAIN }}/{{ FEED_ATOM }}" type="application/atom+xml" rel="alternate" title="{{ SITENAME }} ATOM Feed" />
+{% endif %}
+{% if FEED_RSS %}
+  <link href="{{ FEED_DOMAIN }}/{{ FEED_RSS }}" type="application/atom+xml" rel="alternate" title="{{ SITENAME }} RSS Feed" />
+{% endif %}
+
+    <title>{% block title %}{{ SITENAME }}{% endblock title %}</title>
+{% block json_ld %}{% endblock %}
+</head>
