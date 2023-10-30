@@ -71,6 +71,11 @@ PAGE_PATHS = [ 'pages' ]
 ARTICLE_PATHS = [ 'blog' ]
 # Save index as blog.html instead of index.html:
 INDEX_SAVE_AS = 'blog.html'
+# Profiles for the Sidebar
+SOCIAL_MASTODON = 'https://mastodon.social/@bytefish'
+SOCIAL_GITHUB = 'https://github.com/bytefish'
+# Sidebar
+SIDEBAR_DESCRIPTION = '.NET, Java, SQL, ...'
 # Navigation menu:
 SECTIONS = [
   ('blog', '/blog.html'),
