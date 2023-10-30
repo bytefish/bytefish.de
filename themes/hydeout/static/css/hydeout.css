@@ -375,15 +375,16 @@ body {
     width: 18rem;
     padding: 2rem;
   }
-  #sidebar > *:last-child,
-  .home #sidebar > *:last-child {
+  #sidebar > *:last-child {
     margin-bottom: 0;
   }
+  
   #sidebar {
     position: fixed;
     bottom: 0;
     left: 0;
   }
+  
   #sidebar .site-title {
     font-size: 2.5rem;
     text-align: left;
@@ -400,6 +401,7 @@ body {
   #sidebar header ~ nav {
     display: flex;
   }
+  
   .index #sidebar {
     margin-bottom: 0;
   }
@@ -407,17 +409,20 @@ body {
     background: #fff;
     color: #515151;
     min-height: 100vh;
-    padding: 4rem 4rem 0;
+    padding: 1rem 4rem 0;
     margin-left: 18rem;
   }
+  
   .container > header {
     color: #313131;
     margin: 0;
   }
+  
   .container > header h1,
   .container > header h2 {
     color: inherit;
   }
+  
   .container > header h1:last-child,
   .container > header h2:last-child {
     margin-bottom: 0.5rem;
@@ -639,14 +644,6 @@ article + * > h3:first-child,
   margin-top: 0.25rem;
 }
 
-.index #sidebar {
-  padding-bottom: calc(2rem + 1em);
-}
-
-.home.index #sidebar {
-  padding-bottom: 2rem;
-}
-
 @media (min-width: 49rem) {
   .pagination > a {
     box-shadow: none;
@@ -662,10 +659,8 @@ article + * > h3:first-child,
     margin-top: 2rem;
     padding-top: 2rem;
   }
-  .index #sidebar {
-    padding-bottom: 2rem;
-  }
 }
+
 .message {
   background-color: #f9f9f9;
   color: #717171;

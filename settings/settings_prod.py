@@ -75,7 +75,7 @@ INDEX_SAVE_AS = 'blog.html'
 SOCIAL_MASTODON = 'https://mastodon.social/@bytefish'
 SOCIAL_GITHUB = 'https://github.com/bytefish'
 # Sidebar
-SIDEBAR_DESCRIPTION = '.NET, Java, SQL, ...'
+SIDEBAR_DESCRIPTION = 'Sharing Code &amp; Ideas'
 # Navigation menu:
 SECTIONS = [
   ('blog', '/blog.html'),
