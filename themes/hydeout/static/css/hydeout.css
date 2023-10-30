@@ -24,10 +24,6 @@ html {
   }
 }
 
-body {
-  text-size-adjust: 100%;
-}
-
 main,
 article,
 section {
@@ -270,13 +266,6 @@ pre code {
   margin-bottom: 0;
   overflow-x: auto;
 }
-.highlight .lineno {
-  color: #999;
-  display: inline-block;
-  padding-left: 0.25rem;
-  padding-right: 0.75rem;
-  user-select: none;
-}
 
 /*
   Layout
@@ -381,7 +370,7 @@ body {
   
   #sidebar {
     position: fixed;
-    bottom: 0;
+    top: 0;
     left: 0;
   }
   
