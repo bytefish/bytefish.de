@@ -10,23 +10,25 @@ summary: Some OpenCV code snippets that might be useful for somebody.
 
 The OpenCV matrices ``CvMat`` and ``cv::Mat`` have their own type system:
 
-<table>
-  <thead>
-    <tr>
-      <th>OpenCV</th>
-      <th>Datatype</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr><td>CV_8S</td><td>char</td></tr>
-    <tr><td>CV_8U</td><td>unsigned char</td></tr>
-    <tr><td>CV_16S</td><td>short</td></tr>
-    <tr><td>CV_16U</td><td>unsigned short</td></tr>
-    <tr><td>CV_32S</td><td>int</td></tr>
-    <tr><td>CV_32F</td><td>float</td></tr>
-    <tr><td>CV_64F</td><td>double</td></tr>
-  </tbody>
-</table>
+<div class="table">
+  <table>
+    <thead>
+      <tr>
+        <th>OpenCV</th>
+        <th>Datatype</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>CV_8S</td><td>char</td></tr>
+      <tr><td>CV_8U</td><td>unsigned char</td></tr>
+      <tr><td>CV_16S</td><td>short</td></tr>
+      <tr><td>CV_16U</td><td>unsigned short</td></tr>
+      <tr><td>CV_32S</td><td>int</td></tr>
+      <tr><td>CV_32F</td><td>float</td></tr>
+      <tr><td>CV_64F</td><td>double</td></tr>
+    </tbody>
+  </table>
+</div>
 
 It's kind of awkward to remember all the types and even worse, there's no type-checking at compile time. So the recent OpenCV2 introduced the templated matrix ``cv::Mat_<_Tp>``. Now imagine we are writing a highly simple function, where we want to print a matrix. 
 

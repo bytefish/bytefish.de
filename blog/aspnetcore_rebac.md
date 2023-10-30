@@ -219,36 +219,39 @@ include the following:
 
 For SQL Server the following table is a good start.
 
-```
-| Object                        | Size | Plural | Prefix  | Suffix    | Example                      |
-|-------------------------------|------|--------|---------|-----------|------------------------------|
-|  Database                     |  30  | No     | No      | No        | `MyDatabase`                 |
-|  Schema                       |  30  | No     | No      | No        | `MySchema`                   |
-|  Global Temporary Table       | 117  | No     | No      | No        | `##MyTable`                  |
-|  Local Temporary Table        | 116  | No     | No      | No        | `#MyTable`                   |
-|  File Table                   | 128  | No     | `FT_`   | No        | `FT_MyTable`                 |
-|  Temporal Table               | 128  | No     | No      | `History` | `MyTableHistory`             |
-|  Table Column                 | 128  | No     | No      | No        | `MyColumn`                   |
-|  Columns Check Constraint     | 128  | No     | `CTK_`  | No        | `CTK_MyTable_Col1_Col2`      |
-|  Column Check Constraint      | 128  | No     | `CK_`   | No        | `CK_MyTable_Col`             |
-|  Column Default Values        | 128  | No     | `DF_`   | No        | `DF_MyTable_Col`             |
-|  Table Primary Key            | 128  | No     | `PK_`   | No        | `PK_MyTable`                 |
-|  Table Alternative Key        | 128  | No     | `AK_`   | No        | `AK_MyTable_Col1_Col2`       |
-|  Table Foreign Key            | 128  | No     | `FK_`   | No        | `FK_MyTable_Col_Table_Col`   |
-|  Table Clustered Index        | 128  | No     | `IXC_`  | No        | `IXC_MyTable_Col1_Col2`      |
-|  Table Non Clustered Index    | 128  | No     | `IX_`   | No        | `IX_MyTable_Col1_Col2`       |
-|  Table Unique Index           | 128  | No     | `UX_`   | No        | `UX_MyTable_Col1_Col2`       |
-|  DDL Trigger                  | 128  | No     | `TR_`   | `_DDL`    | `TR_LogicalName_DDL`         |
-|  DML Trigger                  | 128  | No     | `TR_`   | `_DML`    | `TR_MyTable_LogicalName_DML` |
-|  Logon Trigger                | 128  | No     | `TR_`   | `_LOG`    | `TR_LogicalName_LOG`         |
-|  View                         | 128  | No     | `VI_`   | No        | `VI_LogicalName`             |
-|  Indexed View                 | 128  | No     | `VIX_`  | No        | `VIX_LogicalName`            |
-|  Statistic                    | 128  | No     | `ST_`   | No        | `ST_MyTable_Col1_Col2`       |
-|  Stored Procedure             | 128  | No     | `usp_`  | No        | `usp_LogicalName`            |
-|  Scalar User-Defined Function | 128  | No     | `udf_`  | No        | `udf_FunctionLogicalName`    |
-|  Table-Valued Function        | 128  | No     | `tvf_`  | No        | `tvf_FunctionLogicalName`    |
-|  Sequence                     | 128  | No     | `sq_`   | No        | `sq_TableName`               |
-```
+<div class="table">
+  <table>
+    <tbody>
+      <tr><th> Object                        </th><th> Size </th><th> Plural </th><th> Prefix            </th><th> Suffix               </th><th> Example                                 </th></tr>
+      <tr><td>  Database                     </td><td>  30  </td><td> No     </td><td> No                </td><td> No                   </td><td> <code>MyDatabase</code>                 </td></tr>
+      <tr><td>  Schema                       </td><td>  30  </td><td> No     </td><td> No                </td><td> No                   </td><td> <code>MySchema</code>                   </td></tr>
+      <tr><td>  Global Temporary Table       </td><td> 117  </td><td> No     </td><td> No                </td><td> No                   </td><td> <code>##MyTable</code>                  </td></tr>
+      <tr><td>  Local Temporary Table        </td><td> 116  </td><td> No     </td><td> No                </td><td> No                   </td><td> <code>#MyTable</code>                   </td></tr>
+      <tr><td>  File Table                   </td><td> 128  </td><td> No     </td><td> <code>FT_</code>  </td><td> No                   </td><td> <code>FT_MyTable</code>                 </td></tr>
+      <tr><td>  Temporal Table               </td><td> 128  </td><td> No     </td><td> No                </td><td> <code>History</code> </td><td> <code>MyTableHistory</code>             </td></tr>
+      <tr><td>  Table Column                 </td><td> 128  </td><td> No     </td><td> No                </td><td> No                   </td><td> <code>MyColumn</code>                   </td></tr>
+      <tr><td>  Columns Check Constraint     </td><td> 128  </td><td> No     </td><td> <code>CTK_</code> </td><td> No                   </td><td> <code>CTK_MyTable_Col1_Col2</code>      </td></tr>
+      <tr><td>  Column Check Constraint      </td><td> 128  </td><td> No     </td><td> <code>CK_</code>  </td><td> No                   </td><td> <code>CK_MyTable_Col</code>             </td></tr>
+      <tr><td>  Column Default Values        </td><td> 128  </td><td> No     </td><td> <code>DF_</code>  </td><td> No                   </td><td> <code>DF_MyTable_Col</code>             </td></tr>
+      <tr><td>  Table Primary Key            </td><td> 128  </td><td> No     </td><td> <code>PK_</code>  </td><td> No                   </td><td> <code>PK_MyTable</code>                 </td></tr>
+      <tr><td>  Table Alternative Key        </td><td> 128  </td><td> No     </td><td> <code>AK_</code>  </td><td> No                   </td><td> <code>AK_MyTable_Col1_Col2</code>       </td></tr>
+      <tr><td>  Table Foreign Key            </td><td> 128  </td><td> No     </td><td> <code>FK_</code>  </td><td> No                   </td><td> <code>FK_MyTable_Col_Table_Col</code>   </td></tr>
+      <tr><td>  Table Clustered Index        </td><td> 128  </td><td> No     </td><td> <code>IXC_</code> </td><td> No                   </td><td> <code>IXC_MyTable_Col1_Col2</code>      </td></tr>
+      <tr><td>  Table Non Clustered Index    </td><td> 128  </td><td> No     </td><td> <code>IX_</code>  </td><td> No                   </td><td> <code>IX_MyTable_Col1_Col2</code>       </td></tr>
+      <tr><td>  Table Unique Index           </td><td> 128  </td><td> No     </td><td> <code>UX_</code>  </td><td> No                   </td><td> <code>UX_MyTable_Col1_Col2</code>       </td></tr>
+      <tr><td>  DDL Trigger                  </td><td> 128  </td><td> No     </td><td> <code>TR_</code>  </td><td> <code>_DDL</code>    </td><td> <code>TR_LogicalName_DDL</code>         </td></tr>
+      <tr><td>  DML Trigger                  </td><td> 128  </td><td> No     </td><td> <code>TR_</code>  </td><td> <code>_DML</code>    </td><td> <code>TR_MyTable_LogicalName_DML</code> </td></tr>
+      <tr><td>  Logon Trigger                </td><td> 128  </td><td> No     </td><td> <code>TR_</code>  </td><td> <code>_LOG</code>    </td><td> <code>TR_LogicalName_LOG</code>         </td></tr>
+      <tr><td>  View                         </td><td> 128  </td><td> No     </td><td> <code>VI_</code>  </td><td> No                   </td><td> <code>VI_LogicalName</code>             </td></tr>
+      <tr><td>  Indexed View                 </td><td> 128  </td><td> No     </td><td> <code>VIX_</code> </td><td> No                   </td><td> <code>VIX_LogicalName</code>            </td></tr>
+      <tr><td>  Statistic                    </td><td> 128  </td><td> No     </td><td> <code>ST_</code>  </td><td> No                   </td><td> <code>ST_MyTable_Col1_Col2</code>       </td></tr>
+      <tr><td>  Stored Procedure             </td><td> 128  </td><td> No     </td><td> <code>usp_</code> </td><td> No                   </td><td> <code>usp_LogicalName</code>            </td></tr>
+      <tr><td>  Scalar User-Defined Function </td><td> 128  </td><td> No     </td><td> <code>udf_</code> </td><td> No                   </td><td> <code>udf_FunctionLogicalName</code>    </td></tr>
+      <tr><td>  Table-Valued Function        </td><td> 128  </td><td> No     </td><td> <code>tvf_</code> </td><td> No                   </td><td> <code>tvf_FunctionLogicalName</code>    </td></tr>
+      <tr><td>  Sequence                     </td><td> 128  </td><td> No     </td><td> <code>sq_</code>  </td><td> No                   </td><td> <code>sq_TableName</code>               </td></tr>
+    </tbody>
+  </table>
+</div>
 
 #### Auditing and Optimistic Locking ####
 
@@ -261,13 +264,17 @@ start, because:
 
 So as a convention *every* table in our application gets the following 4 additional columns:
 
-| Column Name     | Data Type       | Allow NULL |  Description                                                  |
-|-----------------| ----------------|------------|-------------------------------------------------------------------------------------|
-|  RowVersion     | `ROWVERSION`    | Yes        | A Version automatically generated by SQL Server, to serve as a Concurrency Token)   |
-|  LastEditedBy   | `INT`           | No         | A Foreign Key to a `User` to track changes to the data                              |
-|  ValidFrom      | `DATETIME2(7)`  | No         | Period start column: The system records the start time for the row in this column   |
-|  ValidTo        | `DATETIME2(7)`  | No         | Period end column: The system records the end time for the row in this column       |
-
+<div class="table">
+  <table>
+      <tbody>
+        <tr><th>  Column Name    </th><th> Data Type                  </th><th> Allow NULL </th><th>  Description                                                                        </th></tr>
+        <tr><td>  RowVersion     </td><td> <code>ROWVERSION</code>    </td><td> Yes        </td><td> A Version automatically generated by SQL Server, to serve as a Concurrency Token)   </td></tr>
+        <tr><td>  LastEditedBy   </td><td> <code>INT</code>           </td><td> No         </td><td> A Foreign Key to a `User` to track changes to the data                              </td></tr>
+        <tr><td>  ValidFrom      </td><td> <code>DATETIME2(7)</code>  </td><td> No         </td><td> Period start column: The system records the start time for the row in this column   </td></tr>
+        <tr><td>  ValidTo        </td><td> <code>DATETIME2(7)</code>  </td><td> No         </td><td> Period end column: The system records the end time for the row in this column       </td></tr>
+      </tbody>
+  </table>
+</div>
 They don't hurt and they might turn out very useful. And if you don't need a history? Then just deactivate the Temporal Table and call it a day!
 
 #### Temporal Tables ####
@@ -3192,28 +3199,31 @@ And 2 Roles:
 
 The Relationships between the entities are the following:
 
-```
-The Relationship-Table is given below.
+<div class="table">
+  <table>
+    <tbody>  
+      <tr><th>ObjectKey           </th><th>  ObjectNamespace  </th><th>   ObjectRelation  </th><th>   SubjectKey          </th><th>   SubjectNamespace    </th><th>   SubjectRelation </th></tr>
+      <tr><td>:task_323:          </td><td>   UserTask        </td><td>       viewer      </td><td>   :organization_1:    </td><td>       Organization    </td><td>   member          </td></tr>
+      <tr><td>:task_152:          </td><td>   UserTask        </td><td>       viewer      </td><td>   :organization_1:    </td><td>       Organization    </td><td>   member          </td></tr>
+      <tr><td>:task_152:          </td><td>   UserTask        </td><td>       viewer      </td><td>   :organization_2:    </td><td>       Organization    </td><td>   member          </td></tr>
+      <tr><td>:organization_1:    </td><td>   Organization    </td><td>       member      </td><td>   :user_philipp:      </td><td>       User            </td><td>   NULL            </td></tr>
+      <tr><td>:organization_2:    </td><td>   Organization    </td><td>       member      </td><td>   :user_max:          </td><td>       User            </td><td>   NULL            </td></tr>
+      <tr><td>:role_user:         </td><td>   Role            </td><td>       member      </td><td>   :user_philipp:      </td><td>       User            </td><td>   NULL            </td></tr>
+      <tr><td>:role_admin:        </td><td>   Role            </td><td>       member      </td><td>   :user_philipp:      </td><td>       User            </td><td>   NULL            </td></tr>
+      <tr><td>:role_user:         </td><td>   Role            </td><td>       member      </td><td>   :user_max:          </td><td>       User            </td><td>   NULL            </td></tr>
+      <tr><td>:task_323:          </td><td>   UserTask        </td><td>       owner       </td><td>   :user_2:            </td><td>       User            </td><td>   member          </td></tr>
+    </tbody>
+</table>
 
-ObjectKey           |  ObjectNamespace  |   ObjectRelation  |   SubjectKey          |   SubjectNamespace    |   SubjectRelation
---------------------|-------------------|-------------------|-----------------------|-----------------------|-------------------
-:task_323  :        |   UserTask        |       viewer      |   :organization_1:    |       Organization    |   member
-:task_152  :        |   UserTask        |       viewer      |   :organization_1:    |       Organization    |   member
-:task_152  :        |   UserTask        |       viewer      |   :organization_2:    |       Organization    |   member
-:organization_1:    |   Organization    |       member      |   :user_philipp:      |       User            |   NULL
-:organization_2:    |   Organization    |       member      |   :user_max:          |       User            |   NULL
-:role_user:         |   Role            |       member      |   :user_philipp:      |       User            |   NULL
-:role_admin:        |   Role            |       member      |   :user_philipp:      |       User            |   NULL
-:role_user:         |   Role            |       member      |   :user_max:          |       User            |   NULL
-:task_323:          |   UserTask        |       owner       |   :user_2:            |       User            |   member
-```
+We can draw the following conclusions here: 
 
-We can draw the following conclusions here: A `member` of `organization_1` is `viewer` of `task_152` and `task_323`. A `member` 
-of `organization_2` is a `viewer` of `task_152` only. `user_philipp` is member of `organization_1`, so the user is able to see 
-both tasks as `viewer`. `user_max` is member of `organization_2`, so he is a `viewer` of `task_152` only. `user_philipp` has the 
-`User` and `Administrator` roles assigned, so he can create, query and delete a `UserTask`. `user_max` only has the `User` role 
-assigned, so he is not authorized to delete a `UserTask`. Finally `user_philipp` is also the `owner` of `task_323` so he is 
-permitted to update the data of the `UserTask`.
+* A `member` of `organization_1` is `viewer` of `task_152` and `task_323`. 
+* A `member` of `organization_2` is a `viewer` of `task_152` only. 
+* `user_philipp` is member of `organization_1`, so the user is able to see both tasks as `viewer`. 
+* `user_max` is member of `organization_2`, so he is a `viewer` of `task_152` only. 
+* `user_philipp` has the `User` and `Administrator` roles assigned, so he can create, query and delete a `UserTask`. 
+* `user_max` only has the `User` role assigned, so he is not authorized to delete a `UserTask`. 
+* `user_philipp` is also the `owner` of `task_323` so he is permitted to update the data of the `UserTask`.
 
 ### HTTP Endpoints Explorer Script ###
 

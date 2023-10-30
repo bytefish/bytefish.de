@@ -158,26 +158,35 @@ order by [ColdRoomSensorNumber], [ExpectedRecordedWhen]
 
 We can see, that it interpolates the values just fine:
 
-| Sensor | ExpectedRecordedWhen    | Temperature | Type           |
-|--------|-------------------------|-------------|----------------|
-|1       | 2023-04-14 19:00	       | 3.000000	  | Measured      |
-|1	     | 2023-04-14 19:01	       | 2.000000	  | Measured      |
-|1	     | 2023-04-14 19:02	       | 1.000000	  | Measured      |
-|1	     | 2023-04-14 19:03	       | 2.500000	  | Interpolated  |
-|1	     | 2023-04-14 19:04	       | 4.000000	  | Measured      |
-|1	     | 2023-04-14 19:05	       | 5.000000	  | Measured      |
-|1	     | 2023-04-14 19:06	       | 9.000000	  | Measured      |
-|1	     | 2023-04-14 19:07	       | 8.000000	  | Measured      |
-|1	     | 2023-04-14 19:08	       | 4.500020	  | Interpolated  |
-|1	     | 2023-04-14 19:09        | 1.000000	  | Measured      |
-|1	     | 2023-04-14 19:10        | 3.000000	  | Measured      |
-|1	     | 2023-04-14 19:11        | 3.999960	  | Interpolated  |
-|1	     | 2023-04-14 19:12        | 5.000000	  | Measured      |
-|1	     | 2023-04-14 19:13        | 1.000000	  | Measured      |
-|1	     | 2023-04-14 19:14        | 1.000000	  | Interpolated  |
-|1	     | 2023-04-14 19:15        | 1.000000	  | Interpolated  |
-|2	     | 2023-04-14 19:00        | 10.000000	  | Measured      |
-|2	     | ...	                   | ...         | ...            |
+<div class="table">
+  <table>
+    <tbody>
+      <tr>
+        <th>Sensor</th><th>ExpectedRecordedWhen</th><th>Temperature</th><th>Type</th>
+      </tr>
+      <tr><td> 1 </td><td> 2023-04-14 19:00 </td><td> 3.000000 </td><td> Measured     </td></tr>
+      <tr><td> 1 </td><td> 2023-04-14 19:01 </td><td> 2.000000 </td><td> Measured     </td></tr>
+      <tr><td> 1 </td><td> 2023-04-14 19:02 </td><td> 1.000000 </td><td> Measured     </td></tr>
+      <tr><td> 1 </td><td> 2023-04-14 19:03 </td><td> 2.500000 </td><td> Interpolated </td></tr>
+      <tr><td> 1 </td><td> 2023-04-14 19:04 </td><td> 4.000000 </td><td> Measured     </td></tr>
+      <tr><td> 1 </td><td> 2023-04-14 19:05 </td><td> 5.000000 </td><td> Measured     </td></tr>
+      <tr><td> 1 </td><td> 2023-04-14 19:06 </td><td> 9.000000 </td><td> Measured     </td></tr>
+      <tr><td> 1 </td><td> 2023-04-14 19:07 </td><td> 8.000000 </td><td> Measured     </td></tr>
+      <tr><td> 1 </td><td> 2023-04-14 19:08 </td><td> 4.500020 </td><td> Interpolated </td></tr>
+      <tr><td> 1 </td><td> 2023-04-14 19:09 </td><td> 1.000000 </td><td> Measured     </td></tr>
+      <tr><td> 1 </td><td> 2023-04-14 19:10 </td><td> 3.000000 </td><td> Measured     </td></tr>
+      <tr><td> 1 </td><td> 2023-04-14 19:11 </td><td> 3.999960 </td><td> Interpolated </td></tr>
+      <tr><td> 1 </td><td> 2023-04-14 19:12 </td><td> 5.000000 </td><td> Measured     </td></tr>
+      <tr><td> 1 </td><td> 2023-04-14 19:13 </td><td> 1.000000 </td><td> Measured     </td></tr>
+      <tr><td> 1 </td><td> 2023-04-14 19:14 </td><td> 1.000000 </td><td> Interpolated </td></tr>
+      <tr><td> 1 </td><td> 2023-04-14 19:15 </td><td> 1.000000 </td><td> Interpolated </td></tr>
+      <tr><td> 2 </td><td> 2023-04-14 19:00 </td><td> 10.00000 </td><td> Measured     </td></tr>
+      <tr><td> 2 </td><td> ...	          </td><td> ...         </td><td> ...         </td></tr>
+    </tbody>
+  </table>
+</div>
+
+
 
 ## Conclusion ##
 

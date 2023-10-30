@@ -11,6 +11,8 @@ body {
   margin: 0;
   padding: 0;
   background-color: #fff;
+  width: 100%;
+  height: 100%;
 }
 
 html {
@@ -55,14 +57,17 @@ img {
   max-width: 100%;
 }
 
+.table {
+    overflow-x: auto;
+    white-space: nowrap;
+}
+
 table {
-  display: block;
   border: 1px solid #e5e5e5;
   border-collapse: collapse;
   font-size: 85%;
   margin-bottom: 1rem;
   width: 100%;
-  overflow-x: auto;
 }
 
 td,

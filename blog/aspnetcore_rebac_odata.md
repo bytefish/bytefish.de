@@ -861,28 +861,31 @@ And 2 Roles:
 
 The Relationships between the entities are the following:
 
-```
-The Relationship-Table is given below.
+<div class="table">
+  <table>
+    <tbody>  
+      <tr><th>ObjectKey           </th><th>  ObjectNamespace  </th><th>   ObjectRelation  </th><th>   SubjectKey          </th><th>   SubjectNamespace    </th><th>   SubjectRelation </th></tr>
+      <tr><td>:task_323:          </td><td>   UserTask        </td><td>       viewer      </td><td>   :organization_1:    </td><td>       Organization    </td><td>   member          </td></tr>
+      <tr><td>:task_152:          </td><td>   UserTask        </td><td>       viewer      </td><td>   :organization_1:    </td><td>       Organization    </td><td>   member          </td></tr>
+      <tr><td>:task_152:          </td><td>   UserTask        </td><td>       viewer      </td><td>   :organization_2:    </td><td>       Organization    </td><td>   member          </td></tr>
+      <tr><td>:organization_1:    </td><td>   Organization    </td><td>       member      </td><td>   :user_philipp:      </td><td>       User            </td><td>   NULL            </td></tr>
+      <tr><td>:organization_2:    </td><td>   Organization    </td><td>       member      </td><td>   :user_max:          </td><td>       User            </td><td>   NULL            </td></tr>
+      <tr><td>:role_user:         </td><td>   Role            </td><td>       member      </td><td>   :user_philipp:      </td><td>       User            </td><td>   NULL            </td></tr>
+      <tr><td>:role_admin:        </td><td>   Role            </td><td>       member      </td><td>   :user_philipp:      </td><td>       User            </td><td>   NULL            </td></tr>
+      <tr><td>:role_user:         </td><td>   Role            </td><td>       member      </td><td>   :user_max:          </td><td>       User            </td><td>   NULL            </td></tr>
+      <tr><td>:task_323:          </td><td>   UserTask        </td><td>       owner       </td><td>   :user_2:            </td><td>       User            </td><td>   member          </td></tr>
+    </tbody>
+</table>
 
-ObjectKey           |  ObjectNamespace  |   ObjectRelation  |   SubjectKey          |   SubjectNamespace    |   SubjectRelation
---------------------|-------------------|-------------------|-----------------------|-----------------------|-------------------
-:task_323  :        |   UserTask        |       viewer      |   :organization_1:    |       Organization    |   member
-:task_152  :        |   UserTask        |       viewer      |   :organization_1:    |       Organization    |   member
-:task_152  :        |   UserTask        |       viewer      |   :organization_2:    |       Organization    |   member
-:organization_1:    |   Organization    |       member      |   :user_philipp:      |       User            |   NULL
-:organization_2:    |   Organization    |       member      |   :user_max:          |       User            |   NULL
-:role_user:         |   Role            |       member      |   :user_philipp:      |       User            |   NULL
-:role_admin:        |   Role            |       member      |   :user_philipp:      |       User            |   NULL
-:role_user:         |   Role            |       member      |   :user_max:          |       User            |   NULL
-:task_323:          |   UserTask        |       owner       |   :user_2:            |       User            |   member
-```
+We can draw the following conclusions here: 
 
-We can draw the following conclusions here: A `member` of `organization_1` is `viewer` of `task_152` and `task_323`. A `member` 
-of `organization_2` is a `viewer` of `task_152` only. `user_philipp` is member of `organization_1`, so the user is able to see 
-both tasks as `viewer`. `user_max` is member of `organization_2`, so he is a `viewer` of `task_152` only. `user_philipp` has the 
-`User` and `Administrator` roles assigned, so he can create, query and delete a `UserTask`. `user_max` only has the `User` role 
-assigned, so he is not authorized to delete a `UserTask`. Finally `user_philipp` is also the `owner` of `task_323` so he is 
-permitted to update the data of the `UserTask`.
+* A `member` of `organization_1` is `viewer` of `task_152` and `task_323`. 
+* A `member` of `organization_2` is a `viewer` of `task_152` only. 
+* `user_philipp` is member of `organization_1`, so the user is able to see both tasks as `viewer`. 
+* `user_max` is member of `organization_2`, so he is a `viewer` of `task_152` only. 
+* `user_philipp` has the `User` and `Administrator` roles assigned, so he can create, query and delete a `UserTask`. 
+* `user_max` only has the `User` role assigned, so he is not authorized to delete a `UserTask`. 
+* `user_philipp` is also the `owner` of `task_323` so he is permitted to update the data of the `UserTask`.
 
 ### HTTP Endpoints Explorer Script ###
 

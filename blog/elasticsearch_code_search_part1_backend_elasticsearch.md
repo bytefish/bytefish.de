@@ -838,11 +838,17 @@ and use Swagger for providing an OpenAPI Schema (and testing).
 
 I came up with three endpoints for indexing, searching and deleting code: 
 
-| Endpoint                      | Description                                                            |            
-|-------------------------------|------------------------------------------------------------------------|
-|`POST /search-documents`       | Searches for code and returns the matching documents and code snippets |    
-|`POST /index-documents`        | Bulk Indexes the code search documents                                 |    
-|`POST /delete-all-documents`   | Delete all documents in the index. Useful for testing.                 |    
+<div class="table">
+  <table>
+    <tbody>
+      <tr><td> Endpoint                      </td><td> Description                                                            </td></tr>            
+      <tr><td>-------------------------------</td><td>------------------------------------------------------------------------</td></tr>
+      <tr><td>`POST /search-documents`       </td><td> Searches for code and returns the matching documents and code snippets </td></tr>    
+      <tr><td>`POST /index-documents`        </td><td> Bulk Indexes the code search documents                                 </td></tr>    
+      <tr><td>`POST /delete-all-documents`   </td><td> Delete all documents in the index. Useful for testing.                 </td></tr>    
+    </tbody>
+  </table>
+</div>
 
 ### Data Transfer Objects ###
 

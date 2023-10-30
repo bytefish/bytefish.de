@@ -46,14 +46,18 @@ Web API, that's going to be created has a single entity set `Products` and only 
 
 A user querying the OData model has to provide the following claims for accessing the data:
 
-| Endpoint                  | Required permissions                      |            
-|---------------------------|--------------------------------------------
-|`GET /odata/Products`      | `Product.Read`                            |    
-|`GET /odata/Products/1`    | `Product.Read` or `Product.ReadByKey`     |
-|`DELETE /odata/Products/1` | `Product.Delete`                          |
-|`POST /odata/Products`     | `Product.Create`                          |
-|`PATCH /odata/Products(1)` | `Product.Update`                          |
-
+<div class="table">
+  <table>
+    <tbody>
+      <tr><th> Endpoint                  </th><th> Required permissions                      </tr>
+      <tr><td>`GET /odata/Products`      </td><td> `Product.Read`                            </td></tr>    
+      <tr><td>`GET /odata/Products/1`    </td><td> `Product.Read` or `Product.ReadByKey`     </td></tr>
+      <tr><td>`DELETE /odata/Products/1` </td><td> `Product.Delete`                          </td></tr>
+      <tr><td>`POST /odata/Products`     </td><td> `Product.Create`                          </td></tr>
+      <tr><td>`PATCH /odata/Products(1)` </td><td> `Product.Update`                          </td></tr>
+    </tbody>
+  </table>
+</div>
 The Postman application is used to query the Web API, which is ...
 
 > [...] an API platform for building and using APIs. Postman simplifies each step of the API lifecycle and 
@@ -286,14 +290,18 @@ assign Scope names to them.
 
 The scopes are:
 
-| Scope                     | Description                       |          
-|---------------------------|-----------------------------------|
-|`Product.Read`             | Reads all products                |    
-|`Product.ReadByKey`        | Read a single product by its key  |
-|`Product.Create`           | Creates a new product             |
-|`Product.Update`           | Updates a product                 |
-|`Product.Delete`           | Deletes a product                 |
-
+<div class="table">
+  <table>
+    <tbody>
+      <tr><th> Scope                     </th><th> Description                       </th></tr>          
+      <tr><td>`Product.Read`             </td><td> Reads all products                </td></tr>    
+      <tr><td>`Product.ReadByKey`        </td><td> Read a single product by its key  </td></tr>
+      <tr><td>`Product.Create`           </td><td> Creates a new product             </td></tr>
+      <tr><td>`Product.Update`           </td><td> Updates a product                 </td></tr>
+      <tr><td>`Product.Delete`           </td><td> Deletes a product                 </td></tr>
+    </tbody>
+  </table>
+</div>
 
 By using the `ODataConventionModelBuilder` the implementation in the `AppEdmModel` looks like this:
 

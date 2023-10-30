@@ -165,24 +165,26 @@ python example_eigenfaces.py /home/philipp/facerec/data/at
 
 And the script will generate two plots for you (in the scripts folder!):
 
-<table>
-  <thead>
-    <tr>
-      <th>Filename</th>
-      <th>Plot</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>python_pca_eigenfaces.png</td>
-      <td><a href="/static/images/blog/face_recognition_with_python/python_pca_eigenfaces.png"><img src="/static/images/blog/face_recognition_with_python/thumbs/python_pca_eigenfaces.jpg" alt="Eigenfaces"/></a></td>
-    </tr>
-    <tr>
-      <td>python_pca_reconstruction.png</td>
-      <td><a href="/static/images/blog/face_recognition_with_python/python_pca_reconstruction.png"><img src="/static/images/blog/face_recognition_with_python/thumbs/python_pca_reconstruction.jpg" alt="Eigenfaces Reconstruction" /> </a> </td>
-    </tr>
-  </tbody>
-</table>
+<div class="table">
+  <table>
+    <thead>
+      <tr>
+        <th>Filename</th>
+        <th>Plot</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>python_pca_eigenfaces.png</td>
+        <td><a href="/static/images/blog/face_recognition_with_python/python_pca_eigenfaces.png"><img src="/static/images/blog/face_recognition_with_python/thumbs/python_pca_eigenfaces.jpg" alt="Eigenfaces"/></a></td>
+      </tr>
+      <tr>
+        <td>python_pca_reconstruction.png</td>
+        <td><a href="/static/images/blog/face_recognition_with_python/python_pca_reconstruction.png"><img src="/static/images/blog/face_recognition_with_python/thumbs/python_pca_reconstruction.jpg" alt="Eigenfaces Reconstruction" /> </a> </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
 
 ## Credits ##
 

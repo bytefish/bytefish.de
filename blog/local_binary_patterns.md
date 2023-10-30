@@ -131,63 +131,64 @@ discriminative power the description may have (if you don't increase the samplin
 
 Let's see what the LBP codes look like given a sample frame. My webcam isn't really high-resolution, please don't laugh at my hardware!
 
-<table>
-  <thead>
-    <tr>
-      <th>Radius</th>
-      <th>Sampling Points</th>
-      <th>LBP Image</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td data-title="Radius">1</td>
-      <td data-title="Sampling Points">4</td>
-      <td data-title="LBP Image"> <a href="/static/images/blog/local_binary_patterns/lbp_r1_p4.jpg"><img alt="dummy" src="/static/images/blog/local_binary_patterns/lbp_r1_p4.jpg" class="mediacenter" width="300" /></a> </td>
-    </tr>
-    <tr>
-      <td data-title="Radius">1</td>
-      <td data-title="Sampling Points">8</td>
-      <td data-title="LBP Image"><a href="/static/images/blog/local_binary_patterns/lbp_r1_p8.jpg"><img alt="dummy" src="/static/images/blog/local_binary_patterns/lbp_r1_p8.jpg" class="mediacenter" width="300" /> </a></td>
-    </tr>
-    <tr>
-      <td data-title="Radius">1</td>
-      <td data-title="Sampling Points">16</td>
-      <td data-title="LBP Image"> <a href="/static/images/blog/local_binary_patterns/lbp_r1_p16.jpg"><img alt="dummy" src="/static/images/blog/local_binary_patterns/lbp_r1_p16.jpg" class="mediacenter" width="300" /> </a></td>
-    </tr>
-    <tr>
-      <td data-title="Radius">2</td>
-      <td data-title="Sampling Points">4</td>
-      <td data-title="LBP Image"> <a href="/static/images/blog/local_binary_patterns/lbp_r2_p4.jpg"><img alt="dummy" src="/static/images/blog/local_binary_patterns/lbp_r2_p4.jpg" class="mediacenter" width="300" /> </a></td>
-    </tr>
-    <tr>
-      <td data-title="Radius">2</td>
-      <td data-title="Sampling Points">8</td>
-      <td data-title="LBP Image"> <a href="/static/images/blog/local_binary_patterns/lbp_r2_p8.jpg"><img alt="dummy" src="/static/images/blog/local_binary_patterns/lbp_r2_p8.jpg" class="mediacenter" width="300" /> </a></td>
-    </tr>
-    <tr>
-      <td data-title="Radius">2</td>
-      <td data-title="Sampling Points">16</td>
-      <td data-title="LBP Image"> <a href="/static/images/blog/local_binary_patterns/lbp_r2_p16.jpg"><img alt="dummy" src="/static/images/blog/local_binary_patterns/lbp_r2_p16.jpg" class="mediacenter" width="300" /> </a></td>
-    </tr>
-    <tr>
-      <td data-title="Radius">4</td>
-      <td data-title="Sampling Points">4</td>
-      <td data-title="LBP Image"> <a href="/static/images/blog/local_binary_patterns/lbp_r4_p4.jpg"><img alt="dummy" src="/static/images/blog/local_binary_patterns/lbp_r4_p4.jpg" class="mediacenter" width="300" /> </a></td>
-    </tr>
-    <tr>
-      <td data-title="Radius">4</td>
-      <td data-title="Sampling Points">8</td>
-      <td data-title="LBP Image"> <a href="/static/images/blog/local_binary_patterns/lbp_r4_p8.jpg"><img alt="dummy" src="/static/images/blog/local_binary_patterns/lbp_r4_p8.jpg" class="mediacenter" width="300" /> </a></td>
-    </tr>
-    <tr>
-      <td data-title="Radius">4</td>
-      <td data-title="Sampling Points">16</td>
-      <td data-title="LBP Image"> <a href="/static/images/blog/local_binary_patterns/lbp_r4_p16.jpg"><img alt="dummy" src="/static/images/blog/local_binary_patterns/lbp_r4_p16.jpg" class="mediacenter" width="300" /> </a></td>
-    </tr>
-  </tbody>
-</table>
-
+<div class="table">
+  <table>
+    <thead>
+      <tr>
+        <th>Radius</th>
+        <th>Sampling Points</th>
+        <th>LBP Image</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td data-title="Radius">1</td>
+        <td data-title="Sampling Points">4</td>
+        <td data-title="LBP Image"> <a href="/static/images/blog/local_binary_patterns/lbp_r1_p4.jpg"><img alt="dummy" src="/static/images/blog/local_binary_patterns/lbp_r1_p4.jpg" class="mediacenter" width="300" /></a> </td>
+      </tr>
+      <tr>
+        <td data-title="Radius">1</td>
+        <td data-title="Sampling Points">8</td>
+        <td data-title="LBP Image"><a href="/static/images/blog/local_binary_patterns/lbp_r1_p8.jpg"><img alt="dummy" src="/static/images/blog/local_binary_patterns/lbp_r1_p8.jpg" class="mediacenter" width="300" /> </a></td>
+      </tr>
+      <tr>
+        <td data-title="Radius">1</td>
+        <td data-title="Sampling Points">16</td>
+        <td data-title="LBP Image"> <a href="/static/images/blog/local_binary_patterns/lbp_r1_p16.jpg"><img alt="dummy" src="/static/images/blog/local_binary_patterns/lbp_r1_p16.jpg" class="mediacenter" width="300" /> </a></td>
+      </tr>
+      <tr>
+        <td data-title="Radius">2</td>
+        <td data-title="Sampling Points">4</td>
+        <td data-title="LBP Image"> <a href="/static/images/blog/local_binary_patterns/lbp_r2_p4.jpg"><img alt="dummy" src="/static/images/blog/local_binary_patterns/lbp_r2_p4.jpg" class="mediacenter" width="300" /> </a></td>
+      </tr>
+      <tr>
+        <td data-title="Radius">2</td>
+        <td data-title="Sampling Points">8</td>
+        <td data-title="LBP Image"> <a href="/static/images/blog/local_binary_patterns/lbp_r2_p8.jpg"><img alt="dummy" src="/static/images/blog/local_binary_patterns/lbp_r2_p8.jpg" class="mediacenter" width="300" /> </a></td>
+      </tr>
+      <tr>
+        <td data-title="Radius">2</td>
+        <td data-title="Sampling Points">16</td>
+        <td data-title="LBP Image"> <a href="/static/images/blog/local_binary_patterns/lbp_r2_p16.jpg"><img alt="dummy" src="/static/images/blog/local_binary_patterns/lbp_r2_p16.jpg" class="mediacenter" width="300" /> </a></td>
+      </tr>
+      <tr>
+        <td data-title="Radius">4</td>
+        <td data-title="Sampling Points">4</td>
+        <td data-title="LBP Image"> <a href="/static/images/blog/local_binary_patterns/lbp_r4_p4.jpg"><img alt="dummy" src="/static/images/blog/local_binary_patterns/lbp_r4_p4.jpg" class="mediacenter" width="300" /> </a></td>
+      </tr>
+      <tr>
+        <td data-title="Radius">4</td>
+        <td data-title="Sampling Points">8</td>
+        <td data-title="LBP Image"> <a href="/static/images/blog/local_binary_patterns/lbp_r4_p8.jpg"><img alt="dummy" src="/static/images/blog/local_binary_patterns/lbp_r4_p8.jpg" class="mediacenter" width="300" /> </a></td>
+      </tr>
+      <tr>
+        <td data-title="Radius">4</td>
+        <td data-title="Sampling Points">16</td>
+        <td data-title="LBP Image"> <a href="/static/images/blog/local_binary_patterns/lbp_r4_p16.jpg"><img alt="dummy" src="/static/images/blog/local_binary_patterns/lbp_r4_p16.jpg" class="mediacenter" width="300" /> </a></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
 Now what's left is how to classify an object. 
 
 If you would throw all features into a single histogram all spatial information is discarded. In tasks like face detection (and a lot of other pattern recognition problems) spatial information 
