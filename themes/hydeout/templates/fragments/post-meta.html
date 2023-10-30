@@ -2,14 +2,4 @@
   
   <span class="post-date"> {{ article.date.strftime('%B %d, %Y') }}</span>
   <span class="post-author"> by <a href="{{ SITEURL }}/{{ article.author.url }}">{{ article.author }}</a></span> 
-  <span class="post-categories">
-    
-    {% for tag in article.tags %}
-      &bull;
-
-        <a href="{{ SITEURL }}/tag/{{tag}}.html">
-          {{ tag }}
-        </a>
-    {% endfor %}
-  </span>
 </div>
