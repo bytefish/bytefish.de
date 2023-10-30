@@ -2,7 +2,7 @@
 import os
 
 # This is a simple configuration for the Pelican (http://getpelican.com) 
-# project and it is probably closely tied to the 'minimal' theme I am 
+# project and it is probably closely tied to the 'hydeout' theme I am 
 # using.
 PLUGIN_PATHS = [ os.path.abspath('./plugins'), ]
 PLUGINS = [ 'sitemap', ]
@@ -18,7 +18,7 @@ TIMEZONE = 'Europe/Paris'
 # Using a simple date format:
 DEFAULT_DATE_FORMAT = ('%d %b %Y')
 # We are using the custom minimal2 theme:
-THEME = './themes/minimal/'
+THEME = './themes/hydeout/'
 # Probably add rst here:
 MARKUP = ('md',)
 # Markdown Configuration:
