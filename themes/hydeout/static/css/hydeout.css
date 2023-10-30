@@ -251,6 +251,7 @@ code {
   color: #bf616a;
   font-size: 85%;
   padding: 0.25em 0.5em;
+  word-break: break-word;
 }
 
 pre {
