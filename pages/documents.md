@@ -6,8 +6,8 @@ summary: PDF documents on various topics.
 
 Here are some documents we wrote. Some of them are in german, but they'll get translated as soon as possible. Non-german readers are highly encouraged to look at all the beautiful pictures inside! If you have a question, just mail one of us.
 
-<div class="table">
   <table>
+     <tbody>
       <!-- Paper 1 -->
       <tr>
           <td colspan="2"><strong>Face Recognition with OpenCV2</strong></td>
@@ -18,7 +18,10 @@ Here are some documents we wrote. Some of them are in german, but they'll get tr
       <tr>
           <td>Description</td>
           <td>
-              The kind of guide I have wished for, when I was working myself into face recognition. Helps you with installing OpenCV2 and building projects on Windows and Linux. The Eigenfaces and Fisherfaces method are explained and implemented with Python, GNU Octave/MATLAB and OpenCV&#039;s C++ <acronym title="Application Programming Interface">API</acronym>.
+              The kind of guide I have wished for, when I was working myself into face recognition. Helps 
+              you with installing OpenCV2 and building projects on Windows and Linux. The Eigenfaces and 
+              Fisherfaces method are explained and implemented with Python, GNU Octave/MATLAB and 
+              OpenCV&#039;s C++ <acronym title="Application Programming Interface">API</acronym>.
           </td>
       </tr>
       <tr>
@@ -41,7 +44,10 @@ Here are some documents we wrote. Some of them are in german, but they'll get tr
       <tr>
           <td>Description</td>
           <td>
-              Is an introduction into statistical machine learning with OpenCV. It contains a guide for setting up OpenCV on Windows and Linux. A brief introduction and code for Support Vector Machines and Multilayer Perceptrons is given. Good to get started with OpenCV and its Machine Learning library!
+              Is an introduction into statistical machine learning with OpenCV. It contains a 
+              guide for setting up OpenCV on Windows and Linux. A brief introduction and code 
+              for Support Vector Machines and Multilayer Perceptrons is given. Good to get 
+              started with OpenCV and its Machine Learning library!
           </td>
       </tr>
       <tr>
@@ -50,5 +56,5 @@ Here are some documents we wrote. Some of them are in german, but they'll get tr
               <a href="https://www.bytefish.de/pdf/machinelearning.pdf">PDF (English)</a>
           </td>
       </tr>
+      </tbody>
   </table>
-</div>
