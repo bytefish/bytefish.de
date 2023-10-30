@@ -56,11 +56,13 @@ img {
 }
 
 table {
+  display: block;
   border: 1px solid #e5e5e5;
   border-collapse: collapse;
   font-size: 85%;
   margin-bottom: 1rem;
   width: 100%;
+  overflow-x: auto;
 }
 
 td,
