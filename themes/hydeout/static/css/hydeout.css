@@ -37,7 +37,7 @@ section {
 
 a {
   color: #268bd2;
-  text-decoration: none;
+  text-decoration: underline;
   word-break: break-word;
 }
 a:hover, a:focus {
@@ -310,9 +310,8 @@ body {
   text-align: center;
 }
 #sidebar .site-title {
-  font-family: serif;
   font-size: 2.5rem;
-  font-weight: normal;
+  font-weight: 300;
   margin-bottom: 0.5rem;
   margin-top: 0;
 }
@@ -381,6 +380,7 @@ body {
   #sidebar .site-title {
     font-size: 2.5rem;
     text-align: left;
+    font-weight: 300;
   }
 
   #sidebar p.lead {
