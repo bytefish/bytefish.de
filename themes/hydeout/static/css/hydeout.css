@@ -20,11 +20,6 @@ html {
   font-size: 1rem;
   line-height: 1.5;
 }
-@media (min-width: 49rem) {
-  html {
-    font-size: 1.25rem;
-  }
-}
 
 body {
    text-size-adjust: 100%;
@@ -410,7 +405,7 @@ body {
     background: #fff;
     color: #515151;
     min-height: 100vh;
-    padding: 1rem 4rem 0;
+    padding: 4rem 4rem 0;
     margin-left: 18rem;
   }
   
