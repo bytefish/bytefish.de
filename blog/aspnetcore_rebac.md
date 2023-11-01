@@ -296,7 +296,7 @@ Why do you want to use a Temporal Table at all?
 > - Maintaining a slowly changing dimension for decision support applications
 > - Recovering from accidental data changes and application errors
 
-It's easy to enable system versioning in Microsoft SQL Server, like we are doing for a `[Tasks].[Task]` table, 
+It's easy to enable system versioning in Microsoft SQL Server, like we are doing for a `[Application].[UserTask]` table, 
 that's going to hold all Tasks assigned to a user:
 
 ```sql
