@@ -1,4 +1,4 @@
-title: SwaggerUI for ASP.NET Core OData Services using ODataOpenApiExtensions
+title: Swagger UI for ASP.NET Core OData Services
 date: 2023-11-01 12:17
 tags: aspnetcore, dotnet, odata
 category: dotnet
@@ -19,8 +19,8 @@ I found myself copying the Middleware between many projects, so I think it may b
 I have used it for my experiments and it builds a Swagger Page:
 
 <div style="display:flex; align-items:center; justify-content:center;margin-bottom:15px;">
-    <a href="/static/images/blog/aspnetcore_rebac_odata/swagger_endpoints.jpg">
-        <img src="/static/images/blog/aspnetcore_rebac_odata/swagger_endpoints.jpg" alt="Final Swagger Endpoints">
+    <a href="/static/images/blog/odataopenapiextensions/swagger_endpoints.jpg">
+        <img src="/static/images/blog/odataopenapiextensions/swagger_endpoints.jpg" alt="Final Swagger Endpoints">
     </a>
 </div>
 
