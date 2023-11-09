@@ -14,7 +14,7 @@ By using EntityFramework Core, we have got a pretty nice way to query the data, 
 easy to integrate it with an ASP.NET Core OData Service. The ASP.NET Core OData Service exposes 
 a nice schema, that a client can be generated from.
 
-In this article we will see how to use OpenAPI and Kiota to generate a C\# Client. This client will 
+In this article we will see how to use OpenAPI and [Kiota](https://aka.ms/kiota) to generate a C\# Client. This client will 
 be added to a Blazor application, which is going to display the User Tasks in a Data Grid. I have 
 previously written about Data Grids with Blazor Fluent UI.
 
@@ -551,3 +551,7 @@ the Kiota command line tool to generate a C\# client. This C\# client has been i
 application.
 
 All in all... I like this setup a lot!
+
+## Next steps ##
+
+[Get kiota](https://aka.ms/get/kiota) and try it for yourself! It also features commands to search for public APIs we did not explore this time. Provides filtering capabilities when generating the client, and supports many languages!
