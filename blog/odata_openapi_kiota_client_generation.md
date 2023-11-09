@@ -6,6 +6,8 @@ slug: odata_openapi_kiota_client_generation
 author: Philipp Wagner
 summary: This article shows how to use OData, OpenAPI and Kiota to build API Clients.
 
+[Kiota]: https://aka.ms/kiota
+
 So we have been developing an ASP.NET Core OData Service, that models a simplified Task Management 
 system. We have added Relationship-based Access Control on top of it, so we can allow fine-grained 
 access to the data.
@@ -14,7 +16,7 @@ By using EntityFramework Core, we have got a pretty nice way to query the data, 
 easy to integrate it with an ASP.NET Core OData Service. The ASP.NET Core OData Service exposes 
 a nice schema, that a client can be generated from.
 
-In this article we will see how to use OpenAPI and [Kiota](https://aka.ms/kiota) to generate a C\# Client. This client will 
+In this article we will see how to use OpenAPI and [Kiota] to generate a C\# Client. This client will 
 be added to a Blazor application, which is going to display the User Tasks in a Data Grid. I have 
 previously written about Data Grids with Blazor Fluent UI.
 
@@ -49,7 +51,11 @@ their exact stack, my best guess is, that it's the following two steps:
 1. Convert the EDMX Schema to an OpenAPI 3 Schema, using the `Microsoft.OpenApi.OData`.
 2. Generate the Microsoft Graph SDK from the OpenAPI 3 Schema, using the Kiota CLI.
 
-Kiota is a command line tool for generating API Clients and is described as ...
+Kiota is available at:
+
+* [https://aka.ms/kiota](https://aka.ms/kiota)
+
+It's a command line tool for generating API Clients and is described as ...
 
 > [...] a command line tool for generating an API client to call any OpenAPI-described API 
 > you are interested in. The goal is to eliminate the need to take a dependency on a different 
