@@ -560,4 +560,4 @@ All in all... I like this setup a lot!
 
 ## Next steps ##
 
-[Get kiota](https://aka.ms/get/kiota) and try it for yourself! It also features commands to search for public APIs we did not explore this time. Provides filtering capabilities when generating the client, and supports many languages!
+You can read more about Kiota at [https://aka.ms/get/kiota](https://aka.ms/get/kiota). It also features commands to search for public APIs, provides filtering capabilities when generating the client, and supports more languages like Go, Python, TypeScript, ... to name a few.
