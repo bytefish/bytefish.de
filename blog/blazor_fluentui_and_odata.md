@@ -12,7 +12,7 @@ data.
 
 All code in this article can be found at:
 
-* [https://github.com/bytefish/WideWorldImporters/src/branch/main/Frontend/Blazor](https://github.com/bytefish/WideWorldImporters/src/branch/main/Frontend/Blazor)
+* [https://github.com/bytefish/WideWorldImporters](https://github.com/bytefish/WideWorldImporters)
 
 ## Table of contents ##
 

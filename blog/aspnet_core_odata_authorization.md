@@ -63,9 +63,7 @@ The Postman application is used to query the Web API, which is ...
 > [...] an API platform for building and using APIs. Postman simplifies each step of the API lifecycle and 
 > streamlines collaboration so that you can create better APIs faster.
 
-You can use the Postman collections provided in the `/samples` folder of the project to get started:
-
-* [https://github.com/bytefish/ODataAuthorization/src/branch/main/samples](https://github.com/bytefish/ODataAuthorization/src/branch/main/samples)
+You can use the Postman collections provided in the `/samples` folder of the project to get started.
 
 ## CookieAuthenticationSample ##
 
@@ -208,9 +206,7 @@ namespace ODataAuthorizationDemo.Controllers
 }
 ```
 
-Now download the Postman Collection for the CookieAuthenticationSample and import it to Postman:
-
-* https://github.com/bytefish/ODataAuthorization/src/branch/main/samples/CookieAuthenticationSample.postman_collection.json](https://github.com/bytefish/ODataAuthorization/src/branch/main/samples/CookieAuthenticationSample.postman_collection.json)
+Now download the Postman Collection for the CookieAuthenticationSample and import it to Postman.
 
 And executing the `/auth/login` endpoint shows, that the response contains a Cookie named `.AspNetCore.Cookies` with some Base64 value:
 
