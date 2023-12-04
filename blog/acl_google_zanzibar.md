@@ -26,26 +26,9 @@ All code can be found in a Git Repository at:
 
 [TOC]
 
-## What we have got so far ##
+## The Problem ##
 
-Let's take a look at what we've got so far.
-
-At the moment the table to store our Relationshuip tuples looks like this:
-
-```sql
-CREATE TABLE [Identity].[RelationTuple](
-    [RelationTupleID]       INT                                         CONSTRAINT [DF_Identity_RelationTuple_RelationTupleID] DEFAULT (NEXT VALUE FOR [Identity].[sq_RelationTuple]) NOT NULL,
-    [ObjectKey]             INT                                         NOT NULL,
-    [ObjectNamespace]       NVARCHAR(50)                                NOT NULL,
-    [ObjectRelation]        NVARCHAR(50)                                NOT NULL,
-    [SubjectKey]            INT                                         NOT NULL,
-    [SubjectNamespace]      NVARCHAR(50)                                NOT NULL,
-    [SubjectRelation]       NVARCHAR(50)                                NULL,
-    -- ...
-)
-```
-
-And the data? The original Google Zanzibar paper has examples for tuples in their notation:
+The original Google Zanzibar paper has examples for Rrelation tuples ...
 
 <table>
     <thead>
@@ -74,31 +57,17 @@ And the data? The original Google Zanzibar paper has examples for tuples in thei
     </tbody>
 </table>
 
-And if we translate this into our relational table we would end up with the following entries:
 
-```
-ObjectKey           |  ObjectNamespace  |   ObjectRelation  |   SubjectKey          |   SubjectNamespace      |   SubjectRelation
---------------------|-------------------|-------------------|-----------------------|-------------------------|-------------------
-:readme:            |   Document        |       owner       |   :10:                |       User              |   NULL
-:engineering:       |   Group           |       member      |   :11:                |       User              |   NULL
-:readme:            |   Document        |       viewer      |   :engineering:       |       Group             |   member
-:readme:            |   Document        |       parent      |   :A:                 |       Folder            |   NULL
-```
+We can read them like this:
 
-I think the Tuples are pretty easy to scan, if you read them from right to left, just like this:
-
-* A `<Subject Relation>` of `<Subject Namespace> <Subject Key> is `<Object Relation>` of `<Object Namespace> <Object Key>`
-
-So for the Tuples given in the Zanzibar Paper we can scan them like this:
-
-* `User :10:` is *owner*  of `Document  :readme:`
+* `User :10:` is *owner*  of `Document :readme:`
 * `User :11:` is *member* of `Group :engineering:`
 * A *member* of `Group :engineering:` is a *viewer* of `Document :readme:`
 * `Folder :A:` is *parent* of `Document :readme:`
 
-We have previously written a T-SQL Function `[Identity].[udf_RelationTuples_Check]` to implement a function for 
-checking if a `User` has a `Relation` to a given `Object` and thus has permission. It can be expressed in a 
-few lines of SQL using a Common Table Expression (CTE).
+We have previously written a T-SQL Function `[Identity].[udf_RelationTuples_Check]` to implement a function for checking if 
+a `User` has a `Relation` to a given `Object` and thus has permission. It can be expressed in a few lines of SQL using a 
+Common Table Expression (CTE).
 
 ```sql
 CREATE FUNCTION [Identity].[udf_RelationTuples_Check]
@@ -202,136 +171,7 @@ relation {
 } } }
 ```
 
-The Pseudo-Code introduces several Node Types for so called "Userset Rewrite Rules", such as `_this`, `computed_userset` 
-and `tuple_to_userset`...
-
-<table>
-    <thead>
-        <tr>
-            <th>Node Type</th>
-            <th>Description</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td><code>_this</code></td>
-            <td>
-                <p>
-                    Returns all users from stored relation tuples for the <code>object#relation</code> pair, including 
-                    indirect ACLs referenced by usersets from the tuples. This is the default behavior when no rewrite 
-                    rule is specified.
-                </p>
-            </td>
-        </tr>
-        <tr>
-            <td><code>computed_userset</code></td>
-            <td>
-                <p>
-                    Computes, for the input object, a new userset. For example, this allows the userset expression for 
-                    a viewer relation to refer to the editor userset on the same object, thus offering an ACL inheritance 
-                    capability between relations.
-                </p>
-            </td>
-        </tr>
-        <tr>
-            <td><code>tuple_to_userset</code></td>
-            <td>
-                <p>
-                    Computes a tupleset (§2.4.1) from the input object, fetches relation tuples matching the tupleset, and computes 
-                    a userset from every fetched relation tuple. This flexible primitive allows our clients to express complex 
-                    policies such as "Look up the <i>parent</i> <code>Folder</code> of the <code>Document</code> and inherit 
-                    its <i>viewers</i>".</p></td>
-        </tr>
-    </tbody>
-</table>
-
-
-What do we see here? To me it's a super weird terminology, that probably makes a lot of sense within Google, but not so much 
-for my brain. I've read somewhere, that this is what the Protocol Buffer representation looks like an not neccessarily the 
-actual configuration. I don't know. I will just implement it as is.
-
-So let's try to break it down a bit, with my somewhat dangerously uninformed knowledge.
-
-At Google there is a concept of Namespaces, most probably for partitioning the data within their distributed database like a 
-`doc`, a `folder` and so on:
-
-```
-name: "doc"
-```
-
-All Objects in a a Namespace have Relations to a `Subject`, which can be expressed like this:
-
-```
-relation { name: "owner" }
-```
-
-This merely states, that there is a "direct" relationship between a `doc` and a `User` or `UserSet`, which 
-is materialized in the database. This is interesting for validation, but we can't express any complex rules 
-with it.
-
-To "compute" relations, that are not materialized, Google introduced a `userset_rewrite`. A `userset_rewrite` always 
-contains a set operation, such as `union`, `intersect` or `exclude`, and the child nodes of the set operation can be 
-the `_this` leaf node, a `computed_userset` or a `tuple_to_userset`.
-
-The paper has the following example, which states "If you are an `owner` of the `Document`, you are also the `editor` 
-of the `Document`".
-
-```   
-relation {
-    name: "editor"
-
-    userset_rewrite {
-        union {
-            child { _this {} }
-            child { computed_userset { relation: "owner" } }
-        } 
-    } 
-}
-```
-
-So we could rewrite the first expression also as:
-
-```
-relation { 
-    name: "owner" 
-    
-    userset_rewrite {
-        union {
-            child { _this {} }
-        }
-    }
-}
-```
-
-But if, say, you want to authorize access to Google Drive items. You have to implement rules like: "You are the 
-`viewer` of a `Document`, if you have a direct `viewer` relation to the `Document` OR you are an `editor` of the 
-document OR you are a `viewer` of the parent `Folder`".
-
-This done by using a `tuple_to_userset` operation. It starts by defining a `tupleset`, which according to the paper ...
-
-> [...] specifies keys of a set of relation tuples. The set can include a single 
-> tuple key, or all tuples with a given object ID or userset in a namespace, optionally 
-> constrained by a relation name. 
-
-To me a `tupleset` are  "All Relations with a given name between the related `Object` and a `User` or a `UserSet`".
-
-```
-relation {
-    name: "viewer"
-    userset_rewrite {
-        union {
-            child { _this {} }
-            child { computed_userset { relation: "editor" } }
-            child { tuple_to_userset {
-                tupleset { 
-                    relation: "parent" 
-                }
-                computed_userset {
-                    object: $TUPLE_USERSET_OBJECT
-                    relation: "viewer"
-            } } }
-} } }```
-
+Let's parse it and implement the Check API and Expand API described in the original paper!
 
 ## Parsing the Google Zanzibar Configuration Language ##
 
