@@ -344,9 +344,9 @@ code.
 
 ### An ANTLR4 Grammar for the Configuration Language ###
 
-After spending some hours learning ANTLR4 syntax and an amateurish Grammar, I have seen, that there's already an ANTLR4 
-Grammar for the Google Zanzibar Configuration Language on GitHub, which was written by [Kjell Holmgren]. So all credit 
-goes to him, his [acl-rewrite] is a great project and I've learnt tons about Google Zanzibar.
+After spending some hours learning ANTLR4 syntax and an amateurish Grammars, I have seen, that there's already an ANTLR4 
+Grammar for the Google Zanzibar Configuration Language on GitHub. It was written by [Kjell Holmgren]. So all credit goes 
+to him, his [acl-rewrite] is a great project and I've learnt tons about Google Zanzibar.
 
 ```antlr
 /** 
