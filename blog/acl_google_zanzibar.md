@@ -11,12 +11,12 @@ a Google Zanzibar-like data model and some SQL queries. It worked good, and I qu
 it doesn't let us define an effictive ACL, because at the moment we need to materialize *all relations* in 
 the database.
 
-But what about `unions` or `intersections` of permissions? What about modelling statements like: "If you are the `editor` 
+But what about `unions` or `intersections` of permissions? What about expressing statements like: "If you are the `editor` 
 of a `Document`, then you are also a `viewer` of a `Document`"? What about inheritance of permissions like: "If you 
-are the `viewer` of a `Folder`, then you are also a `viewer` of its `Documents`"? 
+are the `viewer` of a `Folder`, then you are also a `viewer` of the folders `Documents`"? 
 
-So in this article we will take a look at the Google Zanzibar Namespace Configurations, and implement a simplified version 
-of the Google Zanzibar Check API and Expand API.
+So in this article we will take a look at the Google Zanzibar's Namespace Configuration Language, and implement a simplified 
+version of the Google Zanzibar Check API and Expand API.
 
 All code can be found in a Git Repository at:
 
