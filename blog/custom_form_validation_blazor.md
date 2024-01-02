@@ -128,7 +128,7 @@ public class SimpleValidator<TModel> : ComponentBase, IDisposable
 }
 ```
 
-You need to subscribe to the `EditContext#OnFieldChanged` and `EditContext#OnFieldChanged` event. We can then simply 
+You need to subscribe to the `EditContext#OnFieldChanged` and `EditContext#OnValidationRequested` event. We can then simply 
 apply the Validation function and add the list of `ValidationError` to the `ValidationMessageStore` associated with 
 the `EditContext`.
 
