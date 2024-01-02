@@ -22,7 +22,7 @@ The code has been taken from the Git Repository at:
 
 [Kiota]: https://github.com/microsoft/kiota
 
-The common example for Form Validation in Blazor uses the `DataAnnotationsValidator` component to reuse Data Annotations 
+The canonical example for Form Validation in Blazor uses the `DataAnnotationsValidator` component to reuse Data Annotations 
 defined for a models properties. In the FluentUI Blazor demo, it looks like this.
 
 ```razor
