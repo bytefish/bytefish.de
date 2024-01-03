@@ -70,6 +70,46 @@ would implement it like this.
 </EditForm>
 ```
 
+And all that needs to be done in the Code-Behind is to implement the `HandleTaskItemPriority` method, which 
+is invoked when a new `Option` has been selected in the `FluentSelect`.
+
+```csharp
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+using Microsoft.AspNetCore.Components;
+using Microsoft.Extensions.Localization;
+using RebacExperiments.Blazor.Infrastructure;
+using RebacExperiments.Blazor.Localization;
+using RebacExperiments.Shared.ApiSdk.Models;
+using System.Net.Http.Headers;
+
+namespace RebacExperiments.Blazor.Pages
+{
+    public partial class TaskItemEdit
+    {
+        // ...
+
+        public void HandleTaskItemPriority(ChangeEventArgs changeEventArgs)
+        {
+            var stringValue = changeEventArgs.Value?.ToString();
+
+            if(string.IsNullOrWhiteSpace(stringValue) || stringValue == "-1")
+            {
+                CurrentTaskItem.TaskItemPriority = null;
+            } 
+            else
+            {
+                CurrentTaskItem.TaskItemPriority = Enum.Parse<TaskItemPriorityEnum>(stringValue);
+            }
+
+            StateHasChanged();            
+        }
+        
+        // ...
+    }
+}
+
+```
 
 ## Conclusion ##
 
