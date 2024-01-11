@@ -374,8 +374,8 @@ I want the Login Page to have its own layout and don't want to use the `MainLayo
 @Body
 ```
 
-This `EmptyLayout` is then used as the Layout for the Login Page, so I can style it to my needs. Please note, that the example 
-uses a `<SimpleValidator>` for validation, that has been developed in a previous article. You could easily replace it with a 
+This `EmptyLayout` is then used as the Layout for the Login Page, so I can style it to my needs. The example uses a 
+`<SimpleValidator>` for validation, that has been developed in a previous article. You could easily replace it with a 
 `<DataAnnotationsValidator>`, to use Blazors built-in validations.
 
 ```razor
