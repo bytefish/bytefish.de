@@ -48,7 +48,7 @@ builder.Services
 
 The user is signed in using `HttpContext#SignInAsync` with something along the lines of a `AuthenticationController`:
 
-```
+```csharp
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 // ...
