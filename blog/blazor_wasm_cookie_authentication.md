@@ -346,7 +346,12 @@ namespace RebacExperiments.Blazor.Infrastructure
 
             if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
             {
-                await _customAuthenticationStateProvider.SetCurrentUserAsync(null); // Clears the Current User and should trigger a Login
+                var currentUser = await _customAuthenticationStateProvider.GetCurrentUserAsync();
+
+                if(currentUser != null)
+                {
+                    await _customAuthenticationStateProvider.SetCurrentUserAsync(null);
+                }
             }
 
             return response;
@@ -391,7 +396,7 @@ This `EmptyLayout` is then used as the Layout for the Login Page, so I can style
 
 <div class="container">
     <FluentCard Width="500px">
-        <EditForm Model="@Input" OnValidSubmit="@(async () => await SignInUserAsync())" FormName="login_form" novalidate>
+        <EditForm Model="@Input" OnValidSubmit="SignInUserAsync" FormName="login_form" novalidate>
             <SimpleValidator TModel=InputModel ValidationFunc="ValidateInputModel" />
             <FluentValidationSummary />
             <FluentStack Orientation="Orientation.Vertical">
@@ -414,13 +419,12 @@ This `EmptyLayout` is then used as the Layout for the Login Page, so I can style
                      <FluentGridItem xs="12">
                          <FluentButton Type="ButtonType.Submit" Appearance="Appearance.Accent" Style="width: 100%">Login</FluentButton>
                      </FluentGridItem>
-                     @if (!string.IsNullOrWhiteSpace(ErrorMessage))
-                    {
+                     @if(!string.IsNullOrWhiteSpace(ErrorMessage)) {
                         <FluentGridItem xs="12">
-                            <FluentMessageBar Style="width: 100%" Title="Descriptive title" Intent="@MessageIntent.Error">
+                            <FluentMessageBar Style="width: 100%" Title=@ErrorMessage Intent="@MessageIntent.Error">
                             </FluentMessageBar>
                         </FluentGridItem>
-                    }
+                     }
                 </FluentGrid>
             </FluentStack>
         </EditForm>
@@ -512,7 +516,7 @@ namespace RebacExperiments.Blazor.Pages
         /// <summary>
         /// Error Message.
         /// </summary>
-        private string ErrorMessage = string.Empty;
+        private string? ErrorMessage;
 
         /// <summary>
         /// Signs in the User to the Service using Cookie Authentication.
@@ -520,6 +524,8 @@ namespace RebacExperiments.Blazor.Pages
         /// <returns></returns>
         public async Task SignInUserAsync()
         {
+            ErrorMessage = null;
+            
             try
             {
                 await ApiClient.Odata.SignInUser.PostAsync(new SignInUserPostRequestBody
