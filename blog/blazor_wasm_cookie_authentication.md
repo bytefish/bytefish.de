@@ -6,9 +6,9 @@ slug: blazor_wasm_cookie_authentication
 author: Philipp Wagner
 summary: This article shows how to use Cookie Authentication with Blazor WebAssembly. 
 
-I've lately added Cookie Authentication to a Blazor WebAssembly application I am working on and there 
-had been a lot of small parts to configure. I think it's a good idea to share my approach, so others 
-can benefit. 
+I've recently added Cookie Authentication to a Blazor WebAssembly application and there had been 
+a lot of small parts to configure. I think it's a good idea to share my approach, so others can 
+benefit. 
 
 At the end of the article you will have Cookie Authentication and a nice login form:
 
@@ -76,7 +76,7 @@ namespace RebacExperiments.Server.Api.Controllers
 }        
 ```
 
-You can the open your Browsers Developer Tools and see, that an (encrypted) Cookie has been created.
+You can then open your Browsers Developer Tools and see, that an (encrypted) Cookie has been created.
 
 <div style="display:flex; align-items:center; justify-content:center;margin-bottom:15px;">
     <a href="/static/images/blog/blazor_wasm_cookie_authentication/developer_tools_auth_cookie.jpg">
