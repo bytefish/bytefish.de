@@ -547,8 +547,6 @@ namespace RebacExperiments.Blazor.Pages
             catch
             {
                 ErrorMessage = Loc["Login_Failed"];
-
-                await AuthStateProvider.SetCurrentUserAsync(null);
             }
         }
 
