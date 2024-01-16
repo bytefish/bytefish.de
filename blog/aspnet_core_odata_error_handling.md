@@ -27,6 +27,10 @@ The code has been taken from the Git Repository at:
 
 * [https://github.com/bytefish/OpenFgaExperiments](https://github.com/bytefish/OpenFgaExperiments)
 
+## Table of contents ##
+
+[TOC]
+
 ## OData Error Model ##
 
 [Microsoft Graph REST API Guidelines]: https://github.com/microsoft/api-guidelines/blob/vNext/graph/GuidelinesGraph.md
@@ -174,7 +178,7 @@ There are `ProblemDetails`, an `IProblemDetailsService`, `ProblemDetailsFactory`
 
 Let's go!
 
-### Error Codes ###
+### Application Error Codes ###
 
 We start our journey with a static class `ErrorCodes` to hold error codes, which the OData API can return. In the example 
 application, all Error Codes have the Scheme `ApiError_{Category}_{ErrorNumber}`, you could come up with your own. 
