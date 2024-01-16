@@ -8,21 +8,40 @@ summary: This article shows how to use Cookie Authentication with Blazor WebAsse
 
 [Consistent Error Handling with NancyFx]: https://www.bytefish.de/blog/consistent_error_handling_with_nancy.html
 
-In this article we are going to look at one of the most important, yet underrated, aspects of any 
-customer-facing software: Error Handling and Error Messages. I am working on an ASP.NET Core OData 
-application and want something similar to the Microsoft Graph API Error Handling.
+In this article we are going to look at one of the most important, yet underrated, aspects of any application: Error 
+Handling and Error Messages. I am working on an ASP.NET Core OData application and want something similar to the 
+Microsoft Graph API Error Handling.
 
 Let's see how to do it!
 
+At the end of the article we will have a flexible approach to Error Handling in our ASP.NET Core OData application 
+and will be able to localize the results in the Blazor Frontend, so they show up like this:
+
+<div style="display:flex; align-items:center; justify-content:center;margin-bottom:15px;">
+    <a href="/static/images/blog/odata_openapi_kiota_client_generation/blazor_data_grid.jpg">
+        <img src="/static/images/blog/odata_openapi_kiota_client_generation/blazor_data_grid.jpg" alt="Final Swagger Endpoints">
+    </a>
+</div>
+
+The code has been taken from the Git Repository at:
+
+* [https://github.com/bytefish/OpenFgaExperiments](https://github.com/bytefish/OpenFgaExperiments)
+
 ## OData Error Model ##
 
-Our Errors should be modeled after the Microsoft Graph API, which is an OData API. So there are two things to note: The 
-ASP.NET Core OData implementation already includes a similar `ODataError` model and the Microsoft Graph API documentation 
-somewhat applies to our application as well.
+[Microsoft Graph REST API Guidelines]: https://github.com/microsoft/api-guidelines/blob/vNext/graph/GuidelinesGraph.md
+[OData JSON Format]: https://docs.oasis-open.org/odata/odata-json-format/v4.01/odata-json-format-v4.01.html
 
-You can find the 
+Our errors should be modeled after the Microsoft Graph API. The Microsoft Graph API follows the [Microsoft Graph REST API Guidelines], which defines the Error handling here:
 
-* [https://learn.microsoft.com/de-de/dotnet/api/microsoft.odata.odataerror](https://learn.microsoft.com/de-de/dotnet/api/microsoft.odata.odataerror)
+* [https://github.com/microsoft/api-guidelines/blob/vNext/graph/GuidelinesGraph.md#error-handling](https://github.com/microsoft/api-guidelines/blob/vNext/graph/GuidelinesGraph.md#error-handling)
+
+This, as far as I can see, is the OData Error response model as defined in the [OData JSON Format] specification:
+
+* https://docs.oasis-open.org/odata/odata-json-format/v4.01/odata-json-format-v4.01.html#_Toc38457792
+
+So there are two things to note: The ASP.NET Core OData implementation already includes a similar `ODataError` model, 
+and all of the Microsoft Graph API documentation somewhat applies to our application as well.
 
 ### HTTP status codes ###
 
@@ -143,23 +162,85 @@ The following table describe the semantics of the error resource type.
     </tbody>
 </table>
 
-## Error Codes ##
+## How to communicate failure with ASP.NET Core? ##
 
-By all means, you should use application-specific error codes. It's going to help debugging issues from 
-users and creates satisfied users. It helps your support team to quickly narrow down possible error 
-reasons. If you achieve a globally unique error code, then users could also search the documentation for them 
-or search for the error codes online, which might reduce issue reports to your support team.
+[Result Types]: https://en.wikipedia.org/wiki/Result_type
 
-As a developer and consumer of an API, you'll need error codes to localize messages for users. You could also 
-localize error messages in the backend, but I didn't have good experience with it and the OData specification 
-also argue against it. Your milage may vary, though.
+First of all, I did most of this a whopping nine years ago with the Nancy framework. And it was so easy back then. It 
+literally took me an hour to have it working for a RESTful API... with Content-Negotiation for free. It was *obvious*. 
 
-I would start with a static class `ErrorCodes` to hold error codes, that the OData API can return. I don't 
-want the Error Codes as an enumeration, because I want to be more flexible. What if the error codes come from 
-different sources, think Stored Procedures?
+ASP.NET Core on the other hand...
 
-In the example application, all Error Codes have the Scheme `ApiError_{Category}_{ErrorNumber}`. Here are some 
-errors I came up with, you could come up with more errors in your application.
+You've got a lot to research! `ProblemDetails`, `IProblemDetailsService`, `ProblemDetailsFactory`, `InvalidModelStateResponseFactory`, 
+`IProblemDetailsWriter`, `IExceptionFilter`, `IAsyncExceptionFilter`, `IExceptionHandler`, `ExeptionHandlerMiddleware`, `IExceptionHandlerFeature`, 
+`StatusCodePages`, `StatusCodePagesWithReExecute`, ... and the list goes on.
+
+And this becomes more of a problem, if you are working in a Framework like ASP.NET Core OData 8, which is, as of writing, tightly 
+bound to ASP.NET Core MVC. You have to understand, that ASP.NET Core comes with the concept of Middlewares, that are running before 
+ASP.NET Core MVC kicks in. You can now opt-in to features, instead of all of them being added without a way of opting out, like 
+ASP.NET Core MVC did. 
+
+That's great! But anything happening outside the ASP.NET Core MVC pipeline, such as Routing, the Authentication Middleware, the 
+Rate Limiting Middleware or Exception Handlers? You have no more built-in things like Content-Negotiation, Output Formatters. 
+
+Just researching the topic made me feel tired. Why am I doing this? Should I just accept my failure? If I am in some kind of 
+"analysis paralysis", I try to work on different parts of the problem first. Maybe you get an idea, while working on other 
+parts? Maybe you'll find interesting alternatives?
+
+### Communicating Failure within the Business Logic ###
+
+So a question, that always comes up when building software is: How do you want to communicate errors and failure within your application?
+
+Do you throw Exceptions? People say they are costly, they are abused for control-flow, oh yeah, and sometimes they are called 
+the "type safe version of a `goto`". They are basically an unchecked devil. So what's the alternatives in C\#? Do you return 
+some kind of "generic error model" and pray the caller handles your errors accordingly? Subtle bugs incoming!
+
+Do you try to come up with something like "Discriminated Union Types" as a return value? A `Result<T>` is often hailed as the 
+saviour in the programming community, but I fail to see how it's going to work in C\#... a language still discussing how to 
+add them:
+
+* [https://github.com/dotnet/csharplang/issues/113](https://github.com/dotnet/csharplang/issues/113)
+
+One could make a distinction, that Exceptions shouldn't be abused for signaling "business logic errors" like a validation errors. And 
+if you are writing high-performance code, where throwing exceptions is super expensive... or if you are working in a language, that 
+has first-class support for Discriminated Union Types... by all means, go for alternatives and avoid Exceptions.
+
+But if you live in my C\# "Enterprise Software Development" world, where a Stacktrace might be invaluable to help diagnosing complex 
+bugs, then you are better off using Exceptions. I think as soon as C\# supports Discriminated Union Types to return errors, things 
+might change. As of now... Exceptions.
+
+### Communicating Failure within ASP.NET Core ###
+
+We should avoid bubbling up exceptions in the ASP.NET Core pipeline, as David Fowler states ...
+
+> Exceptions are extremely expensive, even more expensive than usual when they are in the ASP.NET Core pipeline which is fully 
+> asynchronous and nested (we're looking at ways to make this cheaper but it's still very expensive). In fact, there are teams 
+> with high scale services that see performance problems with exceptions and are trying to avoid them happening. There's 
+> no way we'd do #47020.
+
+So we should use the `IExceptionHandler` only for that, exceptional situations we cannot recover from. We should instead try to 
+catch `Exceptions` thrown in our services, directly where they happen, and translate them into something useful... instead of 
+sending them up the ASP.NET Core pipeline.
+
+## ASP.NET Core Implementation ##
+
+### Error Codes ###
+
+By all means, you should use application-specific error codes. It's going to help debugging issues from users and 
+creates satisfied users. It helps your support team to quickly narrow down possible error reasons. If you achieve a 
+globally unique error code, then users could also search the documentation or the internet for them, thus 
+reducing pressure on your second level support.
+
+As a Front end developer and consumer of an API, you'll need error codes to localize error messages for users. You could 
+also localize error messages in the backend, but I didn't have good experience with it and the OData specification also 
+argue against it. Your milage may vary, though.
+
+So we start our journey with a static class `ErrorCodes` to hold error codes, which the OData API can return. I don't 
+want the Error Codes as an `enum`, because it needs to be more flexible. Think of separate modules, or some Stored 
+Procedure coughing up errors.
+
+In the example application, all Error Codes have the Scheme `ApiError_{Category}_{ErrorNumber}`, you could come up 
+with your own. Here are some errors I came up with, you could come up with more errors in your application.
 
 ```csharp
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
@@ -209,36 +290,11 @@ namespace RebacExperiments.Server.Api.Infrastructure.Errors
 }
 ```
 
-## How to communicate failure with ASP.NET Core? ##
-
-[Result Types]: 
-
-Now, how do you communicate errors and failure within your application? Do you throw Exceptions? Do you 
-return error codes and pray the caller handles them accordingly? Do you try to come up with something 
-like [Result Types] to force the caller handling errors? 
-
-[Result Types] are something that's often advocated in the Functional Programming community:
-
-> In functional programming, a result type is a monadic type holding a returned value or an error 
-> code. They provide an elegant way of handling errors, without resorting to exception handling; when 
-> a function that may fail returns a result type, the programmer is forced to consider success or 
-> failure paths, before getting access to the expected result; this eliminates the possibility of 
-> an erroneous programmer assumption.
-
-My personal opinion here is a very pragmatic one. 
-
-.NET is a Runtime, that uses Exceptions for communicating failure. You try to access a file, that does 
-not exist? Boom, a `FileNotFoundException` in your face! So even if you introduce [Result Types], the 
-.NET Runtime may throw at any point... and you suddenly need to deal with two error paradigms.
-
-To quote Eirik Tsarpalis, you're better off using Exceptions:
-
-* [https://eiriktsarpalis.wordpress.com/2017/02/19/youre-better-off-using-exceptions/](https://eiriktsarpalis.wordpress.com/2017/02/19/youre-better-off-using-exceptions/)
-
 ### Defining an Exception Hiearchy ###
 
-In the application all exceptions derive from an `ApplicationErrorException`. It should at least transport 
-an `ErrorCode` and an `ErrorMessage`. 
+In the application all exceptions derive from an `ApplicationErrorException`. The `ApplicationErrorException` transports an 
+`ErrorCode`, an `ErrorMessage` and a `HttpStatusCode` (this one makes things easier). Specialized `ApplicationErrorExceptions` 
+are probably containing more information, but that's the contract all application errors agree on.
 
 ```csharp
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
@@ -259,7 +315,12 @@ namespace RebacExperiments.Server.Api.Infrastructure.Exceptions
         /// Gets the Error Message.
         /// </summary>
         public abstract string ErrorMessage { get; }
-
+        
+        /// <summary>
+        /// Gets the HttpStatusCode.
+        /// </summary>
+        public abstract int HttpStatusCode { get; }
+        
         protected ApplicationErrorException(string? message, Exception? innerException)
             : base(message, innerException)
         {
@@ -268,9 +329,8 @@ namespace RebacExperiments.Server.Api.Infrastructure.Exceptions
 }
 ```
 
-We can then derive from the `ApplicationErrorException` and define specialized Exceptions describing the error 
-and (probably) containing additional information. An `AuthenticationFailedException` shouldn't give too much 
-hints, so it looks like this.
+Think of a situation, where a user wants to sign in to our system. In our Service we might throw something like 
+an `AuthenticationFailedException`.
 
 ```csharp
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
@@ -281,18 +341,17 @@ namespace RebacExperiments.Server.Api.Infrastructure.Exceptions
 {
     public class AuthenticationFailedException : ApplicationErrorException
     {
-        /// <summary>
-        /// Gets or sets an ErrorCode.
-        /// </summary>
+        /// <inheritdoc/>
         public override string ErrorCode => ErrorCodes.AuthenticationFailed;
 
-        /// <summary>
-        /// Gets or sets an ErrorMessage.
-        /// </summary>
+        /// <inheritdoc/>
         public override string ErrorMessage => $"AuthenticationFailed";
 
+        /// <inheritdoc/>
+        public override int HttpStatusCode => StatusCodes.Status401Unauthorized;
+
         /// <summary>
-        /// Creates a new <see cref="EntityNotFoundException"/>.
+        /// Creates a new <see cref="AuthenticationFailedException"/>.
         /// </summary>
         /// <param name="message">Error Message</param>
         /// <param name="innerException">Reference to the Inner Exception</param>
@@ -305,8 +364,8 @@ namespace RebacExperiments.Server.Api.Infrastructure.Exceptions
 ```
 
 Something like failing to find an `Entity` in the application may lead to an `EntityNotFoundException`, which also 
-includes additional information, like the `EntityName` and `EntityId`. This might be useful to debug errors, it's 
-up to discussion, if a user needs to see this information however.
+includes additional information, like the `EntityName` and `EntityId`. This might not be immediately useful to the 
+user, but it might make it easier for support to identify errors.
 
 ```csharp
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
@@ -317,15 +376,14 @@ namespace RebacExperiments.Server.Api.Infrastructure.Exceptions
 {
     public class EntityNotFoundException : ApplicationErrorException
     {
-        /// <summary>
-        /// Gets or sets an error code.
-        /// </summary>
+        /// <inheritdoc/>
         public override string ErrorCode => ErrorCodes.EntityNotFound;
 
-        /// <summary>
-        /// Gets or sets an error code.
-        /// </summary>
+        /// <inheritdoc/>
         public override string ErrorMessage => $"EntityNotFound (Entity = {EntityName}, EntityID = {EntityId})";
+
+        /// <inheritdoc/>
+        public override int HttpStatusCode => StatusCodes.Status404NotFound;
 
         /// <summary>
         /// Gets or sets the Entity Name.
@@ -350,171 +408,164 @@ namespace RebacExperiments.Server.Api.Infrastructure.Exceptions
 }
 ```
 
-### Handling Failure and building the ODataError Response Model ###
-
-The ASP.NET Core OData framework already provides an `IODataErrorResult`, which looks like this:
+Let's take a look at the `MeController` used in the application, which returns the information about the current user. We 
+basically wrap everything in the Action in a `try-catch` block, so the Exception doesn't bubble up to the ASP.NET Core 
+Pipeline.
 
 ```csharp
-//-----------------------------------------------------------------------------
-// <copyright file="IODataErrorResult.cs" company=".NET Foundation">
-//      Copyright (c) .NET Foundation and Contributors. All rights reserved. 
-//      See License.txt in the project root for license information.
-// </copyright>
-//------------------------------------------------------------------------------
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using Microsoft.OData;
+// ...
 
-namespace Microsoft.AspNetCore.OData.Results
+namespace RebacExperiments.Server.Api.Controllers
 {
-    /// <summary>
-    /// Provide the interface for the details of a given OData error result.
-    /// </summary>
-    public interface IODataErrorResult
+    public class MeController : ODataController
     {
-        /// <summary>
-        /// OData error.
-        /// </summary>
-        ODataError Error { get; }
+        private readonly ILogger<UsersController> _logger;
+
+
+        public MeController(ILogger<UsersController> logger)
+        {
+            _logger = logger;
+        }
+
+        [Authorize(Policy = Policies.RequireUserRole)]
+        [EnableRateLimiting(Policies.PerUserRatelimit)]
+        public async Task<IActionResult> Get([FromServices] IUserService userService, CancellationToken cancellationToken)
+        {
+            _logger.TraceMethodEntry();
+            
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    throw new InvalidModelStateException
+                    {
+                        ModelStateDictionary = ModelState
+                    };
+                }
+
+                // Get the User ID extracted by the Authentication Middleware:
+                var meUserId = User.GetUserId();
+
+                var user = await userService.GetUserByIdAsync(meUserId, meUserId, cancellationToken);
+
+                return Ok(user);
+            } 
+            catch (Exception ex)
+            {
+                // What to do?
+            }
+        }
     }
 }
 ```
 
-It defines several `IODataErrorResult` implementations like a `ConflictODataResult`, `NotFoundODataResult`, which 
-basically adds a HTTP Status Code and writes the `ODataError` to the response message. What we will do is to turn 
-the Exceptions into an `IODataErrorResult`.
+See the `// What to do`? The question now is, how we will process these Exceptions.
+
+### Handling Exceptions and building the ODataError Response Model ###
+
+The `Microsoft.OData` library already provides an `ODataError`, and that's our error response model to return. It 
+sounds like we need something to "translate an `Exception` into an `ODataError`", defining some kind of 
+`IODataExceptionTranslator` feels like the right thing to do.
+
+```csharp
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+using RebacExperiments.Server.Api.Infrastructure.OData;
+
+namespace RebacExperiments.Server.Api.Infrastructure.Errors
+{
+    /// <summary>
+    /// A Translator to convert from an <see cref="Exception"/> to an <see cref="ObjectODataErrorResult"/>.
+    /// </summary>
+    public interface IODataExceptionTranslator
+    {
+        /// <summary>
+        /// Translates a given <see cref="Exception"/> into an <see cref="ObjectODataErrorResult"/>.
+        /// </summary>
+        /// <param name="exception">Exception to translate</param>
+        /// <param name="includeExceptionDetails">A flag, if exception details should be included</param>
+        /// <returns>The <see cref="ObjectODataErrorResult"/> for the <see cref="Exception"/></returns>
+        ObjectODataErrorResult GetODataErrorResult(Exception exception, bool includeExceptionDetails);
+
+        /// <summary>
+        /// Gets or sets the Exception Type.
+        /// </summary>
+        Type ExceptionType { get; }
+    }
+}
+``` 
+
+The `ObjectODataErrorResult` is just a very simple `ActionResult`, because I found the built-in ASP.NET Core 
+OData implementations are making too many assumptions, like the `ODataError` error code automatically being 
+the HTTP Status Code.
 
 ```csharp
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.OData.Results;
-using Microsoft.Extensions.Options;
 using Microsoft.OData;
-using RebacExperiments.Server.Api.Infrastructure.Exceptions;
-using RebacExperiments.Server.Api.Infrastructure.Logging;
-using RebacExperiments.Server.Api.Infrastructure.OData;
-using System.Net;
 
-namespace RebacExperiments.Server.Api.Infrastructure.Errors
+namespace RebacExperiments.Server.Api.Infrastructure.OData
 {
     /// <summary>
-    /// Handles errors returned by the application.
+    /// Represents a result that when executed will produce an <see cref="ActionResult"/>.
     /// </summary>
-    public class ApplicationErrorHandler
+    /// <remarks>This result creates an <see cref="ODataError"/> response.</remarks>
+    public class ObjectODataErrorResult : ActionResult, IODataErrorResult
     {
-        private readonly ILogger<ApplicationErrorHandler> _logger;
+        /// <summary>
+        /// OData error.
+        /// </summary>
+        public required ODataError Error { get; set; }
 
-        private readonly ApplicationErrorHandlerOptions _options;
+        /// <summary>
+        /// Http Status Code.
+        /// </summary>
+        public required int HttpStatusCode { get; set; }
 
-        public ApplicationErrorHandler(ILogger<ApplicationErrorHandler> logger, IOptions<ApplicationErrorHandlerOptions> options)
+        /// <inheritdoc/>
+        public async override Task ExecuteResultAsync(ActionContext context)
+        {
+
+            ObjectResult objectResult = new ObjectResult(Error)
+            {
+                StatusCode = HttpStatusCode
+            };
+
+            await objectResult.ExecuteResultAsync(context).ConfigureAwait(false);
+        }
+    }
+}
+```
+
+Now let's implement it for some Exceptions. 
+
+We'll start with the most generic one, that handles the `System.Exception`. This indicates, that something out of our control 
+happened, such as EntityFramework Core coughing up Exceptions we don't know. There's not much we can do for the user here, it 
+smells like an `InternalServerError`.
+
+```csharp
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+// ...
+
+namespace RebacExperiments.Server.Api.Infrastructure.Errors.Translators
+{
+    public class DefaultErrorExceptionTranslator : IODataExceptionTranslator
+    {
+        private readonly ILogger<DefaultErrorExceptionTranslator> _logger;
+
+        public DefaultErrorExceptionTranslator(ILogger<DefaultErrorExceptionTranslator> logger)
         {
             _logger = logger;
-            _options = options.Value;
         }
 
-        #region Exception Handling
+        public Type ExceptionType => typeof(Exception);
 
-        public ActionResult HandleException(HttpContext httpContext, Exception exception)
-        {
-            _logger.TraceMethodEntry();
-
-            _logger.LogError(exception, "Call to '{RequestPath}' failed due to an Exception", httpContext.Request.Path);
-
-            return exception switch
-            {
-                // Authentication
-                AuthenticationFailedException e => HandleAuthenticationException(httpContext, e),
-                // Entities
-                EntityConcurrencyException e => HandleEntityConcurrencyException(httpContext, e),
-                EntityNotFoundException e => HandleEntityNotFoundException(httpContext, e),
-                EntityUnauthorizedAccessException e => HandleEntityUnauthorizedException(httpContext, e),
-                // Rate Limiting
-                RateLimitException e => HandleRateLimitException(httpContext, e),
-                // Global Handler
-                Exception e => HandleSystemException(httpContext, e)
-            };
-        }
-
-        private UnauthorizedODataResult HandleAuthenticationException(HttpContext httpContext, AuthenticationFailedException e)
-        {
-            _logger.TraceMethodEntry();
-
-            var error = new ODataError
-            {
-                ErrorCode = ErrorCodes.AuthenticationFailed,
-                Message = e.ErrorMessage,
-            };
-
-            AddInnerError(httpContext, error, e);
-
-            return new UnauthorizedODataResult(error);
-        }
-
-        private ConflictODataResult HandleEntityConcurrencyException(HttpContext httpContext, EntityConcurrencyException e)
-        {
-            _logger.TraceMethodEntry();
-
-            var error = new ODataError
-            {
-                ErrorCode = e.ErrorCode,
-                Message = e.ErrorMessage,
-            };
-
-            AddInnerError(httpContext, error, e);
-
-            return new ConflictODataResult(error);
-        }
-
-        private NotFoundODataResult HandleEntityNotFoundException(HttpContext httpContext, EntityNotFoundException e)
-        {
-            _logger.TraceMethodEntry();
-
-            var error = new ODataError
-            {
-                ErrorCode = e.ErrorCode,
-                Message = e.ErrorMessage,
-            };
-
-            AddInnerError(httpContext, error, e);
-
-            return new NotFoundODataResult(error);
-        }
-
-        private ForbiddenODataResult HandleEntityUnauthorizedException(HttpContext httpContext, EntityUnauthorizedAccessException e)
-        {
-            _logger.TraceMethodEntry();
-
-            var error = new ODataError
-            {
-                ErrorCode = e.ErrorCode,
-                Message = e.ErrorMessage,
-            };
-
-            AddInnerError(httpContext, error, e);
-
-            return new ForbiddenODataResult(error);
-        }
-        
-        private ObjectResult HandleRateLimitException(HttpContext httpContext, RateLimitException e)
-        {
-            _logger.TraceMethodEntry();
-
-            var error = new ODataError
-            {
-                ErrorCode = ErrorCodes.TooManyRequests,
-                Message = "Too many requests. The Rate Limit for the user has been exceeded"
-            };
-
-            AddInnerError(httpContext, error, e);
-
-            return new ObjectResult(error)
-            {
-                StatusCode = (int)HttpStatusCode.TooManyRequests,
-            };
-        }
-
-        private ObjectResult HandleSystemException(HttpContext httpContext, Exception e)
+        public ObjectODataErrorResult GetODataErrorResult(Exception exception, bool includeExceptionDetails)
         {
             _logger.TraceMethodEntry();
 
@@ -524,96 +575,173 @@ namespace RebacExperiments.Server.Api.Infrastructure.Errors
                 Message = "An Internal Server Error occured"
             };
 
-            AddInnerError(httpContext, error, e);
-
-            return new ObjectResult(error)
-            {
-                StatusCode = (int)HttpStatusCode.InternalServerError,
-            };
-        }
-
-        #endregion Exception Handling
-
-        #region Debug Information
-
-        private void AddInnerError(HttpContext httpContext, ODataError error, Exception? e)
-        {
-            _logger.TraceMethodEntry();
-
+            // Create the Inner Error
             error.InnerError = new ODataInnerError();
 
-            error.InnerError.Properties["trace-id"] = new ODataPrimitiveValue(httpContext.TraceIdentifier);
-
-            if (e != null && _options.IncludeExceptionDetails)
+            if (includeExceptionDetails)
             {
-                error.InnerError.Message = e.Message;
-                error.InnerError.StackTrace = e.StackTrace;
-                error.InnerError.TypeName = e.GetType().Name;
+                error.InnerError.Message = exception.Message;
+                error.InnerError.StackTrace = exception.StackTrace;
+                error.InnerError.TypeName = exception.GetType().Name;
             }
-        }
 
-        #endregion Debug Information
+            return new ObjectODataErrorResult
+            {
+                Error = error,
+                HttpStatusCode = StatusCodes.Status500InternalServerError,
+            };
+        }
     }
 }
 ```
 
-But there are parts of ASP.NET Core, that do not throw Exceptions. An example is, if something like 
-binding the request to a model fails, or the built-in validation fails. This is usually communicated 
-by a `ModelStateDictionary`.
-
-Let's add it to the `ApplicationErrorHandler`.
+But if we catch a `ApplicationErrorException` we can actually do something sensible with it. We have an `ErrorCode`, an 
+`ErrorMessage` and a HTTP Status Code. If the environment is a Debug or Staging environment, we can also return the 
+Stack Trace.
 
 ```csharp
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.AspNetCore.OData.Results;
-using Microsoft.Extensions.Options;
 using Microsoft.OData;
 using RebacExperiments.Server.Api.Infrastructure.Exceptions;
 using RebacExperiments.Server.Api.Infrastructure.Logging;
 using RebacExperiments.Server.Api.Infrastructure.OData;
-using System.Net;
 
-namespace RebacExperiments.Server.Api.Infrastructure.Errors
+namespace RebacExperiments.Server.Api.Infrastructure.Errors.Translators
 {
-    /// <summary>
-    /// Handles errors returned by the application.
-    /// </summary>
-    public class ApplicationErrorHandler
+    public class ApplicationErrorExceptionTranslator : IODataExceptionTranslator
     {
-        private readonly ILogger<ApplicationErrorHandler> _logger;
+        private readonly ILogger<ApplicationErrorExceptionTranslator> _logger;
 
-        private readonly ApplicationErrorHandlerOptions _options;
-
-        public ApplicationErrorHandler(ILogger<ApplicationErrorHandler> logger, IOptions<ApplicationErrorHandlerOptions> options)
+        public ApplicationErrorExceptionTranslator(ILogger<ApplicationErrorExceptionTranslator> logger)
         {
             _logger = logger;
-            _options = options.Value;
         }
 
-        #region ModelState Handling
-
-        public ActionResult HandleInvalidModelState(HttpContext httpContext, ModelStateDictionary modelStateDictionary)
+        /// <inheritdoc/>
+        public ObjectODataErrorResult GetODataErrorResult(Exception exception, bool includeExceptionDetails)
         {
             _logger.TraceMethodEntry();
 
+            var applicationErrorException = (ApplicationErrorException)exception;
+
+            return InternalGetODataErrorResult(applicationErrorException, includeExceptionDetails);
+        }
+
+        private ObjectODataErrorResult InternalGetODataErrorResult(ApplicationErrorException exception, bool includeExceptionDetails)
+        {
+            var error = new ODataError
+            {
+                ErrorCode = exception.ErrorCode,
+                Message = exception.ErrorMessage,
+            };
+
+            // Create the Inner Error
+            error.InnerError = new ODataInnerError();
+
+            if (includeExceptionDetails)
+            {
+                error.InnerError.Message = exception.Message;
+                error.InnerError.StackTrace = exception.StackTrace;
+                error.InnerError.TypeName = exception.GetType().Name;
+            }
+
+            return new ObjectODataErrorResult
+            {
+                Error = error,
+                HttpStatusCode = exception.HttpStatusCode,
+            };
+        }
+
+        /// <inheritdoc/>
+        public Type ExceptionType => typeof(ApplicationErrorException);
+    }
+}
+```
+
+And finally there are cases, where specialized Exceptions like a `InvalidModelStateException` need to be handled. This exception 
+is thrown for example, when the ASP.NET Core MVC does model binding or validation fails. This can be turned into something more 
+useful, than just a code and a message.
+
+```csharp
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.OData;
+using RebacExperiments.Server.Api.Infrastructure.Exceptions;
+using RebacExperiments.Server.Api.Infrastructure.Logging;
+using RebacExperiments.Server.Api.Infrastructure.OData;
+
+namespace RebacExperiments.Server.Api.Infrastructure.Errors.Translators
+{
+    public class InvalidModelStateExceptionTranslator : IODataExceptionTranslator
+    {
+        private readonly ILogger<InvalidModelStateExceptionTranslator> _logger;
+
+        public InvalidModelStateExceptionTranslator(ILogger<InvalidModelStateExceptionTranslator> logger)
+        {
+            _logger = logger;
+        }
+
+        /// <inheritdoc/>
+        public ObjectODataErrorResult GetODataErrorResult(Exception exception, bool includeExceptionDetails)
+        {
+            var invalidModelStateException = (InvalidModelStateException) exception;
+
+            return InternalGetODataErrorResult(invalidModelStateException, includeExceptionDetails);
+        }
+
+        /// <inheritdoc/>
+        public Type ExceptionType => typeof(InvalidModelStateException);
+
+        private ObjectODataErrorResult InternalGetODataErrorResult(InvalidModelStateException exception, bool includeExceptionDetails)
+        {
+            _logger.TraceMethodEntry();
+
+            if (exception.ModelStateDictionary.IsValid)
+            {
+                throw new InvalidOperationException("Could not create an error response from a valid ModelStateDictionary");
+            }
+
             ODataError error = new ODataError()
             {
-                ErrorCode = ErrorCodes.BadRequest,
+                ErrorCode = ErrorCodes.ValidationFailed,
                 Message = "One or more validation errors occured",
-                Details = GetODataErrorDetails(modelStateDictionary),
+                Details = GetODataErrorDetails(exception.ModelStateDictionary),
             };
+
+            // Create the Inner Error
+            error.InnerError = new ODataInnerError();
+
+            if (includeExceptionDetails)
+            {
+                error.InnerError.Message = exception.Message;
+                error.InnerError.StackTrace = exception.StackTrace;
+                error.InnerError.TypeName = exception.GetType().Name;
+            }
 
             // If we have something like a Deserialization issue, the ModelStateDictionary has
             // a lower-level Exception. We cannot do anything sensible with exceptions, so 
-            // we add them to the InnerError.
-            var firstException = GetFirstException(modelStateDictionary);
+            // we add it to the InnerError.
+            var firstException = GetFirstException(exception.ModelStateDictionary);
 
-            AddInnerError(httpContext, error, firstException);
-            
-            return new BadRequestObjectResult(error);
+            if (firstException != null)
+            {
+                _logger.LogWarning(firstException, "The ModelState contains an Exception, which has caused the invalid state");
+
+                error.InnerError.InnerError = new ODataInnerError
+                {
+                    Message = firstException.Message,
+                    StackTrace = firstException.StackTrace,
+                    TypeName = firstException.GetType().Name,
+                };
+            }
+
+            return new ObjectODataErrorResult
+            {
+                HttpStatusCode = StatusCodes.Status400BadRequest,
+                Error = error
+            };
         }
 
         private Exception? GetFirstException(ModelStateDictionary modelStateDictionary)
@@ -638,7 +766,6 @@ namespace RebacExperiments.Server.Api.Infrastructure.Errors
         {
             _logger.TraceMethodEntry();
 
-            // Validation Details
             var result = new List<ODataErrorDetail>();
 
             foreach (var modelStateEntry in modelStateDictionary)
@@ -650,8 +777,6 @@ namespace RebacExperiments.Server.Api.Infrastructure.Errors
                     // or abuse the ODataErrorDetails...
                     if (modelError.Exception != null)
                     {
-                        _logger.LogError(modelError.Exception, "Invalid ModelState due to an exception");
-
                         continue;
                     }
 
@@ -662,7 +787,7 @@ namespace RebacExperiments.Server.Api.Infrastructure.Errors
 
                     var odataErrorDetail = new ODataErrorDetail
                     {
-                        ErrorCode = errorCode, 
+                        ErrorCode = errorCode,
                         Message = modelError.ErrorMessage,
                         Target = modelStateEntry.Key,
                     };
@@ -673,47 +798,130 @@ namespace RebacExperiments.Server.Api.Infrastructure.Errors
 
             return result;
         }
-
-        #endregion ModelState Handling
-
-        #region Debug Information
-
-        private void AddInnerError(HttpContext httpContext, ODataError error, Exception? e)
-        {
-            _logger.TraceMethodEntry();
-
-            error.InnerError = new ODataInnerError();
-
-            error.InnerError.Properties["trace-id"] = new ODataPrimitiveValue(httpContext.TraceIdentifier);
-
-            if (e != null && _options.IncludeExceptionDetails)
-            {
-                error.InnerError.Message = e.Message;
-                error.InnerError.StackTrace = e.StackTrace;
-                error.InnerError.TypeName = e.GetType().Name;
-            }
-        }
-
-        #endregion Debug Information
     }
 }
 ```
 
-Now we need to add the `ApplicationErrorHandler` Services. At the same time we configure it to include 
-the Stack Trace, depending on the Environment we are currently running in:
+Then we are adding our `IODataExceptionTranslators` to the `IServiceCollection` in the Applications Startup:
 
 ```csharp
-// Add Error Handler
-builder.Services.Configure<ApplicationErrorHandlerOptions>(o =>
+// Add Exception Handling
+builder.Services.AddSingleton<IODataExceptionTranslator, DefaultErrorExceptionTranslator>();
+builder.Services.AddSingleton<IODataExceptionTranslator, ApplicationErrorExceptionTranslator>();
+builder.Services.AddSingleton<IODataExceptionTranslator, InvalidModelStateExceptionTranslator>();
+```
+
+And finally, we need to add some metadata to the `ODataError` like a `trace-id`, before returning it. This is going to enable us 
+to correlate messages of users with exceptions in the logs. We also need a way to resolve the correct `IODataExceptionTranslator` 
+for the Exception being thrown, so let's put all this into something I called an `ExceptionToODataErrorMapper`.
+
+```csharp
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+// ...
+
+namespace RebacExperiments.Server.Api.Infrastructure.Errors
+{
+    /// <summary>
+    /// Handles errors returned by the application.
+    /// </summary>
+    public class ExceptionToODataErrorMapper
+    {
+        private readonly ILogger<ExceptionToODataErrorMapper> _logger;
+
+        private readonly ExceptionToODataErrorMapperOptions _options;
+        private readonly Dictionary<Type, IODataExceptionTranslator> _translators;
+
+        public ExceptionToODataErrorMapper(ILogger<ExceptionToODataErrorMapper> logger, IOptions<ExceptionToODataErrorMapperOptions> options, IEnumerable<IODataExceptionTranslator> translators)
+        {
+            _logger = logger;
+            _options = options.Value;
+            _translators = translators.ToDictionary(x => x.ExceptionType, x => x);
+        }
+
+        public ObjectODataErrorResult CreateODataErrorResult(HttpContext httpContext, Exception exception)
+        {
+            _logger.TraceMethodEntry();
+
+            _logger.LogError(exception, "Call to '{RequestPath}' failed due to an Exception", httpContext.Request.Path);
+
+            // Get the best matching translator for the exception ...
+            var translator = GetTranslator(exception);
+
+            // ... translate it to the Result ...
+            var error = translator.GetODataErrorResult(exception, _options.IncludeExceptionDetails);
+
+            // ... add error metadata, such as a Trace ID, ...
+            AddMetadata(httpContext, error);
+
+            // ... and return it.
+            return error;
+        }
+
+        private void AddMetadata(HttpContext httpContext, ObjectODataErrorResult result)
+        {
+            if(result.Error.InnerError == null)
+            {
+                result.Error.InnerError = new ODataInnerError();
+            }
+
+            result.Error.InnerError.Properties["trace-id"] = new ODataPrimitiveValue(httpContext.TraceIdentifier);
+        }
+
+        private IODataExceptionTranslator GetTranslator(Exception e)
+        {
+            if (e is ApplicationErrorException)
+            {
+                if (_translators.TryGetValue(e.GetType(), out var translator))
+                {
+                    return translator;
+                }
+
+                return _translators[typeof(ApplicationErrorException)];
+            }
+
+            return _translators[typeof(Exception)];
+        }
+    }
+}
+```
+
+To prevent leaking something like a Stacktrace to our users, we need some `ExceptionToODataErrorMapperOptions` to configure it.
+
+```csharp
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+namespace RebacExperiments.Server.Api.Infrastructure.Errors
+{
+    /// <summary>
+    /// Options for the <see cref="ExceptionToODataErrorMapper"/>.
+    /// </summary>
+    public class ExceptionToODataErrorMapperOptions
+    {
+        /// <summary>
+        /// Gets or sets the option to include the Exception Details in the response.
+        /// </summary>
+        public bool IncludeExceptionDetails { get; set; } = false;
+    }
+}
+```
+
+And add it to the Application Services.
+
+```csharp
+// Add Exception Handling
+
+// ...
+
+builder.Services.Configure<ODataErrorMapperOptions>(o =>
 {
     o.IncludeExceptionDetails = builder.Environment.IsDevelopment() || builder.Environment.IsStaging();
 });
 
-builder.Services.AddSingleton<ApplicationErrorHandler>();
+builder.Services.AddSingleton<ODataErrorMapper>();
 ```
 
-And how could we use the `ApplicationErrorHandler`? We inject it into the Controller and handle the errors 
-explicitly. I think it's a very obvious implementation and easy to follow.
+We can then inject it to the Controller and handle the exceptions, where they are thrown.
 
 ```csharp
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
@@ -722,110 +930,241 @@ explicitly. I think it's a very obvious implementation and easy to follow.
 
 namespace RebacExperiments.Server.Api.Controllers
 {
-    public class TaskItemsController : ODataController
+    public class MeController : ODataController
     {
-        private readonly ILogger<TaskItemsController> _logger;
-        private readonly ApplicationErrorHandler _applicationErrorHandler;
+        private readonly ILogger<UsersController> _logger;
 
-        public TaskItemsController(ILogger<TaskItemsController> logger, ApplicationErrorHandler applicationErrorHandler)
+        private readonly ODataErrorMapper _odataErrorMapper;
+
+        public MeController(ILogger<UsersController> logger, ODataErrorMapper odataErrorMapper)
         {
             _logger = logger;
-            _applicationErrorHandler = applicationErrorHandler;
+            _odataErrorMapper = odataErrorMapper;
         }
 
-        [HttpPut]
-        [HttpPatch]
         [Authorize(Policy = Policies.RequireUserRole)]
         [EnableRateLimiting(Policies.PerUserRatelimit)]
-        public async Task<IActionResult> PatchTaskItem([FromServices] ITaskItemService taskItemService, [FromODataUri] int key, [FromBody] Delta<TaskItem> delta, CancellationToken cancellationToken)
+        public async Task<IActionResult> Get([FromServices] IUserService userService, CancellationToken cancellationToken)
         {
             _logger.TraceMethodEntry();
 
-            if (!ModelState.IsValid)
-            {
-                return _applicationErrorHandler.HandleInvalidModelState(HttpContext, ModelState);
-            }
-
             try
             {
-                // Get the TaskItem with the current values:
-                var taskItem = await taskItemService.GetTaskItemByIdAsync(key, User.GetUserId(), cancellationToken);
-
-                // Patch the Values to it:
-                delta.Patch(taskItem);
-
-                // Update the Values:
-                await taskItemService.UpdateTaskItemAsync(taskItem, User.GetUserId(), cancellationToken);
-
-                return Updated(taskItem);
+                // ...
             }
-            catch (Exception ex)
+            catch (Exception exception)
             {
-                return _applicationErrorHandler.HandleException(HttpContext, ex);
+                return _odataErrorMapper.CreateODataErrorResult(HttpContext, exception);
             }
         }
     }
 }
 ```
 
-In the Business Logic, such as a the `TaskService` we can then throw the `ApplicationErrorException` implementations and 
-we know, that it is handled for us and an `ODataError` is somehow returned to the client.
+### Configuring ASP.NET Core Middlewares for the OData Error Response ###
+
+In an ASP.NET Core application, there are many places things might go wrong. And these things may happen, before anything goes 
+into out `Controller`. They happen in the Middleware, like what happens if we cannot resolve a Controller? We get a HTTP 
+Status 404, but it's not in our nice error format.
+
+This might not be much of a problem, but we should really have a consistent error model for all requests. If a Route 
+cannot be resolved, it should also map to an error code an application can localize. Say, if we only use a HTTP Status 404 
+for both, a missing route and missing entity... how can we turn this into a sensible error message?
+
+So we need to add some Status Code mapping to our ASP.NET Core Pipeline.
+
+```csharp
+app.UseStatusCodePagesWithReExecute("/error/{0}");
+```
+
+In the `ErrorController` we can then handle these errors accordingly. The sad thing here is, that I have no idea, how 
+to nicely format a negotiated `ODataError` there. As of now I accept, that we'll only return a JSON representation, 
+because none of the OData MVC Output Formatters can be used.
+
+```csharp
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.OData;
+using RebacExperiments.Server.Api.Infrastructure.Errors;
+using RebacExperiments.Server.Api.Infrastructure.Logging;
+
+namespace RebacExperiments.Server.Api.Controllers
+{
+    public class ErrorController : ControllerBase
+    {
+        private readonly ILogger<ErrorController> _logger;
+
+        private readonly ODataErrorMapper _odataErrorMapper;
+
+        public ErrorController(ILogger<ErrorController> logger, ODataErrorMapper exceptionToODataErrorMapper)
+        {
+            _logger = logger;
+            _odataErrorMapper = exceptionToODataErrorMapper;
+        }
+        
+        // ...
+
+        [Route("/error/401")]
+        public IActionResult HandleHttpStatus401()
+        {
+            _logger.TraceMethodEntry();
+
+            var error = new ODataError
+            {
+                ErrorCode = ErrorCodes.Unauthorized,
+                Message = "Unauthorized"
+            };
+
+            error.InnerError = new ODataInnerError();
+            error.InnerError.Properties["trace-id"] = new ODataPrimitiveValue(HttpContext.TraceIdentifier);
+     
+            return new ContentResult
+            {
+                Content = error.ToString(),
+                ContentType = "application/json",
+                StatusCode = StatusCodes.Status401Unauthorized
+            };
+        }
+
+        [Route("/error/404")]
+        public IActionResult HandleHttpStatus404()
+        {
+            _logger.TraceMethodEntry();
+
+            var error = new ODataError
+            {
+                ErrorCode = ErrorCodes.ResourceNotFound,
+                Message = "ResourceNotFound"
+            };
+            
+            error.InnerError = new ODataInnerError();
+            error.InnerError.Properties["trace-id"] = new ODataPrimitiveValue(HttpContext.TraceIdentifier);
+
+            return new ContentResult 
+            { 
+                Content = error.ToString(), 
+                ContentType = "application/json", 
+                StatusCode = StatusCodes.Status404NotFound 
+            };
+        }
+
+        [Route("/error/405")]
+        public IActionResult HandleHttpStatus405()
+        {
+            _logger.TraceMethodEntry();
+
+            var error = new ODataError
+            {
+                ErrorCode = ErrorCodes.MethodNotAllowed,
+                Message = "MethodNotAllowed"
+            };
+
+            error.InnerError = new ODataInnerError();
+            error.InnerError.Properties["trace-id"] = new ODataPrimitiveValue(HttpContext.TraceIdentifier);
+
+            return new ContentResult 
+            { 
+                Content = error.ToString(), 
+                ContentType = "application/json",
+                StatusCode = StatusCodes.Status405MethodNotAllowed
+            };
+        }
+
+        [Route("/error/429")]
+        public IActionResult HandleHttpStatus429()
+        {
+            _logger.TraceMethodEntry();
+
+            var error = new ODataError
+            {
+                ErrorCode = ErrorCodes.TooManyRequests,
+                Message = "TooManyRequests"
+            };
+
+            error.InnerError = new ODataInnerError();
+            error.InnerError.Properties["trace-id"] = new ODataPrimitiveValue(HttpContext.TraceIdentifier);
+
+            return new ContentResult
+            {
+                Content = error.ToString(),
+                ContentType = "application/json",
+                StatusCode = StatusCodes.Status429TooManyRequests
+            };
+        }
+    }
+}
+```
+
+If we now hit a non existing route, we get the following error response. Note, the empty values are set by 
+the `Microsoft.OData` implementation to provide backward-compatibility to their previous WCF 
+implementations.
+
+```json
+{
+    "error": {
+        "code": "ApiError_Routing_000001",
+        "message": "ResourceNotFound",
+        "target": "",
+        "details": {},
+        "innererror": {
+            "message": "",
+            "type": "",
+            "stacktrace": "",
+            "innererror": {},
+            "trace-id": "0HN0MDPKDBD80:00000003"
+        }
+    }
+}
+```
+
+### Adding a Global Exception Handler for Uncaught Exceptions ###
+
+There might be exceptions still bubbling up the stack, and we need to catch them. This is done by adding 
+an Error Handler. You can use an `IExceptionHandler` or an `Exception Handla Lambda` function. But I think 
+we can just reuse our `ErrorController` like this:
+
+```csharp
+app.UseExceptionHandler("/error");
+```
+
+And in the `ErrorController` we are reusing the `ODataErrorMapper` to convert the `Exception` into something sensible. 
 
 ```csharp
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 // ...
 
-namespace RebacExperiments.Server.Api.Services
+namespace RebacExperiments.Server.Api.Controllers
 {
-    public class TaskItemService : ITaskItemService
+    public class ErrorController : ControllerBase
     {
-        private readonly ILogger<TaskItemService> _logger;
+        private readonly ILogger<ErrorController> _logger;
 
-        private readonly ApplicationDbContext _applicationDbContext;
-        private readonly IAclService _aclService;
+        private readonly ODataErrorMapper _odataErrorMapper;
 
-        public TaskItemService(ILogger<TaskItemService> logger, ApplicationDbContext applicationDbContext, IAclService aclService)
+        public ErrorController(ILogger<ErrorController> logger, ODataErrorMapper exceptionToODataErrorMapper)
         {
             _logger = logger;
-            _applicationDbContext = applicationDbContext;
-            _aclService = aclService;
+            _odataErrorMapper = exceptionToODataErrorMapper;
         }
-        
-        // ...
 
-        public async Task<TaskItem> UpdateTaskItemAsync(TaskItem TaskItem, int currentUserId, CancellationToken cancellationToken)
+        [Route("/error")]
+        public IActionResult HandleError()
         {
             _logger.TraceMethodEntry();
 
-            bool isAuthorized = await _aclService.CheckUserObjectAsync(currentUserId, TaskItem, Actions.CanWrite, cancellationToken);
+            var exceptionHandlerFeature = HttpContext.Features.Get<IExceptionHandlerFeature>()!;
 
-            if (!isAuthorized)
+            var error = _odataErrorMapper.CreateODataErrorResult(HttpContext, exceptionHandlerFeature.Error);
+
+            return new ContentResult
             {
-                throw new EntityUnauthorizedAccessException()
-                {
-                    EntityName = nameof(TaskItem),
-                    EntityId = TaskItem.Id,
-                    UserId = currentUserId,
-                };
-            }
-
-            int rowsAffected = await _applicationDbContext.TaskItems
-                .Where(t => t.Id == TaskItem.Id && t.RowVersion == TaskItem.RowVersion)
-                .ExecuteUpdateAsync(setters => setters
-                    // ...
-                    .SetProperty(x => x.LastEditedBy, currentUserId), cancellationToken);
-
-            if (rowsAffected == 0)
-            {
-                throw new EntityConcurrencyException()
-                {
-                    EntityName = nameof(TaskItem),
-                    EntityId = TaskItem.Id,
-                };
-            }
-
-            return TaskItem;
+                Content = error.ToString(),
+                ContentType = "application/json",
+                StatusCode = StatusCodes.Status400BadRequest
+            };
         }
         
         // ...
@@ -833,89 +1172,96 @@ namespace RebacExperiments.Server.Api.Services
 }
 ```
 
-### Configuring ASP.NET Core Middleware for the OData Error Response ###
+Great!
 
-In an ASP.NET Core application, there are many places things might go wrong. The Cookie Authentication wants to directly 
-return a HTTP Status `401 (Unauthorized)` to the user, thus bypassing our Exceptions and Error Model. So there are certain 
-extension points we might need to throw exceptions at.
+### Conclusion ###
 
-For example in the `AuthenticationBuilder#AddCookie` extension method, we want to throw an `AuthenticationFailedException` 
-for the `OnRedirectToLogin` event. You shouldn't care (maybe you should) where the exception is caught. At some point an 
-Exception Handler catches it and converts it to our `ODataError` model accordingly:
-
-```csharp
-// Cookie Authentication
-builder.Services
-    .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-    .AddCookie(options =>
-    {
-        // ...
-        options.Events.OnRedirectToLogin = (context) => throw new AuthenticationFailedException(); // Handle this in the middleware ...
-    });
-```
-
-If we hit a Rate Limit for a user, we want to throw a `RateLimitException`. This Exception will then be turned into an 
-`ODataError` with a HTTP Status Code `429 (TooManyRequests)`. It can be done like this:
-
-```csharp
-// Add the Rate Limiting
-builder.Services.AddRateLimiter(options =>
-{
-    options.OnRejected = (ctx, cancellationToken) => throw new RateLimitException(); // Handle this in the middleware ...
-
-    // ...
-});
-```
-
-### Adding a Global Exception Handler for Uncaught Exceptions ###
-
-We can define a Global Exception Handler by using the `WebApplication#UseExceptionHandler` extension method. This method basically 
-catches everything that bubbled up all the way up. For OData we need to do some ASP.NET Core MVC `ActionContext` voodoo to make 
-ASP.NET Core OData happy, but you should be able to adapt it to your needs:
-
-```csharp
-// We want all Exceptions to return an ODataError in the Response. So all Exceptions should be handled and run through
-// this ExceptionHandler. This should only happen for things deep down in the ASP.NET Core stack, such as not resolving
-// routes.
-// 
-// Anything else should run through the Controllers and the Error Handlers are going to work there.
-//
-app.UseExceptionHandler(options =>
-{
-    options.Run(async context =>
-    {
-        // Get the ExceptionHandlerFeature, so we get access to the original Exception
-        var exceptionHandlerFeature = context.Features.GetRequiredFeature<IExceptionHandlerFeature>();
-        
-        // The ODataErrorHandler is required for adding an ODataError to all failed HTTP responses
-        var odataErrorHandler = context.RequestServices.GetRequiredService<ApplicationErrorHandler>();
-
-        // We can get the underlying Exception from the ExceptionHandlerFeature
-        var exception = exceptionHandlerFeature.Error;
-
-        // This isn't nice, because we probably shouldn't work with MVC types here. It would be better 
-        // to rewrite the ApplicationErrorHandler to working with the HttpResponse.
-        var actionContext = new ActionContext { HttpContext = context };
-
-        var actionResult = odataErrorHandler.HandleException(context, exception);
-
-        await actionResult
-            .ExecuteResultAsync(actionContext)
-            .ConfigureAwait(false);
-    });
-});
-```
+And that's it! I think we now have a consistent `ODataError` throughout our entire ASP.NET Core application. I am not proud 
+of the non-negotiated errors happening within the Middleware. But I didn't find a "simple" way to negotiate the response, when 
+all ASP.NET Core Odata `OutputFormatter` implementations require us to run on OData Routes. 
 
 ## Handling ASP.NET Core OData Errors in the Blazor Frontend ##
 
-I think it's a waste of time to hand-write an Api SDK for an API. Again, we can do it somewhat like Microsoft.
+### Generating the Api SDK ###
 
-The Microsoft Graph API is an OData API and it has thousands of endpoints. It's useful to understand how 
-Microsoft themselves are generating their Microsoft Graph SDK. While it's literally impossible to know 
-their exact stack, my best guess is, that it's the following two steps:
+I think it's a waste of time to hand-write an Api SDK for a RESTful API. 
 
-1. Convert the OData EDM Schema to an OpenAPI 3 Schema, using the `Microsoft.OpenApi.OData`.
+The Microsoft Graph API is an OData API and it has thousands of endpoints. It's useful to understand how Microsoft themselves are 
+generating their Microsoft Graph SDK. While it's literally impossible to know their exact stack, I can make an educated guess from 
+the GitHub Issues raised in Kiota:
+
+1. Convert the OData CSDL to an OpenAPI 3 Schema, using `Microsoft.OpenApi.OData`.
 2. Generate the Microsoft Graph SDK from the OpenAPI 3 Schema, using the Kiota CLI.
+
+So in our Backend we add an Endpoint `odata/openapi.json`, that converts from CSDL to OpenAPI 3.
+
+```csharp
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+// ...
+
+namespace RebacExperiments.Server.Api.Controllers
+{
+    /// <summary>
+    /// This Controller exposes an Endpoint for the OpenAPI Schema, which will be generated from an <see cref="IEdmModel"/>.
+    /// </summary>
+    public class OpenApiController : ControllerBase
+    {
+        private readonly ILogger<AuthenticationController> _logger;
+
+        private readonly ODataErrorMapper _odataErrorMapper;
+
+        public OpenApiController(ILogger<AuthenticationController> logger, ODataErrorMapper odataErrorMapper)
+        {
+            _logger = logger;
+            _odataErrorMapper = odataErrorMapper;
+        }
+
+        [HttpGet("odata/openapi.json")]
+        public IActionResult GetOpenApiJson()
+        {
+            _logger.TraceMethodEntry();
+
+            try
+            {
+                var edmModel = ApplicationEdmModel.GetEdmModel();
+
+                var openApiSettings = new OpenApiConvertSettings
+                {
+                    ServiceRoot = new("https://localhost:5000"),
+                    PathPrefix = "odata",
+                    EnableKeyAsSegment = true,
+                };
+
+                var openApiDocument = edmModel.ConvertToOpenApi(openApiSettings);
+
+                var openApiDocumentAsJson = openApiDocument.SerializeAsJson(OpenApiSpecVersion.OpenApi3_0);
+
+                return Content(openApiDocumentAsJson, "application/json");
+            }
+            catch (Exception exception)
+            {
+                return _odataErrorMapper.CreateODataErrorResult(HttpContext, exception);
+            }
+        }
+    }
+}
+```
+
+If we are running in Debug mode, we can use it to render a Swagger page.
+
+```csharp
+if (app.Environment.IsDevelopment() || app.Environment.IsStaging())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI(options =>
+    {
+        options.SwaggerEndpoint("https://localhost:5000/odata/openapi.json", "TaskManagement Service");
+    });
+}
+```
+
+We can then use Kiota to generate the C\# client from the OpenAPI Schema at `/odata/openapi.json`.
 
 Kiota is available at:
 
@@ -929,9 +1275,29 @@ It's a command line tool for generating API Clients and is described as ...
 > experience with all the features you expect from a high quality API SDK, but without 
 > having to learn a new library for every HTTP API.
 
-What's relevant for us in this article is, that it automatically generates the `ODataError` model for us. In 
-the generated files we can see our expected classes.
+By using a simple Powershell Script `makeSdk.ps1`, we can generate the C\# client.
 
+```powershell
+<# Licensed under the MIT license. See LICENSE file in the project root for full license information.#>
+
+# Kiota Executable
+$kiota_exe="kiota"
+
+# Parameters for the Code Generator
+$param_openapi_schema="https://localhost:5000/odata/openapi.json"
+$param_language="csharp"
+$param_namespace="RebacExperiments.Shared.ApiSdk"
+$param_log_level="Trace"
+$param_out_dir="${PSScriptRoot}/src/Shared/RebacExperiments.Shared.ApiSdk"
+
+# Construct the "kiota generate" Command
+$cmd="${kiota_exe} generate --openapi ${param_openapi_schema} --language ${param_language} --namespace-name ${param_namespace} --log-level ${param_log_level} --output ${param_out_dir}"
+
+# Run the the "kiota generate" Command
+Invoke-Expression $cmd
+```
+
+After executing the Script it generates the `ODataError` model for us. In the generated files we can see our expected classes.
 
 ```
 PS C:\Users\philipp\source\repos\bytefish\ODataRebacExperiments\src\Shared\RebacExperiments.Shared.ApiSdk> tree /f
@@ -956,9 +1322,8 @@ Nice!
 
 ### Translating the ODataErrors ###
 
-If you dig deep enough into the generated code, you will see, that it throws an Exception for failed 
-HTTP Requests, such as a `401 (Unauthorized)`. It specifically throws an `ODataError` exception, which 
-contains the `MainError` we want to inspect.
+If you dig deep enough into the generated code, you will see, that it throws an Exception for failed HTTP Requests, such as a `401 (Unauthorized)`. It 
+specifically throws an `ODataError` exception, which contains the `MainError` we want to inspect.
 
 ```csharp
 // <auto-generated/>
@@ -985,8 +1350,8 @@ namespace RebacExperiments.Shared.ApiSdk.Models.ODataErrors {
 }
 ```
 
-That also means: You should wrap all calls to the generated Kiota `ApiClient` inside a `try-catch` block. Blazor 
-doesn't have a notion of a "Global Exception Handler", so bubbling up exceptions probably isn't useful. 
+That also means: You should wrap all calls to the generated Kiota `ApiClient` inside a `try-catch` block. Blazor doesn't have a notion of 
+a "Global Exception Handler", so bubbling up exceptions probably isn't useful. Who is going to catch them? Your Error Boundary probably?
 
 We can then write an `ApplicationErrorTranslator`, that takes an `ODataError` and converts it into a nicely 
 localized error message. It uses an `IStringLocalizer<SharedResource>` to lookup the error code in a 
@@ -1171,5 +1536,7 @@ namespace RebacExperiments.Blazor.Pages
 
 ## Conclusion ##
 
-And that's it!
+And that's it! 
 
+This application is now a fine blueprint to quickly build a ASP.NET Core Backend with consistent error handling and a 
+nice way to quickly build API SDKs using Kiota. 
