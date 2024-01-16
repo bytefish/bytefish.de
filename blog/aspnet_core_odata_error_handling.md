@@ -160,69 +160,15 @@ The following table describe the semantics of the error resource type.
     </tbody>
 </table>
 
-## How to communicate failure with ASP.NET Core? ##
-
-[Result Types]: https://en.wikipedia.org/wiki/Result_type
-
-First of all, I did most of this a whopping nine years ago with the Nancy framework: 
-
-* [https://www.bytefish.de/blog/consistent_error_handling_with_nancy.html](https://www.bytefish.de/blog/consistent_error_handling_with_nancy.html)
-
-And it was so easy back then. It literally took me an hour to have it working for a RESTful API... with Content-Negotiation 
-for free. It was *obvious*. ASP.NET Core on the other hand... You've got a lot to research! 
-
-There are `ProblemDetails`, an `IProblemDetailsService`, `ProblemDetailsFactory`, `InvalidModelStateResponseFactory`, `IProblemDetailsWriter`, 
-`IExceptionFilter`, `IAsyncExceptionFilter`, `IExceptionHandler`, `ExeptionHandlerMiddleware`, `IExceptionHandlerFeature`, `StatusCodePages`, 
-`StatusCodePagesWithReExecute`, ... and the list goes on.
-
-And this becomes more of a problem, if you are working in a Framework like ASP.NET Core OData 8, which is, as of writing, tightly bound to ASP.NET Core MVC. 
-
-You have to understand, that ASP.NET Core comes with the concept of Middlewares, that are running before (or after) ASP.NET Core MVC kicks in. You can 
-now opt-in to features, instead of *all of them* being added without a way of opting out, like ASP.NET Core MVC did. That's great! But anything happening 
-outside the ASP.NET Core MVC pipeline, such as Routing, the Authentication Middleware, the Rate Limiting Middleware or Exception Handlers? 
-
-You have no more built-in things like Content-Negotiation, no access to the OData Output Formatters. 
-
-Just researching the topic made me feel tired. Why am I doing this? Should I just accept my failure? If I am in some kind of 
-"analysis paralysis", I try to work on different parts of the problem first. Maybe you get an idea, while working on other 
-parts? Maybe you'll find interesting alternatives?
-
-### Communicating Failure within the Business Logic ###
-
-So a question, that always comes up when building software is: How do you want to communicate errors and failure within your application?
-
-Do you throw Exceptions? People say they are costly, they are abused for control-flow, oh yeah, and sometimes they are called 
-the "type safe version of a `goto`". They are basically an unchecked devil. So what's the alternatives in C\#? Do you return 
-some kind of "generic error model" and pray the caller handles your errors accordingly? Subtle bugs incoming!
-
-Do you try to come up with something like "Discriminated Union Types" as a return value? A `Result<T>` is often hailed as the 
-saviour in the programming community, but I fail to see how it's going to work in C\#... a language still discussing how to 
-add them:
-
-* [https://github.com/dotnet/csharplang/issues/113](https://github.com/dotnet/csharplang/issues/113)
-
-One could make a distinction, that Exceptions shouldn't be abused for signaling "business logic errors" like a validation errors. And 
-if you are writing high-performance code, where throwing exceptions is super expensive... or if you are working in a language, that 
-has first-class support for Discriminated Union Types... by all means, go for alternatives and avoid Exceptions.
-
-But if you live in my C\# "Enterprise Software Development" world, where a Stacktrace might be invaluable to help diagnosing complex 
-bugs, then you are better off using Exceptions. I think as soon as C\# supports Discriminated Union Types to return errors, things 
-might change. As of now... Exceptions.
-
-### Communicating Failure within ASP.NET Core ###
-
-We should avoid bubbling up exceptions in the ASP.NET Core pipeline, as David Fowler states ...
-
-> Exceptions are extremely expensive, even more expensive than usual when they are in the ASP.NET Core pipeline which is fully 
-> asynchronous and nested (we're looking at ways to make this cheaper but it's still very expensive). In fact, there are teams 
-> with high scale services that see performance problems with exceptions and are trying to avoid them happening. There's 
-> no way we'd do #47020.
-
-So we should use the `IExceptionHandler` only for that, exceptional situations we cannot recover from. We should instead try to 
-catch `Exceptions` thrown in our services, directly where they happen, and translate them into something useful... instead of 
-sending them up the ASP.NET Core pipeline.
-
 ## ASP.NET Core Implementation ##
+
+There's a lot to research, when it comes to Error Handling in ASP.NET Core.
+
+There are `ProblemDetails`, an `IProblemDetailsService`, `ProblemDetailsFactory`, `InvalidModelStateResponseFactory`, 
+`IProblemDetailsWriter`, `IExceptionFilter`, `IAsyncExceptionFilter`, `IExceptionHandler`, `ExeptionHandlerMiddleware`, 
+`IExceptionHandlerFeature`, `StatusCodePages`, `StatusCodePagesWithReExecute`, ... and the list goes on.
+
+Let's go!
 
 ### Error Codes ###
 
@@ -291,6 +237,8 @@ namespace RebacExperiments.Server.Api.Infrastructure.Errors
 ```
 
 ### Defining an Exception Hiearchy ###
+
+I am going to use Exceptions to signal failure within the Business Logic, so I am defining an Exception hierarchy.
 
 In the application all exceptions derive from an `ApplicationErrorException`. The `ApplicationErrorException` transports an 
 `ErrorCode`, an `ErrorMessage` and a `HttpStatusCode` (this one makes things easier). Specialized `ApplicationErrorExceptions` 
@@ -407,6 +355,18 @@ namespace RebacExperiments.Server.Api.Infrastructure.Exceptions
     }
 }
 ```
+
+Now it's tempting to throw Exceptions all the way up to an `IExceptionHandler`, but we should avoid bubbling up exceptions in 
+the ASP.NET Core pipeline, as David Fowler states ...
+
+> Exceptions are extremely expensive, even more expensive than usual when they are in the ASP.NET Core pipeline which is fully 
+> asynchronous and nested (we're looking at ways to make this cheaper but it's still very expensive). In fact, there are teams 
+> with high scale services that see performance problems with exceptions and are trying to avoid them happening. There's 
+> no way we'd do #47020.
+
+So we should use the `IExceptionHandler` only for that, exceptional situations we cannot recover from. We should instead try to 
+catch `Exceptions` thrown in our services, directly where they happen, and translate them into something useful... instead of 
+sending them up the ASP.NET Core pipeline.
 
 Let's take a look at the `MeController` used in the application, which returns the information about the current user. We 
 basically wrap everything in the Action in a `try-catch` block, so the Exception doesn't bubble up to the ASP.NET Core 
