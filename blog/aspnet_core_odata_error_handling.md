@@ -36,12 +36,14 @@ Our errors should be modeled after the Microsoft Graph API. The Microsoft Graph 
 
 * [https://github.com/microsoft/api-guidelines/blob/vNext/graph/GuidelinesGraph.md#error-handling](https://github.com/microsoft/api-guidelines/blob/vNext/graph/GuidelinesGraph.md#error-handling)
 
-This, as far as I can see, is the OData Error response model as defined in the [OData JSON Format] specification:
+It's the same Error response model defined in the [OData JSON Format] specification:
 
 * [https://docs.oasis-open.org/odata/odata-json-format/v4.01/odata-json-format-v4.01.html#_Toc38457792](https://docs.oasis-open.org/odata/odata-json-format/v4.01/odata-json-format-v4.01.html#_Toc38457792)
 
-So the ASP.NET Core OData implementation already includes a similar `ODataError` model, and all of the Microsoft Graph API documentation 
-on Error handling somewhat applies to our OData applications as well. Great!
+The ASP.NET Core OData implementation already includes a similar `ODataError` model, and all of the Microsoft Graph API 
+documentation on Error handling somewhat applies to our OData applications as well.
+
+Great!
 
 ### HTTP status codes ###
 
