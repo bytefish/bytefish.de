@@ -1,4 +1,4 @@
-title: Consistent Error Hanling in an ASP.NET Core OData and Blazor Application
+title: Consistent Error Handling in an ASP.NET Core OData and Blazor Application
 date: 2024-01-16 10:04
 tags: odata, blazor, dotnet
 category: dotnet
@@ -6,14 +6,16 @@ slug: aspnet_core_odata_error_handling
 author: Philipp Wagner
 summary: This article shows how to add Consistent Error Handling to an ASP.NET Core OData Service and use it in a Blazor Application.
 
-In this article we are going to look at one of the most important, yet underrated, aspects of any application: Error 
-Handling and Error Messages. I am working on an ASP.NET Core OData application and want something similar to the 
-Microsoft Graph API Error Handling.
+In this article we are going to look at one of the most important, yet underrated, aspects of 
+any application: Error Handling and Error Messages. 
 
-Let's see how to do it!
+I am working on an ASP.NET Core OData application and want something similar to the Microsoft 
+Graph API Error Handling. This turned out to be not so easy with ASP.NET Core and I thought 
+it makes up for a nice article.
 
-At the end of the article we will have a flexible approach to Error Handling in our ASP.NET Core OData application 
-and will be able to localize the results in the Blazor Frontend, so they show up like this:
+At the end of the article we will have a flexible approach to Error Handling in our ASP.NET Core 
+OData application and will be able to localize the results in the Blazor Frontend, so they show 
+up like this:
 
 <div style="display:flex; align-items:center; justify-content:center;margin-bottom:15px;">
     <a href="/static/images/blog/aspnet_core_odata_error_handling/localized_error_message.jpg">
