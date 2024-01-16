@@ -1,10 +1,12 @@
-title: Consistent Error Hanling in an ASP.NET Core OData and Blazor Application
-date: 2024-01-16 10:04
-tags: odata, blazor, dotnet
+title: Blazor WebAssembly with Cookie Authentication
+date: 2024-01-11 11:46
+tags: blazor, dotnet
 category: dotnet
 slug: aspnet_core_odata_error_handling
 author: Philipp Wagner
-summary: This article shows how to add Consistent Error Handling to an ASP.NET Core OData Service and use it in a Blazor Application.
+summary: This article shows how to use Cookie Authentication with Blazor WebAssembly. 
+
+[Consistent Error Handling with NancyFx]: https://www.bytefish.de/blog/consistent_error_handling_with_nancy.html
 
 In this article we are going to look at one of the most important, yet underrated, aspects of any application: Error 
 Handling and Error Messages. I am working on an ASP.NET Core OData application and want something similar to the 
@@ -16,8 +18,8 @@ At the end of the article we will have a flexible approach to Error Handling in 
 and will be able to localize the results in the Blazor Frontend, so they show up like this:
 
 <div style="display:flex; align-items:center; justify-content:center;margin-bottom:15px;">
-    <a href="/static/images/blog/aspnet_core_odata_error_handling/localized_error_message.jpg">
-        <img src="/static/images/blog/aspnet_core_odata_error_handling/localized_error_message.jpg" alt="Final Swagger Endpoints">
+    <a href="/static/images/blog/odata_openapi_kiota_client_generation/blazor_data_grid.jpg">
+        <img src="/static/images/blog/odata_openapi_kiota_client_generation/blazor_data_grid.jpg" alt="Final Swagger Endpoints">
     </a>
 </div>
 
@@ -164,24 +166,23 @@ The following table describe the semantics of the error resource type.
 
 [Result Types]: https://en.wikipedia.org/wiki/Result_type
 
-First of all, I did most of this a whopping nine years ago with the Nancy framework: 
+First of all, I did most of this a whopping nine years ago with the Nancy framework. And it was so easy back then. It 
+literally took me an hour to have it working for a RESTful API... with Content-Negotiation for free. It was *obvious*. 
 
-* [https://www.bytefish.de/blog/consistent_error_handling_with_nancy.html](https://www.bytefish.de/blog/consistent_error_handling_with_nancy.html)
+ASP.NET Core on the other hand...
 
-And it was so easy back then. It literally took me an hour to have it working for a RESTful API... with Content-Negotiation 
-for free. It was *obvious*. ASP.NET Core on the other hand... You've got a lot to research! 
+You've got a lot to research! `ProblemDetails`, `IProblemDetailsService`, `ProblemDetailsFactory`, `InvalidModelStateResponseFactory`, 
+`IProblemDetailsWriter`, `IExceptionFilter`, `IAsyncExceptionFilter`, `IExceptionHandler`, `ExeptionHandlerMiddleware`, `IExceptionHandlerFeature`, 
+`StatusCodePages`, `StatusCodePagesWithReExecute`, ... and the list goes on.
 
-There are `ProblemDetails`, an `IProblemDetailsService`, `ProblemDetailsFactory`, `InvalidModelStateResponseFactory`, `IProblemDetailsWriter`, 
-`IExceptionFilter`, `IAsyncExceptionFilter`, `IExceptionHandler`, `ExeptionHandlerMiddleware`, `IExceptionHandlerFeature`, `StatusCodePages`, 
-`StatusCodePagesWithReExecute`, ... and the list goes on.
+And this becomes more of a problem, if you are working in a Framework like ASP.NET Core OData 8, which is, as of writing, tightly 
+bound to ASP.NET Core MVC. You have to understand, that ASP.NET Core comes with the concept of Middlewares, that are running before 
+ASP.NET Core MVC kicks in. You can now opt-in to features, instead of all of them being added without a way of opting out, like 
+ASP.NET Core MVC did. 
 
-And this becomes more of a problem, if you are working in a Framework like ASP.NET Core OData 8, which is, as of writing, tightly bound to ASP.NET Core MVC. 
-
-You have to understand, that ASP.NET Core comes with the concept of Middlewares, that are running before (or after) ASP.NET Core MVC kicks in. You can 
-now opt-in to features, instead of *all of them* being added without a way of opting out, like ASP.NET Core MVC did. That's great! But anything happening 
-outside the ASP.NET Core MVC pipeline, such as Routing, the Authentication Middleware, the Rate Limiting Middleware or Exception Handlers? 
-
-You have no more built-in things like Content-Negotiation, no access to the OData Output Formatters. 
+That's great! But anything happening outside the ASP.NET Core MVC pipeline, such as Routing, the Authentication Middleware, the 
+Rate Limiting Middleware or Exception Handlers? You have no more built-in things like Content-Negotiation, no access to the 
+OData Output Formatters. 
 
 Just researching the topic made me feel tired. Why am I doing this? Should I just accept my failure? If I am in some kind of 
 "analysis paralysis", I try to work on different parts of the problem first. Maybe you get an idea, while working on other 
@@ -1542,8 +1543,5 @@ This application is now a fine blueprint to quickly build an ASP.NET Core Backen
 nice way to quickly build API SDKs using Kiota. By using Blazor you don't have to switch between too many paradigms and 
 gain some kind of "Rapid Application Development".
 
-I am not saying all this in here is a perfect approach! But it is a very straight-forward one. And I think it can be 
-well understood, without diving too deep into all the ASP.NET Core Error Handling infrastructure.
-
-It might be interesting to see, how this can be built using the existing `ProblemDetails` infrastructure. I have the feeling, 
-that an `IProblemDetailsWriter` might be sufficient, but... it turned out to be way too complicated for me.
+I am not saying all this in here is a perfect approach, but it is a very straight-forward one. And I think it can be 
+well understood, without diving too deep into the ASP.NET Core Error Handling mechanisms.
