@@ -868,12 +868,12 @@ And add it to the Application Services.
 
 // ...
 
-builder.Services.Configure<ODataErrorMapperOptions>(o =>
+builder.Services.Configure<ExceptionToODataErrorMapperOptions>(o =>
 {
     o.IncludeExceptionDetails = builder.Environment.IsDevelopment() || builder.Environment.IsStaging();
 });
 
-builder.Services.AddSingleton<ODataErrorMapper>();
+builder.Services.AddSingleton<ExceptionToODataErrorMapper>();
 ```
 
 We can then inject it to the Controller and handle the exceptions, where they are thrown.
@@ -889,12 +889,12 @@ namespace RebacExperiments.Server.Api.Controllers
     {
         private readonly ILogger<UsersController> _logger;
 
-        private readonly ODataErrorMapper _odataErrorMapper;
+        private readonly ExceptionToODataErrorMapper _exceptionToODataErrorMapper;
 
-        public MeController(ILogger<UsersController> logger, ODataErrorMapper odataErrorMapper)
+        public MeController(ILogger<UsersController> logger, ExceptionToODataErrorMapper exceptionToODataErrorMapper)
         {
             _logger = logger;
-            _odataErrorMapper = odataErrorMapper;
+            _exceptionToODataErrorMapper = exceptionToODataErrorMapper;
         }
 
         [Authorize(Policy = Policies.RequireUserRole)]
@@ -909,7 +909,7 @@ namespace RebacExperiments.Server.Api.Controllers
             }
             catch (Exception exception)
             {
-                return _odataErrorMapper.CreateODataErrorResult(HttpContext, exception);
+                return _exceptionToODataErrorMapper.CreateODataErrorResult(HttpContext, exception);
             }
         }
     }
@@ -939,11 +939,7 @@ because none of the OData MVC Output Formatters can be used.
 ```csharp
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using Microsoft.AspNetCore.Diagnostics;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.OData;
-using RebacExperiments.Server.Api.Infrastructure.Errors;
-using RebacExperiments.Server.Api.Infrastructure.Logging;
+// ...
 
 namespace RebacExperiments.Server.Api.Controllers
 {
@@ -951,14 +947,14 @@ namespace RebacExperiments.Server.Api.Controllers
     {
         private readonly ILogger<ErrorController> _logger;
 
-        private readonly ODataErrorMapper _odataErrorMapper;
+        private readonly ExceptionToODataErrorMapper _exceptionToODataErrorMapper;
 
-        public ErrorController(ILogger<ErrorController> logger, ODataErrorMapper exceptionToODataErrorMapper)
+        public ErrorController(ILogger<ErrorController> logger, ExceptionToODataErrorMapper exceptionToODataErrorMapper)
         {
             _logger = logger;
-            _odataErrorMapper = exceptionToODataErrorMapper;
+            _exceptionToODataErrorMapper = exceptionToODataErrorMapper;
         }
-        
+
         // ...
 
         [Route("/error/401")]
@@ -974,6 +970,7 @@ namespace RebacExperiments.Server.Api.Controllers
 
             error.InnerError = new ODataInnerError();
             error.InnerError.Properties["trace-id"] = new ODataPrimitiveValue(HttpContext.TraceIdentifier);
+
      
             return new ContentResult
             {
@@ -1084,7 +1081,7 @@ we can just reuse our `ErrorController` like this:
 app.UseExceptionHandler("/error");
 ```
 
-And in the `ErrorController` we are reusing the `ODataErrorMapper` to convert the `Exception` into something sensible. 
+And in the `ErrorController` we are reusing the `ExceptionToODataErrorMapper` to convert the `Exception` into something sensible. 
 
 ```csharp
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
@@ -1097,12 +1094,12 @@ namespace RebacExperiments.Server.Api.Controllers
     {
         private readonly ILogger<ErrorController> _logger;
 
-        private readonly ODataErrorMapper _odataErrorMapper;
+        private readonly ExceptionToODataErrorMapper _exceptionToODataErrorMapper;
 
-        public ErrorController(ILogger<ErrorController> logger, ODataErrorMapper exceptionToODataErrorMapper)
+        public ErrorController(ILogger<ErrorController> logger, ExceptionToODataErrorMapper exceptionToODataErrorMapper)
         {
             _logger = logger;
-            _odataErrorMapper = exceptionToODataErrorMapper;
+            _exceptionToODataErrorMapper = exceptionToODataErrorMapper;
         }
 
         [Route("/error")]
@@ -1112,7 +1109,7 @@ namespace RebacExperiments.Server.Api.Controllers
 
             var exceptionHandlerFeature = HttpContext.Features.Get<IExceptionHandlerFeature>()!;
 
-            var error = _odataErrorMapper.CreateODataErrorResult(HttpContext, exceptionHandlerFeature.Error);
+            var error = _exceptionToODataErrorMapper.CreateODataErrorResult(HttpContext, exceptionHandlerFeature.Error);
 
             return new ContentResult
             {
@@ -1121,7 +1118,7 @@ namespace RebacExperiments.Server.Api.Controllers
                 StatusCode = StatusCodes.Status400BadRequest
             };
         }
-        
+
         // ...
     }
 }
