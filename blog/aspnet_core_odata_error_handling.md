@@ -176,21 +176,8 @@ Let's go!
 
 ### Error Codes ###
 
-By all means, you should use application-specific error codes. It's going to help debugging issues from users and 
-creates satisfied users. It helps your support team to quickly narrow down possible error reasons. If you achieve a 
-globally unique error code, then users could also search the documentation or the internet for them, thus 
-reducing pressure on your second level support.
-
-As a Front end developer and consumer of an API, you'll need error codes to localize error messages for users. You could 
-also localize error messages in the backend, but I didn't have good experience with it and the OData specification also 
-argue against it. Your milage may vary, though.
-
-So we start our journey with a static class `ErrorCodes` to hold error codes, which the OData API can return. I don't 
-want the Error Codes as an `enum`, because it needs to be more flexible. Think of separate modules, or some Stored 
-Procedure coughing up errors.
-
-In the example application, all Error Codes have the Scheme `ApiError_{Category}_{ErrorNumber}`, you could come up 
-with your own. Here are some errors I came up with, you could come up with more errors in your application.
+We start our journey with a static class `ErrorCodes` to hold error codes, which the OData API can return. In the example 
+application, all Error Codes have the Scheme `ApiError_{Category}_{ErrorNumber}`, you could come up with your own. 
 
 ```csharp
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
