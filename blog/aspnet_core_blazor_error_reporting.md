@@ -63,9 +63,9 @@ very creative, what I came up with here, but you get the point.
 ```markdown
 # Authentication Failure (ApiError_Auth_000001)
 
-The Authentication has failed. This indicates a problem logging into your account, which 
-may be due to an invalid combination of a username and password, or the account is not 
-permitted to log on.
+The Authentication has failed. This indicates a problem to log in to the application, which 
+may be due to an invalid combination of a username and password, or the account is not permitted 
+to log in.
 
 Please try to contact the support, if the problem persists.
 
