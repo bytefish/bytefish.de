@@ -12,10 +12,19 @@ application, and we have seen how to display localized messages in the Blazor We
 This is great!
 
 But imagine for a second you are using your software and you hit a bug. It's frustrating! It's even more 
-frustrating if you don't know what the error means. Am I at fault? Have I entered something wrong? Has 
+frustrating if you don't know what the error means. Am I at fault? Did I use a wrong input format? Has 
 someone given me an invalid link? Do I lack permissions to access the data?
 
 In this article we will see how to give the user additional feedback and help to understand errors.
+
+At the end of the article we will have a flexible way to provide error messages with a link to additional 
+information about possible error reasons. The documentation is written in Markdown:
+
+<div style="display:flex; align-items:center; justify-content:center;margin-bottom:15px;">
+    <a href="/static/images/blog/aspnet_core_blazor_error_reporting/login-error-with-help.jpg">
+        <img src="/static/images/blog/aspnet_core_blazor_error_reporting/login-error-with-help.jpg" alt="Login Screen with Error Message and Help Link">
+    </a>
+</div>
 
 The code has been taken from the Git Repository at:
 
@@ -179,6 +188,10 @@ namespace RebacExperiments.Blazor.Components
     }
 }
 ```
+
+The `IStaticAssetService` is an implementation by the Fluent UI team at:
+
+* [.../examples/Demo/Shared/Infrastructure/HttpBasedStaticAssetService.cs](https://github.com/microsoft/fluentui-blazor/blob/7b92a81d45f5370c00ddfc91e6deb5e3beb4f491/examples/Demo/Shared/Infrastructure/HttpBasedStaticAssetService.cs)
 
 ### An Error Details Page using the MarkdownSection ###
 
