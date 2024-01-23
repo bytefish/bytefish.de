@@ -252,7 +252,7 @@ namespace RebacExperiments.Blazor.Pages
 }
 ```
 
-You can now navigate to an Address like `/Help/Errors/ApiError_Auth_000001` and you will see beautiful Markdown being rendered:
+You can now navigate to an Address like `/Help/Errors/ApiError_RateLimit_000001` (Rate Limiting) and you will see beautiful Markdown being rendered:
 
 <div style="display:flex; align-items:center; justify-content:center;margin-bottom:15px;">
     <a href="/static/images/blog/aspnet_core_blazor_error_reporting/error-details-page.jpg">
