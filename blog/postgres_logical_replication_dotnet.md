@@ -1,4 +1,4 @@
-title: Using PostgreSQL Logical Replication for Data Change Events in .NET
+title: Using Postgres Logical Replication for Data Change Events in .NET
 date: 2024-04-02 12:26
 tags: postgres, dotnet
 category: dotnet
@@ -13,8 +13,8 @@ to connected client applications. But what happens, if you client application is
 notification? Exactely... it's not sent again.
 
 But PostgreSQL provides a feature called Logical Replication, which was originally developed to keep PostgreSQL 
-standby replicas synchronized. PostgreSQL buffers the data change messages in its Write Ahead Log as long as we 
-haven't acknowledged them. Unacknowledged Notifications will be re-sent to our application.
+standby replicas synchronized. PostgreSQL buffers the changes in its Write Ahead Log (WAL) as long as we haven't 
+acknowledged them. Unacknowledged Notifications will be re-sent to our application.
 
 The Npgsql documentation writes ...
 
@@ -134,9 +134,11 @@ $$ LANGUAGE plpgsql;
 
 ### Data Model ###
 
-Postgres Logical Replication Protocol, with all  is described at:
+The Postgres Logical Replication Protocol and the Data Message Flow is described at:
 
 * [https://www.postgresql.org/docs/current/protocol-logical-replication.html](https://www.postgresql.org/docs/current/protocol-logical-replication.html)
+
+It starts with ...
 
 > The logical replication protocol sends individual transactions one by one. This means that all 
 > messages between a pair of Begin and Commit messages belong to the same transaction. [...] Every 
