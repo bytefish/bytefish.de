@@ -1,5 +1,5 @@
-title: Implementing an Outbox Pattern with Postgres and .NET
-date: 2024-04-06 12:26
+title: Implementing the Outbox Pattern with Postgres and .NET
+date: 2024-04-08 13:42
 tags: postgres, dotnet
 category: dotnet
 slug: outbox_events_postgres_dotnet
@@ -44,10 +44,11 @@ So I've turned to OpenFGA, which is a Google Zanzibar implementation backed by O
 
 Now that we have decoupled Application and Authorization, we are distributed. It's 100% certain either 
 of the services will be down. The approach of writing relation tuples to both the application database 
-and OpenFGA database will fail. This can lead to inconsistencies, and these inconsistencies will be very, 
-very painful to debug. 
+and OpenFGA database without any kind of distributed transaction will fail. 
 
-I can feel the angry customer breathing down my neck. 
+It's probably not obvious at the beginning, but this will lead to inconsistencies and these inconsistencies 
+will be very, very painful to debug. I can feel the angry customer breathing down my neck, and so 
+should you.
 
 This problems is commonly known as a "Dual Write Problem". A "Dual Write" occurs, when you are changing 
 data in (at least) two distinct systems, without having a shared transaction. In our case it occurs, when 
