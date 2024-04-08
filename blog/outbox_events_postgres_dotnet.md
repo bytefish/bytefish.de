@@ -117,6 +117,8 @@ If you are now running a `docker-compose up` you should have a Postgres 16 insta
 
 ## Subscribing to Postgres Logical Replication with .NET ##
 
+### Creating the Data Model ###
+
 The Postgres Logical Replication Protocol and the Data Message Flow is described at:
 
 * [https://www.postgresql.org/docs/current/protocol-logical-replication.html](https://www.postgresql.org/docs/current/protocol-logical-replication.html)
@@ -272,7 +274,7 @@ namespace GitClub.Infrastructure.Postgres.Wal.Models
 }
 ```
 
-### Streaming Transactions with their Data Change Events ###
+### Creating the Postgres Replication Client ###
 
 As of now we'll need at least the database to connect to, and the names of the Publication and Replication Slot. For 
 lack of a better name I put them into a `PostgresReplicationClientOptions` class.
@@ -607,7 +609,7 @@ END;
 $$ LANGUAGE plpgsql;
 ```
 
-We then instruct Postgres to keepi the Write Ahead Logs (WAL) by creating a Replication Slot.
+We then instruct Postgres to keep the Write Ahead Logs (WAL) by creating a Replication Slot.
 
 ```plsql
 SELECT 'outbox_slot_init' FROM pg_create_logical_replication_slot('outbox_slot', 'pgoutput');
@@ -654,7 +656,7 @@ namespace GitClub.Database.Models
 ```
 
 The `OutboxEvent` now looks just like the table we have defined previously. Since we make the 
-assumption, that out Event Data is always given in JSON format, we can use a `JsonDocument` 
+assumption, that our Event Data is always given in JSON format, we can use a `JsonDocument` 
 directly.
 
 ```csharp
