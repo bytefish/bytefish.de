@@ -117,7 +117,7 @@ database tool of your choice.
 
 ```plsql
 CREATE TABLE IF NOT EXISTS gitclub.outbox_event (
-Creating the OutboxEvent Table('gitclub.outbox_event_seq'),
+    outbox_event_id integer default nextval('gitclub.outbox_event_seq'),
     correlation_id_1 varchar(2000) null,
     correlation_id_2 varchar(2000) null,
     correlation_id_3 varchar(2000) null,
