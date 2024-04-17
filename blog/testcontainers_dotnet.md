@@ -285,6 +285,8 @@ namespace GitClub.Tests
 }
 ```
 
+In the `IntegrationTestBase`, which is the base class for all integration tests to be written, we will then use `DockerContainers` in the assembly-level test initialization.
+
 ```csharp
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
