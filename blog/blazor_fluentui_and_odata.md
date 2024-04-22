@@ -4,13 +4,13 @@ tags: aspnetcore, csharp, blazor, odata
 category: blazor
 slug: blazor_fluentui_and_odata
 author: Philipp Wagner
-summary: This article shows how to use Fluent UI Blazor and OData to add Filtering to DataGrid. 
+summary: This article shows how to use Fluent UI Blazor, OData and Kiota to add Filtering to DataGrid. 
 
-This repository shows how to use Blazor, Fluent UI Blazor and OData to display data 
-in a Fluent UI Data Grid. It uses the WideWorldImporters Backend to provide the 
+This repository shows how to use Blazor, Fluent UI, OData and Kiota to display 
+data in a Fluent UI Data Grid. It uses the WideWorldImporters Backend to provide the 
 data.
 
-All code in this article can be found at:
+All code can be found in a Git repository at:
 
 * [https://github.com/bytefish/WideWorldImporters](https://github.com/bytefish/WideWorldImporters)
 
@@ -38,13 +38,7 @@ It's possible to provide filters for each column, we can for example set a filte
     </a>
 </div>
 
-## The Plan ##
-
-Everyone has a plan, and so do I.
-
-It's obvious from my previous articles, that I really like the Fluent UI Blazor component library. The library 
-is actively maintained by Microsoft and it allows you to build Blazor Frontends, that look and behave like the 
-Windows 11 User Interface.
+## What we are going to build ##
 
 A lot of applications I am working on need Data Grids and Fluent UI Blazor contains a great Data Grid. But 
 it lacks components to filter for data and this is a must have for a lot of applications. I understand the reasons 
@@ -82,124 +76,247 @@ When writing some Pseudo-Razor code, before starting, I came up with something s
 ```
 
 In this article I will walk you through building a Blazor Frontend, that enables you to show, filter 
-and sort data in a Data Grid. The Backend is an ASP.NET Core OData-based Webservice, so we have a 
-powerful and standardized language to query data sets.
+and sort data in a FluentUI Data Grid. The Backend is an ASP.NET Core OData-based Webservice, so we have 
+a powerful and standardized language to query data sets.
 
-## Running the OData Backend ##
+## WideWorldImporters ##
 
-This article uses an ASP.NET Core OData Backend developed in a previous article, to provide data for the Blazor frontend:
+It's always a very time-consuming task to build interesting datasets for articles. So I had a 
+look at the list of Microsoft SQL Server sample databases, because... I am sure a lot of thoughts 
+have been put into them:
 
-* [https://www.bytefish.de/blog/aspnet_core_odata_example.html](https://www.bytefish.de/blog/aspnet_core_odata_example.html)
+* [https://github.com/microsoft/sql-server-samples/tree/master/samples/databases/](https://github.com/microsoft/sql-server-samples/tree/master/samples/databases/)
 
-In the referenced article you will learn how to create the WideWorldImporters database and start the Backend. 
+What I like about the "Wide World Importers" sample database is, that it has been crafted to work well with 
+Scaffolding. It has Stored Procedures, Views, Temporal Tables, Spatial Types... basically a lot of things to 
+explore (and traps to fall into):
 
-All code and additional information for the Backend is available at:
+* [https://github.com/microsoft/sql-server-samples/tree/master/samples/databases/wide-world-importers](https://github.com/microsoft/sql-server-samples/tree/master/samples/databases/wide-world-importers)
 
-* [https://github.com/bytefish/WideWorldImporters](https://github.com/bytefish/WideWorldImporters)
+### About the Database ###
 
-## Generating the Blazor WebAssembly Project ##
+The Microsoft documentation describes the fictionous "Wide World Importers" as ...
 
-We are building a Blazor WebAssembly project, so we need to create it first. The Fluent UI Blazor library 
-comes with a set of project templates, that do the job for us. 
+> [...] a wholesale novelty goods importer and distributor operating from the San Francisco bay area.
+> 
+> As a wholesaler, WWI's customers are mostly companies who resell to individuals. WWI sells to retail customers 
+> across the United States including specialty stores, supermarkets, computing stores, tourist attraction shops, 
+> and some individuals. WWI also sells to other wholesalers via a network of agents who promote the products on 
+> WWI's behalf. While all of WWI's customers are currently based in the United States, the company is intending to 
+> push for expansion into other countries.
+>
+> WWI buys goods from suppliers including novelty and toy manufacturers, and other novelty wholesalers. They stock 
+> the goods in their WWI warehouse and reorder from suppliers as needed to fulfil customer orders. They also purchase 
+> large volumes of packaging materials, and sell these in smaller quantities as a convenience for the customers.
+>
+> Recently WWI started to sell a variety of edible novelties such as chilli chocolates. The company previously did 
+> not have to handle chilled items. Now, to meet food handling requirements, they must monitor the temperature in their 
+> chiller room and any of their trucks that have chiller sections.
 
-Switch to a terminal and run:
+I think it's a perfect non-trivial database to work with!
 
-```
-dotnet new installMicrosoft.Fast.Templates.FluentUI.nupkg
-```
+### Using Docker to Restore the Database Backup ###
 
-Next create a Blazor WebAssembly project `BlazorDataGridExample` by running:
+The easiest way to get started is to use Docker.
 
-```
-dotnet new fluentuiblazorwasm -o BlazorDataGrid
-```
+Go to the `docker` folder of the GitHub repository:
 
-I then used the Demo page of Fluent UI Blazor to have a *great* looking starting point, that already 
-comes with a responsive Navigation Bar and all components (such as Icons) wired up: 
+* [/docker](https://github.com/bytefish/WideWorldImporters/tree/main/docker)
 
-* [https://github.com/microsoft/fluentui-blazor/tree/main/examples](https://github.com/microsoft/fluentui-blazor/tree/main/examples)
+And run ...
 
-It's actually the 3.0.0 Preview version, but I think Fluent UI Blazor 3.0.0 will be released some time soon.
-
-## Generating the OData Client ##
-
-We start by creating a shared Class Library project called `BlazorDataGridExample.Shared`, which is 
-going to contain the OData Client, the Filter data model and some classes to translate the filters to 
-an OData query.
-
-You don't want to handwrite an OData Client, just use the `OData Connected Service 2022+` plugin, which 
-allows you to add a Connected Service and generate the Models and the OData Client:
-
-<div style="display:flex; align-items:center; justify-content:center;margin-bottom:15px;">
-    <a href="/static/images/blog/blazor_fluentui_and_odata/OData_Connected_Service_Install_Extension.jpg">
-        <img src="/static/images/blog/blazor_fluentui_and_odata/OData_Connected_Service_Install_Extension.jpg" alt="Final Result for the Data Grid">
-    </a>
-</div>
-
-Right click on the `BlazorDataGridExample.Shared` and select `Add -> Connected Service`:
-
-<div style="display:flex; align-items:center; justify-content:center;margin-bottom:15px;">
-    <a href="/static/images/blog/blazor_fluentui_and_odata/OData_Connected_Service_Add_Connected_Service.jpg">
-        <img src="/static/images/blog/blazor_fluentui_and_odata/OData_Connected_Service_Add_Connected_Service.jpg" alt="Final Result for the Data Grid">
-    </a>
-</div>
-
-Click on OData Connected Service in the `Other Services` section:
-
-<div style="display:flex; align-items:center; justify-content:center;margin-bottom:15px;">
-    <a href="/static/images/blog/blazor_fluentui_and_odata/OData_Connected_Service_Add_New_Connected_Service.jpg">
-        <img src="/static/images/blog/blazor_fluentui_and_odata/OData_Connected_Service_Add_New_Connected_Service.jpg" alt="Final Result for the Data Grid">
-    </a>
-</div>
-
-In the Endpoint Configuration we only need to set the URL to the OData Service $metadata, which is 
-`http://localhost:5000/odata/$metadata` for the WideWorldImporters OData Service:
-
-<div style="display:flex; align-items:center; justify-content:center;margin-bottom:15px;">
-    <a href="/static/images/blog/blazor_fluentui_and_odata/OData_Connected_Service_Endpoint_Configuration.jpg">
-        <img src="/static/images/blog/blazor_fluentui_and_odata/OData_Connected_Service_Endpoint_Configuration.jpg" alt="Final Result for the Data Grid">
-    </a>
-</div>
-
-You can then accept all other defaults and generate the code.
-
-This will generate the following code into you `BlazorDataGridExample.Shared` project:
-
-<div style="display:flex; align-items:center; justify-content:center;margin-bottom:15px;">
-    <a href="/static/images/blog/blazor_fluentui_and_odata/OData_Connected_Service_Generated_Code.jpg">
-        <img src="/static/images/blog/blazor_fluentui_and_odata/OData_Connected_Service_Generated_Code.jpg" alt="Final Result for the Data Grid">
-    </a>
-</div>
-
-Finally switch to the `BlazorDataGridExample` Blazor project and wire up the generated `Container` as a Scoped Service:
-
-```
-// OData
-builder.Services.AddScoped(sp =>
-{
-    return new WideWorldImportersService.Container(new Uri("http://localhost:5000/odata"))
-    {
-        HttpRequestTransportMode = HttpRequestTransportMode.HttpClient
-    };
-});
+```powershell
+docker compose up
 ```
 
-That's it for the OData Client!
+A container will be created, that has an SQL Server 2022+ (Port `1533`) and the Wide World Importers OLTP database.
 
-## Implementing Filtering and Sorting ##
+## Building high Quality API Sdks with Kiota ##
 
-Switch to the `BlazorDataGridExample.Shared` project and create a new Folder `Models`. This will hold the data model 
-for filtering and sorting. It should be possible to filter various column types, such as a boolean, text, number, date 
-or datetime types. 
+How are we going to query the WideWorldImporters OData Service?
 
-### Data Model ###
+The Microsoft Graph API is an OData API and it has thousands of endpoints. It's useful to understand how 
+Microsoft themselves are generating their Microsoft Graph SDK. While it's literally impossible to know 
+their exact stack, my best guess is, that it's the following two steps:
 
-That's the starting point, so add a `FilterTypeEnum`:
+1. Convert the EDMX Schema to an OpenAPI 3 Schema, using the `Microsoft.OpenApi.OData`.
+2. Generate the Microsoft Graph SDK from the OpenAPI 3 Schema, using the Kiota CLI.
+
+Kiota is available at:
+
+* [https://aka.ms/kiota](https://aka.ms/kiota)
+
+It's a command line tool for generating API Clients and is described as ...
+
+> [...] a command line tool for generating an API client to call any OpenAPI-described API 
+> you are interested in. The goal is to eliminate the need to take a dependency on a different 
+> API SDK for every API that you need to call. Kiota API clients provide a strongly typed 
+> experience with all the features you expect from a high quality API SDK, but without 
+> having to learn a new library for every HTTP API.
+
+### Generating the OpenAPI 3.0 Schema ###
+
+The WideWorldImporters Services uses the `Microsoft.OpenApi.OData` library to convert the OData `IEdmModel` to an 
+`OpenApiDocument`, and return it as JSON. The OpenAPI Schema can then be consumed by the Swagger UI and Kiota.
+
+The Server Code looks like this
 
 ```csharp
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace BlazorDataGridExample.Shared.Models
+// ...
+
+namespace WideWorldImporters.Server.Api.Controllers
+{
+    /// <summary>
+    /// This Controller exposes an Endpoint for the OpenAPI Schema, which will be generated from an <see cref="IEdmModel"/>.
+    /// </summary>
+    public class OpenApiController : ControllerBase
+    {
+        // ...
+        
+        [HttpGet("odata/openapi.json")]
+        public IActionResult GetOpenApiJson()
+        {
+            var edmModel = ApplicationEdmModel.GetEdmModel();
+
+            var openApiSettings = new OpenApiConvertSettings
+            {
+                ServiceRoot = new("https://localhost:5000"),
+                PathPrefix = "odata",
+                EnableKeyAsSegment = true,
+            };
+
+            var openApiDocument = edmModel.ConvertToOpenApi(openApiSettings);
+
+            var openApiDocumentAsJson = openApiDocument.SerializeAsJson(OpenApiSpecVersion.OpenApi3_0);
+
+            return Content(openApiDocumentAsJson, "application/json");
+        }
+    }
+}
+```
+
+In the Server we configure Swashbuckle to point to our OpenAPI Schema like this:
+
+```csharp
+// ...
+
+if (app.Environment.IsDevelopment() || app.Environment.IsStaging())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI(options =>
+    {
+        options.SwaggerEndpoint("https://localhost:5000/odata/openapi.json", "TaskManagement Service");
+    });
+}
+
+// ...
+```
+
+### Generate the C\# Model and ApiClient ###
+
+We can now use the OpenAPI endpoint `odata\openapi.json` of the WideWorldImporters Service to generate the client.
+
+We create a new Solution, that's going to hold the Generated SDK at:
+
+* `src/WideWorldImporters.Shared/WideWorldImporters.Shared.ApiSdk`
+
+In the Microsoft repositories we can often see a file called `makesdk.bat` in the root folder, so 
+we also create a `makesdk.bat` and put the kiota call in it, like this:
+
+```
+@echo off
+
+:: Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+:: Kiota Executable
+set KIOTA_EXECUTABLE=kiota
+
+:: Parameters for the Code Generator
+set PARAM_OPENAPI_SCHEMA="https://localhost:5000/odata/openapi.json"
+set PARAM_LANGUAGE=csharp
+set PARAM_NAMESPACE=WideWorldImporters.Shared.ApiSdk 
+set PARAM_OUT_DIR=%~dp0/src/WideWorldImporters.Shared/WideWorldImporters.Shared.ApiSdk
+set PARAM_LOG_LEVEL=Trace
+
+:: Run the "kiota generate" command to create the client
+%KIOTA_EXECUTABLE% generate^
+    --openapi %PARAM_OPENAPI_SCHEMA%^
+    --language %PARAM_LANGUAGE%^
+    --namespace-name %PARAM_NAMESPACE%^
+    --log-level %PARAM_LOG_LEVEL%^
+    --output %PARAM_OUT_DIR%
+```
+
+We are running it and it comes up with clean model classes and client. It even got the Enumerations right.
+
+```
+PS C:\Users\philipp\source\repos\...> tree /f
+Folder PATH listing for volume OS
+C:.
+│   ApiClient.cs
+│   kiota-lock.json
+│   WideWorldImporters.Shared.ApiSdk.csproj
+│
+├───Models
+│   ├───Edm
+│   │       Geometry.cs
+│   │       GeometryCollection.cs
+│   │       ...
+│   │
+│   └───WideWorldImportersService
+│       │   BuyingGroup.cs
+│       │   BuyingGroupCollectionResponse.cs
+│       │   City.cs
+│       │   CityCollectionResponse.cs
+│       │   ColdRoomTemperature.cs
+│       │   ColdRoomTemperatureCollectionResponse.cs
+│       │   ...
+│       │
+│       └───ODataErrors
+│               ErrorDetails.cs
+│               InnerError.cs
+│               MainError.cs
+│               ODataError.cs```
+
+### Registering the Kiota ApiClient and Dependencies ###
+
+And finally we can add all dependencies for the generated `ApiClient` in the `Program.cs`:
+
+```csharp
+// ...
+
+// Add the Kiota Client.
+builder.Services.AddScoped<IAuthenticationProvider, AnonymousAuthenticationProvider>();
+
+builder.Services
+    .AddHttpClient<IRequestAdapter, HttpClientRequestAdapter>(client => client.BaseAddress = new Uri("https://localhost:5000"))
+    .AddHttpMessageHandler<CookieHandler>();
+
+builder.Services.AddScoped<ApiClient>();
+
+// ...
+```
+
+We can now query the OData API from Blazor using the `ApiClient`!
+
+## Implementing Filtering and Sorting ##
+
+We now switch to the `WideWorldImporters.Client.Blazor` project and create a new Folder `Models`. This will hold the data model 
+for filtering and sorting. 
+
+### Data Model ###
+
+It should be possible to filter various column types, such as a boolean, text, number, date 
+or datetime. And that's the starting point. 
+
+We add an enumeration `FilterTypeEnum`, that holds all available filter types:
+
+```csharp
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+namespace WideWorldImporters.Client.Blazor.Shared.Models
 {
     public enum FilterTypeEnum
     {
@@ -220,7 +337,7 @@ right now to a `FilterOperatorEnum`.
 ```csharp
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace BlazorDataGridExample.Shared.Models
+namespace WideWorldImporters.Client.Blazor.Shared.Models
 {
     public enum FilterOperatorEnum
     {
@@ -259,7 +376,7 @@ We end up with something I called a `FilterDescriptor`, that looks like this:
 ```csharp
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace BlazorDataGridExample.Shared.Models
+namespace WideWorldImporters.Client.Blazor.Shared.Models
 {
     /// <summary>
     /// Filter Descriptor to filter for a property.
@@ -281,9 +398,6 @@ namespace BlazorDataGridExample.Shared.Models
         /// </summary>
         public abstract FilterTypeEnum FilterType { get; }
     }
-    
-    // ...
-    
 }
 ```
 
@@ -293,11 +407,8 @@ optional properties.
 ```csharp
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace BlazorDataGridExample.Shared.Models
+namespace WideWorldImporters.Client.Blazor.Shared.Models
 {
-
-    // ...
-
     /// <summary>
     /// A Boolean Filter to filter for Boolean values.
     /// </summary>
@@ -345,8 +456,48 @@ namespace BlazorDataGridExample.Shared.Models
         /// </summary>
         public override FilterTypeEnum FilterType => FilterTypeEnum.NumericFilter;
     }
-    
-    // ...
+
+    /// <summary>
+    /// Date Range Filter to filter between a start and end date.
+    /// </summary>
+    public class DateFilterDescriptor : FilterDescriptor
+    {
+        /// <summary>
+        /// Start Date for range filtering.
+        /// </summary>
+        public DateTimeOffset? StartDate { get; set; }
+
+        /// <summary>
+        /// End Date for range filtering.
+        /// </summary>
+        public DateTimeOffset? EndDate { get; set; }
+
+        /// <summary>
+        /// Gets the Filter Type.
+        /// </summary>
+        public override FilterTypeEnum FilterType => FilterTypeEnum.DateFilter;
+    }
+
+    /// <summary>
+    /// Date Range Filter to filter between a start and end date.
+    /// </summary>
+    public class DateTimeFilterDescriptor : FilterDescriptor
+    {
+        /// <summary>
+        /// Start Date for range filtering.
+        /// </summary>
+        public DateTimeOffset? StartDateTime { get; set; }
+
+        /// <summary>
+        /// End Date for range filtering.
+        /// </summary>
+        public DateTimeOffset? EndDateTime { get; set; }
+
+        /// <summary>
+        /// Gets the Filter Type.
+        /// </summary>
+        public override FilterTypeEnum FilterType => FilterTypeEnum.DateTimeFilter;
+    }
 }
 ```
 
@@ -359,7 +510,7 @@ Something, that's needed is a sort direction for sure.
 ```csharp
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace BlazorDataGridExample.Shared.Models
+namespace WideWorldImporters.Client.Blazor.Shared.Models
 {
     /// <summary>
     /// Sort Direction.
@@ -384,7 +535,7 @@ And we need something like a `SortColumn` to allow sorting by a property name an
 ```csharp
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace BlazorDataGridExample.Shared.Models
+namespace WideWorldImporters.Client.Blazor.Shared.Models
 {
     /// <summary>
     /// A SortColumn in a Filter.
@@ -399,7 +550,7 @@ namespace BlazorDataGridExample.Shared.Models
         /// <summary>
         /// Gets or sets the sort direction.
         /// </summary>
-        public required SortDirection SortDirection { get; set; }
+        public required SortDirectionEnum SortDirection { get; set; }
     }
 }
 ```
@@ -413,23 +564,23 @@ all `FilterDescriptor` with an `and` it looks rather simple.
 ```csharp
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using BlazorDataGridExample.Shared.Models;
 using System.Globalization;
+using WideWorldImporters.Client.Blazor.Shared.Models;
 
-namespace BlazorDataGridExample.Shared.Extensions
+namespace WideWorldImporters.Client.Blazor.Shared.OData
 {
     public static class ODataUtils
     {
         public static string Translate(List<FilterDescriptor> filterDescriptors)
         {
-            if(filterDescriptors.Count == 0)
+            if (filterDescriptors.Count == 0)
             {
                 return string.Empty;
             }
 
             List<string> filters = new();
 
-            foreach(FilterDescriptor filterDescriptor in filterDescriptors)
+            foreach (FilterDescriptor filterDescriptor in filterDescriptors)
             {
                 if (filterDescriptor.FilterOperator == FilterOperatorEnum.None)
                 {
@@ -452,22 +603,22 @@ namespace BlazorDataGridExample.Shared.Extensions
                 case FilterTypeEnum.BooleanFilter:
                     return TranslateBooleanFilter((BooleanFilterDescriptor)filterDescriptor);
                 case FilterTypeEnum.DateFilter:
-                    return TranslateDateFilter((DateFilterDescriptor) filterDescriptor);
+                    return TranslateDateFilter((DateFilterDescriptor)filterDescriptor);
                 case FilterTypeEnum.DateTimeFilter:
-                    return TranslateDateTimeFilter((DateTimeFilterDescriptor) filterDescriptor);
+                    return TranslateDateTimeFilter((DateTimeFilterDescriptor)filterDescriptor);
                 case FilterTypeEnum.StringFilter:
-                    return TranslateStringFilter((StringFilterDescriptor) filterDescriptor);
+                    return TranslateStringFilter((StringFilterDescriptor)filterDescriptor);
                 case FilterTypeEnum.NumericFilter:
-                    return TranslateNumericFilter((NumericFilterDescriptor) filterDescriptor);
+                    return TranslateNumericFilter((NumericFilterDescriptor)filterDescriptor);
                 default:
                     throw new ArgumentException($"Could not translate Filter Type '{filterDescriptor.FilterType}'");
-                
+
             }
         }
 
         private static string TranslateBooleanFilter(BooleanFilterDescriptor filterDescriptor)
         {
-            switch(filterDescriptor.FilterOperator)
+            switch (filterDescriptor.FilterOperator)
             {
                 case FilterOperatorEnum.IsNull:
                     return $"{filterDescriptor.PropertyName} eq null";
@@ -625,7 +776,7 @@ namespace BlazorDataGridExample.Shared.Extensions
 
         private static string? ToODataDateTime(DateTimeOffset? dateTimeOffset)
         {
-            if(dateTimeOffset == null)
+            if (dateTimeOffset == null)
             {
                 return null;
             }
@@ -648,7 +799,7 @@ Localization in ASP.NET Core and Blazor works something like this: You dependenc
 an `IStringLocalizer<TResource>`, where `TResource` is the name of the class associated 
 with the Resource. 
 
-For Blazor we start by adding the following `PropertyGroup` to the `BlazorDataGridExample.csproj` 
+For Blazor we start by adding the following `PropertyGroup` to the `WideWorldImporters.Client.Blazor.csproj` 
 project file, which instructs Blazor to load all Globalization data:
 
 ```xml
@@ -677,7 +828,7 @@ Next we create a new Folder `Localization` and add an empty class `SharedResourc
 ```csharp
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace BlazorDataGridExample.Localization
+namespace WideWorldImporters.Client.Blazor.Localization
 {
     public class SharedResource
     {
@@ -707,11 +858,14 @@ translations.
 ```csharp
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using BlazorDataGridExample.Localization;
+using WideWorldImporters.Client.Blazor.Shared.Models;
+using Microsoft.AspNetCore.Components;
+using Microsoft.Extensions.Localization;
+using WideWorldImporters.Client.Blazor.Localization;
 
-namespace BlazorDataGridExample.Components
+namespace WideWorldImporters.Client.Blazor.Components
 {
-    public partial class FilterSelector
+    public partial class FilterOperatorSelector
     {
         /// <summary>
         /// Localizer.
@@ -733,7 +887,7 @@ easily.
 
 using Microsoft.Extensions.Localization;
 
-namespace BlazorDataGridExample.Infrastructure
+namespace WideWorldImporters.Client.Blazor.Infrastructure
 {
     public static class StringLocalizerExtensions
     {
@@ -751,6 +905,8 @@ namespace BlazorDataGridExample.Infrastructure
 
 ### Blazor Filter Components ###
 
+#### Filter State ####
+
 The Filters defined for the DataGrid need to go *somewhere*. For the lack of a better name I called 
 the container a `FilterState`, which has methods to add and remove filters for a column. Please note, 
 that in this model you can only assign a single `FilterDescriptor` to a column.
@@ -758,12 +914,11 @@ that in this model you can only assign a single `FilterDescriptor` to a column.
 ```csharp
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using BlazorDataGridExample.Infrastructure;
-using BlazorDataGridExample.Shared.Models;
-using Microsoft.Fast.Components.FluentUI;
+using WideWorldImporters.Client.Blazor.Shared.Models;
 using System.Collections.Concurrent;
+using WideWorldImporters.Client.Blazor.Infrastructure;
 
-namespace BlazorDataGridExample.Components
+namespace WideWorldImporters.Client.Blazor.Components
 {
     /// <summary>
     /// Holds state to represent filters in a <see cref="FluentDataGrid{TGridItem}"/>.
@@ -820,14 +975,15 @@ given list of available operators. See how the `TranslateEnum` extension method 
 `IStringLocalizer<SharedResource>` injected into the component.
 
 ```razor
-@using BlazorDataGridExample.Shared.Models;
-@using BlazorDataGridExample.Infrastructure;
-@using Microsoft.Fast.Components.FluentUI.Utilities;
+@using WideWorldImporters.Client.Blazor.Shared.Models
+@using WideWorldImporters.Client.Blazor.Infrastructure
+
+@namespace WideWorldImporters.Client.Blazor.Components
 
 @inherits FluentComponentBase
 <FluentSelect @attributes="AdditionalAttributes" class="@Class" style="@Style"
               Id="@Id"
-              Title="@Title"
+              AriaLabel="@Title"
               Disabled="@Disabled"
               Items="@FilterOperators"
               OptionText="@(i => Loc.TranslateEnum(i))"
@@ -845,12 +1001,12 @@ The Code-Behind defines the variables the Razor component binds to and exposes a
 ```csharp
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using BlazorDataGridExample.Localization;
-using BlazorDataGridExample.Shared.Models;
+using WideWorldImporters.Client.Blazor.Shared.Models;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Localization;
+using WideWorldImporters.Client.Blazor.Localization;
 
-namespace BlazorDataGridExample.Components
+namespace WideWorldImporters.Client.Blazor.Components
 {
     public partial class FilterOperatorSelector
     {
@@ -859,7 +1015,7 @@ namespace BlazorDataGridExample.Components
         /// </summary>
         [Inject]
         public IStringLocalizer<SharedResource> Loc { get; set; } = default!;
-        
+
         /// <summary>
         /// Text used on aria-label attribute.
         /// </summary>
@@ -935,8 +1091,10 @@ select the operation, a value and two buttons to apply or reset a filter. We end
 following Razor.
 
 ```razor
-@using BlazorDataGridExample.Shared.Models;
-@using Microsoft.Fast.Components.FluentUI.Utilities;
+@using Microsoft.FluentUI.AspNetCore.Components
+@using WideWorldImporters.Client.Blazor.Shared.Models
+
+@namespace WideWorldImporters.Client.Blazor.Components
 
 @inherits FluentComponentBase
 
@@ -947,7 +1105,7 @@ following Razor.
             <FilterOperatorSelector FilterOperators="filterOperatorOptions" @bind-FilterOperator="_filterOperator"></FilterOperatorSelector>
         </FluentGridItem>
         <FluentGridItem xs="12">
-            <FluentLabel Typo="Typography.Body">Lower Value:</FluentLabel>
+            <FluentLabel Typo="Typography.Body">Value:</FluentLabel>
             <FluentTextField @bind-Value="_value" Disabled="IsValueDisabled()" Class="w-100"></FluentTextField>
         </FluentGridItem>
         <FluentGridItem xs="6">
@@ -966,10 +1124,10 @@ the `Apply` or `Reset` button.
 ```csharp
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using BlazorDataGridExample.Shared.Models;
+using WideWorldImporters.Client.Blazor.Shared.Models;
 using Microsoft.AspNetCore.Components;
 
-namespace BlazorDataGridExample.Components
+namespace WideWorldImporters.Client.Blazor.Components
 {
     public partial class StringFilter
     {
@@ -1074,8 +1232,10 @@ The `NumericFilter` allows to filter for numeric values or a range of values. It
 `int`, `decimal`, `double`, ...
 
 ```razor
-@using BlazorDataGridExample.Shared.Models;
-@using Microsoft.Fast.Components.FluentUI.Utilities;
+@using Microsoft.FluentUI.AspNetCore.Components
+@using WideWorldImporters.Client.Blazor.Shared.Models
+
+@namespace WideWorldImporters.Client.Blazor.Components
 
 @typeparam TItem
 
@@ -1111,10 +1271,10 @@ handled by the `FluentNumberField` component, that's built into Fluent UI Blazor
 ```csharp
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using BlazorDataGridExample.Shared.Models;
+using WideWorldImporters.Client.Blazor.Shared.Models;
 using Microsoft.AspNetCore.Components;
 
-namespace BlazorDataGridExample.Components
+namespace WideWorldImporters.Client.Blazor.Components
 {
     public partial class NumericFilter<TItem>
     {
@@ -1150,14 +1310,14 @@ namespace BlazorDataGridExample.Components
 
         private bool IsLowerValueDisabled()
         {
-            return  _filterOperator == FilterOperatorEnum.None
-                || _filterOperator == FilterOperatorEnum.IsNull 
+            return _filterOperator == FilterOperatorEnum.None
+                || _filterOperator == FilterOperatorEnum.IsNull
                 || _filterOperator == FilterOperatorEnum.IsNotNull;
         }
 
         private bool IsUpperValueDisabled()
         {
-            return (_filterOperator != FilterOperatorEnum.BetweenInclusive && _filterOperator != FilterOperatorEnum.BetweenExclusive);
+            return _filterOperator != FilterOperatorEnum.BetweenInclusive && _filterOperator != FilterOperatorEnum.BetweenExclusive;
         }
 
         protected double? _lowerValue { get; set; }
@@ -1175,23 +1335,23 @@ namespace BlazorDataGridExample.Components
 
         private void SetFilterValues()
         {
-            if(!FilterState.Filters.TryGetValue(PropertyName, out var filterDescriptor))
+            if (!FilterState.Filters.TryGetValue(PropertyName, out var filterDescriptor))
             {
                 _filterOperator = FilterOperatorEnum.None;
                 _lowerValue = null;
                 _upperValue = null;
 
-                return;            
+                return;
             }
 
             var numericFilterDescriptor = filterDescriptor as NumericFilterDescriptor;
 
-            if(numericFilterDescriptor == null)
+            if (numericFilterDescriptor == null)
             {
                 _filterOperator = FilterOperatorEnum.None;
                 _lowerValue = null;
                 _upperValue = null;
-                
+
                 return;
             }
 
@@ -1218,7 +1378,7 @@ namespace BlazorDataGridExample.Components
             _filterOperator = FilterOperatorEnum.None;
             _lowerValue = null;
             _upperValue = null;
-            
+
             await FilterState.RemoveFilterAsync(PropertyName);
         }
     }
@@ -1229,16 +1389,13 @@ namespace BlazorDataGridExample.Components
 
 Although the column type is a `DateTime`, your users often want to filter by a date and aren't interested 
 in the time component. So we will have `DateFilter` and a `DateTimeFilter` component, so you can chose which 
-filter to use, based on the use case.
-
-The `FluentDatePicker` is a new Fluent UI Blazor component, that allows to either enter the date by hand or select it 
-from a calendar view. 
-
-`FluentDatePicker` 
+filter to use, based on the use case. 
 
 ```razor
-@using BlazorDataGridExample.Shared.Models;
-@using Microsoft.Fast.Components.FluentUI.Utilities;
+@using Microsoft.FluentUI.AspNetCore.Components
+@using WideWorldImporters.Client.Blazor.Shared.Models
+
+@namespace WideWorldImporters.Client.Blazor.Components
 
 @inherits FluentComponentBase
 
@@ -1269,16 +1426,15 @@ from a calendar view.
 The Code-Behind is nothing special, because the `FluentDatePicker` takes care of all date conversions. I 
 am unsure about the timezone, but this is a point for later uses.
 
-
 ```csharp
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using BlazorDataGridExample.Shared.Models;
+using WideWorldImporters.Client.Blazor.Shared.Models;
 using Microsoft.AspNetCore.Components;
+using WideWorldImporters.Client.Blazor.Components;
 
-namespace BlazorDataGridExample.Components
+namespace WideWorldImporters.Client.Blazor.Components
 {
-
     public partial class DateFilter
     {
         /// <summary>
@@ -1333,7 +1489,7 @@ namespace BlazorDataGridExample.Components
 
         private bool IsEndDateTimeDisabled()
         {
-            return (_filterOperator != FilterOperatorEnum.BetweenInclusive && _filterOperator != FilterOperatorEnum.BetweenExclusive);
+            return _filterOperator != FilterOperatorEnum.BetweenInclusive && _filterOperator != FilterOperatorEnum.BetweenExclusive;
         }
 
         private void SetFilterValues()
@@ -1395,8 +1551,10 @@ to set the Date and the Time component of a `DateTime`. You can see, that both f
 `DateTime`.
 
 ```razor
-@using BlazorDataGridExample.Shared.Models;
-@using Microsoft.Fast.Components.FluentUI.Utilities;
+@using Microsoft.FluentUI.AspNetCore.Components
+@using WideWorldImporters.Client.Blazor.Shared.Models
+
+@namespace WideWorldImporters.Client.Blazor.Components
 
 @inherits FluentComponentBase
 
@@ -1437,10 +1595,11 @@ The Code-Behind is a Copy and Paste from the `DateFilter`.
 ```csharp
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using BlazorDataGridExample.Shared.Models;
+using WideWorldImporters.Client.Blazor.Shared.Models;
 using Microsoft.AspNetCore.Components;
+using WideWorldImporters.Client.Blazor.Components;
 
-namespace BlazorDataGridExample.Components
+namespace WideWorldImporters.Client.Blazor.Components
 {
     public partial class DateTimeFilter
     {
@@ -1496,7 +1655,7 @@ namespace BlazorDataGridExample.Components
 
         private bool IsEndDateTimeDisabled()
         {
-            return (_filterOperator != FilterOperatorEnum.BetweenInclusive && _filterOperator != FilterOperatorEnum.BetweenExclusive);
+            return _filterOperator != FilterOperatorEnum.BetweenInclusive && _filterOperator != FilterOperatorEnum.BetweenExclusive;
         }
 
         private void SetFilterValues()
@@ -1552,232 +1711,23 @@ namespace BlazorDataGridExample.Components
 ```
 
 
-## DataGrid ##
+## Using the Filters in the DataGrid ##
 
-### Understanding the OData Client ###
-
-We have installed the `OData Connected Service 2022+` extension and generate a Service client for 
-the WideWorldImporters OData Backend. But what did we actually generate there? Let's investigate the 
-parts important to us!
-
-When adding the Connected Service we have defined the URL to the EDM Schema. The EDM Schema metadata 
-contains all Entity Sets and Entity Types exposed by the ASP.NET Core OData Service. You can find 
-it by navigating to `http://localhost:5000/odata/$metadata`.
-
-<div style="display:flex; align-items:center; justify-content:center;margin-bottom:15px;">
-    <a href="/static/images/blog/blazor_fluentui_and_odata/Blazor_Shared_Generated_Files_Edmx_Schema.jpg">
-        <img src="/static/images/blog/blazor_fluentui_and_odata/Blazor_Shared_Generated_Files_Edmx_Schema.jpg" alt="Final Result for the Data Grid">
-    </a>
-</div>
-
-The `OData Connected Service 2022+` extension then generates all C\# entities and a `Container` from the 
-given EDM Schema. A `Container` is a `Microsoft.OData.Client.DataServiceContext`, that allows us to 
-execute queries against all Entity Sets and implements change tracking.
-
-<div style="display:flex; align-items:center; justify-content:center;margin-bottom:15px;">
-    <a href="/static/images/blog/blazor_fluentui_and_odata/Blazor_Shared_Generated_Files.jpg">
-        <img src="/static/images/blog/blazor_fluentui_and_odata/Blazor_Shared_Generated_Files.jpg" alt="Final Result for the Data Grid">
-    </a>
-</div>
-
-The whole concept is similar to the `DbContext`, you probably know from Entity Framework Core. You 
-can access the EntitySets as Properties and all entities are automatically tracked (or not 
-depending on the configuration in our dependency injection setup).
-
-We could for example write a Grid Component, that uses the container to return *all* customers in 
-a few lines of code. 
-
-```csharp
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
-
-// ...
-
-namespace BlazorDataGridExample.Pages
-{
-    public partial class CustomerDataGrid
-    {
-        /// <summary>
-        /// The <see cref="DataServiceContext"/> to access the OData Service.
-        /// </summary>
-        [Inject]
-        public required Container Container { get; set; }
-
-        // ...
-        
-        private List<Customer> GetAllCustomers()
-        {
-            return Container.Customers.ToList();
-        }
-    }
-}
-```
-
-The data in the Entity Set can be huge, so it needs to be sorted and paginated at least. The cool thing 
-is, that we can apply LINQ operators on the `DataServiceQuery<Customer>` (the actual thing the `Customer` 
-property returns).
-
-So to paginate the dataset and order it by the `CustomerId` we could come up with something like this:
-
-```csharp
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
-
-// ...
-
-namespace BlazorDataGridExample.Pages
-{
-    public partial class CustomerDataGrid
-    {
-        /// <summary>
-        /// The <see cref="DataServiceContext"/> to access the OData Service.
-        /// </summary>
-        [Inject]
-        public required Container Container { get; set; }
-
-        // ...
-        
-        private List<Customer> GetCustomers(int skip, int top)
-        {
-            return Container.Customers
-                .Skip(skip)
-                .Take(top)
-                .OrderBy(x => x.CustomerId)            
-                .ToList();
-        }
-    }
-}
-```
-
-With the knowledge in place we can write a class `ODataExtensions` to add some useful methods 
-to the `DataServiceQuery<T>`, that simplifies working with a Data Grid.
-
-```csharp
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
-
-using BlazorDataGridExample.Shared.Models;
-using Microsoft.OData.Client;
-
-namespace BlazorDataGridExample.Shared.Extensions
-{
-    /// <summary>
-    /// OData Extensions to simplify working with a Grid in a WinUI 3 application.
-    /// </summary>
-    public static class ODataExtensions
-    {
-        /// <summary>
-        /// Adds the $top and $skip clauses to the <see cref="DataServiceQuery"/> to add pagination.
-        /// </summary>
-        /// <remarks>
-        /// The <paramref name="pageNumber"/> starts with 1.
-        /// </remarks>
-        /// <typeparam name="TElement">Entity to query for</typeparam>
-        /// <param name="dataServiceQuery">The <see cref="DataServiceQuery"/> to modify</param>
-        /// <param name="pageNumber">Page Number (starting with 1)</param>
-        /// <param name="pageSize">Page size</param>
-        /// <returns><see cref="DataServiceQuery"/> with Pagination</returns>
-        public static DataServiceQuery<TElement> Page<TElement>(this DataServiceQuery<TElement> dataServiceQuery, int pageNumber, int pageSize)
-        {
-            var skip = (pageNumber - 1) * pageSize;
-            var top = pageSize;
-
-            var query = dataServiceQuery
-                .Skip(skip)
-                .Take(top);
-
-            return (DataServiceQuery<TElement>) query;
-        }
-
-        /// <summary>
-        /// Adds a $filter clause to a <see cref="DataServiceQuery"/>.
-        /// </summary>
-        /// <typeparam name="TElement">Entity to Filter</typeparam>
-        /// <param name="dataServiceQuery">DataServiceQuery to add the $filter clause to</param>
-        /// <param name="filters">Filters to apply</param>
-        /// <returns><see cref="DataServiceQuery"/> with filtering</returns>
-        public static DataServiceQuery<TElement> Filter<TElement>(this DataServiceQuery<TElement> dataServiceQuery, List<FilterDescriptor> filters)
-        {
-            if(filters.Count == 0)
-            {
-                return dataServiceQuery;
-            }
-
-            var filter = ODataUtils.Translate(filters);
-
-            if (!string.IsNullOrWhiteSpace(filter))
-            {
-                dataServiceQuery = dataServiceQuery.AddQueryOption("$filter", filter);
-            }
-
-            return dataServiceQuery;
-        }
-
-        /// <summary>
-        /// Adds the $orderby clause to a <see cref="DataServiceQuery"/>.
-        /// </summary>
-        /// <typeparam name="TElement">Entity to Query for</typeparam>
-        /// <param name="dataServiceQuery">DataServiceQuery to add the $orderby clause to</param>
-        /// <param name="columns">Columns to sort</param>
-        /// <returns><see cref="DataServiceQuery"/> with sorting</returns>
-        public static DataServiceQuery<TElement> SortBy<TElement>(this DataServiceQuery<TElement> dataServiceQuery, List<SortColumn> columns)
-        {
-            var sortColumns = GetOrderByColumns(columns);
-
-            if (!string.IsNullOrWhiteSpace(sortColumns))
-            {
-                dataServiceQuery = dataServiceQuery.AddQueryOption("$orderby", sortColumns);
-            }
-
-            return dataServiceQuery;
-        }
-
-        /// <summary>
-        /// Sorts the DataGrid by the specified column, updating the column header to reflect the current sort direction.
-        /// </summary>
-        /// <param name="columns">The Columns to sort.</param>
-        public static string GetOrderByColumns(List<SortColumn> columns)
-        {
-            var sortColumns = columns
-                // We need a Tag with the OData Path:
-                .Where(column => column.PropertyName != null)
-                // Turn into OData string:
-                .Select(column =>
-                {
-                    var sortDirection = column.SortDirection == SortDirectionEnum.Descending ? "desc" : "asc";
-
-                    return $"{column.PropertyName} {sortDirection}";
-                });
-
-            return string.Join(",", sortColumns);
-        }
-    }
-}
-```
-
-You'll notice, that I raved about LINQ and somehow build the OData `$filter` and `$orderby` parameters by hand. This is 
-because I want to keep it simple for the example and I am not *that* familiar with Razor to pass LINQ queries to the 
-components.
-
-### The Customer Data Grid ###
-
-We are very close to *finally* display the Fluent UI Data Grid and use our Filter components. The best place to understand 
-how the Data Grid works is the Demo page over at:
+The best place to understand how the FluentUI Data Grid works is the Demo page over at:
 
 * [https://www.fluentui-blazor.net/DataGrid](https://www.fluentui-blazor.net/DataGrid)
 
-The idea is to use the `ItemsProvider` of the `FluentDataGrid` for providing the data to it. For Pagination we can 
-use the `FluentPaginator` and pass it to the data grid. All `PropertyColumn` in FluentUI come with `ColumnOptions` 
-to add components for something like filtering.
-
-We end up with the Razor page like this. 
+So we add a page `CustomersDataGrid`, which provides the Data Grid for Customers and adds 
+a Filter Component on each of the rows. You can see how the `ApiClient` is injected into 
+the component, so we can query the OData API.
 
 ```razor
 @page "/Customers"
-@using BlazorDataGridExample.Components
-@using BlazorDataGridExample.Shared.Models;
-@using BlazorDataGridExample.Shared.Extensions;
-@using Microsoft.OData.Client;
-@using WideWorldImportersService;
+@using WideWorldImporters.Client.Blazor.Components
+@using WideWorldImporters.Shared.ApiSdk;
+@using WideWorldImporters.Shared.ApiSdk.Models.WideWorldImportersService;
 
-@inject WideWorldImportersService.Container Container
+@inject ApiClient ApiClient;
 
 <PageTitle>Customers</PageTitle>
 
@@ -1821,44 +1771,24 @@ else
 }
 ```
 
-There is an interesting thing to see in this example. You can also use properties of a navigation property. But you need 
-to make sure, that you address the Navigation Property by using the OData syntax, by using a `/` instead of a `.` (for example 
-`LastEditedByNavigation/PreferredName`).
-
-```razor
-<PropertyColumn Title="Last Edited By" Property="@(c => c!.LastEditedByNavigation!.PreferredName)" Sortable="true" Align=Align.Start>
-    <ColumnOptions>
-        <StringFilter PropertyName="LastEditedByNavigation/PreferredName" FilterState="FilterState"></StringFilter>
-    </ColumnOptions>
-</PropertyColumn>
-```
-
-In the Code-Behind we are now using the `Container` to query the data. The `ODataExtensions` are used for adding 
-pagination, sorting and filtering. Some converting between `FluentUI` and our data model is done, but it's left 
-out here on purpose.
+In the Code-Behind we are now connecting the `FluentDataGrid`, `PaginationState`, `FilterState` and `ApiClient` to query for the data. 
 
 ```csharp
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using BlazorDataGridExample.Components;
-using BlazorDataGridExample.Infrastructure;
-using BlazorDataGridExample.Shared.Extensions;
-using BlazorDataGridExample.Shared.Models;
 using Microsoft.AspNetCore.Components;
-using Microsoft.Fast.Components.FluentUI;
-using Microsoft.OData.Client;
-using WideWorldImportersService;
+using WideWorldImporters.Shared.ApiSdk.Models.WideWorldImportersService;
+using WideWorldImporters.Shared.ApiSdk;
+using WideWorldImporters.Client.Blazor.Shared.OData;
+using WideWorldImporters.Client.Blazor.Infrastructure;
+using WideWorldImporters.Client.Blazor.Extensions;
+using Microsoft.FluentUI.AspNetCore.Components;
+using WideWorldImporters.Client.Blazor.Components;
 
-namespace BlazorDataGridExample.Pages
+namespace WideWorldImporters.Client.Blazor.Pages
 {
-    public partial class CustomerDataGrid
+    public partial class CustomersDataGrid
     {
-        /// <summary>
-        /// The <see cref="DataServiceContext"/> to access the OData Service.
-        /// </summary>
-        [Inject]
-        public required Container Container { get; set; }
-
         /// <summary>
         /// Provides the Data Items.
         /// </summary>
@@ -1884,7 +1814,7 @@ namespace BlazorDataGridExample.Pages
         /// </summary>
         private readonly EventCallbackSubscriber<FilterState> CurrentFiltersChanged;
 
-        public CustomerDataGrid()
+        public CustomersDataGrid()
         {
             CurrentFiltersChanged = new(EventCallback.Factory.Create<FilterState>(this, RefreshData));
         }
@@ -1895,9 +1825,23 @@ namespace BlazorDataGridExample.Pages
             {
                 var response = await GetCustomers(request);
 
-                return GridItemsProviderResult.From(items: response.ToList(), totalItemCount: (int)response.Count);
+                if (response == null)
+                {
+                    return GridItemsProviderResult.From(items: new List<Customer>(), totalItemCount: 0);
+                }
+
+                var entities = response.Value;
+
+                if (entities == null)
+                {
+                    return GridItemsProviderResult.From(items: new List<Customer>(), totalItemCount: 0);
+                }
+
+                int count = response.GetODataCount();
+
+                return GridItemsProviderResult.From(items: entities, totalItemCount: count);
             };
-            
+
             return base.OnInitializedAsync();
         }
 
@@ -1915,27 +1859,260 @@ namespace BlazorDataGridExample.Pages
             return DataGrid.RefreshDataAsync();
         }
 
-        private async Task<QueryOperationResponse<Customer>> GetCustomers(GridItemsProviderRequest<Customer> request)
+        private async Task<CustomerCollectionResponse?> GetCustomers(GridItemsProviderRequest<Customer> request)
         {
-            var sorts = DataGridUtils.GetSortColumns(request);
+            // Extract all Sort Columns from the Blazor FluentUI DataGrid
+            var sortColumns = DataGridUtils.GetSortColumns(request);
+
+            // Extract all Filters from the Blazor FluentUI DataGrid
             var filters = FilterState.Filters.Values.ToList();
 
-            var dataServiceQuery = GetDataServiceQuery(sorts, filters, Pagination.CurrentPageIndex, Pagination.ItemsPerPage);
+            // Build the ODataQueryParameters using the ODataQueryParametersBuilder
+            var parameters = ODataQueryParameters.Builder
+                .SetPage(Pagination.CurrentPageIndex + 1, Pagination.ItemsPerPage)
+                .SetFilter(filters)
+                .AddExpand(nameof(Customer.LastEditedByNavigation))
+                .AddOrderBy(sortColumns)
+                .Build();
 
-            var result = await dataServiceQuery.ExecuteAsync(request.CancellationToken);
+            // Get the Data using the ApiClient from the SDK
+            return await ApiClient.Odata.Customers.GetAsync(request =>
+            {
+                request.QueryParameters.Count = true;
+                
+                request.QueryParameters.Top = parameters.Top;
+                request.QueryParameters.Skip = parameters.Skip;
 
-            return (QueryOperationResponse<Customer>)result;
+                if(parameters.Expand != null)
+                {
+                    request.QueryParameters.Expand = parameters.Expand;
+                }
+
+                if (!string.IsNullOrWhiteSpace(parameters.Filter))
+                {
+                    request.QueryParameters.Filter = parameters.Filter;
+                }
+
+                if (parameters.OrderBy != null)
+                {
+                    request.QueryParameters.Orderby = parameters.OrderBy;
+                }
+            });
+        }
+    }
+}
+```
+
+To get the `SortColumn` list from the `FluentDataGrid`, we are defining a `DataGridUtils` class.
+
+```csharp
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+using Microsoft.FluentUI.AspNetCore.Components;
+using WideWorldImporters.Client.Blazor.Shared.Models;
+
+namespace WideWorldImporters.Client.Blazor.Infrastructure
+{
+    /// <summary>
+    /// Utility methods for a <see cref="GridItemsProvider{TGridItem}"/>.
+    /// </summary>
+    public static class DataGridUtils
+    {
+        /// <summary>
+        /// Gets list of <see cref="SortColumn"/> from a given <see cref="GridItemsProvider{TGridItem}"/>.
+        /// </summary>
+        /// <typeparam name="TGridItem">Type of the GridItem</typeparam>
+        /// <param name="request">Request for providing data</param>
+        /// <returns>List of <see cref="SortColumn"/></returns>
+        public static List<SortColumn> GetSortColumns<TGridItem>(GridItemsProviderRequest<TGridItem> request)
+        {
+            var sortByProperties = request.GetSortByProperties();
+
+            return Converters.ConvertToSortColumns(sortByProperties);
+        }
+    }
+}
+```
+
+And I have defined a class `ODataQueryParameters`, which encapsulates all logic for translating the `FilterDescriptors` and `SortColumns`.
+
+```csharp
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+using WideWorldImporters.Client.Blazor.Shared.Models;
+
+namespace WideWorldImporters.Client.Blazor.Shared.OData
+{
+    /// <summary>
+    /// Holds the values for the OData $skip, $top, $filter and $orderby clauses.
+    /// </summary>
+    public class ODataQueryParameters
+    {
+        /// <summary>
+        /// Gets or sets the number of elements to skip.
+        /// </summary>
+        public int? Skip { get; set; }
+
+        /// <summary>
+        /// Gets or sets the number of elements to take.
+        /// </summary>
+        public int? Top { get; set; }
+
+        /// <summary>
+        /// Gets or sets the filter clause.
+        /// </summary>
+        public string? Filter { get; set; }
+
+        /// <summary>
+        /// Gets or sets the expand clause.
+        /// </summary>
+        public string[]? Expand { get; set; }
+
+        /// <summary>
+        /// Gets or sets the order by clause.
+        /// </summary>
+        public string[]? OrderBy { get; set; }
+
+        /// <summary>
+        /// Gets or sets the option to include the count (default: <see cref="true"/>).
+        /// </summary>
+        public bool IncludeCount { get; set; } = true;
+
+        /// <summary>
+        /// Gets an <see cref="ODataQueryParametersBuilder"/> to create <see cref="ODataQueryParameters"/>.
+        /// </summary>
+        public static ODataQueryParametersBuilder Builder => new ODataQueryParametersBuilder();
+    }
+
+    /// <summary>
+    /// A Builder to simplify building <see cref="ODataQueryParameters"/>.
+    /// </summary>
+    public class ODataQueryParametersBuilder
+    {
+        private int? _skip;
+        private int? _top;
+        private string? _filter;
+        private List<string> _orderby = new();
+        private List<string> _expand = new();
+
+        /// <summary>
+        /// Sets the $top and $skip clauses using the page information.
+        /// </summary>
+        /// <param name="pageNumber">Page number to request</param>
+        /// <param name="pageNumber">Page size to request</param>
+        /// <returns>The <see cref="ODataQueryParametersBuilder"/> with the $top and $skip clauses set</returns>
+        public ODataQueryParametersBuilder SetPage(int pageNumber, int pageSize)
+        {
+            _skip = (pageNumber - 1) * pageSize;
+            _top = pageSize;
+
+            return this;
         }
 
-        private DataServiceQuery<Customer> GetDataServiceQuery(List<SortColumn> sortColumns, List<FilterDescriptor> filters,  int pageNumber, int pageSize)
-        {
-            var query = Container.Customers.Expand(x => x.LastEditedByNavigation)
-                .Page(pageNumber + 1, pageSize)
-                .Filter(filters)
-                .SortBy(sortColumns)
-                .IncludeCount(true);
 
-            return (DataServiceQuery<Customer>)query;
+        /// <summary>
+        /// Sets the $filter clause.
+        /// </summary>
+        /// <param name="filterDescriptors">Filter Descriptors to filter for</param>
+        /// <returns>The <see cref="ODataQueryParametersBuilder"/> with the $filter clause set</returns>
+        public ODataQueryParametersBuilder SetFilter(List<FilterDescriptor> filterDescriptors)
+        {
+            _filter = ODataUtils.Translate(filterDescriptors);
+
+            return this;
+        }
+
+        /// <summary>
+        /// Sets the $expand clause.
+        /// </summary>
+        /// <param name="filterDescriptors">Filter Descriptors to filter for</param>
+        /// <returns>The <see cref="ODataQueryParametersBuilder"/> with the $filter clause set</returns>
+        public ODataQueryParametersBuilder AddExpand(string expand)
+        {
+            if (!_expand.Contains(expand))
+            {
+                _expand.Add(expand);
+            }
+
+            return this;
+        }
+
+        /// <summary>
+        /// Sets the $orderby clause.
+        /// </summary>
+        /// <param name="columns">List of Columns to sort by</param>
+        /// <returns>The <see cref="ODataQueryParametersBuilder"/> with the $orderby clause set</returns>
+        public ODataQueryParametersBuilder AddOrderBy(SortColumn column)
+        {
+            var orderByClause = GetOrderByColumns(new[] { column });
+
+            if (string.IsNullOrWhiteSpace(orderByClause))
+            {
+                _orderby.Add(orderByClause);
+            }
+
+            return this;
+        }
+
+        /// <summary>
+        /// Sets the $orderby clause.
+        /// </summary>
+        /// <param name="columns">List of Columns to sort by</param>
+        /// <returns>The <see cref="ODataQueryParametersBuilder"/> with the $orderby clause set</returns>
+        public ODataQueryParametersBuilder AddOrderBy(List<SortColumn> columns)
+        {
+            if (columns.Count == 0)
+            {
+                return this;
+            }
+
+            var orderbyClause = GetOrderByColumns(columns);
+
+            if (string.IsNullOrWhiteSpace(orderbyClause))
+            {
+                return this;
+            }
+
+            _orderby.Add(orderbyClause);
+
+            return this;
+        }
+
+        /// <summary>
+        /// Translates the given <paramref name="columns"/> to OData string.
+        /// </summary>
+        /// <param name="columns">Columns to convert into the OData $orderby string</param>
+        /// <returns>The $orderby clause from the given columns</returns>
+        private string GetOrderByColumns(ICollection<SortColumn> columns)
+        {
+            var sortColumns = columns
+                // We need a Tag with the OData Path:
+                .Where(column => column.PropertyName != null)
+                // Turn into OData string:
+                .Select(column =>
+                {
+                    var sortDirection = column.SortDirection == SortDirectionEnum.Descending ? "desc" : "asc";
+
+                    return $"{column.PropertyName} {sortDirection}";
+                });
+
+            return string.Join(",", sortColumns);
+        }
+
+        /// <summary>
+        /// Builds the <see cref="ODataQueryParameters"/> object with the clauses set.
+        /// </summary>
+        /// <returns><see cref="ODataQueryParameters"/> with the OData clauses applied</returns>
+        public ODataQueryParameters Build()
+        {
+            return new ODataQueryParameters
+            {
+                Skip = _skip,
+                Top = _top,
+                Filter = _filter,
+                Expand = _expand.Any() ? _expand.ToArray() : null,
+                OrderBy = _orderby.Any() ? _orderby.ToArray() : null,
+            };
         }
     }
 }
@@ -1946,17 +2123,7 @@ And we are done!
 ## Conclusion ##
 
 You now have a good idea how to add a powerful Data Grid to your Blazor application. It's easy to add your 
-own filter components and integrate them into it. If you come up with a better API surface and extensibility 
-I'd be glad to update the code.
+own filter components and integrate them into it. A lot of the code can be generalized I think to allow for 
+other protocols, but I don't feel the need.
 
-My personal opinion is, that Microsoft is sitting on something great with Fluent UI Blazor and OData. In this 
-article and my previous articles on OData Authorization and Relationship-based Access Control, you see me 
-trying to connect the dots for Rapid Application Development.
-
-By using OData you have a standardized and documented language. There is simply *no need* for (esoteric) 
-discussions about "RESTfuly-ness" of an API. A lot of problems have been solved for you (filtering, batching, 
-error models, ...)! 
-
-The `OData Connected Service 2022+` extension can be used to generate a high-quality service client. And nothing 
-needs to be handwritten. I want to update the Contracts? It's as simple as a right click to refresh my Connected 
-Service and I don't need to leave Visual Studio at all.
+My personal opinion is, that Microsoft is sitting on something great with Fluent UI Blazor and OData.
