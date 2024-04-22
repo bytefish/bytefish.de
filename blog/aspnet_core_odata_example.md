@@ -84,7 +84,19 @@ The Microsoft documentation describes the fictionous "Wide World Importers" as .
 
 I think it's a perfect non-trivial database to work with!
 
-### Importing the Database ###
+### Starting a SQL Server 2022 using Docker ###
+
+The easiest way to get started is to use Docker and go to the `docker` folder of the GitHub repository. 
+
+If you run 
+
+```powershell
+docker compose up
+```
+
+A new container will be created with the Wide World Importers OLTP database.
+
+### Importing the Database Backup Manually ###
 
 We are going to work with WideWorldImporters OLTP Database which is described at:
 
