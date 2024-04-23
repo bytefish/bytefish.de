@@ -278,7 +278,8 @@ C:.
 │               ErrorDetails.cs
 │               InnerError.cs
 │               MainError.cs
-│               ODataError.cs```
+│               ODataError.cs
+```
 
 ### Registering the Kiota ApiClient and Dependencies ###
 
