@@ -16,8 +16,8 @@ All code can be found in a Git repository at:
 
 ## Configuring HTTPS for Elasticsearch ##
 
-To secure the HTTPS communication with Elastsearch we need to generate a certificate 
-first. The easiest way to do this is to use the `elastsearch-certutil` command line 
+To secure the HTTPS communication with Elasticsearch we need to generate a certificate 
+first. The easiest way to do this is to use the `elasticsearch-certutil` command line 
 tool.
 
 We start by creating a Certificate Authority (CA):
