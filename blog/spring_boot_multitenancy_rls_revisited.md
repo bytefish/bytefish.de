@@ -2,15 +2,15 @@
 date: 2024-07-26 12:15
 tags: java, spring
 category: java
-slug: spring_boot_multitenancy
+slug: spring_boot_multitenancy_rls_revisited
 author: Philipp Wagner
 summary: This article shows a revisited implementation of Multitenancy with Spring Boot and PostgreSQL RLS.
 
-A few years ago I have written on implementing Multitenancy using PostgreSQL Row Level Security features:
+A few years ago I have written an article on implementing Multitenancy using PostgreSQL Row Level Security features:
 
 * [https://www.bytefish.de/blog/spring_boot_multitenancy_using_rls.html](https://www.bytefish.de/blog/spring_boot_multitenancy_using_rls.html)
 
-The article was and still is well received, so it's a good idea to revisit it.
+The article was (and still is) well received, so it's a good idea to revisit it.
 
 All code can be found in a Git repository at:
 
@@ -20,7 +20,7 @@ All code can be found in a Git repository at:
 
 [TOC]
 
-## What's the Problem ##
+## What's the Problem? ##
 
 In the previous implementation, the tenant identifier was passed to the PostgreSQL database using 
 a session variable. It was then used in the Row Level Security Policies like this:
@@ -33,7 +33,7 @@ CREATE POLICY tenant_isolation_policy ON sample.customer
 But what happens, if we are using pooled connections? There's a real chance, that we are accidentally 
 leaking the `app.current_user` setting across calls. We should find a more foolproof way for this!
 
-## What we are going to build ##
+## Using the current_user instead of a Session Variable ##
 
 Instead of using the `current_setting`, why not simply create a user for each tenant and 
 use the built-in `current_user`? For the connections we are simply creating two separate 
