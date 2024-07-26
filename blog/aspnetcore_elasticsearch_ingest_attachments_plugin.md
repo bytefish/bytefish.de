@@ -541,5 +541,4 @@ and populate it using the Attachments processor.
 
 You can see it in full action by running the ElasticsearchFulltextExample at:
 
-* []()
-
+* [https://github.com/bytefish/ElasticsearchFulltextExample](https://github.com/bytefish/ElasticsearchFulltextExample)
