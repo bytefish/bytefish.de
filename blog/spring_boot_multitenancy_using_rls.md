@@ -1,5 +1,5 @@
 ﻿title: Multitenancy with Spring Boot using Postgres Row Level Security
-date: 2020-06-24 17:45
+date: 2024-07-28 21:45
 tags: java, spring
 category: java
 slug: spring_boot_multitenancy_using_rls
@@ -8,11 +8,16 @@ summary: This article shows how to provide Multitenancy with Spring Boot using R
 
 In this post I will show you how to provide multitenancy in a Spring Boot application using Postgres Row Level Security Feature.
 
+All code can be found in a Git repository at:
+
+* [https://github.com/bytefish/SpringBootMultiTenancyUsingRowLevelSecurity](https://github.com/bytefish/SpringBootMultiTenancyUsingRowLevelSecurity)
+
+
 ## Table of contents ##
 
 [TOC]
 
-## What Is Multitenancy ##
+## What Is Multitenancy? ##
 
 As soon as your application has multiple customers you will need to implement some kind of multitenancy for your application. 
 
@@ -26,7 +31,7 @@ The best introduction to multitenant applications I have found is written by Mic
 
 * [https://docs.microsoft.com/en-us/azure/sql-database/sql-database-design-patterns-multi-tenancy-saas-applications](https://docs.microsoft.com/en-us/azure/sql-database/sql-database-design-patterns-multi-tenancy-saas-applications)
 
-## Multitenant Models ##
+### Multitenant Models ###
 
 There are several models to achieve multitenancy in an application:
 
@@ -47,163 +52,331 @@ Every model is a trade-off between isolation and resource sharing, which is expl
 
 * [Microsoft: Popular multi-tenant data models](https://docs.microsoft.com/en-us/azure/sql-database/sql-database-design-patterns-multi-tenancy-saas-applications#popular-multi-tenant-data-models)
 
-In a previous post I have shown how to implement a Database per Tenant approach, in this post we will see 
-how to provide Multitenancy in a Shared Database, Shared Schema. 
+In a previous post I have shown how to implement a Database per Tenant approach, in this post we will see how to provide Multitenancy in a Shared Database, Shared Schema. 
 
-The implementation idea is based on a great article by the Amazon Team:
+## Spring Boot Example Application: Managing Customers ##
 
-* [https://aws.amazon.com/blogs/database/multi-tenant-data-isolation-with-postgresql-row-level-security/](https://aws.amazon.com/blogs/database/multi-tenant-data-isolation-with-postgresql-row-level-security/)
+In this example we are going to develop a multitenant application to manage customers. At the same time 
+we will also dockerize the whole application and learn more about Spring Boot.
 
-## Spring Boot Example ##
+## Creating the PostgreSQL Database ####
 
-The GitHub repository for this post can be found at:
+The idea is to have two scripts `create_database.sql` for creating all relevant database 
+objects, such as users, tables and indices, and another `create_data.sql` script for 
+creating sample data.
 
-* [https://github.com/bytefish/SpringBootMultiTenancyUsingRowLevelSecurity](https://github.com/bytefish/SpringBootMultiTenancyUsingRowLevelSecurity)
+### create_database.sql ###
 
-In this example we are going to develop a multitenant application to manage customers.
+We start by creating a file `create_database.sql` and create two users for the `tenant_a` and `tenant_b`:
 
-### Creating the Databases ###
+```sql
+---------------------------
+-- Create the tenants   --
+---------------------------
+IF NOT EXISTS (
+  SELECT FROM pg_catalog.pg_roles
+  WHERE  rolname = 'tenant_a') THEN
 
-First of all create the user ``philipp`` for connecting to the databases:
+    CREATE ROLE tenant_a LOGIN PASSWORD 'tenant_a';
 
+END IF;
+
+IF NOT EXISTS (
+  SELECT FROM pg_catalog.pg_roles
+  WHERE  rolname = 'tenant_b') THEN
+
+    CREATE ROLE tenant_b LOGIN PASSWORD 'tenant_b';
+
+END IF;
 ```
-PS C:\Users\philipp> psql -U postgres
-psql (9.4.1)
-postgres=# CREATE USER philipp WITH PASSWORD 'test_pwd';
-CREATE ROLE
+
+Next we create the `multitenant` schema, where all our database objects will go:
+
+```sql
+---------------------------
+-- Create the Schema     --
+---------------------------
+CREATE SCHEMA IF NOT EXISTS multitenant;
 ```
 
-Then we can create the database and set the owner to ``philipp``:
+Then we create Sequences for all tables needing an auto-incrementing key:
 
+```sql
+----------------------------
+-- Create Sequences       --
+----------------------------
+CREATE SEQUENCE IF NOT EXISTS multitenant.customer_seq
+    start 38187
+    increment 1
+    NO MAXVALUE
+    CACHE 1;
+
+CREATE SEQUENCE IF NOT EXISTS multitenant.address_seq
+    start 38187
+    increment 1
+    NO MAXVALUE
+    CACHE 1;
 ```
-postgres=# CREATE DATABASE sampledb
-postgres-#   WITH OWNER philipp;
-CREATE DATABASE
+
+Then we are create the tables for the application:
+
+```sql
+----------------------------
+-- Create the Tables      --
+----------------------------
+CREATE TABLE IF NOT EXISTS multitenant.customer
+(
+	customer_id integer default nextval('multitenant.customer_seq'),
+	first_name VARCHAR(255) NOT NULL,
+	last_name VARCHAR(255) NOT NULL,
+	tenant_name VARCHAR(255) NOT NULL,
+    CONSTRAINT customer_pkey
+        PRIMARY KEY (customer_id)
+
+);
+
+CREATE TABLE IF NOT EXISTS multitenant.address
+(
+	address_id integer default nextval('multitenant.address_seq'),
+	name VARCHAR(255) NOT NULL,
+	street VARCHAR(255) NULL,
+	postalcode VARCHAR(255) NULL,
+	city VARCHAR(255) NULL,
+	country VARCHAR(255) NULL,
+	tenant_name VARCHAR(255) NOT NULL,
+    CONSTRAINT address_pkey
+        PRIMARY KEY (address_id)
+
+);
+
+CREATE TABLE IF NOT EXISTS multitenant.customer_address
+(
+	customer_id integer NOT NULL,
+	address_id integer NOT NULL,
+	tenant_name VARCHAR(255) NOT NULL,
+	CONSTRAINT fk_customer_address_customer
+		FOREIGN KEY(customer_id) 
+		REFERENCES multitenant.customer(customer_id),
+	CONSTRAINT fk_customer_address_address
+		FOREIGN KEY(address_id) 
+		REFERENCES multitenant.address(address_id)
+);
 ```
 
-#### SQL Script ####
+And enable Row Level Security for all tables:
 
-Now execute the following SQL Script to create the Schema, Tables and Policy. The script also create the 
-``app_user``, that is used to connect to the database. The repository also comes with a Batch Script and 
-a Shell Script to create the database.
+```sql
+---------------------------
+-- Enable RLS            --
+---------------------------
+ALTER TABLE multitenant.customer 
+    ENABLE ROW LEVEL SECURITY;
+
+ALTER TABLE multitenant.address 
+    ENABLE ROW LEVEL SECURITY;
+
+ALTER TABLE multitenant.customer_address 
+    ENABLE ROW LEVEL SECURITY;
+```
+
+The RLS Policy is, that a Tenant only has access to their own data. The Tenant name in the example equals the currently connected user:
+
+```sql
+---------------------------
+-- Create the RLS Policy --
+---------------------------
+DROP POLICY IF EXISTS tenant_customer_isolation_policy ON multitenant.customer;
+DROP POLICY IF EXISTS tenant_address_isolation_policy ON multitenant.address;
+DROP POLICY IF EXISTS tenant_customer_address_isolation_policy ON multitenant.customer_address;
+
+CREATE POLICY tenant_customer_isolation_policy ON multitenant.customer
+    USING (tenant_name = current_user);
+
+CREATE POLICY tenant_address_isolation_policy ON multitenant.address
+    USING (tenant_name = current_user);
+
+CREATE POLICY tenant_customer_address_isolation_policy ON multitenant.customer_address
+    USING (tenant_name = current_user);
+```
+
+Finally we need to grant both Tenants access to the database objects:
+
+```sql
+--------------------------------
+-- Grant Access to the Schema --
+--------------------------------
+GRANT USAGE ON SCHEMA multitenant TO tenant_a;
+GRANT USAGE ON SCHEMA multitenant TO tenant_b;
+
+-------------------------------------------------------
+-- Grant Access to multitenant.customer for Tenant A --
+-------------------------------------------------------
+GRANT ALL ON SEQUENCE multitenant.customer_seq TO tenant_a;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE multitenant.customer TO tenant_a;
+
+GRANT ALL ON SEQUENCE multitenant.address_seq TO tenant_a;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE multitenant.address TO tenant_a;
+
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE multitenant.customer_address TO tenant_a;
+
+-------------------------------------------------------
+-- Grant Access to multitenant.customer for Tenant B --
+-------------------------------------------------------
+GRANT ALL ON SEQUENCE multitenant.customer_seq TO tenant_b;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE multitenant.customer TO tenant_b;
+
+GRANT ALL ON SEQUENCE multitenant.address_seq TO tenant_b;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE multitenant.address TO tenant_b;
+
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE multitenant.customer_address TO tenant_b;
+```
+
+### create_data.sql ###
+
+In the `create_data.sql` file we are going to add two customers. The customer 
+"Philipp Wagner" is owned by Tenant A. The customer "John Wick" is owned by 
+Tenant B.
 
 ```sql
 DO $$
 BEGIN
 
----------------------------
--- Create the Schema     --
----------------------------
-IF NOT EXISTS (SELECT 1 FROM information_schema.schemata WHERE schema_name = 'sample') THEN
+----------------------------------------------
+-- Create the Sample Data for Tenant A      --
+----------------------------------------------
+INSERT INTO multitenant.customer(customer_id, first_name, last_name, tenant_name) 
+    VALUES 
+        (1, 'Philipp', 'Wagner', 'tenant_a')        
+    ON CONFLICT DO NOTHING;
 
-    CREATE SCHEMA sample;
+INSERT INTO multitenant.address(address_id, name, street, postalcode, city, country, tenant_name) 
+    VALUES 
+        (1, 'Philipp Wagner', 'Fakestreet 1', '12345', 'Faketown', 'Germany', 'tenant_a')        
+    ON CONFLICT DO NOTHING;
 
-END IF;
+INSERT INTO multitenant.customer_address(customer_id, address_id, tenant_name) 
+    VALUES 
+        (1, 1, 'tenant_a')        
+    ON CONFLICT DO NOTHING;
 
----------------------------
--- Create the Table      --
----------------------------
-IF NOT EXISTS (
-	SELECT 1 
-	FROM information_schema.tables 
-	WHERE  table_schema = 'sample' 
-	AND table_name = 'customer'
-) THEN
+----------------------------------------------
+-- Create the Sample Data for Tenant B      --
+----------------------------------------------
+INSERT INTO multitenant.customer(customer_id, first_name, last_name, tenant_name) 
+    VALUES 
+        (2, 'John', 'Wick', 'tenant_b')        
+    ON CONFLICT DO NOTHING;
 
-CREATE TABLE sample.customer
-(
-	customer_id SERIAL PRIMARY KEY,
-	first_name VARCHAR(255) NOT NULL,
-	last_name VARCHAR(255) NOT NULL,
-	tenant_name VARCHAR(255) NOT NULL
-);
+INSERT INTO multitenant.address(address_id, name, street, postalcode, city, country, tenant_name) 
+    VALUES 
+        (2, 'John Wick', 'Fakestreet 55', '00000', 'Fakecity', 'USA', 'tenant_b')        
+    ON CONFLICT DO NOTHING;
 
-END IF;
-
----------------------------
--- Enable RLS            --
----------------------------
-ALTER TABLE sample.customer ENABLE ROW LEVEL SECURITY;
-
----------------------------
--- Create the RLS Policy --
----------------------------
-
-DROP POLICY IF EXISTS tenant_isolation_policy ON sample.customer;
-
-CREATE POLICY tenant_isolation_policy ON sample.customer
-    USING (tenant_name = current_setting('app.current_tenant')::VARCHAR);
-
----------------------------
--- Create the app_user   --
----------------------------
-IF NOT EXISTS (
-  SELECT FROM pg_catalog.pg_roles
-  WHERE  rolname = 'app_user') THEN
-
-  CREATE ROLE app_user LOGIN PASSWORD 'app_user';
-END IF;
-
---------------------------------
--- Grant Access to the Schema --
---------------------------------
-GRANT USAGE ON SCHEMA sample TO app_user;
-GRANT ALL ON SEQUENCE sample.customer_customer_id_seq TO app_user;
-GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE sample.customer TO app_user;
+INSERT INTO multitenant.customer_address(customer_id, address_id, tenant_name) 
+    VALUES 
+        (2, 2, 'tenant_b')        
+    ON CONFLICT DO NOTHING;
 
 END;
 $$;
 ```
 
+### Adding a Docker Compose ###
+
+We are adding a `docker-compose.yml` and use the official PostgreSQL 16 image to spin up a PostgreSQL instance. Our 
+`sql` scripts are mounted to `/docker-entrypoint-initdb.d/`, so they are executed when the database is initialized.
+
+```yml
+networks:
+  services:
+
+services:
+  postgres:
+    image: postgres:16
+    container_name: postgres
+    networks:
+      - services
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=sampledb
+    volumes:
+      - ./sql/create_database.sql:/docker-entrypoint-initdb.d/1-create_database.sql
+      - ./sql/create_data.sql:/docker-entrypoint-initdb.d/2-create_data.sql
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    profiles:  ["postgres", "dev"]
+```
+
+You can now easily spin up the `sampledb` database by running:
+
+```
+docker compose --profile dev up
+```
+
+## Spring Boot Application ##
+
 ### Project Structure ###
 
 It's useful to take a look at the Project structure first:
 
-<a href="/static/images/blog/spring_boot_multitenancy_using_rls/project_structure.png">
-	<img class="mediacenter" src="/static/images/blog/spring_boot_multitenancy_using_rls/project_structure.png" alt="Project Overview" />
+<a href="/static/images/blog/spring_boot_multitenancy_using_rls/project_structure.jpg">
+	<img class="mediacenter" src="/static/images/blog/spring_boot_multitenancy_using_rls/project_structure.jpg" alt="Project Overview" />
 </a>
 
 The purpose of the various classes: 
 
-* ``async``
-    * ``AsyncConfig``
+* `async`
+    * `AsyncConfig`
         * Provides a TaskExecutor decorated for TenantAware Processing.
-    * ``TenantAwareTaskDecorator``
+    * `TenantAwareTaskDecorator`
         * Adds a Spring Boot ``TaskDecorator``, that passes the TenantName to a Child Thread.
-* ``core``
-    * ``ThreadLocalStorage``
-        * Stores the Tenant Identifier in a ``ThreadLocal``.
-* ``datasource``
-	* ``TenantAwareHikariDataSource``
-		* Overrides the ``HikariDataSource#getConnection`` method to set the Tenant information for the connection.
-* ``model``
-    * ``Customer``
-        * The ``Customer`` entity, which will be managed in each Tenant Database.
-* ``repositories``
-    * ``ICustomerRepository``
-        * A CRUD Repository to persist customers.
-* ``web``
-    * ``configuration``
-        * ``WebMvcConfig``
-            * Configures the Spring MVC interceptors.
-    * ``controllers``
-        * ``CustomerController``
+* `conf`
+    * `ApplicationConfiguration`
+        * The Application Configuration with all relevant configurations, which includes the Tenants.
+    * `TenantConfiguration`
+        * The Tenant Configuration with the DataSource Configuration for each Tenant.
+* `core`
+    * `TenantListener`
+        * A listener to set the Tenant on Insert, Update and Delete.
+    * `ThreadLocalStorage`
+        * Stores the Tenant Identifier in a `ThreadLocal`.
+* `datasource`
+	* `TenantAwareRoutingSource`
+        * Routes to the Tenants DataSource using the tenant name as routing key.
+* `model`
+    * `Customer`
+        * The `Customer` entity, which will be managed in each Tenant database.
+* `repositories`
+    * `ICustomerRepository`
+        * A JPA CRUD Repository to persist customers.
+* `web`
+    * `configuration`
+        * `WebMvcConfig`
+            * Configures the Spring MVC interceptor for extracting the Tenant name from the `X-TenantID` header.
+    * `controllers`
+        * `CustomerController`
             * Implements a REST Webservice for persisting and deleting Customers.
-    * ``converter``
-        * ``Converters``
+    * `converter`
+        * `Converters`
             * Converts between the Domain Model and the Data Transfer Object.
-    * ``interceptor``
-        * ``TenantNameInterceptor``
+    * `interceptors`
+        * `TenantNameInterceptor`
             * Extracts the Tenant Identifier from an incoming request.
+    * `model`
+        * The Data Transfer Objects (DTO) for the RESTful API endpoints
 
-### Infrastructure ###
+### Passing the Tenant Identifier through the Application ###
 
-#### Storing Tenant Identifier ####
-
-The ``ThreadLocalStorage`` class wraps a ``ThreadLocal`` to store the Tenant data in the current thread context.
+There are many ways to pass the Tenant identifier through the application. I've decided to use a `ThreadLocal` to do it 
+and wrap it in a class I've named `ThreadLocalStorage`.
 
 ```java
-// Copyright (c) Philipp Wagner. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 package de.bytefish.multitenancy.core;
@@ -223,150 +396,26 @@ public class ThreadLocalStorage {
 }
 ```
 
-#### Creating the TenantAwareHikariDataSource ####
+There are several ways to extract the tenant identifier from an incoming HTTP request (Header, Cookies, Access Token, ...). In this 
+example the client sends a HTTP Header with the name `X-TenantID` and the value is set to the tenant name. In Spring MVC we will then 
+implement a `HandlerInterceptor` to intercept an incoming request and extract data off of it.
+
+The `TenantNameInterceptor` reads the `X-TenantID` header and stores its value to the `ThreadLocalStorage`.
 
 ```java
-// Copyright (c) Philipp Wagner. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
-
-package de.bytefish.multitenancy.datasource;
-
-import com.zaxxer.hikari.HikariDataSource;
-import de.bytefish.multitenancy.core.ThreadLocalStorage;
-
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
-
-public class TenantAwareHikariDataSource extends HikariDataSource {
-
-    @Override
-    public Connection getConnection() throws SQLException {
-        Connection connection = super.getConnection();
-
-        try (Statement sql = connection.createStatement()) {
-            sql.execute("SET app.current_tenant = '" + ThreadLocalStorage.getTenantName() + "'");
-        }
-
-        return connection;
-    }
-
-    @Override
-    public Connection getConnection(String username, String password) throws SQLException {
-        Connection connection = super.getConnection(username, password);
-
-        try (Statement sql = connection.createStatement()) {
-            sql.execute("SET app.current_tenant = '" + ThreadLocalStorage.getTenantName() + "'");
-        }
-
-        return connection;
-    }
-
-}
-```
-
-### Domain Layer ###
-
-#### The Customer Entity ####
-
-The Customer Entity models the Customer entity.  We are using the annotations from the ``javax.persistence`` namespace to 
-annotate the domain model and set the database columns. Hibernate plays nicely with these annotations.
-
-```java
-// Copyright (c) Philipp Wagner. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
-
-package de.bytefish.multitenancy.model;
-
-import javax.persistence.*;
-
-@Entity
-@Table(schema = "sample", name = "customer")
-public class Customer {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "customer_id")
-    private Long id;
-
-    @Column(name = "first_name")
-    private String firstName;
-
-    @Column(name = "last_name")
-    private String lastName;
-
-    @Column(name = "tenant_name")
-    private String tenantName;
-
-    protected Customer() {
-    }
-
-    public Customer(Long id, String firstName, String lastName, String tenantName) {
-        this.id = id;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.tenantName = tenantName;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public String getTenantName() {
-        return tenantName;
-    }
-}
-```
-
-#### The Customer Repository ####
-
-Adding CRUD functionality is simple with Spring Boot, which provides a so called ``CrudRepository``. You simply extend from the 
-``CrudRepository`` interface and Spring automatically provides all CRUD functionality for your entity.
-
-```java
-// Copyright (c) Philipp Wagner. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
-
-package de.bytefish.multitenancy.repositories;
-
-import de.bytefish.multitenancy.model.Customer;
-import org.springframework.data.repository.CrudRepository;
-
-public interface ICustomerRepository extends CrudRepository<Customer, Long> {
-}
-```
-
-### The Web Layer ###
-
-#### Extracting the Tenant Information ####
-
-There are several ways to extract the tenant identifier from an incoming request. The Webservice client will send a HTTP Header 
-with the name ``X-TenantID`` in the example. In Spring MVC you can implement a ``HandlerInterceptorAdapter`` to intercept an 
-incoming request and extract data from it.
-
-The ``TenantNameInterceptor`` reads the ``X-TenantID`` header and stores its value in the ``ThreadLocalStorage``.
-
-```java
-// Copyright (c) Philipp Wagner. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 package de.bytefish.multitenancy.web.interceptors;
 
 import de.bytefish.multitenancy.core.ThreadLocalStorage;
-import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
+import org.springframework.web.servlet.HandlerInterceptor;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.web.servlet.ModelAndView;
 
-public class TenantNameInterceptor extends HandlerInterceptorAdapter {
+public class TenantNameInterceptor implements HandlerInterceptor {
+
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
@@ -391,16 +440,413 @@ public class TenantNameInterceptor extends HandlerInterceptorAdapter {
         // information:
         ThreadLocalStorage.setTenantName(null);
     }
+
 }
 ```
 
-#### Data Transfer Object and Converter ####
+To configure Spring MVC, we need to extend the `WebMvcConfigurer` and add the `TenantNameInterceptor` to the list of interceptors.
+
+```java
+// Copyright (c) Philipp Wagner. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+package de.bytefish.multitenancy.web.configuration;
+
+import de.bytefish.multitenancy.web.interceptors.TenantNameInterceptor;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+@Configuration
+public class WebMvcConfig implements WebMvcConfigurer {
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(new TenantNameInterceptor());
+    }
+
+}
+```
+
+The tenant name is then used as the lookup key for determining the target DataSource, we add a file `TenantAwareRoutingSource`:
+
+```java
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+package de.bytefish.multitenancy.datasource;
+
+import de.bytefish.multitenancy.core.ThreadLocalStorage;
+import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
+
+public class TenantAwareRoutingSource extends AbstractRoutingDataSource {
+
+    @Override
+    protected Object determineCurrentLookupKey() {
+        return ThreadLocalStorage.getTenantName();
+    }
+    
+}
+```
+
+Asynchronous Programming is a great way to build efficient services. We are working with a `ThreadLocal` 
+and if Spring Boot creates a new `Runnable` task, we need to also set the Tenant name in the new 
+Thread. 
+
+We can implement this by adding `TaskDecorator`:
+
+```java
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+package de.bytefish.multitenancy.async;
+
+import de.bytefish.multitenancy.core.ThreadLocalStorage;
+import org.springframework.core.task.TaskDecorator;
+
+public class TenantAwareTaskDecorator implements TaskDecorator {
+
+    @Override
+    public Runnable decorate(Runnable runnable) {
+        String tenantName = ThreadLocalStorage.getTenantName();
+        return () -> {
+            try {
+                ThreadLocalStorage.setTenantName(tenantName);
+                runnable.run();
+            } finally {
+                ThreadLocalStorage.setTenantName(null);
+            }
+        };
+    }
+}
+```
+
+And configuring the `ThreadPoolTaskExecutor` to use our `TenantAwareTaskDecorator`:
+
+```java
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+package de.bytefish.multitenancy.async;
+
+import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.AsyncConfigurerSupport;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+
+import java.util.concurrent.Executor;
+
+@Configuration
+public class AsyncConfig extends AsyncConfigurerSupport {
+
+    @Override
+    public Executor getAsyncExecutor() {
+        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+
+        executor.setCorePoolSize(7);
+        executor.setMaxPoolSize(42);
+        executor.setQueueCapacity(11);
+        executor.setThreadNamePrefix("TenantAwareTaskExecutor-");
+        executor.setTaskDecorator(new TenantAwareTaskDecorator());
+        executor.initialize();
+
+        return executor;
+    }
+
+}
+```
+
+### Application Configuration and Tenants ###
+
+Then we use the Spring Boot YAML Configuration and put it in the `/resources` folder, instead of using properties. The 
+`application.yml` has a `application` configuration section, which has the list of `tenants` with their connection 
+settings:
+
+```yaml
+application:
+  tenants:
+    - name: "tenant_a"
+      dbUrl: "jdbc:postgresql://localhost:5432/sampledb"
+      dbUser: "tenant_a"
+      dbPassword: "tenant_a"
+    - name: "tenant_b"
+      dbUrl: "jdbc:postgresql://localhost:5432/sampledb"
+      dbUser: "tenant_b"
+      dbPassword: "tenant_b"
+```
+
+We want it to be somewhat type-safe, so we map this to a `ApplicationConfiguration` class:
+
+```java
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+package de.bytefish.multitenancy.conf;
+
+import org.springframework.boot.context.properties.ConfigurationProperties;
+
+import java.util.List;
+
+@ConfigurationProperties(prefix = "application")
+public class ApplicationConfiguration {
+
+    private final List<TenantConfiguration> tenants;
+
+    public ApplicationConfiguration(List<TenantConfiguration> tenants) {
+        this.tenants = tenants;
+    }
+
+    public List<TenantConfiguration> getTenants() {
+        return tenants;
+    }
+}
+```
+
+The `TenantConfiguration` then holds the Tenants name and the database connection settings:
+
+```java
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+package de.bytefish.multitenancy.conf;
+
+public class TenantConfiguration {
+
+    private final String name;
+    private final String dbUrl;
+    private final String dbUser;
+    private final String dbPassword;
+
+    public TenantConfiguration(String name, String dbUrl, String dbUser, String dbPassword) {
+        this.name = name;
+        this.dbUrl = dbUrl;
+        this.dbUser = dbUser;
+        this.dbPassword = dbPassword;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getDbUrl() {
+        return dbUrl;
+    }
+
+    public String getDbUser() {
+        return dbUser;
+    }
+
+    public String getDbPassword() {
+        return dbPassword;
+    }
+}
+```
+
+Now what's left is to populate the `TenantAwareRoutingSource` with a `DataSource` for each Tenant. So in the 
+`SampleSpringApplication` we use the `ApplicationConfiguration` to build the `TenantAwareRoutingSource`, which 
+is then used by JPA somewhere down the line. 
+
+```java
+@SpringBootApplication
+@EnableAsync
+@EnableTransactionManagement
+@ConfigurationPropertiesScan
+public class SampleSpringApplication {
+
+	public static void main(String[] args) {
+		SpringApplication.run(SampleSpringApplication.class, args);
+	}
+
+	@Bean
+	public DataSource dataSource(ApplicationConfiguration applicationConfiguration) {
+
+		AbstractRoutingDataSource dataSource = new TenantAwareRoutingSource();
+
+		Map<Object,Object> targetDataSources = new HashMap<>();
+
+		for(var tenantConfiguration : applicationConfiguration.getTenants()) {
+			// Builds the DataSource for the Tenant
+			var tenantDataSource = buildDataSource(tenantConfiguration);
+			// Puts it into the DataSources available for routing a Request
+			targetDataSources.put(tenantConfiguration.getName(), tenantDataSource);
+		}
+
+		dataSource.setTargetDataSources(targetDataSources);
+
+		dataSource.afterPropertiesSet();
+
+		return dataSource;
+	}
+
+	public DataSource buildDataSource(TenantConfiguration tenantConfiguration) {
+		HikariDataSource dataSource = new HikariDataSource();
+
+		dataSource.setInitializationFailTimeout(0);
+		dataSource.setMaximumPoolSize(5);
+		dataSource.setDataSourceClassName("org.postgresql.ds.PGSimpleDataSource");
+		dataSource.addDataSourceProperty("url", tenantConfiguration.getDbUrl());
+		dataSource.addDataSourceProperty("user", tenantConfiguration.getDbUser());
+		dataSource.addDataSourceProperty("password", tenantConfiguration.getDbPassword());
+
+		return dataSource;
+	}
+}
+```
+
+### Domain Model, JPA CrudRepositories and Controllers ###
+
+All Entities, that are bound to a specific tenant, derive from a common `TenantAware` interface:
+
+```java
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+package de.bytefish.multitenancy.core;
+
+import de.bytefish.multitenancy.model.Tenant;
+
+public interface TenantAware {
+
+    Tenant getTenant();
+
+    void setTenant(Tenant tenant);
+}
+```
+
+The `Customer` class then implements the `TenantAware` interface and maps to the `customer` database table. We also 
+annotates it with a `TenantListener` Entity Listener.
+
+```java
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+package de.bytefish.multitenancy.model;
+
+import de.bytefish.multitenancy.core.TenantAware;
+import de.bytefish.multitenancy.core.TenantListener;
+
+import jakarta.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
+
+@Entity
+@Table(schema = "multitenant", name = "customer")
+@EntityListeners(TenantListener.class)
+public class Customer implements TenantAware {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "customer_id")
+    private Long id;
+
+    @Embedded
+    private Tenant tenant;
+
+    @Column(name = "first_name")
+    private String firstName;
+
+    @Column(name = "last_name")
+    private String lastName;
+
+    @OneToMany(mappedBy = "customer", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    List<CustomerAddress> addresses = new ArrayList<>();
+
+    public Customer() {
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public List<CustomerAddress> getAddresses() {
+        return addresses;
+    }
+
+    public void setAddresses(List<CustomerAddress> addresses) {
+        this.addresses = addresses;
+    }
+
+    @Override
+    public Tenant getTenant() {
+        return tenant;
+    }
+
+    @Override
+    public void setTenant(Tenant tenant) {
+        this.tenant = tenant;
+    }
+}
+```
+
+An `EntityListener` is somewhat the JPA equivalent to a Database Trigger, and can be configured to perform an action on insert, 
+update or delete. In our Multitenant Application, we need to set the Tenant for all entities, that are marked as `TenantAware`, 
+before inserting them:
+
+```java
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+package de.bytefish.multitenancy.core;
+
+import de.bytefish.multitenancy.model.Tenant;
+
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreRemove;
+import jakarta.persistence.PreUpdate;
+
+public class TenantListener {
+
+    @PreUpdate
+    @PreRemove
+    @PrePersist
+    public void setTenant(TenantAware entity) {
+        Tenant tenant = entity.getTenant();
+
+        if(tenant == null) {
+            tenant = new Tenant();
+
+            entity.setTenant(tenant);
+        }
+
+        final String tenantName = ThreadLocalStorage.getTenantName();
+
+        tenant.setTenantName(tenantName);
+    }
+}
+```
+
+Adding CRUD functionality then is simple with Spring Boot, which provides a so called `CrudRepository`. You 
+simply extend from the `CrudRepository` interface and Spring automatically provides all CRUD functionality 
+for your entity.
+
+```java
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+package de.bytefish.multitenancy.repositories;
+
+import de.bytefish.multitenancy.model.Customer;
+import org.springframework.data.repository.CrudRepository;
+
+public interface ICustomerRepository extends CrudRepository<Customer, Long> {
+}
+```
 
 You should always separate your Web Layer from the Domain Layer. In an ideal world Web Layer should only care about receiving and 
 sending Data Transfer Objects to the consumer. It should know how to convert between the Data Transfer Object and the Domain model, 
 so it can use the Domain repositories.
 
-The ``CustomerDto`` Data Transfer Object uses Jackson annotations to provide the JSON mapping.
+The `CustomerDto` doesn't contain a tenant name property and it uses Jackson annotations to provide the JSON mapping.
 
 ```java
 // Copyright (c) Philipp Wagner. All rights reserved.
@@ -443,10 +889,9 @@ public class CustomerDto {
 }
 ```
 
-And the ``Converters`` class provides two methods to convert between the ``CustomerDto`` and the ``Customer`` model.
+The `Converters` class provides two methods to convert between the `CustomerDto` and the `Customer` model.
 
 ```java
-// Copyright (c) Philipp Wagner. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 package de.bytefish.multitenancy.web.converter;
@@ -488,11 +933,9 @@ public class Converters {
 }
 ```
 
-#### Controller ####
-
-Implementing the RESTful Webservice with Spring MVC requires us to implement a ``RestController``. We are using 
-the ``ICustomerRepository`` for querying the database and using the ``Converters`` to convert between both 
-representations. 
+Implementing the RESTful Webservice with Spring MVC requires us to implement a `RestController`. We are using the 
+`ICustomerRepository` for querying the database and using the `Converters` to convert between the Model classes and 
+DTO classes. 
 
 ```java
 // Copyright (c) Philipp Wagner. All rights reserved.
@@ -570,171 +1013,206 @@ public class CustomerController {
 }
 ```
 
-#### Configuration ####
+### Creating a Dockerfile for the Spring Boot Application ###
 
-To configure Spring MVC, we need to extend the ``WebMvcConfigurer`` and add the ``TenantNameInterceptor`` to the list of interceptors.
+We create a `Dockerfile` in the folder `/docker/rls-api`, which uses the `maven` image, 
+so we have everything we need for our Spring Boot Application. In the `Dockerfile` we 
+instruct it to copy the `pom.xml` and the entire `src` folder.
 
-```java
-// Copyright (c) Philipp Wagner. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+```docker
+FROM maven:3.8.5-openjdk-17
 
-package de.bytefish.multitenancy.web.configuration;
+WORKDIR /rls-api
 
-import de.bytefish.multitenancy.web.interceptors.TenantNameInterceptor;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+COPY pom.xml pom.xml
+COPY src src
 
-@Configuration
-public class WebMvcConfig implements WebMvcConfigurer {
+RUN mvn clean install
 
-    @Override
-    public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new TenantNameInterceptor());
-    }
-
-}
+CMD mvn spring-boot:run
 ```
 
-### Plugging it together ###
+Finally we add a `rls-api` service to our `docker-compose.yaml`, that lives in the root folder. It 
+uses the `SPRING_PROFILES_ACTIVE` variable, so the correct `application.yml` is resolved. It depends 
+on the `postgres` database to be healthy.
 
-Finally it is time to plug everything together using Spring Boot. All we have to do is to define a ``Bean`` for 
-the ``DataSource`` to be used. This is the ``TenantAwareHikariDataSource`` using the Postgres Driver and connection 
-string.
+```yaml
+networks:
+  services:
 
-I have also added some sane properties for Spring JPA, so Spring doesn't try to automatically detect the database.
-
-All other dependencies are automatically resolved by Spring Boot. 
-
-```java
-// Copyright (c) Philipp Wagner. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
-
-package de.bytefish.multitenancy;
-
-import com.zaxxer.hikari.HikariDataSource;
-import de.bytefish.multitenancy.datasource.TenantAwareHikariDataSource;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
-import org.springframework.scheduling.annotation.EnableAsync;
-import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
-
-import javax.sql.DataSource;
-
-@SpringBootApplication
-@EnableAsync
-@EnableTransactionManagement
-public class SampleSpringApplication {
-
-	public static void main(String[] args) {
-		SpringApplication.run(SampleSpringApplication.class, args);
-	}
-
-	@Bean
-	public DataSource dataSource() {
-		HikariDataSource dataSource = new TenantAwareHikariDataSource();
-
-		dataSource.setInitializationFailTimeout(0);
-		dataSource.setMaximumPoolSize(5);
-		dataSource.setDataSourceClassName("org.postgresql.ds.PGSimpleDataSource");
-		dataSource.addDataSourceProperty("url", "jdbc:postgresql://127.0.0.1:5432/sampledb");
-		dataSource.addDataSourceProperty("user", "app_user");
-		dataSource.addDataSourceProperty("password", "app_user");
-
-		return dataSource;
-	}
-}
+services:
+  postgres:
+    image: postgres:16
+    container_name: postgres
+    networks:
+      - services
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=sampledb
+    volumes:
+      - ./sql/create_database.sql:/docker-entrypoint-initdb.d/1-create_database.sql
+      - ./sql/create_data.sql:/docker-entrypoint-initdb.d/2-create_data.sql
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    profiles:  ["postgres", "dev"]
+  rls-api:
+    depends_on:
+      - postgres
+    build:
+      context: .
+      dockerfile: ./docker/rls-api/Dockerfile
+    networks:
+      - services
+    restart: on-failure
+    env_file: ./docker/.env
+    profiles:  ["api", "dev"]
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    volumes:
+      - /docker/.m2:/root/.m2
+    stdin_open: true
+    tty: true
 ```
 
-#### Getting Rid if Warning ####
 
-Spring Boot introduces a lot of magic to make things work with minimal coding... and sometimes convention 
-over configuration introduces headaches. When Spring Boot starts there is no Tenant set in the Thread, so 
-we cannot use things like automatic detection of the database.
+### Spring Boot Configuration ###
 
-So I have added a Properties file ``application.properties`` to configure Spring:
+If we are starting our application it will throw lots of Exceptions at us. Why? Because Spring 
+Boots autoconfiguration for JDBC tries to resolve the database dialect from the actual 
+database. 
 
-```properties
-# Get Rid of the OIV Warning:
-spring.jpa.open-in-view=false
-# Show the SQL Statements fired by JPA:
-spring.jpa.show-sql=true
-# Set sane Spring Hibernate properties:
-spring.jpa.hibernate.naming.physical-strategy=org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
-# Prevent JPA from trying to Initialize...:
-spring.jpa.database=postgresql
-# ... and do not Auto-Detect the Database:
-spring.datasource.initialize=false
-# Prevent Hibernate from Automatic Changes to the DDL Schema:
-spring.jpa.hibernate.ddl-auto=none
-```
+This is a problem, because there is no such thing as a "default tenant". So we are using some 
+more or less obscure Hibernate configuration properties I found after lots of debugging the 
+Hibernate source code.
 
-The same thing happens down in Hibernate internals, where it attempts to read Metadata to initialize JDBC 
-settings. To prevent those connections, which we don't want to be done I have added a properties file 
-``hibernate.properties`` which is automagically read by Hibernate:
+The full `application.yml` for Docker  now looks like this:
 
-```properties
-hibernate.temp.use_jdbc_metadata_defaults=false
+```yml
+spring:
+  config:
+    activate:
+      on-profile: docker
+  jpa:
+    properties:
+      hibernate.temp.use_jdbc_metadata_defaults: false
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    open-in-view: false
+    datasource:
+      initialize: false
+    hibernate:
+      ddl-auto: none
+      dialect:
+        format_sql: true
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+
+application:
+  tenants:
+    - name: "tenant_a"
+      dbUrl: "jdbc:postgresql://postgres:5432/sampledb"
+      dbUser: "tenant_a"
+      dbPassword: "tenant_a"
+    - name: "tenant_b"
+      dbUrl: "jdbc:postgresql://postgres:5432/sampledb"
+      dbUser: "tenant_b"
+      dbPassword: "tenant_b"
 ```
 
 ## Testing the Application ##
 
-We start with inserting customers to the database of Tenant ``TenantOne``:
+You can use Docker Compose to create the PostgreSQL database and start the Spring Boot application:
 
 ```
-> curl -H "X-TenantID: TenantOne" -H "Content-Type: application/json" -X POST -d "{\"firstName\" : \"Philipp\", \"lastName\" : \"Wagner\"}"  http://localhost:8080/customers
-
-{"id":13,"firstName":"Philipp","lastName":"Wagner"}
-
-> curl -H "X-TenantID: TenantOne" -H "Content-Type: application/json" -X POST -d "{\"firstName\" : \"Max\", \"lastName\" : \"Mustermann\"}"  http://localhost:8080/customers
-
-{"id":14,"firstName":"Max","lastName":"Mustermann"}
+docker compose --profile dev up
 ```
 
-Getting a list of all customers for ``TenantOne`` will now return two customers:
+The Postgres Database currently has a customer for each Tenant:
 
-```
-> curl -H "X-TenantID: TenantOne" -X GET http://localhost:8080/customers
+```sql
+> select * from multitenant.customer
 
-[{"id":13,"firstName":"Philipp","lastName":"Wagner"},{"id":14,"firstName":"Max","lastName":"Mustermann"}]
-```
-
-While requesting a list of all customers for ``TenantTwo`` returns an empty list:
-
-```
-> curl -H "X-TenantID: TenantTwo" -X GET http://localhost:8080/customers
-
-[]
+ customer_id    |  first_name   |   last_name   |   tenant_name 
+----------------+---------------+---------------+--------------
+    1           |   Philipp     |   Wagner      |   tenant_a
+    2           |   John        |   Wick        |   tenant_b
+(2 rows)
 ```
 
-We can now insert a customer into the ``TenantTwo`` database:
+The list of customers for `tenant_a` only contains "Philipp Wagner", as expected:
 
 ```
-> curl -H "X-TenantID: TenantTwo" -H "Content-Type: application/json" -X POST -d "{\"firstName\" : \"Hans\", \"lastName\" : \"Wurst\"}"  http://localhost:8080/customers
+> curl -H "X-TenantID: tenant_a" -X GET http://localhost:8080/customers
 
-{"id":15,"firstName":"Hans","lastName":"Wurst"}
+[{"id":1,"firstName":"Philipp","lastName":"Wagner","addresses":[{"id":1,"name":"Philipp Wagner","street":"Fakestreet 1","postalcode":"12345","city":"Faketown","country":"Germany"}]}]
 ```
 
-Querying the ``TenantOne`` database still returns the two customers:
+And the list of customers for `tenant_b` only contains "John Wick", again as expected:
 
 ```
-> curl -H "X-TenantID: TenantOne" -X GET http://localhost:8080/customers
+>curl -H "X-TenantID: tenant_b" -X GET http://localhost:8080/customers
 
-[{"id":13,"firstName":"Philipp","lastName":"Wagner"},{"id":14,"firstName":"Max","lastName":"Mustermann"}]
+[{"id":2,"firstName":"John","lastName":"Wick","addresses":[{"id":2,"name":"John Wick","street":"Fakestreet 55","postalcode":"00000","city":"Fakecity","country":"USA"}]}]
 ```
 
-Querying the ``TenantTwo`` database will now return the inserted customer:
+We now insert a new customer for Tenant `tenant_a`:
 
 ```
-> curl -H "X-TenantID: TenantTwo" -X GET http://localhost:8080/customers
+> curl -H "X-TenantID: tenant_a" -H "Content-Type: application/json" -X POST -d "{\"firstName\" : \"Max\", \"lastName\" : \"Mustermann\"}"  http://localhost:8080/customers
 
-[{"id":15,"firstName":"Hans","lastName":"Wurst"}]
+{"id":38187,"firstName":"Max","lastName":"Mustermann","addresses":[]}
+```
+
+Getting a list of all customers for `tenant_a` will now return two customers:
+
+```
+> curl -H "X-TenantID: tenant_a" -X GET http://localhost:8080/customers
+
+[{"id":1,"firstName":"Philipp","lastName":"Wagner"},{"id":38187,"firstName":"Max","lastName":"Mustermann"}]
+```
+
+While requesting a list of all customers for `tenant_b` returns John Wick only:
+
+```
+> curl -H "X-TenantID:  tenant_b" -X GET http://localhost:8080/customers
+
+[{"id":2,"firstName":"John","lastName":"Wick"}]
+```
+
+We can now insert a customer for `tenant_b`:
+
+```
+> curl -H "X-TenantID: tenant_b" -H "Content-Type: application/json" -X POST -d "{\"firstName\" : \"Hans\", \"lastName\" : \"Wurst\"}"  http://localhost:8080/customers
+
+{"id":38188,"firstName":"Hans","lastName":"Wurst","addresses":[]}
+```
+
+Querying the `tenant_a` database still returns "Philipp Wagner" and "Max Mustermann":
+
+```
+> curl -H "X-TenantID: tenant_a" -X GET http://localhost:8080/customers
+
+[{"id":1,"firstName":"Philipp","lastName":"Wagner"},{"id":38187,"firstName":"Max","lastName":"Mustermann"}]
+```
+
+While querying as `tenant_b` now returns "John Wick" and "Hans Wurst":
+
+```
+> curl -H "X-TenantID: tenant_b" -X GET http://localhost:8080/customers
+
+[{"id":2,"firstName":"John","lastName":"Wick"},{"id":38188,"firstName":"Hans","lastName":"Wurst"}]
 ```
 
 ## Conclusion ##
 
-It's really easy to provide multitenancy with Spring Boot and Postgres Row Level Security. 
+And that's it! I think it's really easy to provide multitenancy with Spring Boot and Postgres Row Level Security. 
 
 If you have troubles with the project, feel free to open an issue in the GitHub repository.
