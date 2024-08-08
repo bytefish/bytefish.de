@@ -1,4 +1,4 @@
-title: Naming Conventions in SQL Server
+title: naming-conventions-sql-server
 date: 2024-08-08 10:20
 author: Philipp Wagner
 template: page
