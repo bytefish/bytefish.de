@@ -1,5 +1,5 @@
-﻿title: Extract Plain text from a Word Document 
-date: 2024-08-12 13:15
+﻿title: Flight Tracking with the OpenSky Network API, Angular and ASP.NET Core 
+date: 2024-08-14 12:30
 tags: angular, aspnetcore, docker, dotnet
 category: dotnet
 slug: flight_tracking_with_aspnetcore_angular
@@ -14,7 +14,7 @@ I think it was a pretty cool project, and to leave it there for 4 years aches my
 heart. And a lot of people want to put things on web maps and see them moving 
 around, right?
 
-So let's look into it and bring it back to life. I'll uppdate it to the most 
+So let's look into it and bring it back to life. I'll update it to the most 
 recent ASP.NET Core and Angular versions, MapboxJS will be replaced with 
 MapLibreJS and while at it I'll also add Docker support.
 
@@ -34,52 +34,11 @@ All code can be found in a Git repository at:
 
 [TOC]
 
-## The Migration Plan ##
-
-### Migrating the Frontend to Angular 18 ###
-
-The repository slept there for four years. Angular was at Angular 10 back in the days, 
-so there have been 8 major releases in between. It's needless to say, there have been 
-*some* breaking changes.
-
-In the Jumanji-esque land of JavaScript it's impossible to simply run an `npm update` 
-and call it a day. Take a two week old JavaScript project and you'll find yourself in 
-a hopeless adventure. The Angular CLI supports migrations, but only between two 
-consecutive major releases. 
-
-So I am going to do the only sane thing. I'll create an Angular 18 sample project 
-using the Angular CLI, copy the few parts of code over and fix the things breaking 
-left and right.
-
-### Migrating the Backend to .NET 8 ###
-
-The Backend used .NET Core 3.1. .NET has a great backwards compability, so I could 
-open the project, replace the `TargetFramework` in the Project file and it compiles 
-happily. I think that's testament to the .NET ecosystem.
-
-Except that... I am not happy with the "old way" of doing things! By now new best 
-practices in ASP.NET Core emerged, and the "old code" looks nothing like current 
-.NET developers would expect.
-
-Plus the previous code relied on a "MapboxTileServer", that's nowhere to be 
-found. It was a small ASP.NET Core API for serving vector map tiles in the 
-MBTiles format.
-
-Back then I've switched the MapboxTileServer repositories visibility to *Private*, 
-because I feared infringing MapBox copyrights. And with a job, and two babies 
-keeping me awake the nights? Some legal problems is nothing I want to deal with.
-
-So while at it, we'll also rip the code for service map tiles off this mysterious 
-MapboxTileServer repository and put it where it belongs, in the OpenSkyFlightTracker 
-repository.
-
-Sounds like a plan, right?
-
 ## Styles, Fonts, MBTiles, ... what's all that? ##
 
-Before diving into the code, let's take a look at what's required to see beautiful 
-web maps in your application. There are so called "Map Tiles", we need to download, 
-there is a "Map Style" and "Fonts".
+Before diving right into the migration plan and code, let's take a look at what's 
+required to see beautiful web maps in our application. There are so called "Map Tiles", 
+we need to download, there is a "Map Style" and "Fonts".
 
 ### Tilesets and MBTiles ###
 
@@ -117,7 +76,7 @@ I am not allowed to redistribute these MBTiles, so you have to do some manual wo
 someone however comes up with a redistributable "Starter Set" of MBTiles (let's say 
 10MB), I'll be more than happy to add it.
 
-#### Changing the MBTiles File ####
+#### Configuring the MBTiles Tilesets for the Application ####
 
 If you want to change the MBTile, you can change it in the `appsettings.json` (or the Environment you want to change). My 
 `appsettings.json` for local development looks like this:
@@ -162,6 +121,66 @@ I'll download it to the `src/OpenSkyFlightTracker.Web.Client` project into the `
 folder, where the Angular application resides. So when we publish the Angular application 
 it will also be copied over.
 
+### PBF Fonts ###
+
+We'll need fonts converted to the PBF format, which we can download here:
+
+* [https://github.com/korywka/fonts.pbf](https://github.com/korywka/fonts.pbf)
+
+I have put a `fonts.tar.xz` (and a `fonts.zip`) into the `/data` folder of the project.
+
+We need them in the `OpenSkyFlightTracker.Web.Server` web root folder, so switch to the 
+folder `/src/OpenSkyFlightTracker.Web.Server/wwwroot` and run the following command:
+
+```
+> mkdir "assets\fonts"
+> tar xf "..\..\..\data\fonts\fonts.zip" -C "assets/fonts"
+```
+
+The fonts are now unpacked to the `wwwroot` folder.
+
+## The Migration Plan ##
+
+### Migrating the Frontend to Angular 18 ###
+
+The repository slept there for four years. Angular was at Angular 10 back in the days, 
+so there have been 8 major releases in between. It's needless to say, there have been 
+*some* breaking changes.
+
+In the Jumanji-esque land of JavaScript it's impossible to simply run an `npm update` 
+and call it a day. Take a two week old JavaScript project and you'll find yourself in 
+a hopeless adventure. The Angular CLI supports migrations, but only between two 
+consecutive major releases. 
+
+So I am going to do the only sane thing. I'll create an Angular 18 sample project 
+using the Angular CLI, copy the few parts of code over and fix the things breaking 
+left and right.
+
+
+### Migrating the Backend to .NET 8 ###
+
+The Backend used .NET Core 3.1. .NET has a great backwards compability, so I could 
+open the project, replace the `TargetFramework` in the Project file and it compiles 
+happily. I think that's testament to the .NET ecosystem.
+
+Except that... I am not happy with the "old way" of doing things! By now new best 
+practices in ASP.NET Core emerged, and the "old code" looks nothing like current 
+.NET developers would expect.
+
+Plus the previous code relied on a "MapboxTileServer", that's nowhere to be 
+found. It was a small ASP.NET Core API for serving vector map tiles in the 
+MBTiles format.
+
+Back then I've switched the MapboxTileServer repositories visibility to *Private*, 
+because I feared infringing MapBox copyrights. And with a job, and two babies 
+keeping me awake the nights? Some legal problems is nothing I want to deal with.
+
+So while at it, we'll also rip the code for service map tiles off this mysterious 
+MapboxTileServer repository and put it where it belongs, in the OpenSkyFlightTracker 
+repository.
+
+Sounds like a plan, right?
+
 ## To the Code! ##
 
 ### Angular 18: Environments are gone! ###
@@ -182,6 +201,7 @@ export interface LngLat {
   lng: number;
   lat: number;
 }
+
 export interface MapOptions {
   mapStyleUrl: string;
   mapInitialPoint: LngLat;
@@ -321,7 +341,7 @@ My reasoning here is a simple one: I don't want to fiddle around with nginx, bec
 really don't want to learn yet another configuration language. If I can stay in the .NET 
 ecosystem, I prefer to stay.
 
-#### How does the Angular Build go into the ASP.NET Application? ####
+#### Output the Angular Build to the ASP.NET Application ####
 
 So we need to first solve a small riddle: How does the build artifact of `ng build` go 
 into the `wwwroot` folder of the `OpenSkyFlightTracker.Web.Server` project? Finding this 
