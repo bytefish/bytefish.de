@@ -156,7 +156,6 @@ So I am going to do the only sane thing. I'll create an Angular 18 sample projec
 using the Angular CLI, copy the few parts of code over and fix the things breaking 
 left and right.
 
-
 ### Migrating the Backend to .NET 8 ###
 
 The Backend used .NET Core 3.1. .NET has a great backwards compability, so I could 
@@ -182,6 +181,28 @@ repository.
 Sounds like a plan, right?
 
 ## To the Code! ##
+
+### First: Creating a new Project Structure ###
+
+In the previous implementation we had some kind of chaotic folder structure. The 
+Backend API lived in a `Backend` folder, the Frontend lived in a `Frontend` folder, 
+that had the Angular source included.
+
+For the update I want everything to live together in a single Visual Studio 
+Solution. The less context switches, the better. Visual Studio 2022 now comes 
+with a new Project Type for JavaScript an TypeScript projects, called ESPROJ 
+in the documentation:
+
+* https://learn.microsoft.com/en-us/visualstudio/javascript/javascript-in-visual-studio?view=vs-2022
+
+It's a good idea to use it. So I create three projects:
+
+* `OpenSkyFlightTracker.Api` (ASP.NET Core)
+    * This is the Backend API to communicate with the OpenSky API and serve tiles.
+* `OpenSkyFlightTracker.Web.Client` (ESPROJ)
+    * This is where the Angular application goes.
+* `OpenSkyFlightTracker.Web.Server` (ASP.NET Core)
+    * This is where the Angular application is hosted in.
 
 ### Angular 18: Environments are gone! ###
 
@@ -284,7 +305,6 @@ export class AppComponent implements OnInit, OnDestroy {
 
   // ...
   
-  constructor(private sseService: SseService, private appSettings: AppSettingsService, private mapService: MapService) {
   constructor(private sseService: SseService, private appSettingsService: AppSettingsService, private mapService: MapService) {
     const appSettings = this.appSettingsService.getAppSettings();
 
@@ -303,7 +323,252 @@ export class AppComponent implements OnInit, OnDestroy {
 }
 ```
 
-Job done! Cool!
+### Angular: Defining the Endpoints for Tiles, Sprites and Fonts ###
+
+I've thought about making the style and fonts very configurable, but it's not worth 
+the effort. MapLibre GL JS expects us to define the tiles to be used in the `"sources"` 
+section of the Map style, so let's do it in the `osm_liberty.json` style.
+
+You can find it in `assets/style/osm_liberty/osm_liberty.json`:
+
+```json
+{
+  "sources": {
+    "ne_2_hr_lc_sr": {
+      "tiles": [
+        "https://localhost:5000/tiles/natural_earth_2_shaded_relief.raster/{z}/{x}/{y}"
+      ],
+      "type": "raster",
+      "tileSize": 256,
+      "maxzoom": 6
+    },
+    "openmaptiles": {
+      "type": "vector",
+      "tiles": [
+        "https://localhost:5000/tiles/openmaptiles/{z}/{x}/{y}"
+      ],
+      "minzoom": 0,
+      "maxzoom": 14
+    }
+  },
+  "sprite": "https://localhost:5001/assets/sprites/osm_liberty/osm-liberty",
+  "glyphs": "https://localhost:5001/assets/fonts/{fontstack}/{range}.pbf",
+}
+```
+
+Where ...
+
+* `https://localhost:5000` is the `OpenSkyFlightTracker.Api`
+* `https://localhost:5001` is the `OpenSkyFlightTracker.Web.Server`
+
+### API: Serving MBTiles ###
+
+I've promised to show how to serve MBTiles. 
+
+We start by defining a `Tileset` class as:
+
+```csharp
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+namespace OpenSkyFlightTracker.Api.Options
+{
+    public class Tileset
+    {
+        /// <summary>
+        /// Path to the MBTiles.
+        /// </summary>
+        public required string Filename { get; set; }
+
+        /// <summary>
+        /// The Content-Type to be served.
+        /// </summary>
+        public required string ContentType { get; set; }
+    }
+}
+
+```
+
+This will be used in the `ApplicationOptions` to populate a dictionary of Tilesets, 
+that can be accessed by name:
+
+```
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+namespace OpenSkyFlightTracker.Api.Options
+{
+    public class ApplicationOptions
+    {
+        // ...
+        
+        /// <summary>
+        /// Gets or sets the Tilesets available.
+        /// </summary>
+        public Dictionary<string, Tileset> Tilesets { get; set; } = new();
+    }
+}
+```
+
+The Tilesets for our Docker container look like this in the `appsettings.Docker.json`:
+
+```json
+{
+  "Application": {
+    "Tilesets": {
+      "openmaptiles": {
+        "Filename": "/opensky-tiles/osm-2020-02-10-v3.11_nordrhein-westfalen_muenster-regbez.mbtiles",
+        "ContentType": "application/vnd.mapbox-vector-tile"
+      },
+      "natural_earth_2_shaded_relief.raster": {
+        "Filename": "/opensky-tiles/natural_earth_2_shaded_relief.raster.mbtiles",
+        "ContentType": "image/png"
+      }
+    }
+  }
+}
+```
+
+MBTiles are basically a SQLite database, so we then add a Package Reference to `Microsoft.Data.Sqlite`:
+
+```xml
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <!-- ... -->
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.Data.Sqlite" Version="8.0.8" />
+        <!-- ... -->
+    </ItemGroup>
+
+</Project>
+```
+
+We'll then create a `MapboxTileService`, which is used to read the tile data for a given `x`, `y` and `z`, 
+where `z` is the Zoom Level, `x` is the column number and `y` is the row.
+
+```csharp
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+using Microsoft.Data.Sqlite;
+using OpenSkyFlightTracker.Api.Options;
+
+namespace OpenSkyFlightTracker.Api.Services
+{
+    public class MbTilesService
+    {
+        public byte[]? Read(Tileset tileset, int z, int x, int y)
+        {
+            using (var connection = new SqliteConnection($"Data Source={tileset.Filename}"))
+            {
+                connection.Open();
+
+                var command = connection.CreateCommand();
+
+                command.CommandText = "SELECT tile_data FROM tiles WHERE zoom_level = $level AND tile_column = $column AND tile_row = $row";
+
+                command.Parameters.AddWithValue("$level", z);
+                command.Parameters.AddWithValue("$column", x);
+                command.Parameters.AddWithValue("$row", ReverseY(y, z));
+
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        return GetBytes(reader);
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        private static int ReverseY(int y, int z)
+        {
+            return (int)(Math.Pow(2.0d, z) - 1 - y);
+        }
+
+        private static byte[] GetBytes(SqliteDataReader reader)
+        {
+            byte[] buffer = new byte[2048];
+
+            using (MemoryStream stream = new MemoryStream())
+            {
+                long bytesRead = 0;
+                long fieldOffset = 0;
+
+                while ((bytesRead = reader.GetBytes(0, fieldOffset, buffer, 0, buffer.Length)) > 0)
+                {
+                    stream.Write(buffer, 0, (int)bytesRead);
+                    fieldOffset += bytesRead;
+                }
+
+                return stream.ToArray();
+            }
+        }
+    }
+}
+```
+
+And to serve the tiles we add a `MbTilesController`, that uses the `MbTilesService` to read from a requested Tileset.
+
+```csharp
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
+using OpenSkyFlightTracker.Api.Options;
+using OpenSkyFlightTracker.Api.Services;
+
+namespace OpenSkyFlightTracker.Api.Controllers
+{
+    [ApiController]
+    public class MbTilesController : ControllerBase
+    {
+        private readonly ILogger<MbTilesController> _logger;
+
+        private readonly ApplicationOptions _applicationOptions;
+        private readonly MbTilesService _mapboxTileService;
+
+        public MbTilesController(ILogger<MbTilesController> logger, IOptions<ApplicationOptions> applicationOptions, MbTilesService mapboxTileService)
+        {
+            _logger = logger;
+            _applicationOptions = applicationOptions.Value;
+            _mapboxTileService = mapboxTileService;
+        }
+
+        [HttpGet]
+        [Route("/tiles/{tileset}/{z}/{x}/{y}")]
+        public ActionResult Get([FromRoute(Name = "tileset")] string tiles, [FromRoute(Name = "z")] int z, [FromRoute(Name = "x")] int x, [FromRoute(Name = "y")] int y)
+        {
+            _logger.LogDebug($"Requesting Tiles (tileset = {tiles}, z = {z}, x = {x}, y = {y})");
+
+            if (!_applicationOptions.Tilesets.TryGetValue(tiles, out Tileset? tileset))
+            {
+                _logger.LogWarning($"No Tileset available for Tileset '{tiles}'");
+
+                return BadRequest();
+            }
+
+            var data = _mapboxTileService.Read(tileset, z, x, y);
+
+            if (data == null)
+            {
+                return Accepted();
+            }
+
+            // Mapbox Vector Tiles are already compressed, so we need to tell 
+            // the client we are sending gzip Content:
+            if (tileset.ContentType == Constants.MimeTypes.ApplicationMapboxVectorTile)
+            {
+                Response.Headers.TryAdd("Content-Encoding", "gzip");
+            }
+
+            return new FileContentResult(data, tileset.ContentType);
+        }
+    }
+}
+```
+
+That's our Tile Server!
 
 ### Docker: OpenSkyFlightTracker.Api ###
 
@@ -492,14 +757,23 @@ services:
       - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
 ```
 
-## Conclusion ##
-
 We can now run:
 
 ```
 docker compose --profile dev up
 ```
 
-And all services start up.
+And you can visit `https://localhost:5001` and a map with the planes appears.
 
-You can now visit `https://localhost:5001` and a map with the planes appears.
+## Conclusion ##
+
+So I think this repository gives you a pretty good idea, how to integrate web maps 
+in your Angular application and how to feed it from an ASP.NET Core Backend.
+
+If you need to host larger maps or, say, the entire world map, you'll need a 
+beefy machine and a good amount of disk space. And also think about adding some 
+caching to the tile server... or maybe use a battle-tested tile server?
+
+However, it's a lean implementation, that I would use to display maps in "In-House" 
+applications. It's so few .NET and TypeScript involved, and easy to adapt to your 
+needs.
