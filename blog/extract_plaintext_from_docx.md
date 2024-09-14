@@ -17,7 +17,7 @@ as a starting point.
 
 [TOC]
 
-## Database Schema ##
+## Example Code ##
 
 We define a small `DocumentMetadata` class, which is going to hold all extracted information.
 
