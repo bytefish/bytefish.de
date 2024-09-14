@@ -1274,7 +1274,7 @@ namespace AclExperiments.Utils
 
 ### Check API ###
 
-The Check API is used to check if the user has a given permission, which means: Check if a `Subject` (user) has 
+The Check API is used to check if the user has a given permission, which means: Check if a `Subject` (the User) has 
 a `Relation` to a given `Object`. We can implement the basic algorithm in a few lines of code.
 
 ```csharp
@@ -1648,9 +1648,9 @@ namespace AclExperiments.Tests
 
 ### Expand API ###
 
-While the Check API only dealth with the Question "Are we permitted to access the object?", the Expand API is used to determine 
-the full ACL for a user. This is especially useful for debugging, to understand *why* a user has been granted or been denied 
-permission to an object.
+While the Check API only dealt with the question of "Are we permitted to access the object?", the Expand API is used to determine 
+the full ACL for a user. This is especially useful for debugging, to understand *why* a user has been granted or been denied permission 
+to an object.
 
 It starts by defining a `SubjectTree`, which is going to hold all Subjects determined by the Expand API.
 
@@ -1976,8 +1976,6 @@ namespace AclExperiments
     }
 }
 ```
-
-We can use the Expand API to get the full... This is useful, if we need. 
 
 Finally let's write some Integration tests. The comments in the test are exhaustive, so we don't need 
 to repeat them here. Enjoy! And feel free to add more complex tests and probably uncover cases I 
