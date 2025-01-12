@@ -1,4 +1,4 @@
-title: Open Source Development and starting a new Job
+title: Open Source Development and Starting a new Job
 date: 2025-01-11 13:35
 tags: job, general
 category: job
