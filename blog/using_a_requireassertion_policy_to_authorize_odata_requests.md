@@ -11,14 +11,17 @@ was originally written by Microsoft and I have ported it to ASP.NET Core OData a
 
 * [https://github.com/bytefish/ODataAuthorization](https://github.com/bytefish/ODataAuthorization)
 
-## The Problem
+## The Problem ##
 
-The library is a mix of `AuthorizationHandler`, `AuthorizationFilter`, `AuthorizationRequirement` and so on... to put 
-it simply: It works *somehow*, but I don't understand the code. That's a problem, because I am the maintainer.
+When I've initially ported the library I wanted to change as little as possible. So the library 
+is now a mix of `AuthorizationHandler`, `AuthorizationFilter`, `AuthorizationRequirement` and so 
+on... 
+
+It works *somehow*, but I don't understand the code. That's a problem, because I am the maintainer. 🫣
 
 This needs to be fixed.
 
-## The Solution
+## The Solution ##
 
 There must be a simpler way to integrate the OData Authorization into ASP.NET Core. So I've read through 
 Microsofts documentation and saw a `RequireAssertion` method on an `AuthorizationPolicyBuilder`, which is 
@@ -32,7 +35,7 @@ Now that... sounds about right?
 
 ## Implementing it ##
 
-### Thinking about the Extensions ###
+### Thinking about the Extension Methods ###
 
 So what should the new ODataAuthorization API look like?
 
@@ -63,7 +66,7 @@ This means we will add an extension method on the `AuthorizationOptions` to add 
 and an extension method on the `IEndpointConventionBuilder` (which `MapControllers` returns) to require 
 authorization on all OData-enabled endpoints.
 
-### Implementing the Extensions ###
+### Implementing the Extension Methods ###
 
 We start with a `static` class `ODataAuthorizationPolicies`, which is going to hold the `RequireAssertion` 
 policy and the related extension methods. We start by adding two constants for the default policy name and 
