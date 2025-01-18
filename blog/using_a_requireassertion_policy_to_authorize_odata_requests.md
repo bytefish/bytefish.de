@@ -6,9 +6,8 @@ slug: using_requireassertion_policy_to_authorize_odata_requests
 author: Philipp Wagner
 summary: Refactoring the ODataAuthorization library to use a RequireAssertion Policy.
 
-In a project I am going to use the ODataAuthorization library, which is a library for implementing 
-authorization for an OData-enabled API. It was originally written by Microsoft and I have ported it 
-to ASP.NET Core OData a few years ago:
+`ODataAuthorization` is a library for implementing authorization for an OData-enabled API. It 
+was originally written by Microsoft and I have ported it to ASP.NET Core OData a few years ago:
 
 * [https://github.com/bytefish/ODataAuthorization](https://github.com/bytefish/ODataAuthorization)
 
