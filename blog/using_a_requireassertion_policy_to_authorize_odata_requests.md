@@ -13,9 +13,10 @@ was originally written by Microsoft and I have ported it to ASP.NET Core OData a
 
 ## The Problem
 
-The `ODataAuthorization` library is a mix of `AuthorizationHandler`, `AuthorizationFilter`, `AuthorizationRequirements`... 
-put simply: It feels like it is accidentally working and it doesn't feel well-integrated into the ASP.NET Core Authorization 
-pipeline.
+The library is a mix of `AuthorizationHandler`, `AuthorizationFilter`, `AuthorizationRequirement` and so on... to put 
+it simply: It works *somehow*, but I don't understand the code. That's a problem, because I am the maintainer.
+
+This needs to be fixed.
 
 ## The Solution
 
