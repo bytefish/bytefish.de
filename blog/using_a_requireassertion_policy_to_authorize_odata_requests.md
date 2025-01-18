@@ -92,7 +92,7 @@ public static class ODataAuthorizationPolicies
 
 Next we add the `RequireODataAuthorization` extension to require endpoints authorizing OData requests.
 
-```
+```csharp
 public static class ODataAuthorizationPolicies
 {
     // ...
