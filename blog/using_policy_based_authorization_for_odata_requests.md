@@ -201,9 +201,9 @@ public static bool IsAccessAllowed(HttpContext httpContext, IEnumerable<string> 
     var permissions = ODataModelPermissionsExtractor.ExtractPermissionsForRequest(model, httpContext.Request.Method, odataFeature.Path, odataFeature.SelectExpandClause);
 
     // Finally evaluate the Scopes
-    bool allowsScope = permissions.AllowsScopes(scopes);
+    bool allowsScopes = permissions.AllowsScopes(scopes);
 
-    return allowsScope;
+    return allowsScopes;
 }
 ```
 
