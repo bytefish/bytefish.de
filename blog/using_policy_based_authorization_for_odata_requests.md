@@ -1,4 +1,4 @@
-title: Using a RequireAssertion Policy to Authorize OData Requests
+title: Using Policy-based authorization for OData requests
 date: 2025-01-18 19:13
 tags: csharp, dotnet, odata
 category: odata
@@ -6,24 +6,31 @@ slug: using_requireassertion_policy_to_authorize_odata_requests
 author: Philipp Wagner
 summary: Refactoring the ODataAuthorization library to use a RequireAssertion Policy.
 
-`ODataAuthorization` is a library for implementing authorization on OData-enabled endpoints. It 
+[ODataAuthorization] is a library for implementing authorization on OData-enabled endpoints. It 
 was originally written by Microsoft and I have ported it to ASP.NET Core OData a few years ago:
 
 * [https://github.com/bytefish/ODataAuthorization](https://github.com/bytefish/ODataAuthorization)
 
+[ODataAuthorization]: https://github.com/bytefish/ODataAuthorization
+
 ## The Problem ##
 
 When I've initially ported the library I wanted to change as little as possible. So the library 
-is now a mix of `AuthorizationHandler`, `AuthorizationFilter`, `AuthorizationRequirement` and so 
-on... 
+is a mix of [IAuthorizationHandler], [AuthorizationFilter], [IFilterProvider], [IAuthorizationRequirement] 
+and so on... 
 
 It works *somehow*, but I don't understand the code. That's a problem, because I am the maintainer. 🫣
 
 This needs to be fixed.
 
+[IAuthorizationHandler]: https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.authorization.authorizationhandler-1?view=aspnetcore-9.0
+[AuthorizationFilter]: https://learn.microsoft.com/en-us/aspnet/core/mvc/controllers/filters?view=aspnetcore-9.0
+[IFilterProvider]: https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.filters.ifilterprovider?view=aspnetcore-9.0
+[IAuthorizationRequirement]: https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.authorization.iauthorizationrequirement?view=aspnetcore-9.0
+
 ## The Solution ##
 
-There must be a simpler way to integrate the OData Authorization into ASP.NET Core. So I've read through 
+There must be a simpler way to integrate the OData authorization into ASP.NET Core. So I've read through 
 Microsofts documentation and saw a `RequireAssertion` method on an `AuthorizationPolicyBuilder`, which is 
 described as:
 
@@ -37,9 +44,9 @@ Now that... sounds about right?
 
 ### Thinking about the Extension Methods ###
 
-So what should the new ODataAuthorization API look like?
+So what should the new ODataAuthorization API surface look like?
 
-I think of something along the lines of this:
+I think of something along the lines of:
 
 ```csharp
 var builder = WebApplication.CreateBuilder(args);
@@ -62,9 +69,9 @@ app
     .RequireODataAuthorization();
 ```
 
-This means we will add an extension method on the `AuthorizationOptions` to add the `RequireAssertion` policy, 
-and an extension method on the `IEndpointConventionBuilder` (which `MapControllers` returns) to require 
-authorization on all OData-enabled endpoints.
+This means we will add an extension method on the `AuthorizationOptions` to add the policy, and an extension 
+method on the `IEndpointConventionBuilder` (which `MapControllers` returns) to require authorization on all 
+OData-enabled endpoints.
 
 ### Implementing the Extension Methods ###
 
@@ -117,9 +124,9 @@ public static class ODataAuthorizationPolicies
 }
 ```
 
-And finally we'll add the `AuthorizationOptions#AddODataAuthorizationPolicy` extension method to add the `RequireAssertion` 
-Policy. I was surprised to see how simple it is. I've left the `ODataModelPermissionsExtractor` out, because it's only 
-partially interesting to the article.
+And finally we'll add the `AuthorizationOptions#AddODataAuthorizationPolicy` extension method to add the Policy. I was 
+surprised to see how simple it is. I've left the `ODataModelPermissionsExtractor` out, because it's only partially interesting 
+to the article.
 
 ```csharp
 /// <summary>
@@ -202,4 +209,4 @@ public static bool IsAccessAllowed(HttpContext httpContext, IEnumerable<string> 
 
 ## Conclusion ##
 
-And that's it! It's working great, and I am now way more confident with the code.
+And that's it! It's working great and I finally understand the code.
