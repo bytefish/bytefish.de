@@ -16,7 +16,7 @@ sharing.
 
 All code can be found in a Git Repository at:
 
-* [https://github.com/bytefish/npgsql-examples)
+* [https://github.com/bytefish/npgsql-examples](https://github.com/bytefish/npgsql-examples)
 
 [npgsql-examples]: https://github.com/bytefish/npgsql-examples
 
