@@ -374,9 +374,27 @@ namespace GitClub.Hosted
 }
 ```
 
-In the `Program.cs` we can register the `PostgresNotificationService` as ...
+In the `Program.cs` we can register the `NpgsqlDataSource` and the  `PostgresNotificationService` as ...
 
 ```csharp
+// Database
+builder.Services.AddSingleton<NpgsqlDataSource>((sp) =>
+{
+    var connectionString = builder.Configuration.GetConnectionString("ApplicationDatabase");
+
+    if (connectionString == null)
+    {
+        throw new InvalidOperationException("No ConnectionString named 'ApplicationDatabase' was found");
+    }
+
+    // Since version 7.0, NpgsqlDataSource is the recommended way to use Npgsql. When using NpsgqlDataSource,
+    // NodaTime currently has to be configured twice - once at the EF level, and once at the underlying ADO.NET
+    // level (there are plans to improve this):
+    var dataSourceBuilder = new NpgsqlDataSourceBuilder(connectionString);
+
+    return dataSourceBuilder.Build();
+});
+
 // Hosted Services
 builder.Services.AddSingleton<IPostgresNotificationHandler, LoggingPostgresNotificationHandler>();
 
