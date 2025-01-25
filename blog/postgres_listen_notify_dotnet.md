@@ -395,9 +395,10 @@ builder.Services.AddSingleton<NpgsqlDataSource>((sp) =>
     return dataSourceBuilder.Build();
 });
 
-// Hosted Services
+// Notification Handler
 builder.Services.AddSingleton<IPostgresNotificationHandler, LoggingPostgresNotificationHandler>();
 
+// Add the Background Service processing the Notifications
 builder.Services.Configure<PostgresNotificationServiceOptions>(o => o.ChannelName = "core_db_event");
 builder.Services.AddHostedService<PostgresNotificationService>();
 ```
