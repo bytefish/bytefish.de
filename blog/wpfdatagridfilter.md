@@ -1,4 +1,4 @@
-title: WpfDataGridFilter: A library for adding Filtering to a WPF Datagrid
+title: WpfDataGridFilter: Simplifying Server-side Filtering, Sorting and Paginating in a WPF DataGrid
 date: 2025-04-24 15:05
 tags: csharp, dotnet, wpf
 category: wpf
