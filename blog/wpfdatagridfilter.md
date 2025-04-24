@@ -11,8 +11,8 @@ summary: Implementing a Library for Server-side Pagination, Sorting and Filterin
 "I just want to filter some data in a DataGrid, why is all this so complicated?"... said everyone using a WPF DataGrid. 
 
 So I have written [WpfDataGridFilter], which is a small library to simplify server-side filtering, pagination and sorting 
-for a WPF DataGrid. It's my first attempt at writing a WPF library, so there's a lot to improve for sure, but I think it's 
-a good starting point.
+in a WPF DataGrid. It works by using a custom `DataGridHeader` template and comes with its own Pagination control and 
+filtering infrastructure.
 
 All code can be found in a Git repository at:
 
@@ -558,9 +558,18 @@ public partial class MainWindowViewModel : ObservableObject
 }
 ```
 
-## Adding your own FilterControls
+## Adding your own FilterControls ##
 
 If the existing Filter Controls don't suit your needs, you can add your own Controls. All you have to do is 
 implementing the abstract base class `FilterControl` and register it in the `FilterControlProvider` (or add 
-your own `IFilterControlProvider` implementation.
+your own `IFilterControlProvider` implementation).
 
+## Conclusion ##
+
+And that's it. 
+
+I think it's a nice library for adding filtering, pagination and sorting to a `DataGrid`, without having to 
+dive into `DataGrid` internals and rather just use it by adding a Header Template.
+
+The implementation? Yes, it is far from perfect... due to my lack of experience writing custom WPF 
+controls. But I hope this library could be a starting point for collaboration and improving it.
