@@ -400,7 +400,6 @@ public partial class MainWindowViewModel : ObservableObject
         NextPageCommand.NotifyCanExecuteChanged();
         LastPageCommand.NotifyCanExecuteChanged();
 
-
         IEnumerable<Customer> filteredResult = await dataServiceQuery.ExecuteAsync();
 
         Customers = new ObservableCollection<Customer>(filteredResult);
