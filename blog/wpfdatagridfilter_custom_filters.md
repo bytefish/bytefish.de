@@ -109,7 +109,7 @@ sorting, pagination and filtering for the WPF DataGrid in action.
 
 ## Implementation ##
 
-Let's take a look at how a Customer Filter is built.
+Let's take a look at how a Custom Filter for Spatial Types is built.
 
 ### Defining Constants for our Filter Controls ###
 
