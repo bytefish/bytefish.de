@@ -44,7 +44,7 @@ git clone https://github.com/bytefish/WideWorldImporters.git
 Then start the Backend and SQL Server 2022 by using Docker:
 
 ```
-docker compose --profile db --profile backend up
+docker compose --profile backend up
 ```
 
 The Backend consists of two services: 
