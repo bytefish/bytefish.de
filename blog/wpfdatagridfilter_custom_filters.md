@@ -113,8 +113,8 @@ Let's take a look at how a Custom Filter for Spatial Types is built.
 
 ### Defining Constants for our Filter Controls ###
 
-Our Spatial have something to do with Geography, so I start by adding a class `GeographyFilter`, which 
-is goint to hold all 
+Our Filter has something to do with "Geography", so I start by adding a class `GeographyFilter`, which 
+is going to hold all important constants to be used:
 
 ```csharp
 public static class GeographyFilter
@@ -123,8 +123,8 @@ public static class GeographyFilter
 }
 ```
 
-In [WpfDataGridFilter] all Filter Controls are resolved by a `FilterType`. We want to Filter for Distance to a 
-given `GeographyPoint`, so let's add the FilterType:
+In [WpfDataGridFilter] all Filter Controls are resolved by a `FilterType`. We want to Filter for a `Distance` to a 
+given `GeographyPoint`, so let's add the `FilterType`:
 
 ```csharp
 public static class GeographyFilter
