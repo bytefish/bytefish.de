@@ -24,4 +24,4 @@ summary: About this page.
 * [http://www.martinovsky.net](http://www.martinovsky.net)
 * [http://www.akahl.net](http://www.akahl.net)
 * [http://felix.abecassis.me](http://felix.abecassis.me)
-* [https://blog.jensknipper.de/](https://blog.jensknipper.de/)
+* [https://blog.jensknipper.de](https://blog.jensknipper.de)
