@@ -8,6 +8,18 @@ summary: Notes, Ideas and Links
 
 [TOC]
 
+## 2025-07-06: The Microsoft Copilot Distortion Bubble ##
+
+The Microsoft Build 2025 conference was all about AI and how it improves productivity. So it’s interesting to see Microsoft dogfooding Copilot in their `dotnet/aspnetcore` and `dotnet/runtime` repositories:
+
+* [https://github.com/dotnet/runtime/pulls](https://github.com/dotnet/runtime/pulls)
+
+It’s hilarious to see these world class engineers begging their Copilot to “Please do not forget to add the files to the project!” and “Do not make up APIs!”. Yes, they label it an experiment, but I am sure it’s mandated use.
+
+And why label it an experiment? The very same engineers just went on stage and told us, how it improves their workflow! Why am I not witnessing any use of Copilot in other PRs? What am I missing here?
+
+Of course there’s a chance I am getting the whole thing wrong and Microsoft engineers believe in this? Or am I witnessing a cult? Whatever it is, outside the distortion bubble this whole thing looks pretty bad.
+
 ## 2025-07-06: Fulltext Search Engine using SQLite and FTS5 Tables ##
 
 I've started a new job in 2024, so my free-time budget for writing blog articles took a cut.
