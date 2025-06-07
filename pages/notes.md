@@ -8,7 +8,7 @@ summary: Notes, Ideas and Links
 
 [TOC]
 
-## 2025-07-06: How it all started ##
+## 2025-07-06: How it all started... 22 years ago  ##
 
 This page started in 2003 as a way to share my poems with the world. It was a time full of beautiful self-pity, and not knowing what to do with my life… basically the whole range of first-world problems.
 
