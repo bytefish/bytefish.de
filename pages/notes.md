@@ -4,12 +4,6 @@ author: Philipp Wagner
 template: page
 summary: Notes, Ideas and Links
 
-## What's this page for? ##
-
-I want to share some ideas, code and links without having to write long-form articles. This page contains my 
-notes, ideas or interesting links I have read. The most recent content goes to the top. We will see, 
-if this is a good idea.
-
 ## 2025-07-06: Another "Google Zanzibar" Experiment with .NET ##
 
 Relationship-based Access Control is an interesting approach to Authorization, with "Google Zanzibar" as an 
