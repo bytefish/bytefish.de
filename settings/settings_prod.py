@@ -80,9 +80,9 @@ SIDEBAR_DESCRIPTION = 'Sharing Code &amp; Ideas'
 SECTIONS = [
   ('blog', '/blog.html'),
   ('about', '/about.html'),
+  ('notes', '/notes.html'),
   ('pages', '/pages.html'),
-  ('documents', '/documents.html'),
-  ('notes', '/notes.html'),]
+  ('documents', '/documents.html'),]
 # Links to display in the footer:
 LINKS = [
   ('bsd', 'http://www.opensource.org/licenses/BSD-3-Clause'),
