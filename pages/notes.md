@@ -8,9 +8,9 @@ summary: Notes, Ideas and Links
 
 [TOC]
 
-## 2025-07-06: Starting the Notes ##
+## 2025-06-07: Notes, or "Lowering the Bar for Writing" ##
 
-This Notes page is an idea, to make it easier for me to *write*, without the tedious work of long-form blog articles. Maybe notes on this page are something akin to a small tweet.
+This "notes page" is an idea, to make it easier for me to *write*, without the tedious work of long-form blog articles. Maybe notes on this page are something akin to a small tweet.
 
 At the moment this is a single page with technical and non-technical content being mixed wildly. I am not sure, if it’s a good idea. We will see.
 
@@ -18,7 +18,7 @@ However it lowers the bar for writing and publishing by a lot and I am sure I’
 
 As of now, I really like this format! 🚀 
 
-## 2025-07-06: How it all started... 22 years ago  ##
+## 2025-06-07: How it all started... 22 years ago  ##
 
 This page started in 2003 as a way to share my poems with the world. It was a time full of beautiful self-pity, and not knowing what to do with my life… basically the whole range of first-world problems.
 
@@ -26,7 +26,7 @@ Please never use the Wayback Machine!
 
 To the next 20 years to come!🍻
 
-## 2025-07-06: The Microsoft Copilot Distortion Bubble ##
+## 2025-06-07: The Microsoft Copilot Distortion Bubble ##
 
 The Microsoft Build 2025 conference was all about AI and how it improves productivity. So it’s interesting to see Microsoft dogfooding Copilot in their `dotnet/aspnetcore` and `dotnet/runtime` repositories:
 
@@ -38,7 +38,7 @@ And why label it an experiment? The very same engineers just went on stage and t
 
 Of course there’s a chance I am getting the whole thing wrong and Microsoft engineers believe in this? Or am I witnessing a cult? Whatever it is, outside the distortion bubble this whole thing looks pretty bad.
 
-## 2025-07-06: Fulltext Search Engine using SQLite and FTS5 Tables ##
+## 2025-06-07: Fulltext Search Engine using SQLite and FTS5 Tables ##
 
 I've started a new job in 2024, so my free-time budget for writing blog articles took a cut.
 
@@ -46,7 +46,7 @@ One of the projects I didn't write about is a Full-Text Search Engine using SQLi
 
 * [https://github.com/bytefish/SqliteFulltextSearch](https://github.com/bytefish/SqliteFulltextSearch)
 
-## 2025-07-06: Another "Google Zanzibar" Experiment with .NET ##
+## 2025-06-07: Another "Google Zanzibar" Experiment with .NET ##
 
 Relationship-based Access Control is an interesting approach to Authorization, with "Google Zanzibar" as an 
 implementation described by Google. It's kind of a nemesis for me, because I have already tried to:
