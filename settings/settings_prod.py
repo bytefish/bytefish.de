@@ -81,7 +81,8 @@ SECTIONS = [
   ('blog', '/blog.html'),
   ('about', '/about.html'),
   ('pages', '/pages.html'),
-  ('documents', '/documents.html'),]
+  ('documents', '/documents.html'),
+  ('notes', '/notes.html'),]
 # Links to display in the footer:
 LINKS = [
   ('bsd', 'http://www.opensource.org/licenses/BSD-3-Clause'),
