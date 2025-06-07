@@ -8,6 +8,16 @@ summary: Notes, Ideas and Links
 
 [TOC]
 
+## 2025-07-06: How it all started ##
+
+This page started in 2003 as a way to share my poems with the world. It was a time full of beautiful self-pity, and not knowing what to do with my life… basically the whole range of first-world problems.
+
+Please never use the Wayback Machine!
+
+Did you know why I started this page more than 22 years ago? Because I wanted to learn PHP! And in the past 20 years I’ve learnt so many programming languages, but I’ve never learnt PHP. Maybe this is the year I am finally learning PHP! 
+
+One can dream, right?
+
 ## 2025-07-06: The Microsoft Copilot Distortion Bubble ##
 
 The Microsoft Build 2025 conference was all about AI and how it improves productivity. So it’s interesting to see Microsoft dogfooding Copilot in their `dotnet/aspnetcore` and `dotnet/runtime` repositories:
