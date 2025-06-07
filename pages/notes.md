@@ -51,7 +51,7 @@ So of course I am now exploring it again and try to implement the Check API, Exp
 
 I don't know yet, if this is going to be successful or where it is going.
 
-# 2025-06-07: Notes or "Lowering the Bar for Writing" ##
+## 2025-06-07: Notes or "Lowering the Bar for Writing" ##
 
 This "notes page" is an idea, to make it easier for me to *write*, without the tedious work of long-form blog articles. Maybe notes on this page are something akin to a small tweet.
 
