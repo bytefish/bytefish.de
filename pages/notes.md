@@ -8,16 +8,6 @@ summary: Notes, Ideas and Links
 
 [TOC]
 
-## 2025-06-07: Notes, or "Lowering the Bar for Writing" ##
-
-This "notes page" is an idea, to make it easier for me to *write*, without the tedious work of long-form blog articles. Maybe notes on this page are something akin to a small tweet.
-
-At the moment this is a single page with technical and non-technical content being mixed wildly. I am not sure, if it’s a good idea. We will see.
-
-However it lowers the bar for writing and publishing by a lot and I am sure I’ll find a way to turn this into a more coherent piece.
-
-As of now, I really like this format! 🚀 
-
 ## 2025-06-07: How it all started... 22 years ago  ##
 
 This page started in 2003 as a way to share my poems with the world. It was a time full of beautiful self-pity, and not knowing what to do with my life… basically the whole range of first-world problems.
@@ -60,3 +50,13 @@ So of course I am now exploring it again and try to implement the Check API, Exp
 * [https://github.com/bytefish/GoogleZanzibarExperiments](https://github.com/bytefish/GoogleZanzibarExperiments)
 
 I don't know yet, if this is going to be successful or where it is going.
+
+# 2025-06-07: Notes, or "Lowering the Bar for Writing" ##
+
+This "notes page" is an idea, to make it easier for me to *write*, without the tedious work of long-form blog articles. Maybe notes on this page are something akin to a small tweet.
+
+At the moment this is a single page with technical and non-technical content being mixed wildly. I am not sure, if it’s a good idea. We will see.
+
+However it lowers the bar for writing and publishing by a lot and I am sure I’ll find a way to turn this into a more coherent piece.
+
+As of now, I really like this format! 🚀 
