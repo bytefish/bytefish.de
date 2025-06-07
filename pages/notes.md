@@ -4,6 +4,10 @@ author: Philipp Wagner
 template: page
 summary: Notes, Ideas and Links
 
+## Table of contents ##
+
+[TOC]
+
 ## 2025-07-06: Fulltext Search Engine using SQLite and FTS5 Tables ##
 
 I've started a new job in 2024, so my free-time budget for writing blog articles took a cut.
