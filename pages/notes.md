@@ -8,7 +8,7 @@ summary: Notes, Ideas and Links
 
 [TOC]
 
-## 2025-06-08: Limitations of LLM ##
+## 2025-06-08: Limitations of Reasoning Models ##
 
 Apple has recently released a paper titled “The Illusion of Thinking: Understanding the Strengths and Limitations of Reasoning Models via the Lens of Problem Complexity”:
 
