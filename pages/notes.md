@@ -8,6 +8,18 @@ summary: Notes, Ideas and Links
 
 [TOC]
 
+## 2025-06-08: Shifting Priorities and Programming ##
+
+It’s Pentecost, so Germany has a long weekend. Back when I didn’t have a family, these days would have been filled with working myself into things. And most importantly: I would have used the time to program something for *myself*, instead of *writing code for a company*.
+
+But ever since having a wife and children things surprisingly changed. Of course priorities shift, and instead of learning all about, say “Graph Databases”, my free time is spent with family things. I am waiting for weeks to find some quiet hours to try ideas accumulated inside.
+
+By now I do most of my writing and reading on a smartphone. The latest article on Google Zanzibar is no different, the code has been written in the Notes app on the phone. Auto-correct is the enemy!
+
+Once I could hide inside my office, I boot a computer (thanks to modern hard drives it doesn’t take a lot of time!). I am copying the code, correct all the syntax errors and draft an article in parallel.
+
+I wonder how other people handle it?
+
 ## 2025-06-07: How it all started... 22 years ago  ##
 
 This page started in 2003 as a way to share my poems with the world. It was a time full of beautiful self-pity, and not knowing what to do with my life… basically the whole range of first-world problems.
