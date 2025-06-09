@@ -8,6 +8,53 @@ summary: Notes, Ideas and Links
 
 [TOC]
 
+## 2025-06-09: How Ideas for Projects Come to Life  ##
+
+I am wondering, what project I could do next, so let's see my thought process.
+
+Something I always wanted to get my hands on again is Apache Flink and its CEP Engine. From time to time I browse through my article and wonder... how could I revive it?
+
+The Apache Flink example is in the following repository:
+
+* [https://github.com/bytefish/FlinkExperiments](https://github.com/bytefish/FlinkExperiments)
+
+Last year I have played around with NATS and JetStream to understand how their JetStream engine works and how a distributed system could be built... without the hellhole Kafka is. 
+
+There's a GitHub repository I used to experiment with NATS in .NET here:
+
+* [https://github.com/bytefish/NatsExperiments](https://github.com/bytefish/NatsExperiments)
+
+The GitHub Repository comes with a Docker Compose file, so getting a NATS Cluster up and running *should* be possible relatively quick. 
+
+The Synadia folks, that maintain the NATS ecosystem, also provide a NATS Connector at:
+
+* [https://github.com/synadia-io/flink-connector-nats](https://github.com/synadia-io/flink-connector-nats)
+
+So it shouldn't require a lot of infrastructure code to connect NATS an Apache Flink. We can find a few examples in the Synadia repository with sample code to get some inspiration from.
+
+But where do we get the data to stream from?
+
+See I have previously written an article for analyzing the German weather data to detect heat strikes, where there was severe heat in Germany for consecutive days:
+
+* [https://github.com/bytefish/DwdAnalysis](https://github.com/bytefish/DwdAnalysis)
+
+It would be cool to reuse it and see if I can reproduce the findings with Apache Flink. But the example repository is based on SQL Server, and SQL Server has a super complicated license. 
+
+In order to have an example, that people could download and get it up and running, I would need to rewrite this to PostgreSQL. This would also require to port the parsing to Java, because I don't want .NET and Java mixed. 
+
+The simplest approach for parsing the CSV is to use JTinyCsvParser:
+
+* [https://github.com/bytefish/JTinyCsvParser](https://github.com/bytefish/JTinyCsvParser)
+
+While at it, it's probably useful to update it to Java 24, too? I could then bulk import everything into PostgreSQL using something like this:
+
+* [https://www.bytefish.de/blog/bulk_updates_postgres.html](https://www.bytefish.de/blog/bulk_updates_postgres.html)
+
+Or I could dogfood and use PgBulkInsert, which would open yet another front, where I could find things to do, instead of concentrating on Apache Flink. But if I use Postgres without PgBulkInsert, then how do I use Composite Types?
+
+All in all, this idea is canceled for now, because it's not something to write up within a day. It's an overly ambitious project, that takes weeks to finish, and only if I get a few hours on the weekends.
+
+
 ## 2025-06-08: Shifting Priorities and Programming ##
 
 It’s Pentecost, so Germany has a long weekend. Back when I didn’t have a family, these days would have been filled with working myself into things. And most importantly: I would have used the time to program something for *myself*, instead of *writing code for a company*.
