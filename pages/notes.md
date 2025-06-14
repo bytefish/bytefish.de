@@ -8,6 +8,14 @@ summary: Notes, Ideas and Links
 
 [TOC]
 
+## 2025-06-14: Keep on writing  ##
+
+So… After the initial high of free-form writing, things slowed down, while I am working full-time. The weekend is going to be filled with gardening, keeping the children busy and sleeping.
+
+There’s not much programming to be expected. And I didn’t come up with a 1-day side project idea yet, which could be done within some hours. It’s just not feasible to start larger projects right now, because there’s no time left.
+
+Anyways, let’s keep on writing!
+
 ## 2025-06-09: How Ideas for Projects Come to Life  ##
 
 I am wondering, what project I could do next, so let's see my thought process.
