@@ -8,6 +8,22 @@ summary: Notes, Ideas and Links
 
 [TOC]
 
+# 2025-06-14: Formulation a Project Idea ##
+
+I think I have come up with an idea to play around with. 🥹 I’ll call it “Traffic Congestion Detection” for lack of a cool name.
+
+The idea is to first import OSM data to Postgres. This should be painless, I’ll download the data from Geofabrik and import it to Postgres. I am going to use the Postgres EDB installer to automatically add the Postgis extension. 
+
+Then in Postgres I’ll extract the Road Segments and assign them speed limits. I guess you need to use some kind of Road Segment to group traffic of multiple vehicles. In another table I am going to store Traffic Light Positions, because we expect congestion at Traffic Lights, right?
+
+A small Python (not sure yet?) script is used to generate various traffic patterns within positions in a specific area in Germany. This will also give me the possibility to load test the application.
+
+I could then use Apache Flink to detect various pattern in traffic like “Light Congestion”, “Severe Congestion”, “Traffic Jam”. The interesting thing here is, that we could use the CEP with different windows and see how it works.
+
+In a later installment I am going to revive my “OpenSky Flight Tracker” project to also visualize traffic (or at least draw circles around alarms). I have to see, Hö complicated coloring road segments are. But the possibilities with this experiment are endless!
+
+However, the week ahead is again filled with family things to do. So there is no leisure time left for my “very important side projects”. 
+
 ## 2025-06-14: Keep on writing  ##
 
 So… After the initial high of free-form writing, things slowed down, while I am working full-time. The weekend is going to be filled with gardening, keeping the children busy and sleeping.
