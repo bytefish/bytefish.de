@@ -8,7 +8,7 @@ summary: Notes, Ideas and Links
 
 [TOC]
 
-# 2025-06-14: Formulation a Project Idea ##
+## 2025-06-14: Formulation a Project Idea ##
 
 I think I have come up with an idea to play around with. 🥹 I’ll call it “Traffic Congestion Detection” for lack of a cool name.
 
