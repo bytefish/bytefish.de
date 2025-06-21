@@ -16,9 +16,13 @@ First of all I gave it the catchy name `flink-jam`. In the past week I have read
 my smartphone on how to import OSM data and query it. Today I was allowed to sit in front of the 
 screen, and I was able to download and import the OSM data. 
 
-It didn't went as smooth as I had expected, because the initial queries had been super slow. A query was 
-missing and the queries on my data have been extremly slow. But after some playing around with the query 
-planner and indices, I got it to work just fine.
+It wasn't as smooth as I had expected. The initial queries had been super slow and importing the OSM 
+data initially led to problems with the Docker volumes. Then a query was missing and the queries on 
+my data have been extremly slow. 
+
+But after some playing around with the query planner and indices, I got it to work just fine.
+
+The next round is going to be with Java.
 
 ## 2025-06-14: Formulation a Project Idea ##
 
