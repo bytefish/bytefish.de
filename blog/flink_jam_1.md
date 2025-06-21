@@ -365,6 +365,8 @@ And the query now completes 60 times faster or so, in:
 
 ## Conclusion ##
 
-We have spun up a Postgis instance, downloaded & imported the OSM data using `osm2pgsql`. We have then pre-processed the 
-road and traffic light data into two tables, that allow is to better index the data and improve query speed. The initial 
-queries had been very slow, but by using an additional index, we have seen a huge performance boost.
+We have spun up a Postgis instance, downloaded & imported the OSM data using `osm2pgsql`. 
+
+We have then pre-processed the road and traffic light data into two tables, that allows us to better index the data and improve query speed. 
+
+The initial queries had been very slow, but by using an additional index, we have seen a huge performance boost.
