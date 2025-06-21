@@ -17,7 +17,7 @@ my smartphone on how to import OSM data and query it. Today I was allowed to sit
 screen, and I was able to download and import the OSM data. 
 
 It wasn't as smooth as I had expected. The initial queries had been super slow and importing the OSM 
-data initially led to problems with the Docker volumes. Then a query was missing and the queries on 
+data initially led to problems with the Docker volumes. A GiST index was missing and the queries on 
 my data have been extremly slow. 
 
 But after some playing around with the query planner and indices, I got it to work just fine.
