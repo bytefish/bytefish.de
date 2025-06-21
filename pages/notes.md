@@ -8,6 +8,18 @@ summary: Notes, Ideas and Links
 
 [TOC]
 
+## 2025-06-21: Starting with flink-jam ##
+
+So... Another week went by, but I finally had some time to look into my project idea. 
+
+First of all I gave it the catchy name `flink-jam`. In the past week I have read some articles on 
+my smartphone on how to import OSM data and query it. Today I was allowed to sit in front of the 
+screen, and I was able to download and import the OSM data. 
+
+It didn't went as smooth as I had expected, because the initial queries had been super slow. A query was 
+missing and the queries on my data have been extremly slow. But after some playing around with the query 
+planner and indices, I got it to work just fine.
+
 ## 2025-06-14: Formulation a Project Idea ##
 
 I think I have come up with an idea to play around with. 🥹 I’ll call it “Traffic Congestion Detection” for lack of a cool name.
