@@ -291,15 +291,16 @@ We get the correct results back:
 </div>
 
 
-We can see the query super slow 😞:
+But the query is super slow 😞:
 
 ```
 Successfully run. Total query runtime: 2 secs 929 msec.
 2 rows affected.
 ```
 
-With almost three seconds on the clock, we should probably stop this altogether? But 
-let's not give up so quickly and see what the query Planner tells us, when we are running 
+With almost three seconds on the clock, we should probably stop this altogether? 
+
+But let's not give up so quickly and see what the query Planner tells us, when we are running 
 an `EXPLAIN ANALYZE`:
 
 ```sql
@@ -328,11 +329,11 @@ query will do a Full Table scan and not make any use of an index:
     </a>
 </div>
 
-Why is that? 
+Why is that? 🤔
 
-My *feeling*? I am no Postgres expert, but I am pretty confident it has to do with the `ST_DWITHIN` and 
-its data types. Although the method signature tells us you could pass it `geometry` and `geography` data 
-types, I suspect we need another index:
+My *feeling*? I am no Postgres expert, but I am pretty confident it has to do with the `ST_DWITHIN` and its data types. 
+
+Although the method signature tells us you could pass it `geometry` and `geography` data types, I suspect we need another index:
 
 ```
 Synopsis
@@ -342,7 +343,7 @@ Synopsis
     boolean ST_DWithin(geography gg1, geography gg2, double precision distance_meters, boolean use_spheroid = true);
 ```
 
-So I am adding another GiST index on the `geom` column:
+So I am adding another GiST index on the `geom` column, but this time I am indexing it as a geography:
 
 ```sql
 CREATE INDEX road_segments_geom_geography ON road_segments USING gist( (geom::geography) );
