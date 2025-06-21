@@ -141,7 +141,7 @@ To speed up queries, we should add a GIST index on the road geometry:
 CREATE INDEX idx_road_segments_geom ON road_segments USING GIST(geom);
 ```
 
-We can then insert the 
+We can then insert the relevant data of `planet_osm_line` to the `road_segments` table:
 
 ```sql
 INSERT INTO road_segments (id, osm_type, type, speed_limit_kmh, name, geom)
