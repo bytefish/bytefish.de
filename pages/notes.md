@@ -8,6 +8,26 @@ summary: Notes, Ideas and Links
 
 [TOC]
 
+## 2025-06-22: flink-jam ##
+
+I have moved flink-jam into a proper repository:
+
+* [https://github.com/bytefish/flink-jam/](https://github.com/bytefish/flink-jam/)
+
+The create table script now gets executed when the Docker container boots.
+
+Yesterday I've got the SQL side working, so today I am going to start with the Java implementation. After 
+a year of C\# without any Java, I need to re-learn a few things. Type-safety I am taking for granted with 
+C\# now needs to take type-erasure into account. 😓
+
+The Apache Flink API has changed a lot since 2016. What a surprise! So I need to research some stuff, and 
+before you ask me why I am not using an LLM? Because they deliver results based on very outdated APIs, 
+being unable to even make it compile.
+
+It's already 18:00, and the children need attention. So it won't be finished today. 
+
+But I think the repository has seen some progress, and it's something to build upon. 👏
+
 ## 2025-06-21: Starting with flink-jam ##
 
 So... Another week went by, but I finally had some time to look into my project idea. 
