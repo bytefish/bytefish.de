@@ -6,9 +6,15 @@ slug: flink_jam_1
 author: Philipp Wagner
 summary: This post is the first article on flink-jam.
 
-In this series I am starting to build "flink-jam", which is a simplified system for detecting traffic congestion, based on Open Street Map and Apache Flink. In the grand vision I want to expand on it, but I am not sure, where this is going. Maybe it ends up a failed experiment?
 
-The first thing, that needs to be done is to import the Open Street Map (OSM) data to run spatial queries.
+
+## Table of contents ##
+
+[TOC]
+
+## What we are going to build ##
+
+In this series I am starting to build "flink-jam", which is a simplified system for detecting traffic congestion, based on Open Street Map and Apache Flink. In the grand vision I want to expand on it, but I am not sure, where this is going. Maybe it ends up a failed experiment?
 
 ## First things first: Postgis ##
 
