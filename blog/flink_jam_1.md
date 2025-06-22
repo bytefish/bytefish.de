@@ -6,9 +6,15 @@ slug: flink_jam_1
 author: Philipp Wagner
 summary: This post is the first article on flink-jam.
 
-In this series I am starting to build "flink-jam", which is a simplified system for detecting traffic congestion, based on Open Street Map and Apache Flink. In the grand vision I want to expand on it, but I am not sure, where this is going. Maybe it ends up a failed experiment?
 
-The first thing, that needs to be done is to import the Open Street Map (OSM) data to run spatial queries.
+
+## Table of contents ##
+
+[TOC]
+
+## What we are going to build ##
+
+In this series I am starting to build "flink-jam", which is a simplified system for detecting traffic congestion, based on Open Street Map and Apache Flink. In the grand vision I want to expand on it, but I am not sure, where this is going. Maybe it ends up a failed experiment?
 
 ## First things first: Postgis ##
 
@@ -141,7 +147,7 @@ To speed up queries, we should add a GIST index on the road geometry:
 CREATE INDEX idx_road_segments_geom ON road_segments USING GIST(geom);
 ```
 
-We can then insert the 
+We can then insert the relevant data of `planet_osm_line` to the `road_segments` table:
 
 ```sql
 INSERT INTO road_segments (id, osm_type, type, speed_limit_kmh, name, geom)
@@ -291,15 +297,16 @@ We get the correct results back:
 </div>
 
 
-We can see the query super slow 😞:
+But the query is super slow 😞:
 
 ```
 Successfully run. Total query runtime: 2 secs 929 msec.
 2 rows affected.
 ```
 
-With almost three seconds on the clock, we should probably stop this altogether? But 
-let's not give up so quickly and see what the query Planner tells us, when we are running 
+With almost three seconds on the clock, we should probably stop this altogether? 
+
+But let's not give up so quickly and see what the query Planner tells us, when we are running 
 an `EXPLAIN ANALYZE`:
 
 ```sql
@@ -328,11 +335,11 @@ query will do a Full Table scan and not make any use of an index:
     </a>
 </div>
 
-Why is that? 
+Why is that? 🤔
 
-My *feeling*? I am no Postgres expert, but I am pretty confident it has to do with the `ST_DWITHIN` and 
-its data types. Although the method signature tells us you could pass it `geometry` and `geography` data 
-types, I suspect we need another index:
+My *feeling*? I am no Postgres expert, but I am pretty confident it has to do with the `ST_DWITHIN` and its data types. 
+
+Although the method signature tells us you could pass it `geometry` and `geography` data types, I suspect we need another index:
 
 ```
 Synopsis
@@ -342,7 +349,7 @@ Synopsis
     boolean ST_DWithin(geography gg1, geography gg2, double precision distance_meters, boolean use_spheroid = true);
 ```
 
-So I am adding another GiST index on the `geom` column:
+So I am adding another GiST index on the `geom` column, but this time I am indexing it as a geography:
 
 ```sql
 CREATE INDEX road_segments_geom_geography ON road_segments USING gist( (geom::geography) );
@@ -365,6 +372,8 @@ And the query now completes 60 times faster or so, in:
 
 ## Conclusion ##
 
-We have spun up a Postgis instance, downloaded & imported the OSM data using `osm2pgsql`. We have then pre-processed the 
-road and traffic light data into two tables, that allow is to better index the data and improve query speed. The initial 
-queries had been very slow, but by using an additional index, we have seen a huge performance boost.
+We have spun up a Postgis instance, downloaded & imported the OSM data using `osm2pgsql`. 
+
+We have then pre-processed the road and traffic light data into two tables, that allows us to better index the data and improve query speed. 
+
+The initial queries had been very slow, but by using an additional index, we have seen a huge performance boost.
