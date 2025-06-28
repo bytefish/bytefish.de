@@ -117,8 +117,8 @@ And if you are Apple Maps or Google Maps you are controlling their devices and a
 most recent maps. So I guess they *can* send along this information reliably and highly 
 simplfy the entire pipeline.
 
-Since we are not Apple or Google, we need to enrich the Event the road information for the 
-given GPS position in a `RoadEnrichedTrafficEvent`.
+Since we are not Apple or Google, we need to enrich the Event with the road information for 
+the given GPS position in a `RoadEnrichedTrafficEvent`.
 
 ```java
 package de.bytefish.flinkjam.models;
