@@ -6,7 +6,9 @@ slug: introducing_notes
 author: Philipp Wagner
 summary: This post is an introduction for the notes page.
 
-I have recently started a “notes” page, that allows me to write more free-form, instead of long-form articles in a blog.
+I have recently started a “notes” page, that allows me to write more free-form, instead of long-form articles in a blog:
+
+* [https://www.bytefish.de/notes.html](https://www.bytefish.de/notes.html)
 
 On the “notes” page I am going to share ideas and maybe anecdotal stuff, and I a want to share how side-project ideas keep on working in my head.
 
