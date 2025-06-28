@@ -1,5 +1,5 @@
 title: notes
-date: 2025-06-28 07:40
+date: 2025-06-28 10:30
 author: Philipp Wagner
 template: page
 summary: Notes, Ideas and Links
@@ -8,15 +8,43 @@ summary: Notes, Ideas and Links
 
 [TOC]
 
+## 2025-06-28: Going from a Project Idea to an Implementation ##
+
+In these notes page you can see, how "flink-jam" went from a small project idea 
+to an implementation. This is how most of my projects are built and how I work 
+professionally.
+
+Gather sample data. Model the problem in code. Start to build a prototype. Validate 
+your plan. Concentrate on the 95% and the missing 5% probably need to be manually 
+fixed. Then extract common logic. Write tutorials on it. Get the team on board.
+
+You have to understand, that my approach to products, projects and programming is 
+to first create lots and lots of chaos, then iterate on the chaos until things 
+become less and less chaotic and then at a point they start to fall into their 
+place.
+
+This approach is often at odds with larger teams and it's at odds with agile 
+development, that requires you to estimate all your tasks ahead. Thing is: I 
+often don't know how to model the problem *yet*, thus I cannot estimate it 
+reliably.
+
+At the moment I am trying to solve this issue by getting team members on 
+board early on and participate in the process. But it's often taxing for 
+younger developers, because I move from *A* to *C* to *B* to *E* and 
+back to *A* to understand how to build *D*.
+
 ## 2025-06-28: Implementing the Apache Flink Pipeline in flink-jam ##
 
-A four-day business trip to Leipzig comes to an end. While a lot of meetings could be  done virtual these days, I think meeting in person is very important to *know each other*.
+A four-day business trip to Leipzig comes to an end. While a lot of meetings could be 
+done virtual these days, I think meeting in person is very important to 
+*know each other*.
 
-While being away, one of the girls got sick, the car has to be repaired, leaving my wife stranded. All the usual drama, that occurs during business trips.
+While being away, one of the girls got sick, the car has to be repaired, leaving 
+my wife stranded. All the usual drama, that occurs during business trips.
 
-Yesterday I had some time to work on flink-jam and implemented the Java application using Apache Flink. It’s still a little chaotic, it has zero tests, but it works well.
-
-You have to understand, that my approach to programming is to first create lots of chaos, then iterate on the chaos until things become less and less chaotic and then start plugging the things together.
+Yesterday I had some time to work on flink-jam and implemented the Java application 
+using Apache Flink. It’s still a little chaotic, it has zero tests, but it 
+works well.
 
 ## 2025-06-22: OpenStreetMap Data in flink-jam ##
 
