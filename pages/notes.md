@@ -1,5 +1,5 @@
 title: notes
-date: 2025-06-07 11:18
+date: 2025-06-28 07:40
 author: Philipp Wagner
 template: page
 summary: Notes, Ideas and Links
@@ -8,7 +8,17 @@ summary: Notes, Ideas and Links
 
 [TOC]
 
-## 2025-06-22: flink-jam ##
+## 2025-06-28: Implementing the Apache Flink Pipeline in flink-jam ##
+
+A four-day business trip to Leipzig comes to an end. While a lot of meetings could be  done virtual these days, I think meeting in person is very important to *know each other*.
+
+While being away, one of the girls got sick, the car has to be repaired, leaving my wife stranded. All the usual drama, that occurs during business trips.
+
+Yesterday I had some time to work on flink-jam and implemented the Java application using Apache Flink. It’s still a little chaotic, it has zero tests, but it works well.
+
+You have to understand, that my approach to programming is to first create lots of chaos, then iterate on the chaos until things become less and less chaotic and then start plugging the things together.
+
+## 2025-06-22: OpenStreetMap Data in flink-jam ##
 
 I have moved flink-jam into a proper repository:
 
@@ -56,7 +66,7 @@ A small Python (not sure yet?) script is used to generate various traffic patter
 
 I could then use Apache Flink to detect various pattern in traffic like “Light Congestion”, “Severe Congestion”, “Traffic Jam”. The interesting thing here is, that we could use the CEP with different windows and see how it works.
 
-In a later installment I am going to revive my “OpenSky Flight Tracker” project to also visualize traffic (or at least draw circles around alarms). I have to see, Hö complicated coloring road segments are. But the possibilities with this experiment are endless!
+In a later installment I am going to revive my “OpenSky Flight Tracker” project to also visualize traffic (or at least draw circles around alarms). I have to see, how complicated coloring road segments are. But the possibilities with this experiment are endless!
 
 However, the week ahead is again filled with family things to do. So there is no leisure time left for my “very important side projects”. 
 
