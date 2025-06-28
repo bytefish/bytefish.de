@@ -770,9 +770,9 @@ rapid succession, because with a "Stop-And-Go" you would quickly alternate like.
 "Sustained Slowdown", "Traffic Jam", "Sustained Slowdown". People watching such a map probably go 
 crazy. 
 
-So we also need to debounce the patterns introducing both an "Warning Event Hierarchy" and a debounce 
-period, that avoids generating millions of events, while traffic is fading out. All this happens in 
-the `WarningDebouncerFunction`.
+So we also need to debounce the warnings introducing both an "Warning Event Hierarchy" and a debounce 
+period, that avoids emitting millions of events, while traffic is building up of fading out. All this 
+happens in the `WarningDebouncerFunction`.
 
 ```java
 package de.bytefish.flinkjam;
