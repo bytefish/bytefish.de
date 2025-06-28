@@ -1,4 +1,4 @@
-title: Growing Software and Getting Things off the Ground
+title: Going From Zero to Implementation: Growing Software and Getting Things off the Ground
 date: 2025-06-28 10:46
 tags: software development, personal
 category: development
