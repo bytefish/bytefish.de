@@ -8,6 +8,86 @@ summary: Notes, Ideas and Links
 
 [TOC]
 
+## 2025-06-29: Importing Routing Data for pgRouting on Windows ##
+
+`pgRouting` is a library for adding Routing capabilities to PostgreSQL. However the import using `osm2pgrouting` does not 
+support importing `*.pbf` files out of the box. So we need to convert them to an `osm` file first. This can be done using 
+`osmosis`.
+
+`osmosis` can be downloaded from:
+
+* [https://github.com/openstreetmap/osmosis/releases](https://github.com/openstreetmap/osmosis/releases)
+
+We can then convert the data to `osm` using:
+
+```
+.\bin\osmosis.bat --read-pbf muenster-regbez-latest.osm.pbf --write-xml file=muenster-regbez-latest.osm
+```
+
+This takes something around 45 seconds and takes up 20x the size of the original file:
+
+```
+Jun 29, 2025 11:25:05 AM org.openstreetmap.osmosis.core.Osmosis run
+INFO: Osmosis Version 0.49.2
+SLF4J: Failed to load class "org.slf4j.impl.StaticLoggerBinder".
+SLF4J: Defaulting to no-operation (NOP) logger implementation
+SLF4J: See http://www.slf4j.org/codes.html#StaticLoggerBinder for further details.
+Jun 29, 2025 11:25:05 AM org.openstreetmap.osmosis.core.Osmosis run
+INFO: Preparing pipeline.
+Jun 29, 2025 11:25:05 AM org.openstreetmap.osmosis.core.Osmosis run
+INFO: Launching pipeline execution.
+Jun 29, 2025 11:25:05 AM org.openstreetmap.osmosis.core.Osmosis run
+INFO: Pipeline executing, waiting for completion.
+Jun 29, 2025 11:25:50 AM org.openstreetmap.osmosis.core.Osmosis run
+INFO: Pipeline complete.
+Jun 29, 2025 11:25:50 AM org.openstreetmap.osmosis.core.Osmosis run
+INFO: Total execution time: 45971 milliseconds.
+```
+
+We can then use `osm2pgrouting.exe` (available in the `bin` folder of your PostgreSQL installation.
+
+`osm2pgrouting` creates all tables required and imports the data required for routing:
+
+```
+./osm2pgrouting.exe --file "C:\Users\philipp\Downloads\muenster-regbez-latest.osm" \
+    --host localhost \
+    --port 5432 \
+    --dbname flinkjam \
+    --username postgis \
+    --password postgis \ 
+    --clean \
+    --conf ".\conf\mapconfig_for_cars.xml"
+```
+
+The `mapconfig_for_cars.xml` 
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+  <tag_name name="highway" id="1">
+    <tag_value name="motorway"          id="101" priority="1.0" maxspeed="130" />
+    <tag_value name="motorway_link"     id="102" priority="1.0" maxspeed="130" />
+    <tag_value name="motorway_junction" id="103" priority="1.0" maxspeed="130" />
+    <tag_value name="trunk"             id="104" priority="1.05" maxspeed="110" />
+    <tag_value name="trunk_link"        id="105" priority="1.05" maxspeed="110" />    
+    <tag_value name="primary"           id="106" priority="1.15" maxspeed="90" />
+    <tag_value name="primary_link"      id="107" priority="1.15" maxspeed="90" />    
+    <tag_value name="secondary"         id="108" priority="1.5" maxspeed="90" />
+    <tag_value name="secondary_link"    id="109" priority="1.5" maxspeed="90"/>  
+    <tag_value name="tertiary"          id="110" priority="1.75" maxspeed="90" />
+    <tag_value name="tertiary_link"     id="111" priority="1.75" maxspeed="90" />  
+    <tag_value name="residential"       id="112" priority="2.5" maxspeed="50" />
+    <tag_value name="living_street"     id="113" priority="3" maxspeed="20" />
+    <tag_value name="service"           id="114" priority="2.5" maxspeed="50" />
+        
+    <tag_value name="unclassified"      id="117" priority="3" maxspeed="90"/>
+    <tag_value name="road"              id="100" priority="5" maxspeed="50" />
+  </tag_name> 
+</configuration>
+```
+
+
+
 ## 2025-06-28: Going from a Project Idea to an Implementation ##
 
 In these notes page you can see, how "flink-jam" went from a small project idea 
