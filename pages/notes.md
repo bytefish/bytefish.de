@@ -79,7 +79,6 @@ The `mapconfig_for_cars.xml` is in the `osm2pgrouting` directory and contains th
     <tag_value name="residential"       id="112" priority="2.5" maxspeed="50" />
     <tag_value name="living_street"     id="113" priority="3" maxspeed="20" />
     <tag_value name="service"           id="114" priority="2.5" maxspeed="50" />
-        
     <tag_value name="unclassified"      id="117" priority="3" maxspeed="90"/>
     <tag_value name="road"              id="100" priority="5" maxspeed="50" />
   </tag_name> 
